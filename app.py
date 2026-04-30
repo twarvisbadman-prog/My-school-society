@@ -7,18 +7,18 @@ from django.http import HttpResponse, JsonResponse, FileResponse
 from django.shortcuts import render, redirect
 from django import forms
 from django.urls import path
-from supabase import create_client, Client
 import PyPDF2
 from io import BytesIO
+from supabase import create_client
 
-# Environment variables
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://hnszltswipxiqurkwydm.supabase.co")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "sb_publishable_-e3PeDcAUub955RltKMxdQ_bpSy1FHM")
 SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-twarvis-school-key-2024")
 ADMIN = os.environ.get("ADMIN", "true") == "true"
 
-# Supabase client
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+# Supabase client (no Client type hint!)
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
 
 # Django minimal settings
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
