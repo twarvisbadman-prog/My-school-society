@@ -1,59 +1,38 @@
-<!-- browse.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Browse Notes | Twarvis School</title>
+    <title>Browse | Twarvis School</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
         }
-
-        :root {
-            --bg: #0f172a;
-            --surface: #1e293b;
-            --text: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --primary: #3b82f6;
-            --danger: #ef4444;
-            --border: #334155;
+        
+        .content {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(3px);
         }
-
-        [data-theme="light"] {
-            --bg: #f8fafc;
-            --surface: #ffffff;
-            --text: #0f172a;
-            --text-secondary: #475569;
-            --primary: #3b82f6;
-            --danger: #dc2626;
-            --border: #e2e8f0;
-        }
-
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            transition: background 0.3s;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
+        
         .header {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
+            background: rgba(0, 0, 0, 0.95);
+            border-bottom: 2px solid #00ff41;
             position: sticky;
             top: 0;
             z-index: 100;
         }
-
+        
         .header-content {
             display: flex;
             justify-content: space-between;
@@ -62,287 +41,303 @@
             max-width: 1400px;
             margin: 0 auto;
         }
-
+        
         .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--primary), #8b5cf6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #00ff41;
+            text-shadow: 0 0 10px #00ff41;
         }
-
+        
         .nav {
             display: flex;
-            gap: 24px;
+            gap: 30px;
             align-items: center;
         }
-
+        
         .nav a {
-            color: var(--text);
+            color: #00ff41;
             text-decoration: none;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: all 0.3s;
         }
-
+        
         .nav a:hover {
-            color: var(--primary);
+            background: rgba(0, 255, 65, 0.2);
+            text-shadow: 0 0 5px #00ff41;
         }
-
-        .theme-toggle {
-            background: var(--border);
-            border: none;
-            border-radius: 50px;
-            padding: 8px;
-            cursor: pointer;
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 24px;
         }
-
-        /* Search Bar */
+        
         .search-section {
-            margin: 40px 0;
-            animation: fadeIn 0.5s ease;
+            margin-bottom: 40px;
         }
-
+        
         .search-bar {
             display: flex;
-            gap: 12px;
+            gap: 15px;
             max-width: 600px;
+            margin: 0 auto;
         }
-
+        
         .search-input {
             flex: 1;
             padding: 14px 20px;
-            background: var(--surface);
-            border: 1px solid var(--border);
+            background: #000;
+            border: 2px solid #00ff41;
             border-radius: 50px;
-            color: var(--text);
+            color: #00ff41;
             font-size: 1rem;
         }
-
+        
         .search-input:focus {
             outline: none;
-            border-color: var(--primary);
+            border-color: #ff0000;
+            box-shadow: 0 0 15px #00ff41;
         }
-
+        
         .search-btn {
-            padding: 14px 28px;
-            background: var(--primary);
-            color: white;
-            border: none;
+            padding: 14px 30px;
+            background: transparent;
+            border: 2px solid #ff0000;
+            color: #ff0000;
             border-radius: 50px;
             cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
         }
-
-        /* Filters */
-        .filters {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            margin: 20px 0 30px;
+        
+        .search-btn:hover {
+            background: #ff0000;
+            color: #000;
+            box-shadow: 0 0 15px #ff0000;
         }
-
-        .filter-chip {
-            padding: 8px 16px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .filter-chip:hover {
-            border-color: var(--primary);
-        }
-
-        /* Notes Grid */
+        
         .notes-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 24px;
-            margin: 30px 0;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
         }
-
+        
         .note-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #00ff41;
+            border-radius: 15px;
             padding: 20px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s;
             animation: fadeInUp 0.4s ease;
         }
-
+        
         .note-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(0, 255, 65, 0.3);
+            border-color: #ff0000;
         }
-
+        
         .note-title {
             font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--primary);
+            font-weight: bold;
+            color: #ff0000;
+            margin-bottom: 10px;
+            word-break: break-all;
         }
-
+        
         .note-meta {
             display: flex;
-            gap: 12px;
+            gap: 15px;
             font-size: 0.8rem;
-            color: var(--text-secondary);
+            color: #00ff41;
             margin-bottom: 12px;
         }
-
+        
         .note-description {
             margin: 12px 0;
+            color: #ccc;
             line-height: 1.5;
         }
-
+        
         .note-actions {
             display: flex;
             gap: 12px;
             margin-top: 16px;
             flex-wrap: wrap;
         }
-
+        
         .btn-sm {
             padding: 8px 16px;
             border-radius: 8px;
             text-decoration: none;
             font-size: 0.85rem;
             font-weight: 500;
-            display: inline-block;
             transition: all 0.2s;
+            cursor: pointer;
         }
-
+        
         .btn-view {
-            background: var(--primary);
-            color: white;
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            background: transparent;
         }
-
+        
+        .btn-view:hover {
+            background: #00ff41;
+            color: #000;
+            box-shadow: 0 0 10px #00ff41;
+        }
+        
         .btn-download {
-            background: var(--surface);
-            border: 1px solid var(--primary);
-            color: var(--primary);
+            border: 1px solid #ff0000;
+            color: #ff0000;
+            background: transparent;
         }
-
+        
+        .btn-download:hover {
+            background: #ff0000;
+            color: #000;
+            box-shadow: 0 0 10px #ff0000;
+        }
+        
         .btn-delete {
-            background: var(--danger);
-            color: white;
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            background: transparent;
         }
-
+        
+        .btn-delete:hover {
+            background: #ff4444;
+            color: #000;
+        }
+        
         .no-results {
             text-align: center;
             padding: 60px;
-            color: var(--text-secondary);
+            color: #00ff41;
         }
-
+        
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
+        
         .footer {
             text-align: center;
-            padding: 40px;
-            color: var(--text-secondary);
-            border-top: 1px solid var(--border);
+            padding: 30px;
+            color: #00ff41;
+            border-top: 1px solid rgba(0, 255, 65, 0.3);
             margin-top: 40px;
         }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00ff41;
+            border-radius: 4px;
+        }
     </style>
-    <script>
-        function initTheme() {
-            const theme = localStorage.getItem('theme') || 'dark';
-            document.documentElement.setAttribute('data-theme', theme);
-        }
-        function toggleTheme() {
-            const current = document.documentElement.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
-        }
-        initTheme();
-
-        function filterByCourse(course) {
-            const url = new URL(window.location.href);
-            url.searchParams.set('q', course);
-            window.location.href = url;
-        }
-
-        function filterByModule(module) {
-            const url = new URL(window.location.href);
-            url.searchParams.set('q', module);
-            window.location.href = url;
-        }
-    </script>
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <span class="logo">📚 Twarvis School</span>
-            <div class="nav">
-                <a href="/">Home</a>
-                <a href="/browse/">Browse</a>
-                <a href="/upload/">Upload</a>
-                <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    <canvas id="matrix-canvas"></canvas>
+    
+    <div class="content">
+        <div class="header">
+            <div class="header-content">
+                <span class="logo">⚡ TWARVIS SCHOOL ⚡</span>
+                <div class="nav">
+                    <a href="/">HOME</a>
+                    <a href="/browse/">BROWSE</a>
+                    <a href="/upload/">UPLOAD</a>
+                </div>
             </div>
+        </div>
+
+        <div class="container">
+            <div class="search-section">
+                <form method="get" class="search-bar">
+                    <input type="text" name="q" class="search-input" placeholder="🔍 Search by module, course, or description..." value="{{ query }}">
+                    <button type="submit" class="search-btn">SEARCH</button>
+                </form>
+            </div>
+
+            <div class="notes-grid">
+                {% if notes %}
+                    {% for note in notes %}
+                    <div class="note-card">
+                        <div class="note-title">📁 [{{ note.file_ext }}] {{ note.filename|truncatechars:50 }}</div>
+                        <div class="note-meta">
+                            <span>📚 {{ note.module }}</span>
+                            <span>📖 {{ note.course }}</span>
+                        </div>
+                        <div class="note-description">{{ note.description|truncatechars:100 }}</div>
+                        <div class="note-meta">📅 {{ note.uploaded_at|slice:":10" }}</div>
+                        <div class="note-actions">
+                            <a href="/view/{{ note.id }}/" class="btn-sm btn-view" target="_blank">👁️ VIEW</a>
+                            <a href="/download/{{ note.id }}/" class="btn-sm btn-download">⬇️ DOWNLOAD</a>
+                            {% if admin %}
+                            <a href="/delete/{{ note.id }}/" class="btn-sm btn-delete" onclick="return confirm('Delete this file permanently?')">🗑️ DELETE</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="no-results">
+                        <h3>⚠️ NO FILES FOUND ⚠️</h3>
+                        <p>Try a different search term or <a href="/upload/" style="color:#ff0000">upload some files</a></p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>⚡ TWARVIS SCHOOL — ENTER THE MATRIX OF KNOWLEDGE ⚡</p>
         </div>
     </div>
 
-    <div class="container">
-        <div class="search-section">
-            <form method="get" class="search-bar">
-                <input type="text" name="q" class="search-input" placeholder="Search by module, course, or description..." value="{{ query }}">
-                <button type="submit" class="search-btn">🔍 Search</button>
-            </form>
+    <script>
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*';
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+        
+        for (let i = 0; i < columns; i++) drops[i] = Math.random() * -100;
+        
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#00ff41';
+            ctx.font = fontSize + 'px monospace';
             
-            <div class="filters">
-                <span style="color: var(--text-secondary);">Filter by course:</span>
-                {% for course in courses %}
-                <span class="filter-chip" onclick="filterByCourse('{{ course }}')">{{ course }}</span>
-                {% endfor %}
-                <span class="filter-chip" onclick="window.location.href='/browse/'">Clear all</span>
-            </div>
-        </div>
-
-        <div class="notes-grid">
-            {% if notes %}
-                {% for note in notes %}
-                <div class="note-card">
-                    <div class="note-title">{{ note.file_ext }}: {{ note.filename|truncatechars:50 }}</div>
-                    <div class="note-meta">
-                        <span>📚 {{ note.module }}</span>
-                        <span>📖 {{ note.course }}</span>
-                    </div>
-                    <div class="note-description">{{ note.description|truncatechars:100 }}</div>
-                    <div class="note-meta">📅 {{ note.uploaded_at|slice:":10" }}</div>
-                    <div class="note-actions">
-                        <a href="/view/{{ note.id }}/" class="btn-sm btn-view">View PDF</a>
-                        <a href="/download/{{ note.id }}/" class="btn-sm btn-download">Download</a>
-                        {% if admin %}
-                        <a href="/delete/{{ note.id }}/" class="btn-sm btn-delete" onclick="return confirm('Delete this file permanently?')">Delete</a>
-                        {% endif %}
-                    </div>
-                </div>
-                {% endfor %}
-            {% else %}
-                <div class="no-results">
-                    <h3>No notes found</h3>
-                    <p>Try a different search term or <a href="/upload/">upload some notes</a></p>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-
-    <div class="footer">
-        <p>Twarvis School — Study smarter, together</p>
-    </div>
+            for (let i = 0; i < drops.length; i++) {
+                const char = chars[Math.floor(Math.random() * chars.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+                if (y < canvas.height && y > 0) ctx.fillText(char, x, y);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        
+        setInterval(draw, 50);
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
 </body>
 </html>
