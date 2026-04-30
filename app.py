@@ -75,7 +75,6 @@ def get_all_notes():
 
 def search_notes(query):
     try:
-        # Simple search using PostgreSQL ilike
         response = supabase.table("notes").select("*")\
             .or_(f"module.ilike.%{query}%,course.ilike.%{query}%,description.ilike.%{query}%")\
             .order("uploaded_at", desc=True).execute()
@@ -102,11 +101,9 @@ def upload_view(request):
                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                     filename = f"{timestamp}_{file.name.replace(' ', '_')}"
                     
-                    # Upload to Supabase storage
                     file_content = file.read()
                     supabase.storage.from_("notes").upload(filename, file_content)
                     
-                    # Save metadata to Supabase table
                     supabase.table("notes").insert({
                         "filename": filename,
                         "module": form.cleaned_data["module"],
@@ -117,7 +114,7 @@ def upload_view(request):
                     }).execute()
                     
                     message = "File uploaded successfully!"
-                    form = UploadForm()  # Reset form
+                    form = UploadForm()
             except Exception as e:
                 error = f"Upload failed: {str(e)}"
         else:
@@ -134,7 +131,6 @@ def browse_view(request):
     else:
         notes = get_all_notes()
     
-    # Get unique courses and modules for filter sidebar
     all_notes = get_all_notes()
     courses = sorted(set(n.get("course", "") for n in all_notes if n.get("course")))
     modules = sorted(set(n.get("module", "") for n in all_notes if n.get("module")))
@@ -149,13 +145,11 @@ def browse_view(request):
 
 def view_pdf(request, id):
     try:
-        # Get note metadata
         response = supabase.table("notes").select("*").eq("id", id).execute()
         if not response.data:
             return HttpResponse("Note not found", status=404)
         note = response.data[0]
         
-        # Get public URL from Supabase storage
         public_url = supabase.storage.from_("notes").get_public_url(note["filename"])
         
         return render(request, "view.html", {"note": note, "pdf_url": public_url})
@@ -169,10 +163,8 @@ def download_pdf(request, id):
             return HttpResponse("Note not found", status=404)
         note = response.data[0]
         
-        # Download file from Supabase storage
         file_data = supabase.storage.from_("notes").download(note["filename"])
         
-        # Create response with PDF
         file_response = HttpResponse(file_data, content_type="application/pdf")
         file_response["Content-Disposition"] = f"attachment; filename=\"{note['filename']}\""
         return file_response
@@ -184,16 +176,12 @@ def delete_file(request, id):
         return HttpResponse("Not authorized. Set ADMIN=true to enable deletion.", status=403)
     
     try:
-        # Get note metadata
         response = supabase.table("notes").select("*").eq("id", id).execute()
         if not response.data:
             return HttpResponse("Note not found", status=404)
         note = response.data[0]
         
-        # Delete from storage
         supabase.storage.from_("notes").remove([note["filename"]])
-        
-        # Delete from database
         supabase.table("notes").delete().eq("id", id).execute()
         
         return redirect("/browse/?deleted=1")
@@ -207,6 +195,9 @@ def favicon(request):
             return HttpResponse(f.read(), content_type="image/x-icon")
     return HttpResponse(status=204)
 
+def health_check(request):
+    return HttpResponse("OK", status=200)
+
 # URL patterns
 urlpatterns = [
     path("", index),
@@ -216,6 +207,7 @@ urlpatterns = [
     path("download/<int:id>/", download_pdf),
     path("delete/<int:id>/", delete_file),
     path("favicon.ico", favicon),
+    path("health/", health_check),
 ]
 
 # Create WSGI application
