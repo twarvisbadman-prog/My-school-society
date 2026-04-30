@@ -1,10 +1,9 @@
 # app.py
 import os
-import sys
 from datetime import datetime
 from django.conf import settings
 from django.core.wsgi import get_wsgi_application
-from django.http import HttpResponse, FileResponse
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django import forms
 from django.urls import path
@@ -46,7 +45,6 @@ if not settings.configured:
         STATICFILES_DIRS=[BASE_DIR],
         CSRF_TRUSTED_ORIGINS=["https://*.onrender.com", "http://localhost:8000"],
         X_FRAME_OPTIONS="SAMEORIGIN",
-        USE_TZ=False,
     )
 
 from django import forms
@@ -58,7 +56,6 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 ALLOWED_EXTENSIONS = ['.pdf', '.ppt', '.pptx', '.doc', '.docx', '.xls', '.xlsx', '.txt', '.md', '.jpg', '.jpeg', '.png', '.gif', '.zip', '.rar']
 
 def get_content_type(filename):
-    """Return appropriate content type for file"""
     ext = os.path.splitext(filename)[1].lower()
     content_types = {
         '.pdf': 'application/pdf',
@@ -69,7 +66,6 @@ def get_content_type(filename):
         '.xls': 'application/vnd.ms-excel',
         '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         '.txt': 'text/plain',
-        '.md': 'text/markdown',
         '.jpg': 'image/jpeg',
         '.jpeg': 'image/jpeg',
         '.png': 'image/png',
@@ -79,14 +75,12 @@ def get_content_type(filename):
     }
     return content_types.get(ext, 'application/octet-stream')
 
-# Forms
 class UploadForm(forms.Form):
-    module = forms.CharField(max_length=100, label="Module Name")
-    course = forms.CharField(max_length=100, label="Course Name")
-    description = forms.CharField(widget=forms.Textarea, label="Description")
-    file = forms.FileField(label="File")
+    module = forms.CharField(max_length=100, label="Module Name", widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., CS101"}))
+    course = forms.CharField(max_length=100, label="Course Name", widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., Programming"}))
+    description = forms.CharField(widget=forms.Textarea(attrs={"class": "form-textarea", "rows": 3, "placeholder": "Description..."}), label="Description")
+    file = forms.FileField(label="File", widget=forms.FileInput(attrs={"class": "form-file"}))
 
-# Helper functions
 def get_all_notes():
     try:
         response = supabase.table("notes").select("*").order("uploaded_at", desc=True).execute()
@@ -97,15 +91,11 @@ def get_all_notes():
 
 def search_notes(query):
     try:
-        response = supabase.table("notes").select("*")\
-            .or_(f"module.ilike.%{query}%,course.ilike.%{query}%,description.ilike.%{query}%")\
-            .order("uploaded_at", desc=True).execute()
+        response = supabase.table("notes").select("*").or_(f"module.ilike.%{query}%,course.ilike.%{query}%,description.ilike.%{query}%").order("uploaded_at", desc=True).execute()
         return response.data if response.data else []
     except Exception as e:
-        print(f"Search error: {e}")
         return get_all_notes()
 
-# Views
 def index(request):
     return render(request, "index.html")
 
@@ -117,21 +107,14 @@ def upload_view(request):
         if form.is_valid():
             try:
                 file = request.FILES["file"]
-                filename = file.name
-                
-                # Check file extension
-                ext = os.path.splitext(filename)[1].lower()
+                ext = os.path.splitext(file.name)[1].lower()
                 if ext not in ALLOWED_EXTENSIONS:
-                    error = f"File type not allowed. Allowed: PDF, PPT, DOC, XLS, TXT, JPG, PNG, ZIP"
+                    error = "File type not allowed."
                 else:
                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                    safe_filename = f"{timestamp}_{filename.replace(' ', '_')}"
-                    
-                    # Upload to Supabase storage
+                    safe_filename = f"{timestamp}_{file.name.replace(' ', '_')}"
                     file_content = file.read()
                     supabase.storage.from_("notes").upload(safe_filename, file_content)
-                    
-                    # Save metadata
                     supabase.table("notes").insert({
                         "filename": safe_filename,
                         "module": form.cleaned_data["module"],
@@ -140,96 +123,55 @@ def upload_view(request):
                         "uploader": "user",
                         "uploaded_at": datetime.now().isoformat()
                     }).execute()
-                    
-                    message = "File uploaded successfully!"
+                    message = "✅ File uploaded successfully!"
                     form = UploadForm()
             except Exception as e:
                 error = f"Upload failed: {str(e)}"
         else:
-            error = "Please fill all fields correctly."
+            error = "Please fill all fields."
     else:
         form = UploadForm()
-    
     return render(request, "upload.html", {"form": form, "message": message, "error": error})
 
 def browse_view(request):
     query = request.GET.get("q", "").strip()
-    if query:
-        notes = search_notes(query)
-    else:
-        notes = get_all_notes()
-    
-    all_notes = get_all_notes()
-    courses = sorted(set(n.get("course", "") for n in all_notes if n.get("course")))
-    modules = sorted(set(n.get("module", "") for n in all_notes if n.get("module")))
-    
-    # Add file extension info
+    notes = search_notes(query) if query else get_all_notes()
     for note in notes:
-        note["file_ext"] = os.path.splitext(note.get("filename", ""))[1].upper().replace(".", "")
-    
-    return render(request, "browse.html", {
-        "notes": notes,
-        "query": query,
-        "courses": courses,
-        "modules": modules,
-        "admin": ADMIN,
-    })
+        ext = os.path.splitext(note.get("filename", ""))[1].upper().replace(".", "")
+        note["file_ext"] = ext if ext else "FILE"
+    return render(request, "browse.html", {"notes": notes, "query": query, "admin": ADMIN})
 
 def view_file(request, id):
     try:
-        response = supabase.table("notes").select("*").eq("id", id).execute()
-        if not response.data:
-            return HttpResponse("File not found", status=404)
-        note = response.data[0]
-        
-        # Download file from Supabase storage
+        note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
         file_data = supabase.storage.from_("notes").download(note["filename"])
-        
-        # Get content type
-        content_type = get_content_type(note["filename"])
-        
-        # Return file with correct headers
-        file_response = HttpResponse(file_data, content_type=content_type)
-        
-        # For PDFs, display inline; for others, download
-        if note["filename"].endswith('.pdf'):
-            file_response["Content-Disposition"] = f"inline; filename=\"{note['filename']}\""
-        else:
-            file_response["Content-Disposition"] = f"attachment; filename=\"{note['filename']}\""
-        
-        return file_response
-        
+        response = HttpResponse(file_data, content_type=get_content_type(note["filename"]))
+        disposition = "inline" if note["filename"].endswith('.pdf') else "attachment"
+        response["Content-Disposition"] = f"{disposition}; filename=\"{note['filename']}\""
+        return response
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", status=500)
 
 def download_file(request, id):
     try:
-        response = supabase.table("notes").select("*").eq("id", id).execute()
-        if not response.data:
-            return HttpResponse("File not found", status=404)
-        note = response.data[0]
-        
+        note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
         file_data = supabase.storage.from_("notes").download(note["filename"])
-        content_type = get_content_type(note["filename"])
-        
-        file_response = HttpResponse(file_data, content_type=content_type)
-        file_response["Content-Disposition"] = f"attachment; filename=\"{note['filename']}\""
-        return file_response
-        
+        response = HttpResponse(file_data, content_type=get_content_type(note["filename"]))
+        response["Content-Disposition"] = f"attachment; filename=\"{note['filename']}\""
+        return response
     except Exception as e:
         return HttpResponse(f"Download failed: {str(e)}", status=500)
 
 def delete_file(request, id):
     if not ADMIN:
         return HttpResponse("Not authorized.", status=403)
-    
     try:
         note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
         supabase.storage.from_("notes").remove([note["filename"]])
         supabase.table("notes").delete().eq("id", id).execute()
-        return redirect("/browse/?deleted=1")
+        return redirect("/browse/")
     except Exception as e:
-        return HttpResponse(f"Deletion failed: {str(e)}", status=500)
+        return HttpResponse(f"Delete failed: {str(e)}", status=500)
 
 def favicon(request):
     favicon_path = os.path.join(BASE_DIR, "favicon.ico")
@@ -238,10 +180,6 @@ def favicon(request):
             return HttpResponse(f.read(), content_type="image/x-icon")
     return HttpResponse(status=204)
 
-def health_check(request):
-    return HttpResponse("OK", status=200)
-
-# URL patterns
 urlpatterns = [
     path("", index),
     path("upload/", upload_view),
@@ -250,7 +188,6 @@ urlpatterns = [
     path("download/<int:id>/", download_file),
     path("delete/<int:id>/", delete_file),
     path("favicon.ico", favicon),
-    path("health/", health_check),
 ]
 
 application = get_wsgi_application()
