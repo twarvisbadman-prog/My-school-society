@@ -66,6 +66,7 @@ def get_content_type(filename):
         '.xls': 'application/vnd.ms-excel',
         '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         '.txt': 'text/plain',
+        '.md': 'text/markdown',
         '.jpg': 'image/jpeg',
         '.jpeg': 'image/jpeg',
         '.png': 'image/png',
@@ -172,7 +173,15 @@ def delete_file(request, id):
         return redirect("/browse/")
     except Exception as e:
         return HttpResponse(f"Delete failed: {str(e)}", status=500)
-# Add this new view to app.py
+
+def favicon(request):
+    favicon_path = os.path.join(BASE_DIR, "favicon.ico")
+    if os.path.exists(favicon_path):
+        with open(favicon_path, "rb") as f:
+            return HttpResponse(f.read(), content_type="image/x-icon")
+    return HttpResponse(status=204)
+
+# ========== ADMIN DASHBOARD ==========
 def admin_dashboard(request):
     if not ADMIN:
         return HttpResponse("Access Denied. Admin only.", status=403)
@@ -187,7 +196,8 @@ def admin_dashboard(request):
     
     for note in all_notes:
         ext = os.path.splitext(note.get("filename", ""))[1].upper()
-        file_types[ext] = file_types.get(ext, 0) + 1
+        if ext:
+            file_types[ext] = file_types.get(ext, 0) + 1
         module = note.get("module", "Unknown")
         modules[module] = modules.get(module, 0) + 1
     
@@ -198,15 +208,12 @@ def admin_dashboard(request):
     }
     
     return render(request, "admin.html", {"notes": all_notes, "stats": stats, "admin": ADMIN})
-def favicon(request):
-    favicon_path = os.path.join(BASE_DIR, "favicon.ico")
-    if os.path.exists(favicon_path):
-        with open(favicon_path, "rb") as f:
-            return HttpResponse(f.read(), content_type="image/x-icon")
-    return HttpResponse(status=204)
+# ========== END ADMIN DASHBOARD ==========
 
+# URL patterns
 urlpatterns = [
     path("", index),
+    path("admin/", admin_dashboard),  # Admin portal route
     path("upload/", upload_view),
     path("browse/", browse_view),
     path("view/<int:id>/", view_file),
