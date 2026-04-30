@@ -1,56 +1,61 @@
 # app.py
 import os
+import sys
 from datetime import datetime
 from django.conf import settings
 from django.core.wsgi import get_wsgi_application
-from django.http import HttpResponse, JsonResponse, FileResponse
+from django.http import HttpResponse, FileResponse
 from django.shortcuts import render, redirect
 from django import forms
 from django.urls import path
-import PyPDF2
-from io import BytesIO
-from supabase import create_client
+from supabase import create_client, Client
 
+# Environment variables
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://hnszltswipxiqurkwydm.supabase.co")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "sb_publishable_-e3PeDcAUub955RltKMxdQ_bpSy1FHM")
 SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-twarvis-school-key-2024")
 ADMIN = os.environ.get("ADMIN", "true") == "true"
 
-# Supabase client (no Client type hint!)
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-
-
-# Django minimal settings
+# Django settings must be configured BEFORE any Django imports that use settings
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-settings.configure(
-    DEBUG=True,
-    SECRET_KEY=SECRET_KEY,
-    ROOT_URLCONF=__name__,
-    ALLOWED_HOSTS=["*"],
-    INSTALLED_APPS=[
-        "django.contrib.staticfiles",
-    ],
-    MIDDLEWARE=[
-        "django.middleware.common.CommonMiddleware",
-        "django.middleware.csrf.CsrfViewMiddleware",
-        "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    ],
-    TEMPLATES=[{
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR],
-        "APP_DIRS": False,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-            ],
-        },
-    }],
-    STATIC_URL="/static/",
-    STATICFILES_DIRS=[BASE_DIR],
-    CSRF_TRUSTED_ORIGINS=["https://*.onrender.com", "http://localhost:8000"],
-    X_FRAME_OPTIONS="SAMEORIGIN",
-)
+
+if not settings.configured:
+    settings.configure(
+        DEBUG=True,
+        SECRET_KEY=SECRET_KEY,
+        ROOT_URLCONF=__name__,
+        ALLOWED_HOSTS=["*", ".onrender.com", "localhost", "127.0.0.1"],
+        INSTALLED_APPS=[
+            "django.contrib.staticfiles",
+        ],
+        MIDDLEWARE=[
+            "django.middleware.common.CommonMiddleware",
+            "django.middleware.csrf.CsrfViewMiddleware",
+            "django.middleware.clickjacking.XFrameOptionsMiddleware",
+        ],
+        TEMPLATES=[{
+            "BACKEND": "django.template.backends.django.DjangoTemplates",
+            "DIRS": [BASE_DIR],
+            "APP_DIRS": False,
+            "OPTIONS": {
+                "context_processors": [
+                    "django.template.context_processors.debug",
+                    "django.template.context_processors.request",
+                ],
+            },
+        }],
+        STATIC_URL="/static/",
+        STATICFILES_DIRS=[BASE_DIR],
+        CSRF_TRUSTED_ORIGINS=["https://*.onrender.com", "http://localhost:8000", "http://127.0.0.1:8000"],
+        X_FRAME_OPTIONS="SAMEORIGIN",
+        USE_TZ=False,
+    )
+
+# Now import Django modules after settings are configured
+from django import forms
+
+# Supabase client
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Forms
 class UploadForm(forms.Form):
@@ -213,10 +218,10 @@ urlpatterns = [
     path("favicon.ico", favicon),
 ]
 
-# WSGI application
+# Create WSGI application
 application = get_wsgi_application()
 
-# Run locally if executed directly
+# For local development
 if __name__ == "__main__":
-    from django.core.management import runserver
-    runserver.run("0.0.0.0:8000")
+    from django.core.management import execute_from_command_line
+    execute_from_command_line(["manage.py", "runserver", "0.0.0.0:8000"])
