@@ -172,7 +172,32 @@ def delete_file(request, id):
         return redirect("/browse/")
     except Exception as e:
         return HttpResponse(f"Delete failed: {str(e)}", status=500)
-
+# Add this new view to app.py
+def admin_dashboard(request):
+    if not ADMIN:
+        return HttpResponse("Access Denied. Admin only.", status=403)
+    
+    # Get all files
+    all_notes = get_all_notes()
+    
+    # Get statistics
+    total_files = len(all_notes)
+    file_types = {}
+    modules = {}
+    
+    for note in all_notes:
+        ext = os.path.splitext(note.get("filename", ""))[1].upper()
+        file_types[ext] = file_types.get(ext, 0) + 1
+        module = note.get("module", "Unknown")
+        modules[module] = modules.get(module, 0) + 1
+    
+    stats = {
+        "total_files": total_files,
+        "file_types": file_types,
+        "top_modules": dict(sorted(modules.items(), key=lambda x: x[1], reverse=True)[:5])
+    }
+    
+    return render(request, "admin.html", {"notes": all_notes, "stats": stats, "admin": ADMIN})
 def favicon(request):
     favicon_path = os.path.join(BASE_DIR, "favicon.ico")
     if os.path.exists(favicon_path):
