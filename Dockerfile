@@ -21,5 +21,8 @@ RUN if [ ! -f favicon.ico ]; then touch favicon.ico; fi
 ENV PYTHONUNBUFFERED=1
 ENV PORT=10000
 
+# Expose the port
+EXPOSE 10000
+
 # Run the application
-CMD gunicorn app:application --bind 0.0.0.0:$PORT
+CMD gunicorn app:application --bind 0.0.0.0:$PORT --workers=1 --threads=2 --timeout=120
