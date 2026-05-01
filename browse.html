@@ -2,12 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Browse | Twarvis School</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ----- MATRIX RAIN CANVAS (RED & GREEN) + LIGHTNING EFFECT ----- */
         #matrix-canvas {
             position: fixed;
             top: 0;
@@ -15,215 +29,259 @@
             width: 100%;
             height: 100%;
             z-index: 0;
+            background: #000000;
         }
-        
-        .content {
-            position: relative;
+
+        /* ----- LIGHTNING OVERLAY (random flashes) ----- */
+        .lightning-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 1;
-            min-height: 100vh;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(3px);
+            pointer-events: none;
+            background: transparent;
         }
-        
+
+        /* ----- FULLY TRANSPARENT GLASS ----- */
+        .glass-overlay {
+            position: relative;
+            z-index: 2;
+            background: transparent;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* COMPACT HEADER */
         .header {
-            background: rgba(0, 0, 0, 0.95);
-            border-bottom: 2px solid #00ff41;
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(255, 45, 45, 0.5);
             position: sticky;
             top: 0;
             z-index: 100;
+            padding: 8px 0;
         }
-        
+
         .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 8px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 24px;
-            max-width: 1400px;
-            margin: 0 auto;
+            flex-wrap: wrap;
+            gap: 10px;
         }
-        
+
         .logo {
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: #00ff41;
-            text-shadow: 0 0 10px #00ff41;
+            font-size: 1.3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff1a1a, #00cc33);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
-        
-        .nav {
+
+        .nav-links {
             display: flex;
-            gap: 30px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .nav-icon {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 45, 45, 0.5);
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            display: flex;
             align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
         }
-        
-        .nav a {
-            color: #00ff41;
+
+        .nav-icon:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 45, 45, 0.3);
+            border-color: #ff1a1a;
+            box-shadow: 0 0 12px rgba(255, 26, 26, 0.4);
+        }
+
+        .nav-icon a {
             text-decoration: none;
-            font-weight: 600;
-            padding: 8px 16px;
-            border-radius: 5px;
-            transition: all 0.3s;
+            color: #ff4d4d;
+            font-size: 1.3rem;
         }
-        
-        .nav a:hover {
-            background: rgba(0, 255, 65, 0.2);
-            text-shadow: 0 0 5px #00ff41;
+
+        .nav-icon:hover a {
+            color: #fff;
         }
-        
+
+        /* SEARCH SECTION */
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 40px 24px;
+            padding: 30px 24px;
         }
-        
+
         .search-section {
             margin-bottom: 40px;
         }
-        
+
         .search-bar {
             display: flex;
             gap: 15px;
             max-width: 600px;
             margin: 0 auto;
         }
-        
+
         .search-input {
             flex: 1;
             padding: 14px 20px;
-            background: #000;
-            border: 2px solid #00ff41;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #ff2d2d;
             border-radius: 50px;
             color: #00ff41;
             font-size: 1rem;
         }
-        
+
         .search-input:focus {
             outline: none;
-            border-color: #ff0000;
-            box-shadow: 0 0 15px #00ff41;
+            border-color: #00ff41;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
         }
-        
+
         .search-btn {
             padding: 14px 30px;
-            background: transparent;
-            border: 2px solid #ff0000;
-            color: #ff0000;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #ff2d2d;
+            color: #ff2d2d;
             border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s;
         }
-        
+
         .search-btn:hover {
-            background: #ff0000;
+            background: #ff2d2d;
             color: #000;
-            box-shadow: 0 0 15px #ff0000;
+            box-shadow: 0 0 15px #ff2d2d;
         }
-        
+
+        /* NOTES GRID */
         .notes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 25px;
             margin-top: 40px;
         }
-        
+
         .note-card {
-            background: rgba(0, 0, 0, 0.9);
-            border: 1px solid #00ff41;
-            border-radius: 15px;
-            padding: 20px;
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid rgba(255, 45, 45, 0.5);
+            border-radius: 24px;
+            padding: 22px;
             transition: all 0.3s;
             animation: fadeInUp 0.4s ease;
         }
-        
+
         .note-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 0 25px rgba(0, 255, 65, 0.3);
-            border-color: #ff0000;
+            border-color: #ff2d2d;
+            box-shadow: 0 0 25px rgba(255, 45, 45, 0.3);
+            background: rgba(0, 0, 0, 0.8);
         }
-        
+
         .note-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: bold;
-            color: #ff0000;
+            color: #ff5555;
             margin-bottom: 10px;
             word-break: break-all;
         }
-        
+
         .note-meta {
             display: flex;
             gap: 15px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #00ff41;
             margin-bottom: 12px;
         }
-        
+
         .note-description {
             margin: 12px 0;
             color: #ccc;
             line-height: 1.5;
+            font-size: 0.9rem;
         }
-        
+
         .note-actions {
             display: flex;
             gap: 12px;
             margin-top: 16px;
             flex-wrap: wrap;
         }
-        
+
         .btn-sm {
             padding: 8px 16px;
-            border-radius: 8px;
+            border-radius: 30px;
             text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
+            font-size: 0.8rem;
+            font-weight: 600;
             transition: all 0.2s;
-            cursor: pointer;
             display: inline-block;
         }
-        
+
         .btn-view {
             border: 1px solid #00ff41;
             color: #00ff41;
             background: transparent;
         }
-        
+
         .btn-view:hover {
             background: #00ff41;
             color: #000;
             box-shadow: 0 0 10px #00ff41;
         }
-        
+
         .btn-download {
-            border: 1px solid #ff0000;
-            color: #ff0000;
+            border: 1px solid #ff2d2d;
+            color: #ff2d2d;
             background: transparent;
         }
-        
+
         .btn-download:hover {
-            background: #ff0000;
+            background: #ff2d2d;
             color: #000;
-            box-shadow: 0 0 10px #ff0000;
+            box-shadow: 0 0 10px #ff2d2d;
         }
-        
+
         .no-results {
             text-align: center;
             padding: 60px;
             color: #00ff41;
         }
-        
+
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        
+
         .footer {
             text-align: center;
             padding: 30px;
-            color: #00ff41;
-            border-top: 1px solid rgba(0, 255, 65, 0.3);
+            color: #aaa;
+            border-top: 1px solid rgba(255, 45, 45, 0.3);
             margin-top: 40px;
         }
-        
+
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -231,22 +289,24 @@
             background: #000;
         }
         ::-webkit-scrollbar-thumb {
-            background: #00ff41;
+            background: #ff2d2d;
             border-radius: 4px;
         }
     </style>
 </head>
 <body>
+
     <canvas id="matrix-canvas"></canvas>
-    
-    <div class="content">
+    <div class="lightning-overlay" id="lightning"></div>
+
+    <div class="glass-overlay">
         <div class="header">
             <div class="header-content">
-                <span class="logo">⚡ TWARVIS SCHOOL ⚡</span>
-                <div class="nav">
-                    <a href="/">HOME</a>
-                    <a href="/browse/">BROWSE</a>
-                    <a href="/upload/">UPLOAD</a>
+                <div class="logo">⚡ TWARVIS</div>
+                <div class="nav-links">
+                    <div class="nav-icon"><a href="/"><i class="fas fa-home"></i></a></div>
+                    <div class="nav-icon"><a href="/browse/"><i class="fas fa-search"></i></a></div>
+                    <div class="nav-icon"><a href="/upload/"><i class="fas fa-cloud-upload-alt"></i></a></div>
                 </div>
             </div>
         </div>
@@ -279,51 +339,134 @@
                 {% else %}
                     <div class="no-results">
                         <h3>⚠️ NO FILES FOUND ⚠️</h3>
-                        <p>Try a different search term or <a href="/upload/" style="color:#ff0000">upload some files</a></p>
+                        <p>Try a different search term or <a href="/upload/" style="color:#ff2d2d">upload some files</a></p>
                     </div>
                 {% endif %}
             </div>
         </div>
 
         <div class="footer">
-            <p>⚡ TWARVIS SCHOOL — ENTER THE MATRIX OF KNOWLEDGE ⚡</p>
+            <p>⚡ TWARVIS SCHOOL — STUDENTS HUB | RED & GREEN MATRIX + LIGHTNING ⚡</p>
         </div>
     </div>
 
     <script>
+        // ========== MATRIX RAIN (RED & GREEN) ==========
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
         
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
         
-        const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*';
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-        const drops = [];
+        const binarySet = "01";
+        const matrixSet = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const fullCodeSet = binarySet + matrixSet;
         
-        for (let i = 0; i < columns; i++) drops[i] = Math.random() * -100;
+        let fontSize = 20;
+        let columns = Math.ceil(canvas.width / fontSize);
+        let drops = [];
+        let colorChoice = [];
         
-        function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#00ff41';
-            ctx.font = fontSize + 'px monospace';
-            
-            for (let i = 0; i < drops.length; i++) {
-                const char = chars[Math.floor(Math.random() * chars.length)];
-                const x = i * fontSize;
-                const y = drops[i] * fontSize;
-                if (y < canvas.height && y > 0) ctx.fillText(char, x, y);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
+        function initRain() {
+            columns = Math.ceil(canvas.width / fontSize);
+            drops = [];
+            colorChoice = [];
+            for (let i = 0; i < columns; i++) {
+                drops[i] = Math.random() * -200;
+                colorChoice[i] = Math.random() > 0.5;
             }
         }
         
-        setInterval(draw, 50);
+        initRain();
         window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            initRain();
+        });
+        
+        function drawMatrixRain() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.02)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.font = `bold ${fontSize}px 'Courier New', monospace`;
+            
+            for (let i = 0; i < drops.length; i++) {
+                const codeChar = fullCodeSet[Math.floor(Math.random() * fullCodeSet.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+                
+                const redColor = '#FF2222';
+                const greenColor = '#22FF44';
+                
+                ctx.fillStyle = colorChoice[i] ? redColor : greenColor;
+                ctx.shadowBlur = 5;
+                ctx.shadowColor = colorChoice[i] ? '#FF0000' : '#00FF33';
+                
+                if (y > 0 && y < canvas.height + 50) {
+                    ctx.fillText(codeChar, x, y);
+                }
+                ctx.shadowBlur = 0;
+                
+                if (drops[i] * fontSize > canvas.height + 50 && Math.random() > 0.98) {
+                    drops[i] = 0;
+                    colorChoice[i] = Math.random() > 0.5;
+                }
+                drops[i] += 0.7 + Math.random() * 0.6;
+            }
+            requestAnimationFrame(drawMatrixRain);
+        }
+        
+        drawMatrixRain();
+        
+        // Click burst effect
+        function burstEffect(e) {
+            let clientX = e.clientX ?? (e.touches ? e.touches[0].clientX : 0);
+            let clientY = e.clientY ?? (e.touches ? e.touches[0].clientY : 0);
+            if (!clientX && !clientY) return;
+            let col = Math.floor(clientX / fontSize);
+            if (col >= 0 && col < drops.length) {
+                for (let i = -12; i <= 12; i++) {
+                    let target = col + i;
+                    if (target >= 0 && target < drops.length) {
+                        drops[target] = (clientY / fontSize) - 8;
+                        colorChoice[target] = Math.random() > 0.5;
+                    }
+                }
+            }
+        }
+        
+        canvas.addEventListener('click', burstEffect);
+        canvas.addEventListener('touchstart', burstEffect);
+        
+        // ========== LIGHTNING EFFECT ==========
+        const lightningDiv = document.getElementById('lightning');
+        
+        function lightningFlash() {
+            // Random flash intensity
+            const intensity = Math.random() * 0.4 + 0.2;
+            lightningDiv.style.backgroundColor = `rgba(255, 255, 255, ${intensity})`;
+            lightningDiv.style.transition = 'background-color 0.05s ease';
+            
+            // Reset after short time
+            setTimeout(() => {
+                lightningDiv.style.backgroundColor = 'transparent';
+            }, 80);
+            
+            // Random delay for next lightning (1 to 7 seconds)
+            const nextDelay = Math.random() * 6000 + 1000;
+            setTimeout(lightningFlash, nextDelay);
+        }
+        
+        // Start lightning effect
+        setTimeout(lightningFlash, 500);
+        
+        // Extra lightning on click for interactivity
+        canvas.addEventListener('click', () => {
+            lightningDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.6)';
+            setTimeout(() => {
+                lightningDiv.style.backgroundColor = 'transparent';
+            }, 60);
         });
     </script>
 </body>
