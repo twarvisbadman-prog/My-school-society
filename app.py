@@ -223,7 +223,20 @@ def admin_dashboard(request):
     
     return render(request, "admin.html", {"notes": all_notes, "stats": stats, "admin": ADMIN})
 # ========== END ADMIN DASHBOARD ==========
-
+urlpatterns = [
+    path("", index),
+    path("admin/", admin_dashboard),
+    path("upload/", upload_view),
+    path("browse/", browse_view),
+    path("view/<int:id>/", view_file),
+    path("download/<int:id>/", download_file),
+    path("delete/<int:id>/", delete_file),
+    path("favicon.ico", favicon),
+    path("favicon-16x16.png", serve_favicon_16),      # Add this
+    path("favicon-32x32.png", serve_favicon_32),      # Add this
+    path("apple-touch-icon.png", serve_apple_touch),  # Add this
+    path("site.webmanifest", serve_webmanifest),      # Add this
+]
 # URL patterns
 urlpatterns = [
     path("", index),
