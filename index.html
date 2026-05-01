@@ -2,13 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Twarvis School | Matrix Notes</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
-<link rel="shortcut icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Twarvis School | Students Hub</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -16,7 +14,14 @@
             box-sizing: border-box;
         }
 
-        /* Matrix Rain Canvas */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ----- MATRIX CANVAS (RED & GREEN CODES) ----- */
         #matrix-canvas {
             position: fixed;
             top: 0;
@@ -24,195 +29,303 @@
             width: 100%;
             height: 100%;
             z-index: 0;
+            background: #000000;
         }
 
-        /* Content */
-        .content {
+        /* ----- FULLY TRANSPARENT GLASS (NO BLUR) ----- */
+        .glass-overlay {
             position: relative;
-            z-index: 1;
+            z-index: 2;
+            background: transparent;
             min-height: 100vh;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(3px);
+            width: 100%;
         }
 
-        /* Header */
+        /* COMPACT HEADER - SMALLER, WITH ICONS ONLY */
         .header {
-            background: rgba(0, 0, 0, 0.9);
-            border-bottom: 2px solid #00ff41;
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(255, 45, 45, 0.5);
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+            padding: 8px 0;
         }
 
         .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 8px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 24px;
-            max-width: 1200px;
-            margin: 0 auto;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .logo {
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: #00ff41;
-            text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41;
-            letter-spacing: 2px;
-            animation: pulse 2s ease-in-out infinite;
+            font-size: 1.3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff1a1a, #00cc33);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
         }
 
-        @keyframes pulse {
-            0%, 100% { text-shadow: 0 0 10px #00ff41; }
-            50% { text-shadow: 0 0 20px #00ff41, 0 0 30px #00ff41; }
-        }
-
-        .nav {
+        /* COMPACT NAV - ICONS ONLY */
+        .nav-links {
             display: flex;
-            gap: 30px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .nav-icon {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 45, 45, 0.5);
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            display: flex;
             align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
 
-        .nav a {
-            color: #00ff41;
+        .nav-icon:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 45, 45, 0.3);
+            border-color: #ff1a1a;
+            box-shadow: 0 0 12px rgba(255, 26, 26, 0.4);
+        }
+
+        .nav-icon a {
             text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: all 0.3s;
-            padding: 8px 16px;
-            border-radius: 5px;
+            color: #ff4d4d;
+            font-size: 1.3rem;
         }
 
-        .nav a:hover {
-            background: rgba(0, 255, 65, 0.2);
-            text-shadow: 0 0 5px #00ff41;
-            transform: scale(1.05);
+        .nav-icon:hover a {
+            color: #fff;
         }
 
-        /* Hero Section */
+        /* HERO SECTION */
         .hero {
             text-align: center;
-            padding: 100px 20px 80px;
-            animation: fadeInUp 1s ease;
+            padding: 60px 20px 40px;
+            animation: fadeInUp 0.9s ease;
         }
 
         .hero h1 {
-            font-size: 4rem;
-            font-weight: 900;
-            color: #00ff41;
-            text-shadow: 0 0 15px #00ff41, 0 0 30px #00ff41;
-            margin-bottom: 20px;
-            letter-spacing: 4px;
-        }
-
-        .hero .highlight {
-            color: #ff0000;
-            text-shadow: 0 0 15px #ff0000, 0 0 30px #ff0000;
-            font-size: 4.5rem;
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            color: #cccccc;
-            max-width: 600px;
-            margin: 0 auto 40px;
-        }
-
-        /* Glowing Button */
-        .btn-matrix {
-            display: inline-block;
-            padding: 14px 35px;
-            margin: 10px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            text-decoration: none;
-            border-radius: 50px;
-            transition: all 0.3s;
-            cursor: pointer;
-            border: 2px solid #00ff41;
-            background: transparent;
-            color: #00ff41;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-matrix:hover {
-            background: #00ff41;
-            color: #000000;
-            box-shadow: 0 0 30px #00ff41;
-            transform: scale(1.05);
-        }
-
-        .btn-matrix-red {
-            border-color: #ff0000;
-            color: #ff0000;
-        }
-
-        .btn-matrix-red:hover {
-            background: #ff0000;
-            color: #000;
-            box-shadow: 0 0 30px #ff0000;
-        }
-
-        /* Features */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            margin: 60px auto;
-            padding: 0 20px;
-        }
-
-        .feature-card {
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid #00ff41;
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            transition: all 0.3s;
-            backdrop-filter: blur(5px);
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
-            border-color: #ff0000;
-        }
-
-        .feature-icon {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-        }
-
-        .feature-card h3 {
-            color: #00ff41;
-            font-size: 1.5rem;
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #ff3333, #00ff44);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             margin-bottom: 15px;
         }
 
-        .feature-card p {
-            color: #cccccc;
-            line-height: 1.6;
+        .hero p {
+            color: #ddd;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 500;
         }
 
-        /* Footer */
-        .footer {
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 35px;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 24px;
+        }
+
+        .glass-card {
+            background: rgba(0, 0, 0, 0.55);
+            border: 1px solid rgba(255, 45, 45, 0.4);
+            border-radius: 42px;
+            padding: 34px 22px;
+            transition: all 0.4s ease;
             text-align: center;
-            padding: 40px;
-            border-top: 1px solid rgba(0, 255, 65, 0.3);
-            margin-top: 60px;
-            color: #00ff41;
+            text-decoration: none;
+            display: block;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
         }
 
-        /* Animations */
+        .glass-card:hover {
+            transform: translateY(-10px);
+            background: rgba(0, 0, 0, 0.8);
+            border-color: #ff1a1a;
+            box-shadow: 0 0 28px rgba(255, 26, 26, 0.3);
+        }
+
+        .glass-card i {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #ff3333, #00ff44);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .glass-card h3 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .glass-card p {
+            color: #ccc;
+            font-size: 0.95rem;
+        }
+
+        .resource-links {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 24px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #ff4444, #00ff55);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .link-card {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(0, 255, 68, 0.3);
+            border-radius: 30px;
+            padding: 18px 22px;
+            transition: all 0.3s;
+        }
+
+        .link-card:hover {
+            background: rgba(0, 0, 0, 0.85);
+            border-color: #ff1a1a;
+            transform: translateY(-5px);
+            box-shadow: 0 0 18px rgba(255, 26, 26, 0.3);
+        }
+
+        .link-card a {
+            text-decoration: none;
+            color: #eee;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-weight: 600;
+        }
+
+        .link-card i {
+            font-size: 1.8rem;
+            color: #ff4d4d;
+        }
+
+        .link-card span {
+            font-size: 0.75rem;
+            color: #aaa;
+            display: block;
+        }
+
+        .bottom-section {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 24px 50px;
+            text-align: center;
+        }
+
+        .contact-owner {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 45, 45, 0.5);
+            border-radius: 100px;
+            padding: 15px 28px;
+            display: inline-flex;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .whatsapp-link {
+            background: rgba(37, 211, 102, 0.2);
+            padding: 8px 24px;
+            border-radius: 60px;
+            text-decoration: none;
+            color: #2aff66;
+            font-weight: 700;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .whatsapp-link:hover {
+            background: #25D366;
+            color: #000;
+            box-shadow: 0 0 18px #25D366;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .social-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+            border: 1px solid #ff2d2d;
+        }
+
+        .social-icon a {
+            color: #ff4d4d;
+            font-size: 1.5rem;
+            transition: 0.2s;
+        }
+
+        .social-icon:hover {
+            background: #ff1a1a;
+            transform: translateY(-5px);
+            box-shadow: 0 0 22px #ff1a1a;
+        }
+        .social-icon:hover a {
+            color: black;
+        }
+
+        .footer-text {
+            margin-top: 40px;
+            color: #aaa;
+            font-size: 0.8rem;
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(50px);
+                transform: translateY(40px);
             }
             to {
                 opacity: 1;
@@ -220,145 +333,173 @@
             }
         }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #000;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #00ff41;
-            border-radius: 4px;
+        @media (max-width: 780px) {
+            .hero h1 { font-size: 1.8rem; }
+            .header-content { flex-direction: column; text-align: center; }
+            .contact-owner { flex-direction: column; }
+            .glass-card { padding: 24px; }
         }
     </style>
 </head>
 <body>
+
     <canvas id="matrix-canvas"></canvas>
-    
-    <div class="content">
+
+    <div class="glass-overlay">
         <div class="header">
             <div class="header-content">
-                <span class="logo">⚡ TWARVIS SCHOOL ⚡</span>
-                <div class="nav">
-                    <a href="/">HOME</a>
-                    <a href="/browse/">BROWSE</a>
-                    <a href="/upload/">UPLOAD</a>
+                <div class="logo">⚡ TWARVIS</div>
+                <div class="nav-links">
+                    <div class="nav-icon"><a href="/"><i class="fas fa-home"></i></a></div>
+                    <div class="nav-icon"><a href="/browse/"><i class="fas fa-search"></i></a></div>
+                    <div class="nav-icon"><a href="/upload/"><i class="fas fa-cloud-upload-alt"></i></a></div>
                 </div>
             </div>
         </div>
 
         <div class="hero">
-            <h1>WELCOME TO<br><span class="highlight">TWARVIS SCHOOL</span></h1>
-            <p>Access premium study notes, past papers, and learning resources in a Matrix-inspired digital realm.</p>
-            <div>
-                <a href="/browse/" class="btn-matrix">📚 BROWSE NOTES</a>
-                <a href="/upload/" class="btn-matrix btn-matrix-red">🔥 UPLOAD FILES</a>
-            </div>
+            <h1>WELCOME TO TWARVIS STUDENTS HUB</h1>
+            <p>Upload, browse, and dominate your studies — powered by the matrix.</p>
         </div>
 
         <div class="features">
-            <div class="feature-card">
-                <div class="feature-icon">📖</div>
-                <h3>Study Notes</h3>
-                <p>Access comprehensive notes from top students and educators across all subjects.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📝</div>
-                <h3>Past Papers</h3>
-                <p>Practice with real exam papers from previous years and ace your tests.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🔍</div>
-                <h3>Smart Search</h3>
-                <p>Find materials instantly by module, course name, or keywords.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📊</div>
-                <h3>PPT & Docs</h3>
-                <p>Upload and view PowerPoint presentations, Word docs, Excel sheets and more.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <h3>Matrix Speed</h3>
-                <p>Lightning-fast downloads and smooth browsing experience.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🔒</div>
-                <h3>Secure Storage</h3>
-                <p>All files encrypted and safely stored in the cloud.</p>
+            <a href="/upload/" class="glass-card">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>⚡ INSTANT UPLOAD</h3>
+                <p>Upload your notes & files instantly → go to upload page</p>
+            </a>
+            <a href="/browse/" class="glass-card">
+                <i class="fas fa-graduation-cap"></i>
+                <h3>📚 STUDY NOTES</h3>
+                <p>Browse all study materials & past papers</p>
+            </a>
+            <a href="/browse/" class="glass-card">
+                <i class="fas fa-search"></i>
+                <h3>🔍 SMART SEARCH</h3>
+                <p>Find by module, course or keyword</p>
+            </a>
+        </div>
+
+        <div class="resource-links">
+            <div class="section-title">⚡ EXPLORE THE ECOSYSTEM ⚡</div>
+            <div class="links-grid">
+                <div class="link-card"><a href="https://twarvis-pdf-50le.onrender.com" target="_blank"><i class="fas fa-file-pdf"></i> PDF MAKER <span>create & edit pdfs</span></a></div>
+                <div class="link-card"><a href="https://indext.oneapp.dev" target="_blank"><i class="fas fa-code"></i> CODE CONVERT <span>file extension tools</span></a></div>
+                <div class="link-card"><a href="https://lovecalculator.site/love/11128150" target="_blank"><i class="fas fa-heart"></i> LOVE GAME <span>fun calculator 😂</span></a></div>
+                <div class="link-card"><a href="https://soma.dit.ac.tz/auth/login" target="_blank"><i class="fas fa-university"></i> SOMA PORTAL <span>official DIT soma</span></a></div>
+                <div class="link-card"><a href="https://movieboxapp.in" target="_blank"><i class="fas fa-film"></i> MOVIEBOX <span>movies & entertainment</span></a></div>
+                <div class="link-card"><a href="https://somapori.oneapp.dev/?#" target="_blank"><i class="fas fa-user-secret"></i> FAKE SOMA ADMIN <span>demo interface</span></a></div>
             </div>
         </div>
 
-        <div class="footer">
-            <p>⚡ TWARVIS SCHOOL — KNOWLEDGE IS POWER ⚡</p>
-            <p style="font-size: 0.8rem; margin-top: 10px;">Enter the Matrix of Learning</p>
+        <div class="bottom-section">
+            <div class="contact-owner">
+                <span style="color:#ddd; font-weight:500;">📢 For content changes / issues :</span>
+                <a href="https://wa.me/255750706007?text=Hello%20Twarvis%2C%20I%20need%20help%20on%20the%20school%20portal" class="whatsapp-link" target="_blank">
+                    <i class="fab fa-whatsapp"></i> Contact Web Owner
+                </a>
+            </div>
+
+            <div class="social-links">
+                <div class="social-icon"><a href="https://www.tiktok.com/@twarvis" target="_blank"><i class="fab fa-tiktok"></i></a></div>
+                <div class="social-icon"><a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i></a></div>
+            </div>
+            <div class="footer-text">
+                <p>© 2026 Twarvis School — students hub | red & green matrix</p>
+            </div>
         </div>
     </div>
 
+    <!-- 🔴🟢 MATRIX RAIN - FIXED VISIBILITY -->
     <script>
-        // Matrix Rain Effect
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
-
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const matrixChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()+=[]{}|;:,.<>?~';
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-        const drops = [];
-
-        for (let i = 0; i < columns; i++) {
-            drops[i] = Math.random() * -100;
-        }
-
-        function drawMatrix() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = '#00ff41';
-            ctx.font = fontSize + 'px monospace';
-            ctx.shadowBlur = 0;
-
-            for (let i = 0; i < drops.length; i++) {
-                const char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
-                const x = i * fontSize;
-                const y = drops[i] * fontSize;
-
-                if (y < canvas.height && y > 0) {
-                    ctx.fillStyle = '#00ff41';
-                    ctx.fillText(char, x, y);
-                }
-
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
-            }
-        }
-
-        setInterval(drawMatrix, 50);
-
-        window.addEventListener('resize', () => {
+        
+        function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-        });
-
-        // Glitch effect on logo
-        const logo = document.querySelector('.logo');
-        if (logo) {
-            setInterval(() => {
-                if (Math.random() > 0.95) {
-                    logo.style.textShadow = '0 0 5px #ff0000, 0 0 10px #ff0000';
-                    setTimeout(() => {
-                        logo.style.textShadow = '0 0 10px #00ff41, 0 0 20px #00ff41';
-                    }, 100);
-                }
-            }, 3000);
         }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        const binarySet = "01";
+        const matrixSet = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const fullCodeSet = binarySet + matrixSet;
+        
+        let fontSize = 20;
+        let columns = Math.ceil(canvas.width / fontSize);
+        let drops = [];
+        let colorChoice = [];
+        
+        function initRain() {
+            columns = Math.ceil(canvas.width / fontSize);
+            drops = [];
+            colorChoice = [];
+            for (let i = 0; i < columns; i++) {
+                drops[i] = Math.random() * -200;
+                colorChoice[i] = Math.random() > 0.5;
+            }
+        }
+        
+        initRain();
+        window.addEventListener('resize', () => {
+            initRain();
+        });
+        
+        function drawMatrixRain() {
+            // Use lighter fade (0.02) to keep characters visible and prevent total blackout
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.02)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.font = `bold ${fontSize}px 'Courier New', monospace`;
+            
+            for (let i = 0; i < drops.length; i++) {
+                const codeChar = fullCodeSet[Math.floor(Math.random() * fullCodeSet.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+                
+                const redColor = '#FF2222';
+                const greenColor = '#22FF44';
+                
+                // Brighter colors for better visibility
+                ctx.fillStyle = colorChoice[i] ? redColor : greenColor;
+                ctx.shadowBlur = 5;
+                ctx.shadowColor = colorChoice[i] ? '#FF0000' : '#00FF33';
+                
+                if (y > 0 && y < canvas.height + 50) {
+                    ctx.fillText(codeChar, x, y);
+                }
+                ctx.shadowBlur = 0;
+                
+                if (drops[i] * fontSize > canvas.height + 50 && Math.random() > 0.98) {
+                    drops[i] = 0;
+                    colorChoice[i] = Math.random() > 0.5;
+                }
+                drops[i] += 0.7 + Math.random() * 0.6;
+            }
+            requestAnimationFrame(drawMatrixRain);
+        }
+        
+        drawMatrixRain();
+        
+        // Click burst effect
+        function burstEffect(e) {
+            let clientX = e.clientX ?? (e.touches ? e.touches[0].clientX : 0);
+            let clientY = e.clientY ?? (e.touches ? e.touches[0].clientY : 0);
+            if (!clientX && !clientY) return;
+            let col = Math.floor(clientX / fontSize);
+            if (col >= 0 && col < drops.length) {
+                for (let i = -12; i <= 12; i++) {
+                    let target = col + i;
+                    if (target >= 0 && target < drops.length) {
+                        drops[target] = (clientY / fontSize) - 8;
+                        colorChoice[target] = Math.random() > 0.5;
+                    }
+                }
+            }
+        }
+        
+        canvas.addEventListener('click', burstEffect);
+        canvas.addEventListener('touchstart', burstEffect);
     </script>
 </body>
 </html>
