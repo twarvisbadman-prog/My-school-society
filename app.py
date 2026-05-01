@@ -173,7 +173,21 @@ def delete_file(request, id):
         return redirect("/browse/")
     except Exception as e:
         return HttpResponse(f"Delete failed: {str(e)}", status=500)
+def serve_favicon_16(request):
+    with open("favicon-16x16.png", "rb") as f:
+        return HttpResponse(f.read(), content_type="image/png")
 
+def serve_favicon_32(request):
+    with open("favicon-32x32.png", "rb") as f:
+        return HttpResponse(f.read(), content_type="image/png")
+
+def serve_apple_touch(request):
+    with open("apple-touch-icon.png", "rb") as f:
+        return HttpResponse(f.read(), content_type="image/png")
+
+def serve_webmanifest(request):
+    with open("site.webmanifest", "rb") as f:
+        return HttpResponse(f.read(), content_type="application/manifest+json")
 def favicon(request):
     favicon_path = os.path.join(BASE_DIR, "favicon.ico")
     if os.path.exists(favicon_path):
