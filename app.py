@@ -1,5 +1,6 @@
 # app.py
 import os
+import io
 from datetime import datetime
 from django.conf import settings
 from django.core.wsgi import get_wsgi_application
@@ -9,11 +10,17 @@ from django import forms
 from django.urls import path
 from supabase import create_client, Client
 
+# Google Drive imports
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaIoBaseUpload
+
 # Environment variables
-SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://hnszltswipxiqurkwydm.supabase.co")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhuc3psdHN3aXB4aXF1cmt3eWRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTEyODcsImV4cCI6MjA5MzEyNzI4N30.JsSgMXE9JMqJAAZd-riwrr-D-5MURL6WCfuNTrAtoWU")
-SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-twarvis-school-key-2024")
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-key")
 ADMIN = os.environ.get("ADMIN", "true") == "true"
+GOOGLE_DRIVE_FOLDER_ID = os.environ.get("GOOGLE_DRIVE_FOLDER_ID", "")
 
 # Django settings
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -76,6 +83,57 @@ def get_content_type(filename):
     }
     return content_types.get(ext, 'application/octet-stream')
 
+# ========== GOOGLE DRIVE FUNCTIONS ==========
+def get_drive_service():
+    """Get Google Drive service using credentials file"""
+    creds_path = os.path.join(BASE_DIR, "google-credentials.json")
+    if not os.path.exists(creds_path):
+        return None
+    try:
+        creds = service_account.Credentials.from_service_account_file(
+            creds_path,
+            scopes=["https://www.googleapis.com/auth/drive"]
+        )
+        return build("drive", "v3", credentials=creds)
+    except Exception as e:
+        print(f"Google Drive auth error: {e}")
+        return None
+
+def upload_to_drive(file_content, filename):
+    """Upload file to Google Drive"""
+    if not GOOGLE_DRIVE_FOLDER_ID:
+        return None
+    service = get_drive_service()
+    if not service:
+        return None
+    try:
+        file_metadata = {
+            "name": filename,
+            "parents": [GOOGLE_DRIVE_FOLDER_ID]
+        }
+        media = MediaIoBaseUpload(io.BytesIO(file_content), mimetype=get_content_type(filename))
+        drive_file = service.files().create(
+            body=file_metadata,
+            media_body=media,
+            fields="id"
+        ).execute()
+        return drive_file.get("id")
+    except Exception as e:
+        print(f"Google Drive upload error: {e}")
+        return None
+
+def delete_from_drive(drive_id):
+    """Delete file from Google Drive"""
+    if not drive_id:
+        return
+    service = get_drive_service()
+    if not service:
+        return
+    try:
+        service.files().delete(fileId=drive_id).execute()
+    except Exception as e:
+        print(f"Google Drive delete error: {e}")
+
 class UploadForm(forms.Form):
     module = forms.CharField(max_length=100, label="Module Name", widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., CS101"}))
     course = forms.CharField(max_length=100, label="Course Name", widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., Programming"}))
@@ -115,16 +173,29 @@ def upload_view(request):
                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                     safe_filename = f"{timestamp}_{file.name.replace(' ', '_')}"
                     file_content = file.read()
+                    
+                    # Upload to Supabase (always)
                     supabase.storage.from_("notes").upload(safe_filename, file_content)
+                    
+                    # Also upload to Google Drive if available
+                    drive_id = None
+                    if GOOGLE_DRIVE_FOLDER_ID:
+                        drive_id = upload_to_drive(file_content, safe_filename)
+                    
+                    # Save metadata
                     supabase.table("notes").insert({
                         "filename": safe_filename,
                         "module": form.cleaned_data["module"],
                         "course": form.cleaned_data["course"],
                         "description": form.cleaned_data["description"],
                         "uploader": "user",
-                        "uploaded_at": datetime.now().isoformat()
+                        "uploaded_at": datetime.now().isoformat(),
+                        "drive_id": drive_id
                     }).execute()
+                    
                     message = "✅ File uploaded successfully!"
+                    if drive_id:
+                        message += " (Backed up to Google Drive)"
                     form = UploadForm()
             except Exception as e:
                 error = f"Upload failed: {str(e)}"
@@ -168,9 +239,17 @@ def delete_file(request, id):
         return HttpResponse("Not authorized.", status=403)
     try:
         note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
+        
+        # Delete from Google Drive if exists
+        if note.get("drive_id"):
+            delete_from_drive(note["drive_id"])
+        
+        # Delete from Supabase storage
         supabase.storage.from_("notes").remove([note["filename"]])
+        
+        # Delete metadata
         supabase.table("notes").delete().eq("id", id).execute()
-        return redirect("/browse/")
+        return redirect("/admin/")
     except Exception as e:
         return HttpResponse(f"Delete failed: {str(e)}", status=500)
 
@@ -181,7 +260,7 @@ def favicon(request):
             return HttpResponse(f.read(), content_type="image/x-icon")
     return HttpResponse(status=204)
 
-# ========== ADMIN DASHBOARD ==========
+# Admin dashboard
 def admin_dashboard(request):
     if not ADMIN:
         return HttpResponse("Access Denied. Admin only.", status=403)
@@ -190,6 +269,7 @@ def admin_dashboard(request):
     total_files = len(all_notes)
     file_types = {}
     modules = {}
+    drive_backup_count = 0
     
     for note in all_notes:
         ext = os.path.splitext(note.get("filename", ""))[1].upper()
@@ -197,15 +277,17 @@ def admin_dashboard(request):
             file_types[ext] = file_types.get(ext, 0) + 1
         module = note.get("module", "Unknown")
         modules[module] = modules.get(module, 0) + 1
+        if note.get("drive_id"):
+            drive_backup_count += 1
     
     stats = {
         "total_files": total_files,
         "file_types": file_types,
-        "top_modules": dict(sorted(modules.items(), key=lambda x: x[1], reverse=True)[:5])
+        "top_modules": dict(sorted(modules.items(), key=lambda x: x[1], reverse=True)[:5]),
+        "drive_backup_count": drive_backup_count
     }
     
     return render(request, "admin.html", {"notes": all_notes, "stats": stats, "admin": ADMIN})
-# ========== END ADMIN DASHBOARD ==========
 
 # URL patterns
 urlpatterns = [
@@ -220,8 +302,6 @@ urlpatterns = [
 ]
 
 application = get_wsgi_application()
-
-# This is CRITICAL for Render - it must be at the bottom
 app = application
 
 if __name__ == "__main__":
