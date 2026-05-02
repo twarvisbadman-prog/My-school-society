@@ -41,7 +41,7 @@
             width: 100%;
         }
 
-        /* COMPACT HEADER - SMALLER, WITH ICONS ONLY */
+        /* COMPACT HEADER */
         .header {
             background: rgba(0, 0, 0, 0.5);
             border-bottom: 1px solid rgba(255, 45, 45, 0.5);
@@ -72,7 +72,7 @@
             letter-spacing: -0.5px;
         }
 
-        /* COMPACT NAV - ICONS ONLY */
+        /* COMPACT NAV - IMPROVED ICONS WITH LABELS ON HOVER */
         .nav-links {
             display: flex;
             gap: 12px;
@@ -88,25 +88,55 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             cursor: pointer;
+            position: relative;
+        }
+
+        /* Tooltip label on hover */
+        .nav-icon::before {
+            content: attr(data-label);
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: #00ff41;
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            pointer-events: none;
+            border: 1px solid #ff2d2d;
+            font-weight: 500;
+        }
+
+        .nav-icon:hover::before {
+            opacity: 1;
+            visibility: visible;
+            bottom: -35px;
         }
 
         .nav-icon:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px) scale(1.05);
             background: rgba(255, 45, 45, 0.3);
             border-color: #ff1a1a;
-            box-shadow: 0 0 12px rgba(255, 26, 26, 0.4);
+            box-shadow: 0 0 15px rgba(255, 26, 26, 0.5);
         }
 
         .nav-icon a {
             text-decoration: none;
             color: #ff4d4d;
             font-size: 1.3rem;
+            transition: all 0.3s;
         }
 
         .nav-icon:hover a {
             color: #fff;
+            transform: scale(1.1);
         }
 
         /* HERO SECTION */
@@ -124,6 +154,12 @@
             background-clip: text;
             color: transparent;
             margin-bottom: 15px;
+            animation: glowText 3s ease-in-out infinite;
+        }
+
+        @keyframes glowText {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.9; text-shadow: 0 0 20px rgba(255, 51, 51, 0.3); }
         }
 
         .hero p {
@@ -148,19 +184,40 @@
             border: 1px solid rgba(255, 45, 45, 0.4);
             border-radius: 42px;
             padding: 34px 22px;
-            transition: all 0.4s ease;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             text-align: center;
             text-decoration: none;
             display: block;
             cursor: pointer;
             box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Ripple effect on click */
+        .glass-card::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 45, 45, 0.4);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .glass-card:active::after {
+            width: 300px;
+            height: 300px;
         }
 
         .glass-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-10px) scale(1.02);
             background: rgba(0, 0, 0, 0.8);
             border-color: #ff1a1a;
-            box-shadow: 0 0 28px rgba(255, 26, 26, 0.3);
+            box-shadow: 0 0 35px rgba(255, 26, 26, 0.4);
         }
 
         .glass-card i {
@@ -170,6 +227,11 @@
             background-clip: text;
             color: transparent;
             margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+
+        .glass-card:hover i {
+            transform: scale(1.1);
         }
 
         .glass-card h3 {
@@ -184,6 +246,7 @@
             font-size: 0.95rem;
         }
 
+        /* Resource Links */
         .resource-links {
             max-width: 1200px;
             margin: 60px auto;
@@ -212,14 +275,15 @@
             border: 1px solid rgba(0, 255, 68, 0.3);
             border-radius: 30px;
             padding: 18px 22px;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            cursor: pointer;
         }
 
         .link-card:hover {
             background: rgba(0, 0, 0, 0.85);
             border-color: #ff1a1a;
-            transform: translateY(-5px);
-            box-shadow: 0 0 18px rgba(255, 26, 26, 0.3);
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 0 20px rgba(255, 26, 26, 0.3);
         }
 
         .link-card a {
@@ -234,6 +298,11 @@
         .link-card i {
             font-size: 1.8rem;
             color: #ff4d4d;
+            transition: transform 0.3s;
+        }
+
+        .link-card:hover i {
+            transform: scale(1.1);
         }
 
         .link-card span {
@@ -242,6 +311,7 @@
             display: block;
         }
 
+        /* Bottom Section */
         .bottom-section {
             max-width: 1200px;
             margin: 50px auto;
@@ -260,6 +330,12 @@
             flex-wrap: wrap;
             justify-content: center;
             margin-bottom: 40px;
+            transition: all 0.3s;
+        }
+
+        .contact-owner:hover {
+            border-color: #00ff41;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
         }
 
         .whatsapp-link {
@@ -280,6 +356,7 @@
             background: #25D366;
             color: #000;
             box-shadow: 0 0 18px #25D366;
+            transform: scale(1.02);
         }
 
         .social-links {
@@ -297,7 +374,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: 0.3s;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             border: 1px solid #ff2d2d;
         }
 
@@ -309,7 +386,7 @@
 
         .social-icon:hover {
             background: #ff1a1a;
-            transform: translateY(-5px);
+            transform: translateY(-5px) rotate(360deg);
             box-shadow: 0 0 22px #ff1a1a;
         }
         .social-icon:hover a {
@@ -322,6 +399,7 @@
             font-size: 0.8rem;
         }
 
+        /* Animations */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -331,6 +409,24 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        /* Page transition overlay */
+        .page-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff0000, #00ff41);
+            z-index: 9999;
+            transform: translateY(100%);
+            transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            pointer-events: none;
+        }
+
+        .page-transition.active {
+            transform: translateY(0);
         }
 
         @media (max-width: 780px) {
@@ -345,14 +441,23 @@
 
     <canvas id="matrix-canvas"></canvas>
 
+    <!-- Page Transition Overlay -->
+    <div class="page-transition" id="pageTransition"></div>
+
     <div class="glass-overlay">
         <div class="header">
             <div class="header-content">
                 <div class="logo">⚡ TWARVIS</div>
                 <div class="nav-links">
-                    <div class="nav-icon"><a href="/"><i class="fas fa-home"></i></a></div>
-                    <div class="nav-icon"><a href="/browse/"><i class="fas fa-search"></i></a></div>
-                    <div class="nav-icon"><a href="/upload/"><i class="fas fa-cloud-upload-alt"></i></a></div>
+                    <div class="nav-icon" data-label="Home">
+                        <a href="/"><i class="fas fa-home"></i></a>
+                    </div>
+                    <div class="nav-icon" data-label="Browse Notes">
+                        <a href="/browse/"><i class="fas fa-book-open"></i></a>
+                    </div>
+                    <div class="nav-icon" data-label="Upload Files">
+                        <a href="/upload/"><i class="fas fa-cloud-upload-alt"></i></a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -369,14 +474,14 @@
                 <p>Upload your notes & files instantly → go to upload page</p>
             </a>
             <a href="/browse/" class="glass-card">
-                <i class="fas fa-graduation-cap"></i>
-                <h3>📚 STUDY NOTES</h3>
-                <p>Browse all study materials & past papers</p>
+                <i class="fas fa-book-open"></i>
+                <h3>📚 BROWSE NOTES</h3>
+                <p>Browse all study materials & past papers → click to explore</p>
             </a>
             <a href="/browse/" class="glass-card">
                 <i class="fas fa-search"></i>
                 <h3>🔍 SMART SEARCH</h3>
-                <p>Find by module, course or keyword</p>
+                <p>Find by module, course or keyword → start searching</p>
             </a>
         </div>
 
@@ -410,7 +515,7 @@
         </div>
     </div>
 
-    <!-- 🔴🟢 MATRIX RAIN - FIXED VISIBILITY -->
+    <!-- MATRIX RAIN SCRIPT -->
     <script>
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
@@ -447,7 +552,6 @@
         });
         
         function drawMatrixRain() {
-            // Use lighter fade (0.02) to keep characters visible and prevent total blackout
             ctx.fillStyle = 'rgba(0, 0, 0, 0.02)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.font = `bold ${fontSize}px 'Courier New', monospace`;
@@ -460,7 +564,6 @@
                 const redColor = '#FF2222';
                 const greenColor = '#22FF44';
                 
-                // Brighter colors for better visibility
                 ctx.fillStyle = colorChoice[i] ? redColor : greenColor;
                 ctx.shadowBlur = 5;
                 ctx.shadowColor = colorChoice[i] ? '#FF0000' : '#00FF33';
@@ -481,7 +584,6 @@
         
         drawMatrixRain();
         
-        // Click burst effect
         function burstEffect(e) {
             let clientX = e.clientX ?? (e.touches ? e.touches[0].clientX : 0);
             let clientY = e.clientY ?? (e.touches ? e.touches[0].clientY : 0);
@@ -500,6 +602,28 @@
         
         canvas.addEventListener('click', burstEffect);
         canvas.addEventListener('touchstart', burstEffect);
+
+        // ========== PAGE TRANSITION ANIMATION ==========
+        const transition = document.getElementById('pageTransition');
+        const allLinks = document.querySelectorAll('a');
+
+        allLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href && !href.startsWith('http') && !href.startsWith('https') && href !== '#' && !href.startsWith('javascript:')) {
+                    e.preventDefault();
+                    transition.classList.add('active');
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 500);
+                }
+            });
+        });
+
+        // Remove transition on page load
+        window.addEventListener('load', () => {
+            transition.classList.remove('active');
+        });
     </script>
 </body>
 </html>
