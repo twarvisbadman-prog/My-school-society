@@ -29,7 +29,6 @@ ADMIN = os.environ.get("ADMIN", "true") == "true"
 
 # Google Drive Configuration (PRIMARY STORAGE)
 GOOGLE_DRIVE_FOLDER_ID = os.environ.get("GOOGLE_DRIVE_FOLDER_ID", "")
-GOOGLE_CREDENTIALS = os.environ.get("GOOGLE_CREDENTIALS", "")
 
 # Django settings
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -65,33 +64,39 @@ if not settings.configured:
 
 from django import forms
 
-# Supabase client (for metadata only now)
+# Supabase client (for metadata only)
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# ========== GOOGLE DRIVE PRIMARY STORAGE FUNCTIONS ==========
+# ========== GOOGLE DRIVE FUNCTIONS (Using Render Secret File) ==========
+def get_credentials_path():
+    """Get the path to Google credentials file"""
+    # First check Render secret file location
+    secret_path = "/etc/secrets/google-credentials.json"
+    if os.path.exists(secret_path):
+        return secret_path
+    # Fallback for local development
+    local_path = os.path.join(BASE_DIR, "google-credentials.json")
+    if os.path.exists(local_path):
+        return local_path
+    return None
+
 def get_drive_service():
-    """Get Google Drive service using credentials from environment variable"""
+    """Get Google Drive service using credentials from secret file"""
     if not GOOGLE_DRIVE_FOLDER_ID:
         print("❌ No Google Drive Shared Drive ID")
         return None
     
-    if not GOOGLE_CREDENTIALS:
-        print("❌ No Google credentials in environment")
+    creds_path = get_credentials_path()
+    if not creds_path:
+        print("❌ Credentials file not found")
         return None
     
     try:
-        # Fix newline characters
-        creds_fixed = GOOGLE_CREDENTIALS.replace('\\n', '\n')
-        creds_info = json.loads(creds_fixed)
-        
-        if 'private_key' in creds_info and '\\n' in creds_info['private_key']:
-            creds_info['private_key'] = creds_info['private_key'].replace('\\n', '\n')
-        
-        creds = service_account.Credentials.from_service_account_info(
-            creds_info,
+        creds = service_account.Credentials.from_service_account_file(
+            creds_path,
             scopes=["https://www.googleapis.com/auth/drive.file"]
         )
-        print("✅ Credentials loaded from environment")
+        print("✅ Credentials loaded from secret file")
         service = build("drive", "v3", credentials=creds)
         print("✅ Drive service built")
         return service
@@ -100,12 +105,11 @@ def get_drive_service():
         return None
 
 def upload_to_drive(file_content, filename):
-    """Upload file to Google Drive (PRIMARY STORAGE) and return file info"""
-    print(f"📤 Uploading to Google Drive (Primary): {filename}")
+    """Upload file to Google Drive Shared Drive"""
+    print(f"📤 Uploading to Google Drive: {filename}")
     
     service = get_drive_service()
     if not service:
-        print("❌ No drive service available")
         return None
     
     try:
@@ -113,7 +117,6 @@ def upload_to_drive(file_content, filename):
             "name": filename,
             "parents": [GOOGLE_DRIVE_FOLDER_ID]
         }
-        print(f"📁 Target Drive ID: {GOOGLE_DRIVE_FOLDER_ID}")
         
         media = MediaIoBaseUpload(
             io.BytesIO(file_content), 
@@ -139,18 +142,16 @@ def upload_to_drive(file_content, filename):
         print(f"❌ Google Drive upload error: {e}")
         return None
 
-def get_file_from_drive(file_id):
+def get_file_from_drive(drive_id):
     """Download file from Google Drive"""
     service = get_drive_service()
     if not service:
         return None
-    
     try:
-        request = service.files().get_media(fileId=file_id, supportsAllDrives=True)
-        file_data = request.execute()
-        return file_data
+        request = service.files().get_media(fileId=drive_id, supportsAllDrives=True)
+        return request.execute()
     except Exception as e:
-        print(f"❌ Google Drive download error: {e}")
+        print(f"❌ Download error: {e}")
         return None
 
 def delete_from_drive(drive_id):
@@ -168,7 +169,7 @@ def delete_from_drive(drive_id):
 
 def is_google_drive_configured():
     """Check if Google Drive is properly configured"""
-    return bool(GOOGLE_DRIVE_FOLDER_ID and GOOGLE_CREDENTIALS and GOOGLE_DRIVE_AVAILABLE)
+    return bool(GOOGLE_DRIVE_FOLDER_ID and get_credentials_path())
 
 # ========== END GOOGLE DRIVE ==========
 
@@ -224,7 +225,13 @@ class UploadForm(forms.Form):
 def get_all_notes():
     try:
         response = supabase.table("notes").select("*").order("uploaded_at", desc=True).execute()
-        return response.data if response.data else []
+        notes = response.data if response.data else []
+        for note in notes:
+            if note.get("file_size") is None:
+                note["file_size"] = 0
+            if note.get("original_filename") is None:
+                note["original_filename"] = note.get("filename", "")
+        return notes
     except Exception as e:
         print(f"Error: {e}")
         return []
@@ -442,8 +449,12 @@ def test_drive(request):
     result = []
     result.append("<h2 style='color:#00ff41;'>🔧 Google Drive Diagnostic Test</h2>")
     result.append(f"<p><strong>Google Drive Libraries:</strong> {'✅ Available' if GOOGLE_DRIVE_AVAILABLE else '❌ Not available'}</p>")
-    result.append(f"<p><strong>Folder/Drive ID:</strong> {GOOGLE_DRIVE_FOLDER_ID[:30] if GOOGLE_DRIVE_FOLDER_ID else 'NOT SET'}...</p>")
-    result.append(f"<p><strong>GOOGLE_CREDENTIALS env var:</strong> {'✅ SET' if GOOGLE_CREDENTIALS else '❌ NOT SET'}</p>")
+    result.append(f"<p><strong>Shared Drive ID:</strong> {GOOGLE_DRIVE_FOLDER_ID[:30] if GOOGLE_DRIVE_FOLDER_ID else 'NOT SET'}...</p>")
+    
+    creds_path = get_credentials_path()
+    result.append(f"<p><strong>Credentials File:</strong> {'✅ FOUND' if creds_path else '❌ NOT FOUND'}</p>")
+    if creds_path:
+        result.append(f"<p>📍 Path: {creds_path}</p>")
     
     if is_google_drive_configured():
         result.append("<p style='color:green; font-weight:bold;'>✅ Google Drive is CONFIGURED as PRIMARY STORAGE</p>")
@@ -465,10 +476,14 @@ def test_drive(request):
             result.append(f"<p style='color:green; font-size:1.2rem;'>🎉 Google Drive is ready as PRIMARY STORAGE! (15GB available)</p>")
         else:
             result.append("<p style='color:red;'>❌ TEST FAILED! Could not upload to Google Drive</p>")
-            result.append("<p>Make sure you're using a Shared Drive (not a regular folder)</p>")
+            result.append("<p>Make sure your service account has access to the Shared Drive</p>")
     else:
         result.append("<p style='color:red; font-weight:bold;'>❌ Google Drive is NOT configured</p>")
-        result.append("<p>Please add GOOGLE_DRIVE_FOLDER_ID (Shared Drive ID) and GOOGLE_CREDENTIALS environment variables in Render</p>")
+        result.append("<p>Please add:</p>")
+        result.append("<ul>")
+        result.append("<li>GOOGLE_DRIVE_FOLDER_ID environment variable</li>")
+        result.append("<li>google-credentials.json as a Secret File in Render</li>")
+        result.append("</ul>")
     
     return HttpResponse("<br>".join(result))
 # ========== END ADMIN DASHBOARD ==========
