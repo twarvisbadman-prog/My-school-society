@@ -1,4 +1,4 @@
-# app.py - COMPLETE WITH GOOGLE DRIVE (15GB FREE)
+# app.py
 import os
 import io
 import mimetypes
@@ -23,8 +23,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-twarvis-school-key-20
 ADMIN = os.environ.get("ADMIN", "true") == "true"
 
 # Google Drive Configuration
-GOOGLE_DRIVE_FOLDER_ID = os.environ.get("GOOGLE_DRIVE_FOLDER_ID", "1eDLcqNTt-a8-cyLjquMq49R5ol8xUzya")
-GOOGLE_CREDENTIALS_JSON = os.environ.get("GOOGLE_CREDENTIALS_JSON", "")
+GOOGLE_DRIVE_FOLDER_ID = os.environ.get("GOOGLE_DRIVE_FOLDER_ID", "")
+GOOGLE_SERVICE_ACCOUNT_JSON = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "")
 
 # Django settings
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -66,13 +66,12 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 # ========== GOOGLE DRIVE FUNCTIONS ==========
 def get_drive_service():
     """Get Google Drive service using credentials"""
-    if not GOOGLE_CREDENTIALS_JSON:
-        print("No Google credentials found")
+    if not GOOGLE_SERVICE_ACCOUNT_JSON or not GOOGLE_DRIVE_FOLDER_ID:
         return None
     
     try:
         import json
-        creds_info = json.loads(GOOGLE_CREDENTIALS_JSON)
+        creds_info = json.loads(GOOGLE_SERVICE_ACCOUNT_JSON)
         creds = service_account.Credentials.from_service_account_info(
             creds_info,
             scopes=["https://www.googleapis.com/auth/drive.file"]
@@ -214,7 +213,7 @@ def upload_view(request):
                     
                     # Upload to Google Drive (backup - 15GB free)
                     drive_id = None
-                    if GOOGLE_CREDENTIALS_JSON and GOOGLE_DRIVE_FOLDER_ID:
+                    if GOOGLE_SERVICE_ACCOUNT_JSON and GOOGLE_DRIVE_FOLDER_ID:
                         drive_id = upload_to_drive(file_content, safe_filename)
                     
                     # Save metadata
@@ -234,7 +233,7 @@ def upload_view(request):
                     
                     message = f"✅ {file.name} uploaded successfully!"
                     if drive_id:
-                        message += " (Backed up to Google Drive - 15GB storage)"
+                        message += " (Backed up to Google Drive)"
                     form = UploadForm()
             except Exception as e:
                 error = f"Upload failed: {str(e)}"
@@ -342,24 +341,57 @@ def admin_settings(request):
     message = None
     error = None
     
-    google_configured = bool(GOOGLE_CREDENTIALS_JSON and GOOGLE_DRIVE_FOLDER_ID)
+    current_storage = os.environ.get("ADMIN_STORAGE_PREFERENCE", "supabase")
+    
+    # Check if environment variables are actually set
+    folder_id = os.environ.get("GOOGLE_DRIVE_FOLDER_ID", "")
+    service_account = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "")
+    google_drive_configured = bool(folder_id and service_account)
     
     if request.method == "POST":
-        action = request.POST.get("action", "")
-        if action == "test_drive":
-            service = get_drive_service()
-            if service:
-                message = "✅ Google Drive connection successful! (15GB free storage)"
-            else:
-                error = "❌ Google Drive connection failed. Check credentials."
+        storage_choice = request.POST.get("storage_preference", "supabase")
+        message = f"Storage preference set to: {storage_choice.upper()}"
+        # Note: In production, save this to a database table
     
     return render(request, "admin_settings.html", {
-        "google_configured": google_configured,
-        "drive_folder_id": GOOGLE_DRIVE_FOLDER_ID,
+        "current_storage": current_storage,
+        "google_drive_configured": google_drive_configured,
+        "folder_id": folder_id,
+        "service_account": bool(service_account),
         "message": message,
         "error": error
     })
 # ========== END ADMIN DASHBOARD ==========
+
+# ========== SERVE FAVICON FILES ==========
+def serve_favicon_16(request):
+    path = os.path.join(BASE_DIR, "favicon-16x16.png")
+    if os.path.exists(path):
+        with open(path, "rb") as f:
+            return HttpResponse(f.read(), content_type="image/png")
+    return HttpResponse(status=204)
+
+def serve_favicon_32(request):
+    path = os.path.join(BASE_DIR, "favicon-32x32.png")
+    if os.path.exists(path):
+        with open(path, "rb") as f:
+            return HttpResponse(f.read(), content_type="image/png")
+    return HttpResponse(status=204)
+
+def serve_apple_touch(request):
+    path = os.path.join(BASE_DIR, "apple-touch-icon.png")
+    if os.path.exists(path):
+        with open(path, "rb") as f:
+            return HttpResponse(f.read(), content_type="image/png")
+    return HttpResponse(status=204)
+
+def serve_webmanifest(request):
+    path = os.path.join(BASE_DIR, "site.webmanifest")
+    if os.path.exists(path):
+        with open(path, "rb") as f:
+            return HttpResponse(f.read(), content_type="application/manifest+json")
+    return HttpResponse(status=204)
+# ========== END FAVICON ==========
 
 # URL patterns
 urlpatterns = [
@@ -372,6 +404,10 @@ urlpatterns = [
     path("download/<int:id>/", download_file),
     path("delete/<int:id>/", delete_file),
     path("favicon.ico", favicon),
+    path("favicon-16x16.png", serve_favicon_16),
+    path("favicon-32x32.png", serve_favicon_32),
+    path("apple-touch-icon.png", serve_apple_touch),
+    path("site.webmanifest", serve_webmanifest),
 ]
 
 application = get_wsgi_application()
