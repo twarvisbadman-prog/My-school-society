@@ -29,6 +29,7 @@ ADMIN = os.environ.get("ADMIN", "true") == "true"
 
 # Google Drive Configuration
 GOOGLE_DRIVE_FOLDER_ID = os.environ.get("GOOGLE_DRIVE_FOLDER_ID", "")
+GOOGLE_CREDENTIALS = os.environ.get("GOOGLE_CREDENTIALS", "")
 
 # Django settings
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -69,34 +70,35 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ========== GOOGLE DRIVE FUNCTIONS ==========
 def get_drive_service():
-    """Get Google Drive service using credentials file"""
+    """Get Google Drive service using credentials from environment variable"""
     if not GOOGLE_DRIVE_FOLDER_ID:
         print("❌ No Google Drive Folder ID")
         return None
     
-    # Try to load credentials from file
-    creds_path = os.path.join(BASE_DIR, "google-credentials.json")
-    
-    if not os.path.exists(creds_path):
-        print(f"❌ Credentials file not found at {creds_path}")
+    if not GOOGLE_CREDENTIALS:
+        print("❌ No Google credentials in environment")
         return None
     
     try:
-        creds = service_account.Credentials.from_service_account_file(
-            creds_path,
+        creds_info = json.loads(GOOGLE_CREDENTIALS)
+        creds = service_account.Credentials.from_service_account_info(
+            creds_info,
             scopes=["https://www.googleapis.com/auth/drive.file"]
         )
-        print("✅ Credentials loaded from file")
+        print("✅ Credentials loaded from environment")
         service = build("drive", "v3", credentials=creds)
         print("✅ Drive service built")
         return service
+    except json.JSONDecodeError as e:
+        print(f"❌ JSON decode error: {e}")
+        return None
     except Exception as e:
         print(f"❌ Google Drive auth error: {e}")
         return None
 
 def upload_to_drive(file_content, filename):
     """Upload file to Google Drive and return file ID"""
-    print(f"📤 Attempting to upload to Google Drive: {filename}")
+    print(f"📤 Attempting Google Drive upload: {filename}")
     
     service = get_drive_service()
     if not service:
@@ -123,7 +125,7 @@ def upload_to_drive(file_content, filename):
         ).execute()
         
         file_id = drive_file.get("id")
-        print(f"✅ Successfully uploaded to Google Drive! File ID: {file_id}")
+        print(f"✅ Google Drive upload successful! ID: {file_id}")
         return file_id
     except Exception as e:
         print(f"❌ Google Drive upload error: {e}")
@@ -140,12 +142,11 @@ def delete_from_drive(drive_id):
         service.files().delete(fileId=drive_id).execute()
         print(f"✅ Deleted from Google Drive: {drive_id}")
     except Exception as e:
-        print(f"❌ Google Drive delete error: {e}")
+        print(f"❌ Delete error: {e}")
 
 def is_google_drive_configured():
     """Check if Google Drive is properly configured"""
-    creds_path = os.path.join(BASE_DIR, "google-credentials.json")
-    return bool(GOOGLE_DRIVE_FOLDER_ID and os.path.exists(creds_path) and GOOGLE_DRIVE_AVAILABLE)
+    return bool(GOOGLE_DRIVE_FOLDER_ID and GOOGLE_CREDENTIALS and GOOGLE_DRIVE_AVAILABLE)
 
 # ========== END GOOGLE DRIVE ==========
 
@@ -273,9 +274,6 @@ def upload_view(request):
                     message = f"✅ {file.name} uploaded successfully!"
                     if drive_id:
                         message += " (🔥 Backed up to Google Drive - 15GB storage)"
-                    else:
-                        if is_google_drive_configured():
-                            message += " (⚠️ Google Drive backup failed - check Render logs)"
                     form = UploadForm()
             except Exception as e:
                 error = f"Upload failed: {str(e)}"
@@ -396,9 +394,7 @@ def test_drive(request):
     result.append("<h2 style='color:#00ff41;'>🔧 Google Drive Diagnostic Test</h2>")
     result.append(f"<p><strong>Google Drive Libraries:</strong> {'✅ Available' if GOOGLE_DRIVE_AVAILABLE else '❌ Not available'}</p>")
     result.append(f"<p><strong>Folder ID:</strong> {GOOGLE_DRIVE_FOLDER_ID[:30] if GOOGLE_DRIVE_FOLDER_ID else 'NOT SET'}...</p>")
-    
-    creds_path = os.path.join(BASE_DIR, "google-credentials.json")
-    result.append(f"<p><strong>Credentials File:</strong> {'✅ EXISTS' if os.path.exists(creds_path) else '❌ NOT FOUND'}</p>")
+    result.append(f"<p><strong>GOOGLE_CREDENTIALS env var:</strong> {'✅ SET' if GOOGLE_CREDENTIALS else '❌ NOT SET'}</p>")
     
     if is_google_drive_configured():
         result.append("<p style='color:green; font-weight:bold;'>✅ Google Drive is CONFIGURED</p>")
@@ -415,12 +411,13 @@ def test_drive(request):
             result.append(f"<p>🔗 Check your Google Drive folder to see the test file</p>")
             # Clean up test file
             delete_from_drive(drive_id)
+            result.append(f"<p>🧹 Test file cleaned up from Google Drive</p>")
         else:
             result.append("<p style='color:red;'>❌ TEST FAILED! Could not upload to Google Drive</p>")
             result.append("<p>Check Render logs for more details</p>")
     else:
         result.append("<p style='color:red; font-weight:bold;'>❌ Google Drive is NOT configured</p>")
-        result.append("<p>Make sure google-credentials.json file exists in the project root</p>")
+        result.append("<p>Please add GOOGLE_DRIVE_FOLDER_ID and GOOGLE_CREDENTIALS environment variables in Render</p>")
     
     return HttpResponse("<br>".join(result))
 # ========== END ADMIN DASHBOARD ==========
