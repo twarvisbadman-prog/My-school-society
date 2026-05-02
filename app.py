@@ -26,21 +26,6 @@ ADMIN = os.environ.get("ADMIN", "true") == "true"
 GOOGLE_DRIVE_FOLDER_ID = os.environ.get("GOOGLE_DRIVE_FOLDER_ID", "")
 GOOGLE_SERVICE_ACCOUNT_JSON = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "")
 
-# Storage preference file
-STORAGE_PREF_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "storage_pref.txt")
-
-def get_storage_preference():
-    """Get current storage preference"""
-    if os.path.exists(STORAGE_PREF_FILE):
-        with open(STORAGE_PREF_FILE, "r") as f:
-            return f.read().strip()
-    return "supabase"
-
-def set_storage_preference(pref):
-    """Save storage preference"""
-    with open(STORAGE_PREF_FILE, "w") as f:
-        f.write(pref)
-
 # Django settings
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -77,6 +62,30 @@ from django import forms
 
 # Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+# ========== STORAGE PREFERENCE FUNCTIONS ==========
+def get_storage_preference():
+    """Get current storage preference from database"""
+    try:
+        response = supabase.table("admin_settings").select("value").eq("key", "storage_preference").execute()
+        if response.data and len(response.data) > 0:
+            return response.data[0].get("value", "supabase")
+    except Exception as e:
+        print(f"Error getting storage preference: {e}")
+    return "supabase"
+
+def set_storage_preference(pref):
+    """Save storage preference to database"""
+    try:
+        supabase.table("admin_settings").upsert({
+            "key": "storage_preference",
+            "value": pref,
+            "updated_at": datetime.now().isoformat()
+        }).execute()
+        return True
+    except Exception as e:
+        print(f"Error saving storage preference: {e}")
+        return False
 
 # ========== GOOGLE DRIVE FUNCTIONS ==========
 def get_drive_service():
@@ -193,7 +202,6 @@ def get_all_notes():
     try:
         response = supabase.table("notes").select("*").order("uploaded_at", desc=True).execute()
         notes = response.data if response.data else []
-        # Ensure each note has default values for missing fields
         for note in notes:
             if note.get("file_size") is None:
                 note["file_size"] = 0
@@ -311,11 +319,9 @@ def delete_file(request, id):
     try:
         note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
         
-        # Delete from Google Drive if exists
         if note.get("drive_id"):
             delete_from_drive(note["drive_id"])
         
-        # Delete from Supabase
         supabase.storage.from_("notes").remove([note["filename"]])
         supabase.table("notes").delete().eq("id", id).execute()
         return redirect("/admin/")
@@ -348,7 +354,6 @@ def admin_dashboard(request):
         module = note.get("module", "Unknown")
         modules[module] = modules.get(module, 0) + 1
         
-        # Safely add file_size (already handled by get_all_notes)
         total_size += note.get("file_size", 0)
             
         if note.get("drive_id"):
@@ -372,7 +377,7 @@ def admin_settings(request):
     message = None
     error = None
     
-    # Read current setting
+    # Read current setting from database
     current_storage = get_storage_preference()
     
     # Check Google Drive config
@@ -383,15 +388,21 @@ def admin_settings(request):
     if request.method == "POST":
         storage_choice = request.POST.get("storage_preference", "supabase")
         
-        if storage_choice == "google" and not google_drive_configured:
-            error = "Google Drive not configured."
+        if storage_choice == "google":
+            if not google_drive_configured:
+                error = "Google Drive is not configured. Please add environment variables first."
+            else:
+                if set_storage_preference(storage_choice):
+                    current_storage = storage_choice
+                    message = f"✅ Storage preference set to: {storage_choice.upper()} - Google Drive is now ACTIVE!"
+                else:
+                    error = "Failed to save preference. Please try again."
         else:
-            # Save to file
-            set_storage_preference(storage_choice)
-            current_storage = storage_choice
-            message = f"✅ Storage set to: {storage_choice.upper()}"
-            if storage_choice == "google":
-                message += " (Google Drive is now ACTIVE)"
+            if set_storage_preference(storage_choice):
+                current_storage = storage_choice
+                message = f"✅ Storage preference set to: {storage_choice.upper()}"
+            else:
+                error = "Failed to save preference. Please try again."
     
     return render(request, "admin_settings.html", {
         "current_storage": current_storage,
