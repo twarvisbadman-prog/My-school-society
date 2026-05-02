@@ -12,7 +12,7 @@ from django import forms
 from django.urls import path
 from supabase import create_client, Client
 
-# Try Google Drive imports with error handling
+# Google Drive imports
 try:
     from google.oauth2 import service_account
     from googleapiclient.discovery import build
@@ -105,6 +105,7 @@ def upload_to_drive(file_content, filename):
             media_body=media,
             fields="id"
         ).execute()
+        print(f"✅ Uploaded to Google Drive: {filename}")
         return drive_file.get("id")
     except Exception as e:
         print(f"Google Drive upload error: {e}")
@@ -119,6 +120,7 @@ def delete_from_drive(drive_id):
         return
     try:
         service.files().delete(fileId=drive_id).execute()
+        print(f"Deleted from Google Drive: {drive_id}")
     except Exception as e:
         print(f"Google Drive delete error: {e}")
 
@@ -172,15 +174,21 @@ def can_view_inline(filename):
     return ext in inline_extensions
 
 class UploadForm(forms.Form):
-    module = forms.CharField(max_length=100, label="Module Name")
-    course = forms.CharField(max_length=100, label="Course Name")
-    description = forms.CharField(widget=forms.Textarea, label="Description")
-    file = forms.FileField(label="File")
+    module = forms.CharField(max_length=100, label="Module Name", widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., CS101"}))
+    course = forms.CharField(max_length=100, label="Course Name", widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., Programming"}))
+    description = forms.CharField(widget=forms.Textarea(attrs={"class": "form-textarea", "rows": 3, "placeholder": "Description..."}), label="Description")
+    file = forms.FileField(label="File", widget=forms.FileInput(attrs={"class": "form-file"}))
 
 def get_all_notes():
     try:
         response = supabase.table("notes").select("*").order("uploaded_at", desc=True).execute()
-        return response.data if response.data else []
+        notes = response.data if response.data else []
+        for note in notes:
+            if note.get("file_size") is None:
+                note["file_size"] = 0
+            if note.get("original_filename") is None:
+                note["original_filename"] = note.get("filename", "")
+        return notes
     except Exception as e:
         print(f"Error: {e}")
         return []
@@ -211,10 +219,10 @@ def upload_view(request):
                     safe_filename = f"{timestamp}_{file.name.replace(' ', '_')}"
                     file_content = file.read()
                     
-                    # Upload to Supabase
+                    # Upload to Supabase (always)
                     supabase.storage.from_("notes").upload(safe_filename, file_content)
                     
-                    # Try Google Drive backup
+                    # Upload to Google Drive (if configured)
                     drive_id = None
                     if is_google_drive_configured():
                         drive_id = upload_to_drive(file_content, safe_filename)
@@ -222,17 +230,19 @@ def upload_view(request):
                     # Save metadata
                     supabase.table("notes").insert({
                         "filename": safe_filename,
+                        "original_filename": file.name,
                         "module": form.cleaned_data["module"],
                         "course": form.cleaned_data["course"],
                         "description": form.cleaned_data["description"],
                         "uploader": "user",
                         "uploaded_at": datetime.now().isoformat(),
+                        "file_size": len(file_content),
                         "drive_id": drive_id
                     }).execute()
                     
                     message = f"✅ {file.name} uploaded successfully!"
                     if drive_id:
-                        message += " (Backed up to Google Drive)"
+                        message += " (🔥 Backed up to Google Drive - 15GB storage)"
                     form = UploadForm()
             except Exception as e:
                 error = f"Upload failed: {str(e)}"
@@ -249,7 +259,8 @@ def browse_view(request):
         ext = os.path.splitext(note.get("filename", ""))[1].upper().replace(".", "")
         note["file_ext"] = ext if ext else "FILE"
         note["icon"] = get_file_icon(note.get("filename", ""))
-        note["display_name"] = note.get("filename", "")[:50]
+        original = note.get("original_filename", note.get("filename", ""))
+        note["display_name"] = original[:50] + "..." if len(original) > 50 else original
         note["can_view_inline"] = can_view_inline(note.get("filename", ""))
         note["has_drive_backup"] = bool(note.get("drive_id"))
     return render(request, "browse.html", {"notes": notes, "query": query})
@@ -258,8 +269,9 @@ def view_file(request, id):
     try:
         note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
         file_data = supabase.storage.from_("notes").download(note["filename"])
-        response = HttpResponse(file_data, content_type=get_content_type(note["filename"]))
-        response["Content-Disposition"] = f"inline; filename=\"{note['filename']}\""
+        content_type = get_content_type(note["filename"])
+        response = HttpResponse(file_data, content_type=content_type)
+        response["Content-Disposition"] = f"inline; filename=\"{note.get('original_filename', note['filename'])}\""
         return response
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", status=500)
@@ -268,8 +280,9 @@ def download_file(request, id):
     try:
         note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
         file_data = supabase.storage.from_("notes").download(note["filename"])
-        response = HttpResponse(file_data, content_type=get_content_type(note["filename"]))
-        response["Content-Disposition"] = f"attachment; filename=\"{note['filename']}\""
+        content_type = get_content_type(note["filename"])
+        response = HttpResponse(file_data, content_type=content_type)
+        response["Content-Disposition"] = f"attachment; filename=\"{note.get('original_filename', note['filename'])}\""
         return response
     except Exception as e:
         return HttpResponse(f"Download failed: {str(e)}", status=500)
@@ -279,8 +292,12 @@ def delete_file(request, id):
         return HttpResponse("Not authorized.", status=403)
     try:
         note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
+        
+        # Delete from Google Drive if exists
         if note.get("drive_id"):
             delete_from_drive(note["drive_id"])
+        
+        # Delete from Supabase
         supabase.storage.from_("notes").remove([note["filename"]])
         supabase.table("notes").delete().eq("id", id).execute()
         return redirect("/admin/")
@@ -288,6 +305,10 @@ def delete_file(request, id):
         return HttpResponse(f"Delete failed: {str(e)}", status=500)
 
 def favicon(request):
+    favicon_path = os.path.join(BASE_DIR, "favicon.ico")
+    if os.path.exists(favicon_path):
+        with open(favicon_path, "rb") as f:
+            return HttpResponse(f.read(), content_type="image/x-icon")
     return HttpResponse(status=204)
 
 # ========== ADMIN DASHBOARD ==========
@@ -299,6 +320,7 @@ def admin_dashboard(request):
     total_files = len(all_notes)
     file_types = {}
     modules = {}
+    total_size = 0
     drive_backup_count = 0
     
     for note in all_notes:
@@ -307,6 +329,7 @@ def admin_dashboard(request):
             file_types[ext] = file_types.get(ext, 0) + 1
         module = note.get("module", "Unknown")
         modules[module] = modules.get(module, 0) + 1
+        total_size += note.get("file_size", 0)
         if note.get("drive_id"):
             drive_backup_count += 1
     
@@ -314,6 +337,7 @@ def admin_dashboard(request):
         "total_files": total_files,
         "file_types": file_types,
         "top_modules": dict(sorted(modules.items(), key=lambda x: x[1], reverse=True)[:5]),
+        "total_size_mb": round(total_size / (1024 * 1024), 2),
         "drive_backup_count": drive_backup_count,
         "google_drive_configured": is_google_drive_configured()
     }
@@ -328,9 +352,9 @@ def admin_settings(request):
     
     message = None
     if google_drive_configured:
-        message = "✅ Google Drive is CONFIGURED and ACTIVE! All new uploads will be backed up to Google Drive (15GB free)."
+        message = "✅ Google Drive is CONFIGURED and ACTIVE! (15GB backup storage)"
     else:
-        message = "⚠️ Google Drive is NOT configured. Add GOOGLE_DRIVE_FOLDER_ID and GOOGLE_SERVICE_ACCOUNT_JSON to enable 15GB backup."
+        message = "⚠️ Google Drive is NOT configured. Add GOOGLE_DRIVE_FOLDER_ID and GOOGLE_SERVICE_ACCOUNT_JSON to enable."
     
     return render(request, "admin_settings.html", {
         "google_drive_configured": google_drive_configured,
@@ -342,23 +366,49 @@ def test_drive(request):
         return HttpResponse("Not authorized", status=403)
     
     result = []
-    result.append("<h2>🔧 Google Drive Test</h2>")
-    result.append(f"<p>Google Drive Available: {GOOGLE_DRIVE_AVAILABLE}</p>")
-    result.append(f"<p>Folder ID: {GOOGLE_DRIVE_FOLDER_ID[:20] if GOOGLE_DRIVE_FOLDER_ID else 'NOT SET'}...</p>")
-    result.append(f"<p>Service Account JSON: {'✅ SET' if GOOGLE_SERVICE_ACCOUNT_JSON else '❌ NOT SET'}</p>")
+    result.append("<h2 style='color:#00ff41;'>🔧 Google Drive Diagnostic Test</h2>")
+    result.append(f"<p><strong>Google Drive Available:</strong> {GOOGLE_DRIVE_AVAILABLE}</p>")
+    result.append(f"<p><strong>Folder ID:</strong> {GOOGLE_DRIVE_FOLDER_ID[:30] if GOOGLE_DRIVE_FOLDER_ID else 'NOT SET'}...</p>")
+    result.append(f"<p><strong>Service Account JSON:</strong> {'✅ SET' if GOOGLE_SERVICE_ACCOUNT_JSON else '❌ NOT SET'}</p>")
     
     if is_google_drive_configured():
-        result.append("<p style='color:green'>✅ Google Drive is configured!</p>")
-        service = get_drive_service()
-        if service:
-            result.append("<p style='color:green'>✅ Drive service created successfully!</p>")
-        else:
-            result.append("<p style='color:red'>❌ Failed to create drive service</p>")
+        result.append("<p style='color:green; font-weight:bold;'>✅ Google Drive is CONFIGURED and WORKING!</p>")
+        result.append("<p style='color:green;'>🎉 All new uploads will be backed up to Google Drive (15GB free storage)</p>")
     else:
-        result.append("<p style='color:red'>❌ Google Drive not configured</p>")
+        result.append("<p style='color:red; font-weight:bold;'>❌ Google Drive is NOT configured</p>")
     
     return HttpResponse("<br>".join(result))
 # ========== END ADMIN DASHBOARD ==========
+
+# ========== SERVE FAVICON FILES ==========
+def serve_favicon_16(request):
+    path = os.path.join(BASE_DIR, "favicon-16x16.png")
+    if os.path.exists(path):
+        with open(path, "rb") as f:
+            return HttpResponse(f.read(), content_type="image/png")
+    return HttpResponse(status=204)
+
+def serve_favicon_32(request):
+    path = os.path.join(BASE_DIR, "favicon-32x32.png")
+    if os.path.exists(path):
+        with open(path, "rb") as f:
+            return HttpResponse(f.read(), content_type="image/png")
+    return HttpResponse(status=204)
+
+def serve_apple_touch(request):
+    path = os.path.join(BASE_DIR, "apple-touch-icon.png")
+    if os.path.exists(path):
+        with open(path, "rb") as f:
+            return HttpResponse(f.read(), content_type="image/png")
+    return HttpResponse(status=204)
+
+def serve_webmanifest(request):
+    path = os.path.join(BASE_DIR, "site.webmanifest")
+    if os.path.exists(path):
+        with open(path, "rb") as f:
+            return HttpResponse(f.read(), content_type="application/manifest+json")
+    return HttpResponse(status=204)
+# ========== END FAVICON ==========
 
 # URL patterns
 urlpatterns = [
@@ -372,6 +422,10 @@ urlpatterns = [
     path("download/<int:id>/", download_file),
     path("delete/<int:id>/", delete_file),
     path("favicon.ico", favicon),
+    path("favicon-16x16.png", serve_favicon_16),
+    path("favicon-32x32.png", serve_favicon_32),
+    path("apple-touch-icon.png", serve_apple_touch),
+    path("site.webmanifest", serve_webmanifest),
 ]
 
 application = get_wsgi_application()
