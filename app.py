@@ -98,10 +98,11 @@ def upload_to_drive(file_content, filename):
             media_body=media,
             fields="id"
         ).execute()
-        print(f"Uploaded to Google Drive: {filename} (ID: {drive_file.get('id')})")
-        return drive_file.get("id")
+        file_id = drive_file.get("id")
+        print(f"✅ Uploaded to Google Drive: {filename} (ID: {file_id})")
+        return file_id
     except Exception as e:
-        print(f"Google Drive upload error: {e}")
+        print(f"❌ Google Drive upload error: {e}")
         return None
 
 def delete_from_drive(drive_id):
@@ -246,10 +247,10 @@ def upload_view(request):
                     
                     message = f"✅ {file.name} uploaded successfully!"
                     if drive_id:
-                        message += " (Backed up to Google Drive - 15GB storage)"
+                        message += " (🔥 Backed up to Google Drive - 15GB storage)"
                     else:
                         if is_google_drive_configured():
-                            message += " (Google Drive backup attempted but failed)"
+                            message += " (⚠️ Google Drive backup temporarily unavailable - check /admin/test-drive/)"
                         else:
                             message += " (Stored in Supabase only)"
                     form = UploadForm()
@@ -319,6 +320,52 @@ def favicon(request):
         with open(favicon_path, "rb") as f:
             return HttpResponse(f.read(), content_type="image/x-icon")
     return HttpResponse(status=204)
+
+# ========== GOOGLE DRIVE TEST FUNCTION ==========
+def test_drive(request):
+    if not ADMIN:
+        return HttpResponse("Not authorized", status=403)
+    
+    result = []
+    result.append("<h2>🔧 Google Drive Diagnostic Test</h2>")
+    result.append(f"<p><strong>Folder ID:</strong> {GOOGLE_DRIVE_FOLDER_ID[:30] if GOOGLE_DRIVE_FOLDER_ID else 'NOT SET'}...</p>")
+    result.append(f"<p><strong>Service Account JSON:</strong> {'✅ PRESENT' if GOOGLE_SERVICE_ACCOUNT_JSON else '❌ MISSING'}</p>")
+    
+    if not GOOGLE_SERVICE_ACCOUNT_JSON or not GOOGLE_DRIVE_FOLDER_ID:
+        result.append("<p style='color:red'>❌ Google Drive is not configured. Add environment variables.</p>")
+        return HttpResponse("<br>".join(result))
+    
+    try:
+        creds_info = json.loads(GOOGLE_SERVICE_ACCOUNT_JSON)
+        result.append(f"<p><strong>Client Email:</strong> {creds_info.get('client_email', 'Not found')}</p>")
+        
+        from google.oauth2 import service_account
+        creds = service_account.Credentials.from_service_account_info(
+            creds_info,
+            scopes=["https://www.googleapis.com/auth/drive.file"]
+        )
+        result.append("<p style='color:green'>✅ Credentials created successfully</p>")
+        
+        from googleapiclient.discovery import build
+        service = build("drive", "v3", credentials=creds)
+        result.append("<p style='color:green'>✅ Drive service created</p>")
+        
+        # Try to list files in folder
+        results = service.files().list(
+            q=f"'{GOOGLE_DRIVE_FOLDER_ID}' in parents",
+            pageSize=5,
+            fields="files(id, name)"
+        ).execute()
+        
+        files = results.get('files', [])
+        result.append(f"<p style='color:green'>✅ Found {len(files)} files in folder</p>")
+        result.append("<p style='color:green; font-size:1.2rem'>🎉 Google Drive is working correctly!</p>")
+        
+        return HttpResponse("<br>".join(result))
+    except Exception as e:
+        result.append(f"<p style='color:red'>❌ Error: {str(e)}</p>")
+        return HttpResponse("<br>".join(result), status=500)
+# ========== END TEST FUNCTION ==========
 
 # ========== ADMIN DASHBOARD ==========
 def admin_dashboard(request):
@@ -415,6 +462,7 @@ urlpatterns = [
     path("", index),
     path("admin/", admin_dashboard),
     path("admin/settings/", admin_settings),
+    path("admin/test-drive/", test_drive),  # Google Drive diagnostic
     path("upload/", upload_view),
     path("browse/", browse_view),
     path("view/<int:id>/", view_file),
