@@ -80,7 +80,14 @@ def get_drive_service():
         return None
     
     try:
-        creds_info = json.loads(GOOGLE_CREDENTIALS)
+        # FIX: Replace literal \n with actual newlines
+        creds_fixed = GOOGLE_CREDENTIALS.replace('\\n', '\n')
+        creds_info = json.loads(creds_fixed)
+        
+        # Also fix private key if needed
+        if 'private_key' in creds_info and '\\n' in creds_info['private_key']:
+            creds_info['private_key'] = creds_info['private_key'].replace('\\n', '\n')
+        
         creds = service_account.Credentials.from_service_account_info(
             creds_info,
             scopes=["https://www.googleapis.com/auth/drive.file"]
