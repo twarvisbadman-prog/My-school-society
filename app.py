@@ -1,6 +1,7 @@
 # app.py
 import os
 import io
+import json
 import mimetypes
 from datetime import datetime
 from django.conf import settings
@@ -63,30 +64,6 @@ from django import forms
 # Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# ========== STORAGE PREFERENCE FUNCTIONS ==========
-def get_storage_preference():
-    """Get current storage preference from database"""
-    try:
-        response = supabase.table("admin_settings").select("value").eq("key", "storage_preference").execute()
-        if response.data and len(response.data) > 0:
-            return response.data[0].get("value", "supabase")
-    except Exception as e:
-        print(f"Error getting storage preference: {e}")
-    return "supabase"
-
-def set_storage_preference(pref):
-    """Save storage preference to database"""
-    try:
-        supabase.table("admin_settings").upsert({
-            "key": "storage_preference",
-            "value": pref,
-            "updated_at": datetime.now().isoformat()
-        }).execute()
-        return True
-    except Exception as e:
-        print(f"Error saving storage preference: {e}")
-        return False
-
 # ========== GOOGLE DRIVE FUNCTIONS ==========
 def get_drive_service():
     """Get Google Drive service using credentials"""
@@ -94,7 +71,6 @@ def get_drive_service():
         return None
     
     try:
-        import json
         creds_info = json.loads(GOOGLE_SERVICE_ACCOUNT_JSON)
         creds = service_account.Credentials.from_service_account_info(
             creds_info,
@@ -140,6 +116,10 @@ def delete_from_drive(drive_id):
         print(f"Deleted from Google Drive: {drive_id}")
     except Exception as e:
         print(f"Google Drive delete error: {e}")
+
+def is_google_drive_configured():
+    """Check if Google Drive is properly configured"""
+    return bool(GOOGLE_SERVICE_ACCOUNT_JSON and GOOGLE_DRIVE_FOLDER_ID)
 
 # ========== END GOOGLE DRIVE ==========
 
@@ -243,11 +223,9 @@ def upload_view(request):
                     # Upload to Supabase (always)
                     supabase.storage.from_("notes").upload(safe_filename, file_content)
                     
-                    # Check storage preference for Google Drive backup
+                    # Upload to Google Drive (automatically if configured)
                     drive_id = None
-                    storage_pref = get_storage_preference()
-                    
-                    if storage_pref == "google" and GOOGLE_SERVICE_ACCOUNT_JSON and GOOGLE_DRIVE_FOLDER_ID:
+                    if is_google_drive_configured():
                         drive_id = upload_to_drive(file_content, safe_filename)
                     
                     # Save metadata
@@ -268,7 +246,12 @@ def upload_view(request):
                     
                     message = f"✅ {file.name} uploaded successfully!"
                     if drive_id:
-                        message += " (Backed up to Google Drive)"
+                        message += " (Backed up to Google Drive - 15GB storage)"
+                    else:
+                        if is_google_drive_configured():
+                            message += " (Google Drive backup attempted but failed)"
+                        else:
+                            message += " (Stored in Supabase only)"
                     form = UploadForm()
             except Exception as e:
                 error = f"Upload failed: {str(e)}"
@@ -319,9 +302,11 @@ def delete_file(request, id):
     try:
         note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
         
+        # Delete from Google Drive if exists
         if note.get("drive_id"):
             delete_from_drive(note["drive_id"])
         
+        # Delete from Supabase
         supabase.storage.from_("notes").remove([note["filename"]])
         supabase.table("notes").delete().eq("id", id).execute()
         return redirect("/admin/")
@@ -365,7 +350,7 @@ def admin_dashboard(request):
         "top_modules": dict(sorted(modules.items(), key=lambda x: x[1], reverse=True)[:5]),
         "total_size_mb": round(total_size / (1024 * 1024), 2),
         "drive_backup_count": drive_backup_count,
-        "current_storage_pref": get_storage_preference()
+        "google_drive_configured": is_google_drive_configured()
     }
     
     return render(request, "admin.html", {"notes": all_notes, "stats": stats, "admin": ADMIN})
@@ -377,35 +362,16 @@ def admin_settings(request):
     message = None
     error = None
     
-    # Read current setting from database
-    current_storage = get_storage_preference()
-    
-    # Check Google Drive config
     folder_id = os.environ.get("GOOGLE_DRIVE_FOLDER_ID", "")
     service_account = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "")
     google_drive_configured = bool(folder_id and service_account)
     
-    if request.method == "POST":
-        storage_choice = request.POST.get("storage_preference", "supabase")
-        
-        if storage_choice == "google":
-            if not google_drive_configured:
-                error = "Google Drive is not configured. Please add environment variables first."
-            else:
-                if set_storage_preference(storage_choice):
-                    current_storage = storage_choice
-                    message = f"✅ Storage preference set to: {storage_choice.upper()} - Google Drive is now ACTIVE!"
-                else:
-                    error = "Failed to save preference. Please try again."
-        else:
-            if set_storage_preference(storage_choice):
-                current_storage = storage_choice
-                message = f"✅ Storage preference set to: {storage_choice.upper()}"
-            else:
-                error = "Failed to save preference. Please try again."
+    if google_drive_configured:
+        message = "✅ Google Drive is CONFIGURED and ACTIVE! All new uploads will be automatically backed up to Google Drive (15GB free storage)."
+    else:
+        error = "❌ Google Drive is NOT configured. Add GOOGLE_DRIVE_FOLDER_ID and GOOGLE_SERVICE_ACCOUNT_JSON environment variables to enable 15GB backup storage."
     
     return render(request, "admin_settings.html", {
-        "current_storage": current_storage,
         "google_drive_configured": google_drive_configured,
         "folder_id": folder_id,
         "service_account": bool(service_account),
