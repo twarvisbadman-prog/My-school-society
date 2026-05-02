@@ -207,6 +207,7 @@
             font-size: 0.75rem;
             color: #00ff41;
             margin-bottom: 12px;
+            flex-wrap: wrap;
         }
 
         .note-description {
@@ -257,20 +258,44 @@
             box-shadow: 0 0 10px #ff2d2d;
         }
 
-        /* File type badge */
+        /* Warning message for unsupported files */
+        .warning-message {
+            background: rgba(255, 69, 0, 0.15);
+            border-left: 3px solid #ff4500;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 0.75rem;
+            color: #ffaa66;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-message i {
+            color: #ff4500;
+            font-size: 0.9rem;
+        }
+
         .file-type-badge {
             display: inline-block;
             padding: 2px 8px;
             border-radius: 12px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
             margin-left: 8px;
         }
 
-        .badge-inline {
+        .badge-supported {
             background: rgba(0, 255, 65, 0.2);
             color: #00ff41;
             border: 1px solid #00ff41;
+        }
+
+        .badge-unsupported {
+            background: rgba(255, 69, 0, 0.2);
+            color: #ffaa66;
+            border: 1px solid #ff4500;
         }
 
         .no-results {
@@ -342,7 +367,9 @@
                         <div class="note-title">
                             {{ note.icon }} [{{ note.file_ext }}] {{ note.display_name|default:note.filename|truncatechars:50 }}
                             {% if note.can_view_inline %}
-                            <span class="file-type-badge badge-inline">📖 INLINE VIEW</span>
+                            <span class="file-type-badge badge-supported">✓ INLINE SUPPORTED</span>
+                            {% else %}
+                            <span class="file-type-badge badge-unsupported">⚠️ NOT SUPPORTED</span>
                             {% endif %}
                         </div>
                         <div class="note-meta">
@@ -356,10 +383,23 @@
                             <span style="color: #ff9900;">☁️ Drive backup</span>
                             {% endif %}
                         </div>
+                        
+                        <!-- Warning for unsupported files -->
+                        {% if not note.can_view_inline %}
+                        <div class="warning-message">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>⚠️ This file type ({{ note.file_ext }}) cannot be viewed directly in your browser. Please download it to view on your device.</span>
+                        </div>
+                        {% endif %}
+                        
                         <div class="note-actions">
-                            <a href="/view/{{ note.id }}/" class="btn-sm btn-view" target="_blank">
-                                {% if note.can_view_inline %}👁️ VIEW INLINE{% else %}👁️ VIEW{% endif %}
-                            </a>
+                            {% if note.can_view_inline %}
+                            <a href="/view/{{ note.id }}/" class="btn-sm btn-view" target="_blank">👁️ VIEW INLINE</a>
+                            {% else %}
+                            <span class="btn-sm btn-view" style="opacity: 0.5; cursor: not-allowed; border-color: #666; color: #666;" title="This file type cannot be viewed inline">
+                                🚫 VIEW NOT AVAILABLE
+                            </span>
+                            {% endif %}
                             <a href="/download/{{ note.id }}/" class="btn-sm btn-download">⬇️ DOWNLOAD</a>
                         </div>
                     </div>
