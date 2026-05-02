@@ -177,7 +177,16 @@ class UploadForm(forms.Form):
 def get_all_notes():
     try:
         response = supabase.table("notes").select("*").order("uploaded_at", desc=True).execute()
-        return response.data if response.data else []
+        notes = response.data if response.data else []
+        # Ensure each note has default values for missing fields
+        for note in notes:
+            if note.get("file_size") is None:
+                note["file_size"] = 0
+            if note.get("file_type") is None:
+                note["file_type"] = ""
+            if note.get("original_filename") is None:
+                note["original_filename"] = note.get("filename", "")
+        return notes
     except Exception as e:
         print(f"Error: {e}")
         return []
@@ -227,7 +236,8 @@ def upload_view(request):
                         "uploaded_at": datetime.now().isoformat(),
                         "file_size": len(file_content),
                         "file_type": ext,
-                        "drive_id": drive_id
+                        "drive_id": drive_id,
+                        "storage": "google" if drive_id else "supabase"
                     }
                     supabase.table("notes").insert(insert_data).execute()
                     
@@ -320,7 +330,10 @@ def admin_dashboard(request):
             file_types[ext] = file_types.get(ext, 0) + 1
         module = note.get("module", "Unknown")
         modules[module] = modules.get(module, 0) + 1
+        
+        # Safely add file_size (already handled by get_all_notes)
         total_size += note.get("file_size", 0)
+            
         if note.get("drive_id"):
             drive_backup_count += 1
     
@@ -351,7 +364,7 @@ def admin_settings(request):
     if request.method == "POST":
         storage_choice = request.POST.get("storage_preference", "supabase")
         message = f"Storage preference set to: {storage_choice.upper()}"
-        # Note: In production, save this to a database table
+        # In production, save this to a database table
     
     return render(request, "admin_settings.html", {
         "current_storage": current_storage,
