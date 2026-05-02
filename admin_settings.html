@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Settings | Twarvis School</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,44 +22,30 @@
         }
         h1 { font-size: 2rem; margin-bottom: 10px; color: #333; }
         .subtitle { color: #666; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #f0f0f0; }
-        .message { padding: 15px 20px; border-radius: 12px; margin-bottom: 25px; }
+        .status-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            border-left: 4px solid #28a745;
+        }
+        .status-box h3 { margin-bottom: 15px; color: #333; }
+        .status-good { color: #28a745; font-weight: bold; }
+        .status-bad { color: #dc3545; font-weight: bold; }
+        .message {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
         .message.success { background: #d4edda; color: #155724; border-left: 4px solid #28a745; }
         .message.error { background: #f8d7da; color: #721c24; border-left: 4px solid #dc3545; }
-        .env-status {
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 0.85rem;
-            border-left: 4px solid #667eea;
-        }
-        .storage-option {
-            background: #f8f9fa;
-            border: 2px solid #e0e0e0;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: all 0.3s;
-        }
-        .storage-option:hover { border-color: #667eea; background: #f0f2ff; }
-        .storage-option input { margin-right: 15px; transform: scale(1.2); }
-        .storage-option label { font-weight: 600; font-size: 1.1rem; cursor: pointer; }
-        .storage-desc { margin-left: 30px; color: #666; font-size: 0.85rem; margin-top: 5px; }
-        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; margin-left: 10px; }
-        .badge-active { background: #28a745; color: white; }
-        .badge-inactive { background: #dc3545; color: white; }
-        .badge-configured { background: #ffc107; color: #333; }
-        .btn-save {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 40px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
+        .info-box {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 12px;
             margin-top: 20px;
+            font-size: 0.85rem;
+            color: #004085;
         }
         .btn-back {
             background: #6c757d;
@@ -70,16 +55,8 @@
             text-align: center;
             padding: 12px 24px;
             border-radius: 40px;
-            margin-top: 15px;
-            width: 100%;
-        }
-        .info-box {
-            background: #e7f3ff;
-            padding: 15px;
-            border-radius: 12px;
             margin-top: 20px;
-            font-size: 0.85rem;
-            color: #004085;
+            width: 100%;
         }
     </style>
 </head>
@@ -87,72 +64,28 @@
     <div class="container">
         <div class="card">
             <h1>⚙️ Admin Settings</h1>
-            <div class="subtitle">Configure your storage preferences</div>
+            <div class="subtitle">Google Drive Storage Status</div>
 
-            <div class="env-status">
-                <strong>🔧 Environment Status:</strong><br>
-                {% if folder_id %}
-                ✅ GOOGLE_DRIVE_FOLDER_ID: {{ folder_id|truncatechars:30 }}
+            <div class="status-box">
+                <h3>📦 Google Drive Backup Status</h3>
+                {% if google_drive_configured %}
+                    <p class="status-good">✅ Google Drive is CONFIGURED and ACTIVE!</p>
+                    <p>All new uploads will be automatically backed up to Google Drive (15GB free storage).</p>
                 {% else %}
-                ❌ GOOGLE_DRIVE_FOLDER_ID: NOT SET
-                {% endif %}
-                <br>
-                {% if service_account %}
-                ✅ GOOGLE_SERVICE_ACCOUNT_JSON: Configured
-                {% else %}
-                ❌ GOOGLE_SERVICE_ACCOUNT_JSON: NOT SET
+                    <p class="status-bad">❌ Google Drive is NOT CONFIGURED</p>
+                    <p>Add GOOGLE_DRIVE_FOLDER_ID and GOOGLE_SERVICE_ACCOUNT_JSON environment variables to enable 15GB backup storage.</p>
                 {% endif %}
             </div>
 
             {% if message %}
             <div class="message success">{{ message }}</div>
             {% endif %}
-            {% if error %}
-            <div class="message error">{{ error }}</div>
-            {% endif %}
 
-            <form method="post">
-                {% csrf_token %}
-                <h3 style="margin-bottom: 15px;">📦 Storage Preference</h3>
-                <p style="color: #666; margin-bottom: 20px;">Choose where new files will be stored. Users will never see this option.</p>
+            <div class="info-box">
+                <strong>ℹ️ Note:</strong> Your files are always stored in Supabase. Google Drive provides an additional 15GB backup storage for extra safety.
+            </div>
 
-                <div class="storage-option">
-                    <input type="radio" name="storage_preference" value="supabase" id="supabase" {% if current_storage == 'supabase' %}checked{% endif %}>
-                    <label for="supabase">
-                        <strong>☁️ Supabase Storage</strong>
-                        <span class="badge badge-active">ACTIVE</span>
-                    </label>
-                    <div class="storage-desc">Default cloud storage, fast and reliable. Files stored in Supabase.</div>
-                </div>
-
-                <div class="storage-option">
-                    <input type="radio" name="storage_preference" value="google" id="google" {% if current_storage == 'google' %}checked{% endif %}>
-                    <label for="google">
-                        <strong>🔐 Google Drive</strong>
-                        {% if google_drive_configured %}
-                            <span class="badge badge-inactive">INACTIVE</span>
-                        {% else %}
-                            <span class="badge badge-configured">NEEDS CONFIG</span>
-                        {% endif %}
-                    </label>
-                    <div class="storage-desc">
-                        {% if google_drive_configured %}
-                            Backup storage with Google's infrastructure (15GB free)
-                        {% else %}
-                            ⚠️ Add GOOGLE_DRIVE_FOLDER_ID and GOOGLE_SERVICE_ACCOUNT_JSON to enable.
-                        {% endif %}
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-save">💾 Save Settings</button>
-                <a href="/admin/" class="btn-back">← Back to Admin Panel</a>
-
-                <div class="info-box">
-                    <i class="fas fa-info-circle"></i>
-                    <strong>Note:</strong> Storage preference determines where NEW files will be uploaded. 
-                    Existing files remain in their original storage location.
-                </div>
-            </form>
+            <a href="/admin/" class="btn-back">← Back to Admin Panel</a>
         </div>
     </div>
 </body>
