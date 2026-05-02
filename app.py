@@ -72,7 +72,7 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 def get_drive_service():
     """Get Google Drive service using credentials from environment variable"""
     if not GOOGLE_DRIVE_FOLDER_ID:
-        print("❌ No Google Drive Folder/Shared Drive ID")
+        print("❌ No Google Drive Shared Drive ID")
         return None
     
     if not GOOGLE_CREDENTIALS:
@@ -345,7 +345,7 @@ def download_file(request, id):
         note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
         
         if note.get("storage_type") == "google" and note.get("drive_id"):
-            # Direct to Google Drive download
+            # Download from Google Drive
             file_data = get_file_from_drive(note["drive_id"])
             if file_data:
                 content_type = get_content_type(note["filename"])
@@ -358,7 +358,7 @@ def download_file(request, id):
             file_data = supabase.storage.from_("notes").download(note["filename"])
             content_type = get_content_type(note["filename"])
             response = HttpResponse(file_data, content_type=content_type)
-            response["Content-Disposition"] = f"attachment; filename=\"note.get('original_filename', note['filename'])}\""
+            response["Content-Disposition"] = f"attachment; filename=\"{note.get('original_filename', note['filename'])}\""
             return response
     except Exception as e:
         return HttpResponse(f"Download failed: {str(e)}", status=500)
