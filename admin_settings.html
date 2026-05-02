@@ -3,56 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Settings | Twarvis</title>
+    <title>Admin Settings | Twarvis School</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #1a1a2e, #16213e);
             min-height: 100vh;
             padding: 40px 20px;
         }
-        .container { max-width: 600px; margin: 0 auto; }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
         .card {
-            background: rgba(255,255,255,0.95);
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 24px;
             padding: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         }
-        h1 { margin-bottom: 20px; color: #333; }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
         .message {
-            padding: 15px;
+            padding: 15px 20px;
             border-radius: 12px;
             margin-bottom: 25px;
+        }
+
+        .message.success {
             background: #d4edda;
             color: #155724;
+            border-left: 4px solid #28a745;
         }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
         .storage-option {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px;
+            background: #f8f9fa;
             border: 2px solid #e0e0e0;
             border-radius: 16px;
+            padding: 20px;
             margin-bottom: 15px;
-            cursor: pointer;
             transition: all 0.3s;
+            cursor: pointer;
         }
-        .storage-option:hover { border-color: #667eea; background: #f8f9ff; }
-        .storage-option.selected { border-color: #667eea; background: #f0f2ff; }
-        .storage-option input { width: 20px; height: 20px; }
-        .storage-option label { font-weight: 600; font-size: 1rem; cursor: pointer; flex: 1; }
+
+        .storage-option:hover {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+
+        .storage-option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #f0f2ff, #fff);
+        }
+
+        .storage-option input {
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+
+        .storage-option label {
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .storage-desc {
+            margin-left: 30px;
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
         .badge {
             display: inline-block;
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.7rem;
             font-weight: 600;
+            margin-left: 10px;
         }
-        .badge-active { background: #667eea; color: white; }
-        .badge-inactive { background: #ddd; color: #666; }
+
+        .badge-active {
+            background: #28a745;
+            color: white;
+        }
+
+        .badge-inactive {
+            background: #dc3545;
+            color: white;
+        }
+
+        .badge-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
         .btn-save {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
@@ -64,10 +136,17 @@
             cursor: pointer;
             width: 100%;
             margin-top: 20px;
+            transition: all 0.3s;
         }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
         .btn-back {
-            background: #ccc;
-            color: #333;
+            background: #6c757d;
+            color: white;
             text-decoration: none;
             display: inline-block;
             text-align: center;
@@ -75,54 +154,88 @@
             border-radius: 40px;
             margin-top: 15px;
             width: 100%;
+            transition: all 0.3s;
         }
-        .info-text { margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 12px; color: #666; font-size: 0.85rem; }
+
+        .btn-back:hover {
+            background: #5a6268;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #004085;
+        }
+
+        .info-box i {
+            margin-right: 8px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="card">
             <h1>⚙️ Admin Settings</h1>
-            
+            <div class="subtitle">Configure your storage preferences</div>
+
             {% if message %}
-            <div class="message">{{ message }}</div>
+            <div class="message success">
+                <i class="fas fa-check-circle"></i> {{ message }}
+            </div>
             {% endif %}
-            
+
+            {% if error %}
+            <div class="message error">
+                <i class="fas fa-exclamation-triangle"></i> {{ error }}
+            </div>
+            {% endif %}
+
             <form method="post">
                 {% csrf_token %}
+
                 <h3 style="margin-bottom: 15px;">📦 Storage Preference</h3>
                 <p style="color: #666; margin-bottom: 20px;">Choose where new files will be stored. Users will never see this option.</p>
-                
-                <div class="storage-option {% if current_preference == 'supabase' %}selected{% endif %}">
-                    <input type="radio" name="storage_preference" value="supabase" id="supabase" {% if current_preference == 'supabase' %}checked{% endif %}>
+
+                <div class="storage-option {% if current_storage == 'supabase' %}selected{% endif %}">
+                    <input type="radio" name="storage_preference" value="supabase" id="supabase" {% if current_storage == 'supabase' %}checked{% endif %}>
                     <label for="supabase">
-                        <strong>☁️ Supabase Storage</strong><br>
-                        <small>Default cloud storage, fast and reliable</small>
+                        <strong>☁️ Supabase Storage</strong>
+                        <span class="badge badge-active">ACTIVE</span>
                     </label>
-                    <span class="badge {% if current_preference == 'supabase' %}badge-active{% else %}badge-inactive{% endif %}">
-                        {% if current_preference == 'supabase' %}ACTIVE{% else %}inactive{% endif %}
-                    </span>
+                    <div class="storage-desc">Default cloud storage, fast and reliable. Files stored in Supabase.</div>
                 </div>
-                
-                <div class="storage-option {% if current_preference == 'google' %}selected{% endif %}">
-                    <input type="radio" name="storage_preference" value="google" id="google" {% if current_preference == 'google' %}checked{% endif %} {% if not google_drive_available %}disabled{% endif %}>
-                    <label for="google" {% if not google_drive_available %}style="opacity:0.6;"{% endif %}>
-                        <strong>🔐 Google Drive</strong><br>
-                        <small>Backup storage with Google's infrastructure</small>
+
+                <div class="storage-option {% if current_storage == 'google' %}selected{% endif %}">
+                    <input type="radio" name="storage_preference" value="google" id="google" {% if current_storage == 'google' %}checked{% endif %} {% if not google_drive_configured %}disabled{% endif %}>
+                    <label for="google">
+                        <strong>🔐 Google Drive</strong>
+                        {% if google_drive_configured %}
+                            <span class="badge badge-inactive">INACTIVE</span>
+                        {% else %}
+                            <span class="badge badge-warning">NOT CONFIGURED</span>
+                        {% endif %}
                     </label>
-                    <span class="badge {% if current_preference == 'google' %}badge-active{% else %}badge-inactive{% endif %}">
-                        {% if current_preference == 'google' %}ACTIVE{% else %}inactive{% endif %}
-                    </span>
+                    <div class="storage-desc">
+                        {% if google_drive_configured %}
+                            Backup storage with Google's infrastructure (1TB available)
+                        {% else %}
+                            ⚠️ Google Drive not configured. Add GOOGLE_DRIVE_FOLDER_ID to enable.
+                        {% endif %}
+                    </div>
                 </div>
-                
-                {% if not google_drive_available %}
-                <div class="info-text">
-                    ⚠️ Google Drive is not configured. Add GOOGLE_SERVICE_ACCOUNT_JSON and GOOGLE_DRIVE_FOLDER_ID to enable.
-                </div>
-                {% endif %}
-                
+
                 <button type="submit" class="btn-save">💾 Save Settings</button>
                 <a href="/admin/" class="btn-back">← Back to Admin Panel</a>
+
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Note:</strong> Storage preference determines where NEW files will be uploaded. 
+                    Existing files remain in their original storage location. Google Drive backup requires 
+                    additional configuration.
+                </div>
             </form>
         </div>
     </div>
