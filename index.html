@@ -93,7 +93,6 @@
             position: relative;
         }
 
-        /* Tooltip label on hover */
         .nav-icon::before {
             content: attr(data-label);
             position: absolute;
@@ -194,7 +193,6 @@
             overflow: hidden;
         }
 
-        /* Ripple effect on click */
         .glass-card::after {
             content: '';
             position: absolute;
@@ -246,7 +244,6 @@
             font-size: 0.95rem;
         }
 
-        /* Resource Links */
         .resource-links {
             max-width: 1200px;
             margin: 60px auto;
@@ -311,7 +308,6 @@
             display: block;
         }
 
-        /* Bottom Section */
         .bottom-section {
             max-width: 1200px;
             margin: 50px auto;
@@ -399,7 +395,6 @@
             font-size: 0.8rem;
         }
 
-        /* Animations */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -411,22 +406,74 @@
             }
         }
 
-        /* Page transition overlay */
-        .page-transition {
+        /* ========== BUBBLE PAGE TRANSITION ========== */
+        .bubble-transition {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #ff0000, #00ff41);
             z-index: 9999;
-            transform: translateY(100%);
-            transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 45, 45, 0.8), rgba(0, 255, 65, 0.6));
+            border-radius: 50%;
+            animation: bubbleRise 0.6s ease-in forwards;
+            box-shadow: 0 0 20px rgba(255, 45, 45, 0.5);
+        }
+
+        @keyframes bubbleRise {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-50vh) scale(1.2);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Bubble burst effect */
+        .bubble-burst {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9998;
+            background: transparent;
             pointer-events: none;
         }
 
-        .page-transition.active {
-            transform: translateY(0);
+        .burst-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(135deg, #ff2d2d, #00ff41);
+            border-radius: 50%;
+            animation: particleExplode 0.5s ease-out forwards;
+        }
+
+        @keyframes particleExplode {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5) translate(var(--tx, 50px), var(--ty, -50px));
+                opacity: 0;
+            }
         }
 
         @media (max-width: 780px) {
@@ -441,8 +488,9 @@
 
     <canvas id="matrix-canvas"></canvas>
 
-    <!-- Page Transition Overlay -->
-    <div class="page-transition" id="pageTransition"></div>
+    <!-- Bubble Transition Container -->
+    <div class="bubble-transition" id="bubbleTransition"></div>
+    <div class="bubble-burst" id="bubbleBurst"></div>
 
     <div class="glass-overlay">
         <div class="header">
@@ -450,13 +498,13 @@
                 <div class="logo">⚡ TWARVIS</div>
                 <div class="nav-links">
                     <div class="nav-icon" data-label="Home">
-                        <a href="/"><i class="fas fa-home"></i></a>
+                        <a href="/" id="homeLink"><i class="fas fa-home"></i></a>
                     </div>
                     <div class="nav-icon" data-label="Browse Notes">
-                        <a href="/browse/"><i class="fas fa-book-open"></i></a>
+                        <a href="/browse/" id="browseLink"><i class="fas fa-book-open"></i></a>
                     </div>
                     <div class="nav-icon" data-label="Upload Files">
-                        <a href="/upload/"><i class="fas fa-cloud-upload-alt"></i></a>
+                        <a href="/upload/" id="uploadLink"><i class="fas fa-cloud-upload-alt"></i></a>
                     </div>
                 </div>
             </div>
@@ -468,17 +516,17 @@
         </div>
 
         <div class="features">
-            <a href="/upload/" class="glass-card">
+            <a href="/upload/" class="glass-card" id="uploadCard">
                 <i class="fas fa-cloud-upload-alt"></i>
                 <h3>⚡ INSTANT UPLOAD</h3>
                 <p>Upload your notes & files instantly → go to upload page</p>
             </a>
-            <a href="/browse/" class="glass-card">
+            <a href="/browse/" class="glass-card" id="browseCard">
                 <i class="fas fa-book-open"></i>
                 <h3>📚 BROWSE NOTES</h3>
                 <p>Browse all study materials & past papers → click to explore</p>
             </a>
-            <a href="/browse/" class="glass-card">
+            <a href="/browse/" class="glass-card" id="searchCard">
                 <i class="fas fa-search"></i>
                 <h3>🔍 SMART SEARCH</h3>
                 <p>Find by module, course or keyword → start searching</p>
@@ -603,26 +651,81 @@
         canvas.addEventListener('click', burstEffect);
         canvas.addEventListener('touchstart', burstEffect);
 
-        // ========== PAGE TRANSITION ANIMATION ==========
-        const transition = document.getElementById('pageTransition');
-        const allLinks = document.querySelectorAll('a');
-
-        allLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                const href = this.getAttribute('href');
-                if (href && !href.startsWith('http') && !href.startsWith('https') && href !== '#' && !href.startsWith('javascript:')) {
+        // ========== BUBBLE TRANSITION FUNCTION ==========
+        function createBubbleTransition(targetUrl) {
+            const container = document.getElementById('bubbleTransition');
+            const burstContainer = document.getElementById('bubbleBurst');
+            
+            // Create 30-40 bubbles
+            const bubbleCount = 35;
+            const bubbles = [];
+            
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                const size = Math.random() * 50 + 20;
+                bubble.style.width = size + 'px';
+                bubble.style.height = size + 'px';
+                bubble.style.left = Math.random() * 100 + '%';
+                bubble.style.animationDelay = (Math.random() * 0.3) + 's';
+                bubble.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
+                container.appendChild(bubble);
+                bubbles.push(bubble);
+            }
+            
+            // Create burst particles at click position
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            
+            for (let i = 0; i < 60; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'burst-particle';
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 150 + 50;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance - 100;
+                particle.style.setProperty('--tx', tx + 'px');
+                particle.style.setProperty('--ty', ty + 'px');
+                particle.style.left = centerX + 'px';
+                particle.style.top = centerY + 'px';
+                burstContainer.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 500);
+            }
+            
+            // Navigate after animation
+            setTimeout(() => {
+                window.location.href = targetUrl;
+            }, 600);
+            
+            // Clean up bubbles after navigation
+            setTimeout(() => {
+                bubbles.forEach(bubble => bubble.remove());
+            }, 700);
+        }
+        
+        // Attach transition to all internal links
+        const internalLinks = document.querySelectorAll('a');
+        internalLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href && !href.startsWith('http') && !href.startsWith('https') && href !== '#' && !href.startsWith('javascript:')) {
+                link.addEventListener('click', function(e) {
                     e.preventDefault();
-                    transition.classList.add('active');
-                    setTimeout(() => {
-                        window.location.href = href;
-                    }, 500);
+                    createBubbleTransition(href);
+                });
+            }
+        });
+        
+        // Also handle cards that are links
+        const cards = document.querySelectorAll('.glass-card');
+        cards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                const href = card.getAttribute('href');
+                if (href && !href.startsWith('http')) {
+                    e.preventDefault();
+                    createBubbleTransition(href);
                 }
             });
-        });
-
-        // Remove transition on page load
-        window.addEventListener('load', () => {
-            transition.classList.remove('active');
         });
     </script>
 </body>
