@@ -257,6 +257,22 @@
             box-shadow: 0 0 10px #ff2d2d;
         }
 
+        /* File type badge */
+        .file-type-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .badge-inline {
+            background: rgba(0, 255, 65, 0.2);
+            color: #00ff41;
+            border: 1px solid #00ff41;
+        }
+
         .no-results {
             text-align: center;
             padding: 60px;
@@ -323,15 +339,27 @@
                 {% if notes %}
                     {% for note in notes %}
                     <div class="note-card">
-                        <div class="note-title">📁 [{{ note.file_ext }}] {{ note.filename|truncatechars:50 }}</div>
+                        <div class="note-title">
+                            {{ note.icon }} [{{ note.file_ext }}] {{ note.display_name|default:note.filename|truncatechars:50 }}
+                            {% if note.can_view_inline %}
+                            <span class="file-type-badge badge-inline">📖 INLINE VIEW</span>
+                            {% endif %}
+                        </div>
                         <div class="note-meta">
                             <span>📚 {{ note.module }}</span>
                             <span>📖 {{ note.course }}</span>
                         </div>
                         <div class="note-description">{{ note.description|truncatechars:100 }}</div>
-                        <div class="note-meta">📅 {{ note.uploaded_at|slice:":10" }}</div>
+                        <div class="note-meta">
+                            📅 {{ note.uploaded_at|slice:":10" }}
+                            {% if note.has_drive_backup %}
+                            <span style="color: #ff9900;">☁️ Drive backup</span>
+                            {% endif %}
+                        </div>
                         <div class="note-actions">
-                            <a href="/view/{{ note.id }}/" class="btn-sm btn-view" target="_blank">👁️ VIEW</a>
+                            <a href="/view/{{ note.id }}/" class="btn-sm btn-view" target="_blank">
+                                {% if note.can_view_inline %}👁️ VIEW INLINE{% else %}👁️ VIEW{% endif %}
+                            </a>
                             <a href="/download/{{ note.id }}/" class="btn-sm btn-download">⬇️ DOWNLOAD</a>
                         </div>
                     </div>
@@ -443,25 +471,20 @@
         const lightningDiv = document.getElementById('lightning');
         
         function lightningFlash() {
-            // Random flash intensity
             const intensity = Math.random() * 0.4 + 0.2;
             lightningDiv.style.backgroundColor = `rgba(255, 255, 255, ${intensity})`;
             lightningDiv.style.transition = 'background-color 0.05s ease';
             
-            // Reset after short time
             setTimeout(() => {
                 lightningDiv.style.backgroundColor = 'transparent';
             }, 80);
             
-            // Random delay for next lightning (1 to 7 seconds)
             const nextDelay = Math.random() * 6000 + 1000;
             setTimeout(lightningFlash, nextDelay);
         }
         
-        // Start lightning effect
         setTimeout(lightningFlash, 500);
         
-        // Extra lightning on click for interactivity
         canvas.addEventListener('click', () => {
             lightningDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.6)';
             setTimeout(() => {
