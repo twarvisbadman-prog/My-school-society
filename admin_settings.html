@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Settings | Twarvis</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 600px; margin: 0 auto; }
+        .card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        h1 { margin-bottom: 20px; color: #333; }
+        .message {
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            background: #d4edda;
+            color: #155724;
+        }
+        .storage-option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .storage-option:hover { border-color: #667eea; background: #f8f9ff; }
+        .storage-option.selected { border-color: #667eea; background: #f0f2ff; }
+        .storage-option input { width: 20px; height: 20px; }
+        .storage-option label { font-weight: 600; font-size: 1rem; cursor: pointer; flex: 1; }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .badge-active { background: #667eea; color: white; }
+        .badge-inactive { background: #ddd; color: #666; }
+        .btn-save {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .btn-back {
+            background: #ccc;
+            color: #333;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            padding: 12px 24px;
+            border-radius: 40px;
+            margin-top: 15px;
+            width: 100%;
+        }
+        .info-text { margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 12px; color: #666; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>⚙️ Admin Settings</h1>
+            
+            {% if message %}
+            <div class="message">{{ message }}</div>
+            {% endif %}
+            
+            <form method="post">
+                {% csrf_token %}
+                <h3 style="margin-bottom: 15px;">📦 Storage Preference</h3>
+                <p style="color: #666; margin-bottom: 20px;">Choose where new files will be stored. Users will never see this option.</p>
+                
+                <div class="storage-option {% if current_preference == 'supabase' %}selected{% endif %}">
+                    <input type="radio" name="storage_preference" value="supabase" id="supabase" {% if current_preference == 'supabase' %}checked{% endif %}>
+                    <label for="supabase">
+                        <strong>☁️ Supabase Storage</strong><br>
+                        <small>Default cloud storage, fast and reliable</small>
+                    </label>
+                    <span class="badge {% if current_preference == 'supabase' %}badge-active{% else %}badge-inactive{% endif %}">
+                        {% if current_preference == 'supabase' %}ACTIVE{% else %}inactive{% endif %}
+                    </span>
+                </div>
+                
+                <div class="storage-option {% if current_preference == 'google' %}selected{% endif %}">
+                    <input type="radio" name="storage_preference" value="google" id="google" {% if current_preference == 'google' %}checked{% endif %} {% if not google_drive_available %}disabled{% endif %}>
+                    <label for="google" {% if not google_drive_available %}style="opacity:0.6;"{% endif %}>
+                        <strong>🔐 Google Drive</strong><br>
+                        <small>Backup storage with Google's infrastructure</small>
+                    </label>
+                    <span class="badge {% if current_preference == 'google' %}badge-active{% else %}badge-inactive{% endif %}">
+                        {% if current_preference == 'google' %}ACTIVE{% else %}inactive{% endif %}
+                    </span>
+                </div>
+                
+                {% if not google_drive_available %}
+                <div class="info-text">
+                    ⚠️ Google Drive is not configured. Add GOOGLE_SERVICE_ACCOUNT_JSON and GOOGLE_DRIVE_FOLDER_ID to enable.
+                </div>
+                {% endif %}
+                
+                <button type="submit" class="btn-save">💾 Save Settings</button>
+                <a href="/admin/" class="btn-back">← Back to Admin Panel</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
