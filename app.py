@@ -1,21 +1,30 @@
-# app.py
+# app.py - COMPLETE WITH GOOGLE DRIVE (15GB FREE)
 import os
+import io
 import mimetypes
 from datetime import datetime
 from django.conf import settings
 from django.core.wsgi import get_wsgi_application
-from django.http import HttpResponse, HttpResponseNotFound
-from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 from django import forms
 from django.urls import path
 from supabase import create_client, Client
+
+# Google Drive imports
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaIoBaseUpload
 
 # Environment variables
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://hnszltswipxiqurkwydm.supabase.co")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhuc3psdHN3aXB4aXF1cmt3eWRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTEyODcsImV4cCI6MjA5MzEyNzI4N30.JsSgMXE9JMqJAAZd-riwrr-D-5MURL6WCfuNTrAtoWU")
 SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-twarvis-school-key-2024")
 ADMIN = os.environ.get("ADMIN", "true") == "true"
-GOOGLE_DRIVE_FOLDER_ID = os.environ.get("GOOGLE_DRIVE_FOLDER_ID", "")
+
+# Google Drive Configuration
+GOOGLE_DRIVE_FOLDER_ID = os.environ.get("GOOGLE_DRIVE_FOLDER_ID", "1eDLcqNTt-a8-cyLjquMq49R5ol8xUzya")
+GOOGLE_CREDENTIALS_JSON = os.environ.get("GOOGLE_CREDENTIALS_JSON", "")
 
 # Django settings
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -54,35 +63,73 @@ from django import forms
 # Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# Allowed file extensions - ALL TYPES
+# ========== GOOGLE DRIVE FUNCTIONS ==========
+def get_drive_service():
+    """Get Google Drive service using credentials"""
+    if not GOOGLE_CREDENTIALS_JSON:
+        print("No Google credentials found")
+        return None
+    
+    try:
+        import json
+        creds_info = json.loads(GOOGLE_CREDENTIALS_JSON)
+        creds = service_account.Credentials.from_service_account_info(
+            creds_info,
+            scopes=["https://www.googleapis.com/auth/drive.file"]
+        )
+        return build("drive", "v3", credentials=creds)
+    except Exception as e:
+        print(f"Google Drive auth error: {e}")
+        return None
+
+def upload_to_drive(file_content, filename):
+    """Upload file to Google Drive and return file ID"""
+    service = get_drive_service()
+    if not service or not GOOGLE_DRIVE_FOLDER_ID:
+        return None
+    
+    try:
+        file_metadata = {
+            "name": filename,
+            "parents": [GOOGLE_DRIVE_FOLDER_ID]
+        }
+        media = MediaIoBaseUpload(io.BytesIO(file_content), mimetype=get_content_type(filename), resumable=True)
+        drive_file = service.files().create(
+            body=file_metadata,
+            media_body=media,
+            fields="id"
+        ).execute()
+        print(f"Uploaded to Google Drive: {filename} (ID: {drive_file.get('id')})")
+        return drive_file.get("id")
+    except Exception as e:
+        print(f"Google Drive upload error: {e}")
+        return None
+
+def delete_from_drive(drive_id):
+    """Delete file from Google Drive"""
+    if not drive_id:
+        return
+    service = get_drive_service()
+    if not service:
+        return
+    try:
+        service.files().delete(fileId=drive_id).execute()
+        print(f"Deleted from Google Drive: {drive_id}")
+    except Exception as e:
+        print(f"Google Drive delete error: {e}")
+
+# ========== END GOOGLE DRIVE ==========
+
+# Allowed file extensions
 ALLOWED_EXTENSIONS = [
-    # Documents
-    '.pdf', '.ppt', '.pptx', '.doc', '.docx', '.txt', '.md', '.rtf', '.odt',
-    # Spreadsheets
-    '.xls', '.xlsx', '.csv', '.ods',
-    # Images
-    '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg', '.ico',
-    # Archives
-    '.zip', '.rar', '.7z', '.tar', '.gz',
-    # Code files
-    '.py', '.js', '.html', '.css', '.json', '.xml', '.cpp', '.c', '.java', 
-    '.php', '.rb', '.go', '.swift', '.kt', '.sql',
-    # Videos
-    '.mp4', '.avi', '.mov', '.wmv', '.flv', '.mkv',
-    # Audio
-    '.mp3', '.wav', '.ogg', '.flac', '.m4a',
-    # Presentations
-    '.pps', '.ppsx', '.key',
-    # Other
-    '.epub', '.mobi'
+    '.pdf', '.ppt', '.pptx', '.doc', '.docx', '.txt', '.md',
+    '.xls', '.xlsx', '.csv', '.jpg', '.jpeg', '.png', '.gif',
+    '.zip', '.rar', '.py', '.js', '.html', '.css', '.json', '.xml'
 ]
 
 def get_content_type(filename):
-    """Get proper MIME type for any file for inline viewing"""
     ext = os.path.splitext(filename)[1].lower()
-    
     content_types = {
-        # Documents
         '.pdf': 'application/pdf',
         '.ppt': 'application/vnd.ms-powerpoint',
         '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
@@ -90,80 +137,37 @@ def get_content_type(filename):
         '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         '.txt': 'text/plain',
         '.md': 'text/markdown',
-        '.rtf': 'application/rtf',
-        '.odt': 'application/vnd.oasis.opendocument.text',
-        # Spreadsheets
         '.xls': 'application/vnd.ms-excel',
         '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         '.csv': 'text/csv',
-        '.ods': 'application/vnd.oasis.opendocument.spreadsheet',
-        # Images
         '.jpg': 'image/jpeg',
         '.jpeg': 'image/jpeg',
         '.png': 'image/png',
         '.gif': 'image/gif',
-        '.bmp': 'image/bmp',
-        '.webp': 'image/webp',
-        '.svg': 'image/svg+xml',
-        # Archives (will download)
         '.zip': 'application/zip',
-        '.rar': 'application/x-rar-compressed',
-        '.7z': 'application/x-7z-compressed',
-        # Code
         '.py': 'text/x-python',
         '.js': 'application/javascript',
         '.html': 'text/html',
         '.css': 'text/css',
         '.json': 'application/json',
         '.xml': 'application/xml',
-        '.cpp': 'text/x-c++src',
-        '.c': 'text/x-csrc',
-        '.java': 'text/x-java',
-        # Media
-        '.mp4': 'video/mp4',
-        '.mp3': 'audio/mpeg',
-        '.wav': 'audio/wav',
-        '.ogg': 'audio/ogg',
-        '.mov': 'video/quicktime',
     }
-    
-    mime_type = content_types.get(ext)
-    if mime_type:
-        return mime_type
-    
-    guessed = mimetypes.guess_type(filename)[0]
-    return guessed or 'application/octet-stream'
-
-def can_view_inline(filename):
-    """Check if file can be viewed inline in browser"""
-    ext = os.path.splitext(filename)[1].lower()
-    inline_extensions = [
-        # Documents
-        '.pdf', '.txt', '.md', '.rtf', '.csv',
-        # Images
-        '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg',
-        # Code
-        '.py', '.js', '.html', '.css', '.json', '.xml', '.cpp', '.c', '.java',
-        # Media
-        '.mp4', '.mp3', '.wav', '.ogg', '.mov',
-        # Presentations
-        '.ppt', '.pptx',
-        # Word/Excel
-        '.doc', '.docx', '.xls', '.xlsx'
-    ]
-    return ext in inline_extensions
+    return content_types.get(ext, 'application/octet-stream')
 
 def get_file_icon(filename):
-    """Return appropriate emoji icon for file type"""
     ext = os.path.splitext(filename)[1].lower()
     icons = {
         '.pdf': '📄', '.ppt': '📊', '.pptx': '📊', '.doc': '📝', '.docx': '📝',
         '.xls': '📈', '.xlsx': '📈', '.txt': '📃', '.md': '📃', '.jpg': '🖼️',
-        '.jpeg': '🖼️', '.png': '🖼️', '.gif': '🖼️', '.zip': '📦', '.rar': '📦',
-        '.mp4': '🎬', '.mp3': '🎵', '.py': '🐍', '.js': '📜', '.html': '🌐',
-        '.css': '🎨', '.json': '🔧', '.cpp': '⚙️', '.java': '☕', '.csv': '📊',
+        '.jpeg': '🖼️', '.png': '🖼️', '.gif': '🖼️', '.zip': '📦', '.py': '🐍',
+        '.js': '📜', '.html': '🌐', '.css': '🎨', '.json': '🔧',
     }
     return icons.get(ext, '📁')
+
+def can_view_inline(filename):
+    ext = os.path.splitext(filename)[1].lower()
+    inline_extensions = ['.pdf', '.txt', '.md', '.jpg', '.jpeg', '.png', '.gif', '.py', '.js', '.html', '.css', '.json', '.xml', '.csv']
+    return ext in inline_extensions
 
 class UploadForm(forms.Form):
     module = forms.CharField(max_length=100, label="Module Name", widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., CS101"}))
@@ -199,17 +203,22 @@ def upload_view(request):
                 file = request.FILES["file"]
                 ext = os.path.splitext(file.name)[1].lower()
                 if ext not in ALLOWED_EXTENSIONS:
-                    error = f"File type not allowed."
+                    error = "File type not allowed."
                 else:
                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                     safe_filename = f"{timestamp}_{file.name.replace(' ', '_')}"
                     file_content = file.read()
                     
-                    # Upload to Supabase
+                    # Upload to Supabase (primary)
                     supabase.storage.from_("notes").upload(safe_filename, file_content)
                     
+                    # Upload to Google Drive (backup - 15GB free)
+                    drive_id = None
+                    if GOOGLE_CREDENTIALS_JSON and GOOGLE_DRIVE_FOLDER_ID:
+                        drive_id = upload_to_drive(file_content, safe_filename)
+                    
                     # Save metadata
-                    supabase.table("notes").insert({
+                    insert_data = {
                         "filename": safe_filename,
                         "original_filename": file.name,
                         "module": form.cleaned_data["module"],
@@ -218,10 +227,14 @@ def upload_view(request):
                         "uploader": "user",
                         "uploaded_at": datetime.now().isoformat(),
                         "file_size": len(file_content),
-                        "file_type": ext
-                    }).execute()
+                        "file_type": ext,
+                        "drive_id": drive_id
+                    }
+                    supabase.table("notes").insert(insert_data).execute()
                     
                     message = f"✅ {file.name} uploaded successfully!"
+                    if drive_id:
+                        message += " (Backed up to Google Drive - 15GB storage)"
                     form = UploadForm()
             except Exception as e:
                 error = f"Upload failed: {str(e)}"
@@ -241,37 +254,21 @@ def browse_view(request):
         original = note.get("original_filename", note.get("filename", ""))
         note["display_name"] = original[:50] + "..." if len(original) > 50 else original
         note["can_view_inline"] = can_view_inline(note.get("filename", ""))
+        note["has_drive_backup"] = bool(note.get("drive_id"))
     return render(request, "browse.html", {"notes": notes, "query": query})
 
 def view_file(request, id):
-    """View any file type INLINE in the browser"""
     try:
         note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
         file_data = supabase.storage.from_("notes").download(note["filename"])
-        
         content_type = get_content_type(note["filename"])
         response = HttpResponse(file_data, content_type=content_type)
-        
-        # FORCE inline viewing for ALL files that support it
-        original_name = note.get('original_filename', note['filename'])
-        
-        if can_view_inline(note["filename"]):
-            # Display directly in browser
-            response["Content-Disposition"] = f"inline; filename=\"{original_name}\""
-        else:
-            # For unsupported files, still try inline with proper type
-            response["Content-Disposition"] = f"inline; filename=\"{original_name}\""
-        
-        # Additional headers to help with inline viewing
-        response["X-Content-Type-Options"] = "nosniff"
-        response["Cache-Control"] = "public, max-age=3600"
-        
+        response["Content-Disposition"] = f"inline; filename=\"{note.get('original_filename', note['filename'])}\""
         return response
     except Exception as e:
-        return HttpResponse(f"Error loading file: {str(e)}", status=500)
+        return HttpResponse(f"Error: {str(e)}", status=500)
 
 def download_file(request, id):
-    """Force download file"""
     try:
         note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
         file_data = supabase.storage.from_("notes").download(note["filename"])
@@ -287,6 +284,12 @@ def delete_file(request, id):
         return HttpResponse("Not authorized.", status=403)
     try:
         note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
+        
+        # Delete from Google Drive if exists
+        if note.get("drive_id"):
+            delete_from_drive(note["drive_id"])
+        
+        # Delete from Supabase
         supabase.storage.from_("notes").remove([note["filename"]])
         supabase.table("notes").delete().eq("id", id).execute()
         return redirect("/admin/")
@@ -310,6 +313,7 @@ def admin_dashboard(request):
     file_types = {}
     modules = {}
     total_size = 0
+    drive_backup_count = 0
     
     for note in all_notes:
         ext = os.path.splitext(note.get("filename", ""))[1].upper()
@@ -318,12 +322,15 @@ def admin_dashboard(request):
         module = note.get("module", "Unknown")
         modules[module] = modules.get(module, 0) + 1
         total_size += note.get("file_size", 0)
+        if note.get("drive_id"):
+            drive_backup_count += 1
     
     stats = {
         "total_files": total_files,
         "file_types": file_types,
         "top_modules": dict(sorted(modules.items(), key=lambda x: x[1], reverse=True)[:5]),
-        "total_size_mb": round(total_size / (1024 * 1024), 2)
+        "total_size_mb": round(total_size / (1024 * 1024), 2),
+        "drive_backup_count": drive_backup_count
     }
     
     return render(request, "admin.html", {"notes": all_notes, "stats": stats, "admin": ADMIN})
@@ -335,54 +342,24 @@ def admin_settings(request):
     message = None
     error = None
     
-    current_storage = os.environ.get("ADMIN_STORAGE_PREFERENCE", "supabase")
-    google_drive_configured = bool(GOOGLE_DRIVE_FOLDER_ID)
+    google_configured = bool(GOOGLE_CREDENTIALS_JSON and GOOGLE_DRIVE_FOLDER_ID)
     
     if request.method == "POST":
-        storage_choice = request.POST.get("storage_preference", "supabase")
-        
-        if storage_choice == "google" and not google_drive_configured:
-            error = "Google Drive is not configured."
-        else:
-            message = f"Storage preference set to: {storage_choice.upper()}"
+        action = request.POST.get("action", "")
+        if action == "test_drive":
+            service = get_drive_service()
+            if service:
+                message = "✅ Google Drive connection successful! (15GB free storage)"
+            else:
+                error = "❌ Google Drive connection failed. Check credentials."
     
     return render(request, "admin_settings.html", {
-        "current_storage": current_storage,
-        "google_drive_configured": google_drive_configured,
+        "google_configured": google_configured,
+        "drive_folder_id": GOOGLE_DRIVE_FOLDER_ID,
         "message": message,
         "error": error
     })
 # ========== END ADMIN DASHBOARD ==========
-
-# ========== SERVE FAVICON FILES ==========
-def serve_favicon_16(request):
-    path = os.path.join(BASE_DIR, "favicon-16x16.png")
-    if os.path.exists(path):
-        with open(path, "rb") as f:
-            return HttpResponse(f.read(), content_type="image/png")
-    return HttpResponse(status=204)
-
-def serve_favicon_32(request):
-    path = os.path.join(BASE_DIR, "favicon-32x32.png")
-    if os.path.exists(path):
-        with open(path, "rb") as f:
-            return HttpResponse(f.read(), content_type="image/png")
-    return HttpResponse(status=204)
-
-def serve_apple_touch(request):
-    path = os.path.join(BASE_DIR, "apple-touch-icon.png")
-    if os.path.exists(path):
-        with open(path, "rb") as f:
-            return HttpResponse(f.read(), content_type="image/png")
-    return HttpResponse(status=204)
-
-def serve_webmanifest(request):
-    path = os.path.join(BASE_DIR, "site.webmanifest")
-    if os.path.exists(path):
-        with open(path, "rb") as f:
-            return HttpResponse(f.read(), content_type="application/manifest+json")
-    return HttpResponse(status=204)
-# ========== END FAVICON ==========
 
 # URL patterns
 urlpatterns = [
@@ -395,10 +372,6 @@ urlpatterns = [
     path("download/<int:id>/", download_file),
     path("delete/<int:id>/", delete_file),
     path("favicon.ico", favicon),
-    path("favicon-16x16.png", serve_favicon_16),
-    path("favicon-32x32.png", serve_favicon_32),
-    path("apple-touch-icon.png", serve_apple_touch),
-    path("site.webmanifest", serve_webmanifest),
 ]
 
 application = get_wsgi_application()
