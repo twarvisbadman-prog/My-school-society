@@ -26,6 +26,21 @@ ADMIN = os.environ.get("ADMIN", "true") == "true"
 GOOGLE_DRIVE_FOLDER_ID = os.environ.get("GOOGLE_DRIVE_FOLDER_ID", "")
 GOOGLE_SERVICE_ACCOUNT_JSON = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "")
 
+# Storage preference file
+STORAGE_PREF_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "storage_pref.txt")
+
+def get_storage_preference():
+    """Get current storage preference"""
+    if os.path.exists(STORAGE_PREF_FILE):
+        with open(STORAGE_PREF_FILE, "r") as f:
+            return f.read().strip()
+    return "supabase"
+
+def set_storage_preference(pref):
+    """Save storage preference"""
+    with open(STORAGE_PREF_FILE, "w") as f:
+        f.write(pref)
+
 # Django settings
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -217,12 +232,14 @@ def upload_view(request):
                     safe_filename = f"{timestamp}_{file.name.replace(' ', '_')}"
                     file_content = file.read()
                     
-                    # Upload to Supabase (primary)
+                    # Upload to Supabase (always)
                     supabase.storage.from_("notes").upload(safe_filename, file_content)
                     
-                    # Upload to Google Drive (backup - 15GB free)
+                    # Check storage preference for Google Drive backup
                     drive_id = None
-                    if GOOGLE_SERVICE_ACCOUNT_JSON and GOOGLE_DRIVE_FOLDER_ID:
+                    storage_pref = get_storage_preference()
+                    
+                    if storage_pref == "google" and GOOGLE_SERVICE_ACCOUNT_JSON and GOOGLE_DRIVE_FOLDER_ID:
                         drive_id = upload_to_drive(file_content, safe_filename)
                     
                     # Save metadata
@@ -342,7 +359,8 @@ def admin_dashboard(request):
         "file_types": file_types,
         "top_modules": dict(sorted(modules.items(), key=lambda x: x[1], reverse=True)[:5]),
         "total_size_mb": round(total_size / (1024 * 1024), 2),
-        "drive_backup_count": drive_backup_count
+        "drive_backup_count": drive_backup_count,
+        "current_storage_pref": get_storage_preference()
     }
     
     return render(request, "admin.html", {"notes": all_notes, "stats": stats, "admin": ADMIN})
@@ -354,17 +372,26 @@ def admin_settings(request):
     message = None
     error = None
     
-    current_storage = os.environ.get("ADMIN_STORAGE_PREFERENCE", "supabase")
+    # Read current setting
+    current_storage = get_storage_preference()
     
-    # Check if environment variables are actually set
+    # Check Google Drive config
     folder_id = os.environ.get("GOOGLE_DRIVE_FOLDER_ID", "")
     service_account = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "")
     google_drive_configured = bool(folder_id and service_account)
     
     if request.method == "POST":
         storage_choice = request.POST.get("storage_preference", "supabase")
-        message = f"Storage preference set to: {storage_choice.upper()}"
-        # In production, save this to a database table
+        
+        if storage_choice == "google" and not google_drive_configured:
+            error = "Google Drive not configured."
+        else:
+            # Save to file
+            set_storage_preference(storage_choice)
+            current_storage = storage_choice
+            message = f"✅ Storage set to: {storage_choice.upper()}"
+            if storage_choice == "google":
+                message += " (Google Drive is now ACTIVE)"
     
     return render(request, "admin_settings.html", {
         "current_storage": current_storage,
