@@ -70,7 +70,6 @@
             padding: 20px;
             margin-bottom: 15px;
             transition: all 0.3s;
-            cursor: pointer;
         }
 
         .storage-option:hover {
@@ -120,7 +119,7 @@
             color: white;
         }
 
-        .badge-warning {
+        .badge-configured {
             background: #ffc107;
             color: #333;
         }
@@ -173,6 +172,15 @@
         .info-box i {
             margin-right: 8px;
         }
+
+        .env-status {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            border-left: 4px solid #667eea;
+        }
     </style>
 </head>
 <body>
@@ -180,6 +188,22 @@
         <div class="card">
             <h1>⚙️ Admin Settings</h1>
             <div class="subtitle">Configure your storage preferences</div>
+
+            <!-- Show environment variable status -->
+            <div class="env-status">
+                <strong>🔧 Environment Status:</strong><br>
+                {% if folder_id %}
+                ✅ GOOGLE_DRIVE_FOLDER_ID: {{ folder_id|truncatechars:20 }}
+                {% else %}
+                ❌ GOOGLE_DRIVE_FOLDER_ID: NOT SET
+                {% endif %}
+                <br>
+                {% if service_account %}
+                ✅ GOOGLE_SERVICE_ACCOUNT_JSON: Configured
+                {% else %}
+                ❌ GOOGLE_SERVICE_ACCOUNT_JSON: NOT SET
+                {% endif %}
+            </div>
 
             {% if message %}
             <div class="message success">
@@ -199,7 +223,7 @@
                 <h3 style="margin-bottom: 15px;">📦 Storage Preference</h3>
                 <p style="color: #666; margin-bottom: 20px;">Choose where new files will be stored. Users will never see this option.</p>
 
-                <div class="storage-option {% if current_storage == 'supabase' %}selected{% endif %}">
+                <div class="storage-option">
                     <input type="radio" name="storage_preference" value="supabase" id="supabase" {% if current_storage == 'supabase' %}checked{% endif %}>
                     <label for="supabase">
                         <strong>☁️ Supabase Storage</strong>
@@ -208,21 +232,21 @@
                     <div class="storage-desc">Default cloud storage, fast and reliable. Files stored in Supabase.</div>
                 </div>
 
-                <div class="storage-option {% if current_storage == 'google' %}selected{% endif %}">
+                <div class="storage-option">
                     <input type="radio" name="storage_preference" value="google" id="google" {% if current_storage == 'google' %}checked{% endif %} {% if not google_drive_configured %}disabled{% endif %}>
                     <label for="google">
                         <strong>🔐 Google Drive</strong>
                         {% if google_drive_configured %}
                             <span class="badge badge-inactive">INACTIVE</span>
                         {% else %}
-                            <span class="badge badge-warning">NOT CONFIGURED</span>
+                            <span class="badge badge-configured">NEEDS CONFIG</span>
                         {% endif %}
                     </label>
                     <div class="storage-desc">
                         {% if google_drive_configured %}
-                            Backup storage with Google's infrastructure (1TB available)
+                            Backup storage with Google's infrastructure (15GB free)
                         {% else %}
-                            ⚠️ Google Drive not configured. Add GOOGLE_DRIVE_FOLDER_ID to enable.
+                            ⚠️ Google Drive not configured. Add environment variables to enable.
                         {% endif %}
                     </div>
                 </div>
@@ -233,8 +257,7 @@
                 <div class="info-box">
                     <i class="fas fa-info-circle"></i>
                     <strong>Note:</strong> Storage preference determines where NEW files will be uploaded. 
-                    Existing files remain in their original storage location. Google Drive backup requires 
-                    additional configuration.
+                    Existing files remain in their original storage location.
                 </div>
             </form>
         </div>
