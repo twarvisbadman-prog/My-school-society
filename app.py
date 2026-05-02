@@ -67,7 +67,7 @@ from django import forms
 # Supabase client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# ========== SIMPLIFIED GOOGLE DRIVE FUNCTIONS ==========
+# ========== GOOGLE DRIVE FUNCTIONS ==========
 def get_credentials_path():
     """Get the path to Google credentials file"""
     # First check Render secret file location
@@ -105,16 +105,12 @@ def get_drive_service():
         return None
 
 def upload_to_drive(file_content, filename):
-    """Upload file to Google Drive"""
+    """Upload file to Google Drive Shared Drive"""
     service = get_drive_service()
     if not service:
         return None
     
     try:
-        # First, check if we can access the folder
-        folder_check = service.files().get(fileId=GOOGLE_DRIVE_FOLDER_ID, supportsAllDrives=True).execute()
-        print(f"✅ Folder accessible: {folder_check.get('name')}")
-        
         file_metadata = {
             "name": filename,
             "parents": [GOOGLE_DRIVE_FOLDER_ID]
@@ -126,10 +122,12 @@ def upload_to_drive(file_content, filename):
             resumable=True
         )
         
+        # For Shared Drives, use these parameters
         drive_file = service.files().create(
             body=file_metadata,
             media_body=media,
             supportsAllDrives=True,
+            useDomainAdminAccess=False,
             fields="id, webViewLink"
         ).execute()
         
@@ -141,7 +139,33 @@ def upload_to_drive(file_content, filename):
         print(f"❌ Upload error: {e}")
         return None
 
+def get_file_from_drive(drive_id):
+    """Download file from Google Drive"""
+    service = get_drive_service()
+    if not service:
+        return None
+    try:
+        request = service.files().get_media(fileId=drive_id, supportsAllDrives=True)
+        return request.execute()
+    except Exception as e:
+        print(f"❌ Download error: {e}")
+        return None
+
+def delete_from_drive(drive_id):
+    """Delete file from Google Drive"""
+    if not drive_id:
+        return
+    service = get_drive_service()
+    if not service:
+        return
+    try:
+        service.files().delete(fileId=drive_id, supportsAllDrives=True).execute()
+        print(f"✅ Deleted from Google Drive: {drive_id}")
+    except Exception as e:
+        print(f"❌ Delete error: {e}")
+
 def is_google_drive_configured():
+    """Check if Google Drive is properly configured"""
     return bool(GOOGLE_DRIVE_FOLDER_ID and get_credentials_path())
 
 # ========== END GOOGLE DRIVE ==========
@@ -198,7 +222,13 @@ class UploadForm(forms.Form):
 def get_all_notes():
     try:
         response = supabase.table("notes").select("*").order("uploaded_at", desc=True).execute()
-        return response.data if response.data else []
+        notes = response.data if response.data else []
+        for note in notes:
+            if note.get("file_size") is None:
+                note["file_size"] = 0
+            if note.get("original_filename") is None:
+                note["original_filename"] = note.get("filename", "")
+        return notes
     except Exception as e:
         print(f"Error: {e}")
         return []
@@ -369,13 +399,13 @@ def test_drive(request):
     
     result = []
     result.append("<h2>🔧 Google Drive Test</h2>")
-    result.append(f"<p>Drive ID: {GOOGLE_DRIVE_FOLDER_ID[:20] if GOOGLE_DRIVE_FOLDER_ID else 'NOT SET'}...</p>")
+    result.append(f"<p>Drive ID: {GOOGLE_DRIVE_FOLDER_ID[:30] if GOOGLE_DRIVE_FOLDER_ID else 'NOT SET'}...</p>")
     result.append(f"<p>Credentials: {'✅ FOUND' if get_credentials_path() else '❌ NOT FOUND'}</p>")
     
     if is_google_drive_configured():
         result.append("<p style='color:green'>✅ Google Drive configured</p>")
         
-        test_content = b"Test file"
+        test_content = b"Test file content"
         test_filename = f"test_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
         
         result.append(f"<p>Uploading: {test_filename}</p>")
@@ -383,10 +413,73 @@ def test_drive(request):
         
         if drive_info:
             result.append(f"<p style='color:green'>✅ SUCCESS! File ID: {drive_info.get('drive_id')}</p>")
+            result.append(f"<p>Link: <a href='{drive_info.get('drive_link')}' target='_blank'>View file</a></p>")
+            delete_from_drive(drive_info.get('drive_id'))
+            result.append(f"<p>Test file cleaned up</p>")
         else:
             result.append("<p style='color:red'>❌ Upload failed</p>")
+            result.append("<p>Check that the service account has permission to write to this folder</p>")
     else:
-        result.append("<p style='color:red'>❌ Not configured</p>")
+        result.append("<p style='color:red'>❌ Google Drive not configured</p>")
+    
+    return HttpResponse("<br>".join(result))
+
+def test_drive_details(request):
+    if not ADMIN:
+        return HttpResponse("Not authorized", status=403)
+    
+    result = []
+    result.append("<h2>🔧 Google Drive Details</h2>")
+    result.append(f"<p>Drive ID: {GOOGLE_DRIVE_FOLDER_ID}</p>")
+    
+    service = get_drive_service()
+    if not service:
+        return HttpResponse("Service not available", status=500)
+    
+    try:
+        # Try to get folder details
+        folder = service.files().get(
+            fileId=GOOGLE_DRIVE_FOLDER_ID,
+            supportsAllDrives=True,
+            fields="id, name, mimeType, driveId, parents"
+        ).execute()
+        
+        result.append(f"<p>Folder Name: {folder.get('name')}</p>")
+        result.append(f"<p>Folder ID: {folder.get('id')}</p>")
+        result.append(f"<p>MIME Type: {folder.get('mimeType')}</p>")
+        result.append(f"<p>Drive ID: {folder.get('driveId')}</p>")
+        
+        if folder.get('mimeType') == 'application/vnd.google-apps.folder':
+            result.append("<p style='color:green'>✅ This is a valid folder</p>")
+            result.append("<p>Now trying to create a test file...</p>")
+            
+            # Try to create a test file
+            test_metadata = {
+                "name": "test_permission_check.txt",
+                "parents": [GOOGLE_DRIVE_FOLDER_ID],
+                "mimeType": "text/plain"
+            }
+            
+            test_file = service.files().create(
+                body=test_metadata,
+                supportsAllDrives=True,
+                fields="id"
+            ).execute()
+            
+            result.append(f"<p style='color:green'>✅ Successfully created test file! ID: {test_file.get('id')}</p>")
+            
+            # Delete the test file
+            service.files().delete(fileId=test_file.get('id'), supportsAllDrives=True).execute()
+            result.append("<p>Test file deleted</p>")
+            
+        else:
+            result.append(f"<p style='color:orange'>⚠️ Not a folder (MIME type: {folder.get('mimeType')})</p>")
+            result.append("<p>Please use a folder ID, not a file ID</p>")
+        
+    except Exception as e:
+        result.append(f"<p style='color:red'>❌ Error: {str(e)}</p>")
+        if hasattr(e, 'resp'):
+            result.append(f"<p>Status: {e.resp.status}</p>")
     
     return HttpResponse("<br>".join(result))
 # ========== END ADMIN DASHBOARD ==========
@@ -397,6 +490,7 @@ urlpatterns = [
     path("admin/", admin_dashboard),
     path("admin/settings/", admin_settings),
     path("admin/test-drive/", test_drive),
+    path("admin/test-details/", test_drive_details),
     path("upload/", upload_view),
     path("browse/", browse_view),
     path("view/<int:id>/", view_file),
