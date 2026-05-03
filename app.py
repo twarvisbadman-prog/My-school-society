@@ -1,4 +1,4 @@
-# app.py - FIXED VERSION
+# app.py - COMPLETE WORKING VERSION
 import os
 import io
 import json
@@ -20,7 +20,7 @@ from googleapiclient.http import MediaIoBaseUpload
 # Environment variables
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-key")
 ADMIN = os.environ.get("ADMIN", "true") == "true"
 GOOGLE_DRIVE_FOLDER_ID = os.environ.get("GOOGLE_DRIVE_FOLDER_ID", "")
 
@@ -83,26 +83,24 @@ def get_drive_service():
         return None
 
 def upload_to_drive(file_content, filename):
-    """Upload to Google Drive - FIXED VERSION"""
+    """Upload to Google Drive"""
     service = get_drive_service()
     if not service:
         return None
     try:
         file_metadata = {"name": filename, "parents": [GOOGLE_DRIVE_FOLDER_ID]}
         media = MediaIoBaseUpload(
-            io.BytesIO(file_content), 
-            mimetype=get_content_type(filename), 
+            io.BytesIO(file_content),
+            mimetype="application/octet-stream",
             resumable=True
         )
-        
         drive_file = service.files().create(
-            body=file_metadata, 
-            media_body=media, 
+            body=file_metadata,
+            media_body=media,
             supportsAllDrives=True,
-            fields="id, webViewLink"
+            fields="id"
         ).execute()
-        
-        return {"drive_id": drive_file.get("id"), "drive_link": drive_file.get("webViewLink")}
+        return drive_file.get("id")
     except Exception as e:
         print(f"Upload error: {e}")
         return None
@@ -113,42 +111,36 @@ def is_google_drive_configured():
 # Allowed file extensions
 ALLOWED_EXTENSIONS = [
     '.pdf', '.ppt', '.pptx', '.doc', '.docx', '.txt', '.md',
-    '.xls', '.xlsx', '.csv', '.jpg', '.jpeg', '.png', '.gif',
-    '.zip', '.rar'
+    '.xls', '.xlsx', '.csv', '.jpg', '.jpeg', '.png', '.gif', '.zip', '.rar'
 ]
 
 def get_content_type(filename):
     ext = os.path.splitext(filename)[1].lower()
     types = {
-        '.pdf': 'application/pdf', '.ppt': 'application/vnd.ms-powerpoint',
-        '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-        '.doc': 'application/msword', '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        '.txt': 'text/plain', '.md': 'text/markdown', '.xls': 'application/vnd.ms-excel',
-        '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        '.csv': 'text/csv', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
-        '.png': 'image/png', '.gif': 'image/gif',
+        '.pdf': 'application/pdf',
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg',
+        '.png': 'image/png',
+        '.gif': 'image/gif',
+        '.txt': 'text/plain',
+        '.md': 'text/markdown',
+        '.csv': 'text/csv',
     }
     return types.get(ext, 'application/octet-stream')
 
 class UploadForm(forms.Form):
-    module = forms.CharField(max_length=100, label="Module Name")
-    course = forms.CharField(max_length=100, label="Course Name")
-    description = forms.CharField(widget=forms.Textarea, label="Description")
-    file = forms.FileField(label="File")
+    module = forms.CharField(max_length=100)
+    course = forms.CharField(max_length=100)
+    description = forms.CharField(widget=forms.Textarea)
+    file = forms.FileField()
 
 def get_all_notes():
     try:
         response = supabase.table("notes").select("*").order("uploaded_at", desc=True).execute()
         return response.data if response.data else []
-    except Exception:
+    except Exception as e:
+        print(f"Error: {e}")
         return []
-
-def search_notes(query):
-    try:
-        response = supabase.table("notes").select("*").or_(f"module.ilike.%{query}%,course.ilike.%{query}%,description.ilike.%{query}%").order("uploaded_at", desc=True).execute()
-        return response.data if response.data else []
-    except Exception:
-        return get_all_notes()
 
 def index(request):
     return render(request, "index.html")
@@ -169,14 +161,15 @@ def upload_view(request):
                     safe_filename = f"{timestamp}_{file.name.replace(' ', '_')}"
                     file_content = file.read()
                     
-                    # Upload to Google Drive
-                    drive_info = None
-                    if is_google_drive_configured():
-                        drive_info = upload_to_drive(file_content, safe_filename)
-                    
-                    # Backup to Supabase
+                    # Upload to Supabase (primary)
                     supabase.storage.from_("notes").upload(safe_filename, file_content)
                     
+                    # Upload to Google Drive (backup)
+                    drive_id = None
+                    if is_google_drive_configured():
+                        drive_id = upload_to_drive(file_content, safe_filename)
+                    
+                    # Save metadata
                     supabase.table("notes").insert({
                         "filename": safe_filename,
                         "module": form.cleaned_data["module"],
@@ -184,12 +177,12 @@ def upload_view(request):
                         "description": form.cleaned_data["description"],
                         "uploader": "user",
                         "uploaded_at": datetime.now().isoformat(),
-                        "drive_id": drive_info.get("drive_id") if drive_info else None
+                        "drive_id": drive_id
                     }).execute()
                     
                     message = f"✅ {file.name} uploaded!"
-                    if drive_info:
-                        message += " (15GB Google Drive)"
+                    if drive_id:
+                        message += " (Backed up to Google Drive)"
                     form = UploadForm()
             except Exception as e:
                 error = f"Upload failed: {e}"
@@ -200,12 +193,11 @@ def upload_view(request):
     return render(request, "upload.html", {"form": form, "message": message, "error": error})
 
 def browse_view(request):
-    query = request.GET.get("q", "")
-    notes = search_notes(query) if query else get_all_notes()
+    notes = get_all_notes()
     for note in notes:
         ext = os.path.splitext(note.get("filename", ""))[1].upper().replace(".", "")
         note["file_ext"] = ext if ext else "FILE"
-    return render(request, "browse.html", {"notes": notes, "query": query})
+    return render(request, "browse.html", {"notes": notes})
 
 def view_file(request, id):
     try:
@@ -250,16 +242,16 @@ def admin_dashboard(request):
 def test_drive(request):
     if not ADMIN:
         return HttpResponse("Not authorized", status=403)
-    result = [f"<h2>Google Drive Test</h2>", f"<p>Shared Drive ID: {GOOGLE_DRIVE_FOLDER_ID}</p>"]
-    if is_google_drive_configured():
-        drive_info = upload_to_drive(b"Test", f"test_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt")
-        if drive_info:
-            result.append("<p style='color:green'>✅ SUCCESS! 15GB Google Drive working!</p>")
-        else:
-            result.append("<p style='color:red'>❌ Upload failed. Check that the service account has Content Manager permission on the Shared Drive.</p>")
+    if not GOOGLE_DRIVE_FOLDER_ID:
+        return HttpResponse("No Drive ID set. Add GOOGLE_DRIVE_FOLDER_ID environment variable.")
+    if not os.path.exists(CREDS_PATH):
+        return HttpResponse("No credentials file. Add google-credentials.json as a Secret File.")
+    
+    result = upload_to_drive(b"Test file content", f"test_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt")
+    if result:
+        return HttpResponse("✅ SUCCESS! Google Drive is working! Your files have 15GB backup storage.")
     else:
-        result.append("<p style='color:red'>❌ Not configured</p>")
-    return HttpResponse("<br>".join(result))
+        return HttpResponse("❌ Failed. Make sure you created a SHARED DRIVE and added the service account as Content Manager.")
 
 urlpatterns = [
     path("", index),
