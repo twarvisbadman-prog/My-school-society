@@ -1,4 +1,4 @@
-# app.py - FINAL WORKING VERSION (Supabase Only)
+# app.py - FIXED VERSION
 import os
 import mimetypes
 from datetime import datetime
@@ -107,6 +107,8 @@ def get_all_notes():
         for note in notes:
             if note.get("original_filename") is None:
                 note["original_filename"] = note.get("filename", "")
+            if note.get("file_size") is None:
+                note["file_size"] = 0
         return notes
     except Exception as e:
         print(f"Error: {e}")
@@ -209,10 +211,6 @@ def delete_file(request, id):
         return HttpResponse(f"Delete failed: {str(e)}", status=500)
 
 def favicon(request):
-    favicon_path = os.path.join(BASE_DIR, "favicon.ico")
-    if os.path.exists(favicon_path):
-        with open(favicon_path, "rb") as f:
-            return HttpResponse(f.read(), content_type="image/x-icon")
     return HttpResponse(status=204)
 
 # ========== ADMIN DASHBOARD ==========
@@ -248,7 +246,6 @@ def admin_settings(request):
         return HttpResponse("Access Denied. Admin only.", status=403)
     
     return render(request, "admin_settings.html", {})
-# ========== END ADMIN DASHBOARD ==========
 
 # URL patterns
 urlpatterns = [
