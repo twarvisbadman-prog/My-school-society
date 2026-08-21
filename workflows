@@ -1,14 +1,6 @@
-name: Keep Render Alive
-
-on:
-  schedule:
-    # Runs every 10 minutes
-    - cron: '*/10 * * * *'
-  workflow_dispatch:
-
-jobs:
-  ping:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Ping my-school-society
-        run: curl -s https://my-school-society.onrender.com/ > /dev/null
+#!/bin/bash
+while true; do
+  curl -s https://my-school-society.onrender.com/ > /dev/null
+  echo "Pinged at $(date)"
+  sleep 600  # 10 minutes
+done
