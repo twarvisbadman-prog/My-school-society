@@ -346,7 +346,7 @@
             color: #fff;
         }
 
-        /* ========== UPLOAD SECTION with Lightning Edge ========== */
+        /* ========== UPLOAD SECTION ========== */
         .upload-container {
             max-width: 800px;
             margin: 30px auto;
@@ -526,7 +526,7 @@
             min-height: 100px;
         }
 
-        /* ========== DRAG & DROP (FIRST - PROMINENT) ========== */
+        /* ========== DRAG & DROP ========== */
         .upload-area {
             border: 2px dashed rgba(255, 45, 45, 0.3);
             border-radius: 20px;
@@ -1020,7 +1020,7 @@
             animation: none;
         }
 
-        /* ========== LIGHTNING POPUP MESSAGES ========== */
+        /* ========== MESSAGES ========== */
         .message {
             padding: 18px 24px;
             border-radius: 16px;
@@ -1391,7 +1391,7 @@
             </div>
         </div>
 
-        <!-- ========== UPLOAD CONTAINER with Lightning Edge ========== -->
+        <!-- ========== UPLOAD CONTAINER ========== -->
         <div class="upload-container">
             <div class="upload-card">
                 <div class="upload-header">
@@ -1402,12 +1402,27 @@
                     <p>Share your study materials with fellow students</p>
                 </div>
 
+                <!-- Display Django messages -->
+                {% if message %}
+                <div class="message success">
+                    <i class="fas fa-check-circle"></i>
+                    <span>{{ message }}</span>
+                </div>
+                {% endif %}
+                
+                {% if error %}
+                <div class="message error">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>{{ error }}</span>
+                </div>
+                {% endif %}
+
                 <div id="messageContainer"></div>
 
                 <form method="post" enctype="multipart/form-data" id="uploadForm" action="/upload/">
                     {% csrf_token %}
                     
-                    <!-- 1. DRAG & DROP FILE UPLOAD (FIRST - MOST PROMINENT) -->
+                    <!-- 1. DRAG & DROP FILE UPLOAD -->
                     <div class="form-group">
                         <label><i class="fas fa-paperclip"></i> Upload Your File <span class="required">*</span></label>
                         <div class="upload-area" id="dropArea">
@@ -1415,7 +1430,7 @@
                             <h3>Drag & Drop Files Here</h3>
                             <p>or click to browse your files</p>
                             <span class="browse-btn"><i class="fas fa-folder-open"></i> Browse Files</span>
-                            <input type="file" id="fileInput" name="file" required>
+                            {{ form.file }}
                         </div>
                         <div class="file-list" id="fileList"></div>
                         <small style="display: block; margin-top: 8px; color: rgba(255,255,255,0.4); font-size: 0.7rem;">
@@ -1442,22 +1457,22 @@
                         </div>
                     </div>
 
-                    <!-- 3. TITLE / MODULE NAME -->
+                    <!-- 3. MODULE NAME -->
                     <div class="form-group">
-                        <label><i class="fas fa-tag"></i> Title / Module Name <span class="required">*</span></label>
-                        <input type="text" class="form-input" name="module" placeholder="e.g., Computer Networks, Database Systems..." required>
+                        <label><i class="fas fa-tag"></i> Module Name <span class="required">*</span></label>
+                        {{ form.module }}
                     </div>
 
                     <!-- 4. COURSE CODE -->
                     <div class="form-group">
                         <label><i class="fas fa-book"></i> Course Code <span class="required">*</span></label>
-                        <input type="text" class="form-input" name="course" placeholder="e.g., CIT 3102, BCS 2101..." required>
+                        {{ form.course }}
                     </div>
 
                     <!-- 5. DESCRIPTION -->
                     <div class="form-group">
                         <label><i class="fas fa-align-left"></i> Description</label>
-                        <textarea class="form-textarea" name="description" placeholder="Brief description of the file content..." rows="3"></textarea>
+                        {{ form.description }}
                     </div>
 
                     <!-- 6. PRIVACY SETTING -->
@@ -1482,7 +1497,7 @@
                         </small>
                     </div>
 
-                    <!-- 7. PASSCODE SECTION (shown when Private is selected) -->
+                    <!-- 7. PASSCODE SECTION -->
                     <div class="passcode-section" id="passcodeSection">
                         <div class="warning">
                             <i class="fas fa-exclamation-triangle"></i>
@@ -1491,7 +1506,7 @@
                         <div class="form-group" style="margin-bottom:0;">
                             <label><i class="fas fa-key"></i> Set 4-Digit Passcode <span class="required">*</span></label>
                             <div class="passcode-input">
-                                <input type="password" id="passcodeInput" name="passcode" placeholder="••••" maxlength="4" pattern="[0-9]{4}" inputmode="numeric">
+                                {{ form.passcode }}
                                 <span style="color: rgba(255,255,255,0.3); font-size: 0.85rem;">(4 numbers only)</span>
                             </div>
                         </div>
@@ -1501,62 +1516,9 @@
                     <div class="form-group">
                         <label><i class="fas fa-university"></i> Your University <span class="optional">(optional)</span></label>
                         <div class="uni-select-wrapper">
-                            <select id="uniSelect" name="university">
-                                <option value="">-- Select your university --</option>
-                                <option value="University of Dar es Salaam (UDSM)">University of Dar es Salaam (UDSM)</option>
-                                <option value="Sokoine University of Agriculture (SUA)">Sokoine University of Agriculture (SUA)</option>
-                                <option value="Muhimbili University of Health and Allied Sciences (MUHAS)">Muhimbili University of Health and Allied Sciences (MUHAS)</option>
-                                <option value="University of Dodoma (UDOM)">University of Dodoma (UDOM)</option>
-                                <option value="Mzumbe University">Mzumbe University</option>
-                                <option value="State University of Zanzibar (SUZA)">State University of Zanzibar (SUZA)</option>
-                                <option value="Nelson Mandela African Institute of Science and Technology (NM-AIST)">Nelson Mandela African Institute of Science and Technology (NM-AIST)</option>
-                                <option value="Ardhi University (ARU)">Ardhi University (ARU)</option>
-                                <option value="Dar es Salaam Institute of Technology (DIT)">Dar es Salaam Institute of Technology (DIT)</option>
-                                <option value="College of Business Education (CBE)">College of Business Education (CBE)</option>
-                                <option value="Institute of Finance Management (IFM)">Institute of Finance Management (IFM)</option>
-                                <option value="Tumaini University Makumira">Tumaini University Makumira</option>
-                                <option value="St. Augustine University of Tanzania (SAUT)">St. Augustine University of Tanzania (SAUT)</option>
-                                <option value="Ruaha Catholic University (RUCU)">Ruaha Catholic University (RUCU)</option>
-                                <option value="Jordan University College (JUCO)">Jordan University College (JUCO)</option>
-                                <option value="Kampala International University (KIU) - Tanzania Campus">Kampala International University (KIU) - Tanzania Campus</option>
-                                <option value="Mount Meru University (MMU)">Mount Meru University (MMU)</option>
-                                <option value="Teofilo Kisanji University (TEKU)">Teofilo Kisanji University (TEKU)</option>
-                                <option value="St. John's University of Tanzania (SJUT)">St. John's University of Tanzania (SJUT)</option>
-                                <option value="Zanzibar University (ZU)">Zanzibar University (ZU)</option>
-                                <option value="University of Bagamoyo">University of Bagamoyo</option>
-                                <option value="Kibabii University Tanzania Campus">Kibabii University Tanzania Campus</option>
-                                <option value="East and Southern African Management Institute (ESAMI)">East and Southern African Management Institute (ESAMI)</option>
-                                <option value="Moshi Co-operative University (MoCU)">Moshi Co-operative University (MoCU)</option>
-                                <option value="Tanzania Institute of Accountancy (TIA)">Tanzania Institute of Accountancy (TIA)</option>
-                                <option value="National Institute of Transport (NIT)">National Institute of Transport (NIT)</option>
-                                <option value="Tanzania Petroleum Institute (TPI)">Tanzania Petroleum Institute (TPI)</option>
-                                <option value="Mwalimu Nyerere Memorial Academy (MNMA)">Mwalimu Nyerere Memorial Academy (MNMA)</option>
-                                <option value="Dodoma University of Science and Technology">Dodoma University of Science and Technology</option>
-                                <option value="Arusha Technical College (ATC)">Arusha Technical College (ATC)</option>
-                                <option value="Karagwe Technical College">Karagwe Technical College</option>
-                                <option value="Mbeya University of Science and Technology (MUST)">Mbeya University of Science and Technology (MUST)</option>
-                                <option value="Rukwa Technical College">Rukwa Technical College</option>
-                                <option value="Tanga Technical College">Tanga Technical College</option>
-                                <option value="Kigoma Technical College">Kigoma Technical College</option>
-                                <option value="Lindi Technical College">Lindi Technical College</option>
-                                <option value="Mtwara Technical College">Mtwara Technical College</option>
-                                <option value="Tabora Technical College">Tabora Technical College</option>
-                                <option value="Iringa Technical College">Iringa Technical College</option>
-                                <option value="Morogoro Technical College">Morogoro Technical College</option>
-                                <option value="Mwanza Technical College">Mwanza Technical College</option>
-                                <option value="Kilimanjaro Technical College">Kilimanjaro Technical College</option>
-                                <option value="Singida Technical College">Singida Technical College</option>
-                                <option value="Shinyanga Technical College">Shinyanga Technical College</option>
-                                <option value="Katavi Technical College">Katavi Technical College</option>
-                                <option value="Njombe Technical College">Njombe Technical College</option>
-                                <option value="Geita Technical College">Geita Technical College</option>
-                                <option value="Simiyu Technical College">Simiyu Technical College</option>
-                                <option value="Songwe Technical College">Songwe Technical College</option>
-                                <option value="Manyara Technical College">Manyara Technical College</option>
-                                <option value="Other">Other (Type your university name)</option>
-                            </select>
+                            {{ form.university }}
                             <div class="custom-uni-input" id="customUniInput">
-                                <input type="text" id="customUniText" name="custom_university" placeholder="Type your university name...">
+                                {{ form.custom_university }}
                             </div>
                         </div>
                         <small style="display: block; margin-top: 8px; color: rgba(255,255,255,0.4); font-size: 0.75rem;">
@@ -1943,164 +1905,174 @@
         const privacyPublic = document.getElementById('privacyPublic');
         const privacyPrivate = document.getElementById('privacyPrivate');
         const passcodeSection = document.getElementById('passcodeSection');
-        const passcodeInput = document.getElementById('passcodeInput');
+        const passcodeInput = document.querySelector('#passcodeSection input');
 
         privacyPrivate.addEventListener('change', function() {
             if (this.checked) {
                 passcodeSection.classList.add('show');
-                passcodeInput.required = true;
+                if (passcodeInput) passcodeInput.required = true;
             }
         });
 
         privacyPublic.addEventListener('change', function() {
             if (this.checked) {
                 passcodeSection.classList.remove('show');
-                passcodeInput.required = false;
-                passcodeInput.value = '';
+                if (passcodeInput) {
+                    passcodeInput.required = false;
+                    passcodeInput.value = '';
+                }
             }
         });
 
         // Passcode validation - only numbers, max 4 digits
-        passcodeInput.addEventListener('input', function() {
-            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);
-        });
+        if (passcodeInput) {
+            passcodeInput.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);
+            });
+        }
 
         // ========== UNIVERSITY SELECT with "Other" option ==========
-        const uniSelect = document.getElementById('uniSelect');
+        const uniSelect = document.getElementById('id_university');
         const customUniInput = document.getElementById('customUniInput');
-        const customUniText = document.getElementById('customUniText');
+        const customUniText = document.querySelector('#customUniInput input');
 
-        uniSelect.addEventListener('change', function() {
-            if (this.value === 'Other') {
-                customUniInput.classList.add('show');
-                customUniText.required = true;
-                customUniText.focus();
-            } else {
-                customUniInput.classList.remove('show');
-                customUniText.required = false;
-                customUniText.value = '';
-            }
-        });
+        if (uniSelect) {
+            uniSelect.addEventListener('change', function() {
+                if (this.value === 'Other') {
+                    customUniInput.classList.add('show');
+                    if (customUniText) customUniText.required = true;
+                    if (customUniText) customUniText.focus();
+                } else {
+                    customUniInput.classList.remove('show');
+                    if (customUniText) {
+                        customUniText.required = false;
+                        customUniText.value = '';
+                    }
+                }
+            });
+        }
 
         // ========== DRAG & DROP ==========
         const dropArea = document.getElementById('dropArea');
-        const fileInput = document.getElementById('fileInput');
+        const fileInput = document.querySelector('#id_file');
         const fileList = document.getElementById('fileList');
         let selectedFile = null;
 
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, preventDefaults, false);
-        });
-
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropArea.addEventListener(eventName, () => {
-                dropArea.classList.add('dragover');
+        if (dropArea && fileInput) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
             });
-        });
 
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, () => {
-                dropArea.classList.remove('dragover');
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, () => {
+                    dropArea.classList.add('dragover');
+                });
             });
-        });
 
-        dropArea.addEventListener('drop', function(e) {
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                handleFile(files[0]);
-            }
-        });
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, () => {
+                    dropArea.classList.remove('dragover');
+                });
+            });
 
-        fileInput.addEventListener('change', function() {
-            if (this.files.length > 0) {
-                handleFile(this.files[0]);
-            }
-        });
+            dropArea.addEventListener('drop', function(e) {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFile(files[0]);
+                }
+            });
 
-        function handleFile(file) {
-            const allowedExts = ['.pdf', '.ppt', '.pptx', '.doc', '.docx', '.xls', '.xlsx', '.txt', '.md', '.jpg', '.jpeg', '.png', '.gif', '.zip', '.rar', '.csv', '.json', '.xml'];
-            const ext = '.' + file.name.split('.').pop().toLowerCase();
-            
-            if (!allowedExts.includes(ext)) {
-                showMessage('File type not allowed: ' + file.name, 'error');
-                return;
-            }
-            if (file.size > 100 * 1024 * 1024) {
-                showMessage('File too large: ' + file.name + ' (Max 100MB)', 'error');
-                return;
-            }
-            
-            selectedFile = file;
-            renderFileList();
-        }
+            fileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    handleFile(this.files[0]);
+                }
+            });
 
-        function renderFileList() {
-            fileList.innerHTML = '';
-            if (!selectedFile) return;
-            
-            const file = selectedFile;
-            const div = document.createElement('div');
-            div.className = 'file-item';
-            
-            const iconMap = {
-                'pdf': 'file-pdf',
-                'doc': 'file-word',
-                'docx': 'file-word',
-                'ppt': 'file-powerpoint',
-                'pptx': 'file-powerpoint',
-                'xls': 'file-excel',
-                'xlsx': 'file-excel',
-                'jpg': 'file-image',
-                'jpeg': 'file-image',
-                'png': 'file-image',
-                'gif': 'file-image',
-                'zip': 'file-archive',
-                'rar': 'file-archive'
-            };
-            
-            const ext = file.name.split('.').pop().toLowerCase();
-            const iconClass = iconMap[ext] || 'file';
-            const iconColors = {
-                'pdf': 'pdf',
-                'doc': 'docx',
-                'docx': 'docx',
-                'ppt': 'docx',
-                'pptx': 'docx',
-                'xls': 'docx',
-                'xlsx': 'docx',
-                'jpg': 'image',
-                'jpeg': 'image',
-                'png': 'image',
-                'gif': 'image',
-                'zip': 'zip',
-                'rar': 'zip'
-            };
-            const colorClass = iconColors[ext] || 'default';
-            
-            div.innerHTML = `
-                <div class="file-icon ${colorClass}">
-                    <i class="fas fa-${iconClass}"></i>
-                </div>
-                <div class="file-info">
-                    <div class="file-name">${file.name}</div>
-                    <div class="file-size">${(file.size / 1024 / 1024).toFixed(2)} MB</div>
-                </div>
-                <button class="file-remove">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-            fileList.appendChild(div);
-            
-            div.querySelector('.file-remove').addEventListener('click', function() {
-                selectedFile = null;
-                fileInput.value = '';
+            function handleFile(file) {
+                const allowedExts = ['.pdf', '.ppt', '.pptx', '.doc', '.docx', '.xls', '.xlsx', '.txt', '.md', '.jpg', '.jpeg', '.png', '.gif', '.zip', '.rar', '.csv', '.json', '.xml'];
+                const ext = '.' + file.name.split('.').pop().toLowerCase();
+                
+                if (!allowedExts.includes(ext)) {
+                    showMessage('File type not allowed: ' + file.name, 'error');
+                    return;
+                }
+                if (file.size > 100 * 1024 * 1024) {
+                    showMessage('File too large: ' + file.name + ' (Max 100MB)', 'error');
+                    return;
+                }
+                
+                selectedFile = file;
                 renderFileList();
-            });
+            }
+
+            function renderFileList() {
+                fileList.innerHTML = '';
+                if (!selectedFile) return;
+                
+                const file = selectedFile;
+                const div = document.createElement('div');
+                div.className = 'file-item';
+                
+                const iconMap = {
+                    'pdf': 'file-pdf',
+                    'doc': 'file-word',
+                    'docx': 'file-word',
+                    'ppt': 'file-powerpoint',
+                    'pptx': 'file-powerpoint',
+                    'xls': 'file-excel',
+                    'xlsx': 'file-excel',
+                    'jpg': 'file-image',
+                    'jpeg': 'file-image',
+                    'png': 'file-image',
+                    'gif': 'file-image',
+                    'zip': 'file-archive',
+                    'rar': 'file-archive'
+                };
+                
+                const ext = file.name.split('.').pop().toLowerCase();
+                const iconClass = iconMap[ext] || 'file';
+                const iconColors = {
+                    'pdf': 'pdf',
+                    'doc': 'docx',
+                    'docx': 'docx',
+                    'ppt': 'docx',
+                    'pptx': 'docx',
+                    'xls': 'docx',
+                    'xlsx': 'docx',
+                    'jpg': 'image',
+                    'jpeg': 'image',
+                    'png': 'image',
+                    'gif': 'image',
+                    'zip': 'zip',
+                    'rar': 'zip'
+                };
+                const colorClass = iconColors[ext] || 'default';
+                
+                div.innerHTML = `
+                    <div class="file-icon ${colorClass}">
+                        <i class="fas fa-${iconClass}"></i>
+                    </div>
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+                    </div>
+                    <button class="file-remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                fileList.appendChild(div);
+                
+                div.querySelector('.file-remove').addEventListener('click', function() {
+                    selectedFile = null;
+                    fileInput.value = '';
+                    renderFileList();
+                });
+            }
         }
 
         // ========== LIGHTNING POPUP MESSAGES ==========
@@ -2112,7 +2084,6 @@
             msg.innerHTML = `<i class="fas ${icon}"></i><span>${text}</span>`;
             container.appendChild(msg);
             
-            // Trigger lightning flash when message appears
             lightningFlash(0.3, 0.05);
             
             setTimeout(() => {
@@ -2120,67 +2091,36 @@
             }, 5000);
         }
 
-        // ========== FORM SUBMIT WITH REDIRECT ==========
+        // ========== FORM VALIDATION ==========
         const form = document.getElementById('uploadForm');
         const submitBtn = document.getElementById('submitBtn');
 
         form.addEventListener('submit', function(e) {
-            if (!selectedFile) {
+            // Check if file is selected
+            if (!selectedFile && fileInput && !fileInput.files.length) {
                 e.preventDefault();
                 showMessage('Please select a file to upload', 'error');
                 return;
             }
             
             // Validate passcode if private
-            if (privacyPrivate.checked) {
-                const passcode = passcodeInput.value;
-                if (passcode.length !== 4 || !/^\d{4}$/.test(passcode)) {
-                    e.preventDefault();
-                    showMessage('Please enter a valid 4-digit passcode for private file', 'error');
-                    return;
+            if (privacyPrivate && privacyPrivate.checked) {
+                const passcode = document.querySelector('#passcodeSection input');
+                if (passcode) {
+                    const val = passcode.value;
+                    if (val.length !== 4 || !/^\d{4}$/.test(val)) {
+                        e.preventDefault();
+                        showMessage('Please enter a valid 4-digit passcode for private file', 'error');
+                        return;
+                    }
                 }
-            }
-            
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
-            submitBtn.disabled = true;
-            
-            // Show success with lightning
-            setTimeout(() => {
-                showMessage('✅ File uploaded successfully! Redirecting to view page...', 'success');
-                lightningFlash(0.5, 0.08);
-            }, 1000);
-            
-            // Redirect after 2.5 seconds
-            setTimeout(() => {
-                window.location.href = '/view/';
-            }, 2500);
-        });
-
-        // ========== KEYBOARD SHORTCUTS ==========
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                if (sidebar.classList.contains('open')) {
-                    closeSidebar();
-                }
-                if (document.getElementById('gpaModal').classList.contains('active')) {
-                    document.getElementById('gpaModal').classList.remove('active');
-                }
-                if (document.getElementById('settingsModal').classList.contains('active')) {
-                    document.getElementById('settingsModal').classList.remove('active');
-                }
-            }
-            if (e.ctrlKey && e.key === 'u') {
-                e.preventDefault();
-                fileInput.click();
             }
         });
 
-        console.log('⚡ TWARVIS Upload Page Loaded with Lightning Edge!');
-        console.log('📤 Upload order: Drag & Drop → File Type → Title → Course → Description → Privacy → University');
+        console.log('⚡ TWARVIS Upload Page Loaded!');
+        console.log('📤 Upload order: Drag & Drop → File Type → Module → Course → Description → Privacy → University');
         console.log('🔒 Private files require 4-digit passcode (NO BACKUP!)');
         console.log('⚡ Lightning edge animations with rain and thunder effects');
-        console.log('🏫 50+ universities with "Other" option for custom entry');
-        console.log('📁 Drag & drop is the FIRST and most prominent field');
     </script>
 </body>
 </html>
