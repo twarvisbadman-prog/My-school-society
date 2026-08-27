@@ -1,4 +1,4 @@
-<!-- view.html - Direct View with Beautiful Passcode Popup -->
+<!-- view.html - Full Document Viewer with Google Docs and Passcode -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,13 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            font-family:'Inter',sans-serif;
-            background:#0a0a0a;
-            min-height:100vh;
-            overflow-x:hidden;
-            transition:background 0.5s;
-        }
+        body { font-family:'Inter',sans-serif; background:#0a0a0a; min-height:100vh; overflow-x:hidden; transition:background 0.5s; }
         #rain-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; background:linear-gradient(180deg,#0f0f1a 0%,#0a0a0f 100%); transition:opacity 0.8s; }
         .lightning-overlay { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none; background:transparent; }
         .glass-overlay { position:relative; z-index:2; min-height:100vh; width:100%; }
@@ -28,7 +22,7 @@
         body.dark-theme .view-card { background:rgba(255,255,255,0.04); border-color:rgba(50,100,255,0.15); }
         body.dark-theme .pdf-header h2 { color:#fff; }
         body.dark-theme .pdf-meta { color:rgba(255,255,255,0.5); }
-        body.dark-theme .btn-back { background:rgba(74,124,247,0.15); color:#4a7cf7; }
+        body.dark-theme .btn-back { background:rgba(74,124,247,0.15); color:#4a7cf7; border-color:rgba(74,124,247,0.15); }
         body.dark-theme .btn-back:hover { background:#4a7cf7; color:#fff; }
         body.dark-theme .btn-download { background:rgba(0,255,65,0.08); color:#00ff41; border-color:rgba(0,255,65,0.08); }
         body.dark-theme .btn-download:hover { background:rgba(0,255,65,0.15); }
@@ -41,30 +35,28 @@
         body.light-theme .view-card:hover { border-color:#4a7cf7; box-shadow:0 8px 30px rgba(74,124,247,0.08); }
         body.light-theme .pdf-header h2 { color:#1a1a2e; }
         body.light-theme .pdf-meta { color:rgba(0,0,0,0.5); }
-        body.light-theme .btn-back { background:rgba(74,124,247,0.1); color:#2b4f8c; }
+        body.light-theme .btn-back { background:rgba(74,124,247,0.1); color:#2b4f8c; border-color:rgba(74,124,247,0.1); }
         body.light-theme .btn-back:hover { background:#4a7cf7; color:#fff; }
         body.light-theme .btn-download { background:rgba(0,200,80,0.08); color:#008a2e; border-color:rgba(0,200,80,0.08); }
         body.light-theme .btn-download:hover { background:rgba(0,200,80,0.15); }
 
-        .header { background:rgba(0,0,0,0.7); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid rgba(255,255,255,0.05); position:sticky; top:0; z-index:100; padding:12px 0; }
+        .header { background:rgba(0,0,0,0.7); backdrop-filter:blur(20px); border-bottom:1px solid rgba(255,255,255,0.05); position:sticky; top:0; z-index:100; padding:12px 0; }
         .header-content { max-width:1000px; margin:0 auto; padding:0 20px; display:flex; justify-content:space-between; align-items:center; }
         .logo { font-size:1.2rem; font-weight:700; background:linear-gradient(135deg,#ff1a1a,#00cc33); -webkit-background-clip:text; background-clip:text; color:transparent; }
         .nav-links { display:flex; gap:16px; }
         .nav-links a { color:rgba(255,255,255,0.5); text-decoration:none; font-size:0.9rem; transition:0.3s; }
         .nav-links a:hover { color:#fff; }
+        /* NO ADMIN LINK */
 
         .view-container { max-width:1000px; margin:20px auto; padding:0 20px 100px; position:relative; z-index:3; }
         .view-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:28px; padding:28px; transition:all 0.3s; }
-
         .pdf-header { margin-bottom:20px; }
         .pdf-header h2 { font-size:1.5rem; font-weight:600; color:#fff; display:flex; align-items:center; gap:10px; }
         .pdf-header h2 i { color:#ff4d4d; }
         .pdf-meta { display:flex; flex-wrap:wrap; gap:14px; font-size:0.85rem; color:rgba(255,255,255,0.4); margin:6px 0 10px; }
         .pdf-meta span { display:flex; align-items:center; gap:6px; }
-
         .pdf-viewer { background:rgba(0,0,0,0.2); border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,0.05); min-height:500px; }
         .pdf-viewer iframe { width:100%; height:75vh; border:none; min-height:500px; }
-
         .action-bar { display:flex; gap:12px; margin-top:20px; flex-wrap:wrap; }
         .action-bar a { padding:10px 24px; border-radius:60px; font-weight:600; font-size:0.9rem; text-decoration:none; border:1px solid transparent; transition:all 0.25s; display:inline-flex; align-items:center; gap:8px; font-family:inherit; cursor:pointer; }
         .btn-back { background:rgba(255,45,45,0.08); color:#ff4d4d; border-color:rgba(255,45,45,0.08); }
@@ -72,54 +64,21 @@
         .btn-download { background:rgba(0,255,65,0.08); color:#00ff41; border-color:rgba(0,255,65,0.08); }
         .btn-download:hover { background:rgba(0,255,65,0.15); }
 
-        /* ===== BEAUTIFUL PASSCODE POPUP ===== */
-        .passcode-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.65);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 0.3s ease;
-        }
-        .passcode-overlay.active { display: flex; }
-
-        .passcode-box {
-            background: rgba(15, 15, 26, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 40px;
-            padding: 48px 40px 36px;
-            max-width: 420px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 0 80px rgba(255, 26, 26, 0.12);
-            animation: scaleUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
+        /* Passcode Popup */
+        .passcode-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); backdrop-filter:blur(16px); z-index:2000; justify-content:center; align-items:center; animation:fadeIn 0.3s ease; }
+        .passcode-overlay.active { display:flex; }
+        .passcode-box { background:rgba(15,15,26,0.95); border:1px solid rgba(255,255,255,0.08); border-radius:40px; padding:48px 40px 36px; max-width:420px; width:90%; text-align:center; box-shadow:0 0 80px rgba(255,26,26,0.12); animation:scaleUp 0.35s cubic-bezier(0.34,1.56,0.64,1); }
         .passcode-box .lock-icon { font-size:3rem; color:#ff9800; display:block; margin-bottom:12px; }
         .passcode-box h3 { color:#fff; font-size:1.4rem; font-weight:600; margin-bottom:6px; }
         .passcode-box p { color:rgba(255,255,255,0.35); font-size:0.9rem; margin-bottom:24px; line-height:1.5; }
-        .passcode-box input {
-            width:100%; padding:16px; background:rgba(255,255,255,0.04); border:2px solid rgba(255,255,255,0.06); border-radius:60px;
-            color:#fff; font-size:1.6rem; font-family:monospace; letter-spacing:12px; text-align:center; transition:0.3s; outline:none;
-        }
+        .passcode-box input { width:100%; padding:16px; background:rgba(255,255,255,0.04); border:2px solid rgba(255,255,255,0.06); border-radius:60px; color:#fff; font-size:1.6rem; font-family:monospace; letter-spacing:12px; text-align:center; transition:0.3s; outline:none; }
         .passcode-box input:focus { border-color:#ff2d2d; box-shadow:0 0 0 4px rgba(255,45,45,0.08); }
         .passcode-box input::placeholder { letter-spacing:2px; font-size:1rem; color:rgba(255,255,255,0.15); }
         .passcode-box .error-msg { color:#ff4444; font-size:0.85rem; margin-top:12px; display:none; }
         .passcode-box .error-msg.show { display:block; }
-        .passcode-box .unlock-btn {
-            width:100%; padding:14px; margin-top:18px; background:linear-gradient(135deg,#ff2d2d,#ff6b6b);
-            border:none; border-radius:60px; color:#fff; font-weight:700; font-size:1.1rem; cursor:pointer; transition:0.3s;
-        }
+        .passcode-box .unlock-btn { width:100%; padding:14px; margin-top:18px; background:linear-gradient(135deg,#ff2d2d,#ff6b6b); border:none; border-radius:60px; color:#fff; font-weight:700; font-size:1.1rem; cursor:pointer; transition:0.3s; }
         .passcode-box .unlock-btn:hover { transform:scale(1.02); box-shadow:0 10px 30px -10px rgba(255,45,45,0.4); }
-        .passcode-box .back-btn {
-            background:none; border:none; color:rgba(255,255,255,0.25); margin-top:14px; cursor:pointer; font-size:0.85rem; transition:0.3s;
-        }
+        .passcode-box .back-btn { background:none; border:none; color:rgba(255,255,255,0.25); margin-top:14px; cursor:pointer; font-size:0.85rem; transition:0.3s; }
         .passcode-box .back-btn:hover { color:#fff; }
 
         @keyframes fadeIn { from{opacity:0} to{opacity:1} }
@@ -140,7 +99,6 @@
     <canvas id="rain-canvas"></canvas>
     <div class="lightning-overlay" id="lightning"></div>
     <div class="glass-overlay">
-        <!-- HEADER - NO ADMIN LINK -->
         <div class="header">
             <div class="header-content">
                 <span class="logo">⚡ TWARVIS</span>
@@ -152,7 +110,6 @@
             </div>
         </div>
 
-        <!-- VIEW -->
         <div class="view-container">
             <div class="view-card">
                 <div class="pdf-header">
@@ -167,7 +124,7 @@
                 </div>
 
                 <div class="pdf-viewer" id="pdfViewer">
-                    <iframe src="{{ pdf_url }}" title="PDF Viewer"></iframe>
+                    <iframe src="{{ pdf_url }}" title="Document Viewer"></iframe>
                 </div>
 
                 <div class="action-bar">
@@ -178,7 +135,6 @@
         </div>
     </div>
 
-    <!-- ===== PASSCODE POPUP ===== -->
     {% if note.privacy == 'private' %}
     <div class="passcode-overlay active" id="passcodeOverlay">
         <div class="passcode-box">
@@ -254,14 +210,14 @@
                 if (entered === correct) {
                     overlay.classList.remove('active');
                     document.getElementById('pdfViewer').style.display = 'block';
-                    // Lightning flash on success
+                    // Flash lightning on success
                     lightning.style.backgroundColor = 'rgba(255,255,255,0.4)';
                     setTimeout(() => { lightning.style.backgroundColor = 'transparent'; }, 80);
                 } else {
                     error.classList.add('show');
                     input.value = '';
                     input.focus();
-                    // Lightning flash on error
+                    // Flash red on error
                     lightning.style.backgroundColor = 'rgba(255,0,0,0.2)';
                     setTimeout(() => { lightning.style.backgroundColor = 'transparent'; }, 80);
                 }
