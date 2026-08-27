@@ -1,101 +1,168 @@
-<!-- view.html - Beautiful, Fast, with Passcode Modal -->
+<!-- upload.html - Clean Version -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>View Document | Twarvis School</title>
+    <title>Upload | Twarvis School</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* Reset & base */
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Inter',sans-serif; background:#0a0a0a; min-height:100vh; overflow-x:hidden; transition:background 0.5s; }
+        body {
+            font-family:'Inter',sans-serif;
+            background:#0a0a0a;
+            min-height:100vh;
+            overflow-x:hidden;
+            transition:background 0.5s;
+        }
         #rain-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; background:linear-gradient(180deg,#0f0f1a 0%,#0a0a0f 100%); }
         .lightning-overlay { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none; background:transparent; }
         .glass-overlay { position:relative; z-index:2; min-height:100vh; width:100%; }
-        /* Themes */
+
+        /* Dark Theme */
         body.dark-theme { background:#0f0f1a; }
         body.dark-theme #rain-canvas { opacity:0; pointer-events:none; }
         body.dark-theme .header { background:rgba(15,15,26,0.92); border-color:rgba(50,100,255,0.1); }
         body.dark-theme .logo { background:linear-gradient(135deg,#4a7cf7,#6c9aff); -webkit-background-clip:text; background-clip:text; color:transparent; }
-        body.dark-theme .view-card { background:rgba(255,255,255,0.04); border-color:rgba(50,100,255,0.15); }
-        body.dark-theme .view-card:hover { border-color:rgba(74,124,247,0.4); }
-        body.dark-theme .pdf-header h2 { color:#fff; }
-        body.dark-theme .pdf-meta { color:rgba(255,255,255,0.5); }
-        body.dark-theme .pdf-desc { color:rgba(255,255,255,0.4); }
-        body.dark-theme .btn-back { background:rgba(74,124,247,0.15); color:#4a7cf7; }
-        body.dark-theme .btn-back:hover { background:#4a7cf7; color:#fff; }
-        body.dark-theme .btn-download { background:rgba(0,255,65,0.08); color:#00ff41; border-color:rgba(0,255,65,0.08); }
-        body.dark-theme .btn-download:hover { background:rgba(0,255,65,0.15); }
+        body.dark-theme .upload-card { background:rgba(255,255,255,0.04); border-color:rgba(50,100,255,0.15); }
+        body.dark-theme .upload-card:hover { border-color:rgba(74,124,247,0.4); }
+        body.dark-theme .form-label { color:rgba(255,255,255,0.8); }
+        body.dark-theme .form-input, body.dark-theme .form-textarea, body.dark-theme .form-select {
+            background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.08); color:#fff;
+        }
+        body.dark-theme .form-input:focus, body.dark-theme .form-textarea:focus, body.dark-theme .form-select:focus {
+            border-color:#4a7cf7; box-shadow:0 0 0 4px rgba(74,124,247,0.08);
+        }
+        body.dark-theme .btn-submit { background:linear-gradient(135deg,#3355aa,#5599ff); }
+        body.dark-theme .btn-submit:hover { box-shadow:0 10px 30px -10px rgba(50,100,255,0.4); }
+        body.dark-theme .drop-zone { border-color:rgba(50,100,255,0.2); }
+        body.dark-theme .drop-zone:hover { border-color:#4a7cf7; }
+        body.dark-theme .drop-zone.dragover { border-color:#4a7cf7; background:rgba(50,100,255,0.05); }
+        body.dark-theme .allowed-types { background:rgba(255,255,255,0.03); color:rgba(255,255,255,0.3); }
+
         body.light-theme { background:#f2f4f8; }
         body.light-theme #rain-canvas { opacity:0; pointer-events:none; }
         body.light-theme .header { background:rgba(255,255,255,0.92); border-color:rgba(0,0,0,0.06); }
         body.light-theme .logo { background:linear-gradient(135deg,#2b4f8c,#4a7cf7); -webkit-background-clip:text; background-clip:text; color:transparent; }
-        body.light-theme .view-card { background:#fff; border-color:rgba(0,0,0,0.08); }
-        body.light-theme .view-card:hover { border-color:#4a7cf7; box-shadow:0 8px 30px rgba(74,124,247,0.08); }
-        body.light-theme .pdf-header h2 { color:#1a1a2e; }
-        body.light-theme .pdf-meta { color:rgba(0,0,0,0.5); }
-        body.light-theme .pdf-desc { color:rgba(0,0,0,0.4); }
-        body.light-theme .btn-back { background:rgba(74,124,247,0.1); color:#2b4f8c; }
-        body.light-theme .btn-back:hover { background:#4a7cf7; color:#fff; }
-        body.light-theme .btn-download { background:rgba(0,200,80,0.08); color:#008a2e; border-color:rgba(0,200,80,0.08); }
-        body.light-theme .btn-download:hover { background:rgba(0,200,80,0.15); }
+        body.light-theme .upload-card { background:#fff; border-color:rgba(0,0,0,0.08); }
+        body.light-theme .upload-card:hover { border-color:#4a7cf7; box-shadow:0 8px 30px rgba(74,124,247,0.08); }
+        body.light-theme .form-label { color:rgba(0,0,0,0.8); }
+        body.light-theme .form-input, body.light-theme .form-textarea, body.light-theme .form-select {
+            background:#fff; border-color:rgba(0,0,0,0.08); color:#1a1a2e;
+        }
+        body.light-theme .form-input:focus, body.light-theme .form-textarea:focus, body.light-theme .form-select:focus {
+            border-color:#4a7cf7; box-shadow:0 0 0 4px rgba(74,124,247,0.08);
+        }
+        body.light-theme .btn-submit { background:linear-gradient(135deg,#2b4f8c,#4a7cf7); }
+        body.light-theme .btn-submit:hover { box-shadow:0 10px 30px -10px rgba(74,124,247,0.3); }
+        body.light-theme .drop-zone { border-color:rgba(0,0,0,0.1); }
+        body.light-theme .drop-zone:hover { border-color:#4a7cf7; }
+        body.light-theme .drop-zone.dragover { border-color:#4a7cf7; background:rgba(74,124,247,0.03); }
+        body.light-theme .allowed-types { background:rgba(0,0,0,0.03); color:rgba(0,0,0,0.3); }
+
         /* Header */
         .header { background:rgba(0,0,0,0.7); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid rgba(255,255,255,0.05); position:sticky; top:0; z-index:100; padding:12px 0; }
-        .header-content { max-width:1000px; margin:0 auto; padding:0 20px; display:flex; justify-content:space-between; align-items:center; }
+        .header-content { max-width:900px; margin:0 auto; padding:0 20px; display:flex; justify-content:space-between; align-items:center; }
         .logo { font-size:1.2rem; font-weight:700; background:linear-gradient(135deg,#ff1a1a,#00cc33); -webkit-background-clip:text; background-clip:text; color:transparent; }
         .nav-links { display:flex; gap:16px; }
         .nav-links a { color:rgba(255,255,255,0.5); text-decoration:none; font-size:0.9rem; transition:0.3s; }
         .nav-links a:hover { color:#fff; }
-        /* View card */
-        .view-container { max-width:1000px; margin:30px auto; padding:0 20px; position:relative; z-index:3; }
-        .view-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:28px; padding:32px; transition:all 0.3s; }
-        .pdf-header { margin-bottom:24px; }
-        .pdf-header h2 { font-size:1.6rem; font-weight:600; color:#fff; margin-bottom:8px; }
-        .pdf-header h2 i { color:#ff4d4d; margin-right:10px; }
-        .pdf-meta { display:flex; flex-wrap:wrap; gap:16px; font-size:0.9rem; color:rgba(255,255,255,0.4); margin:6px 0 10px; }
-        .pdf-meta span { display:flex; align-items:center; gap:6px; }
-        .pdf-meta i { color:#ff4d4d; width:16px; }
-        .pdf-desc { padding:14px 18px; background:rgba(255,255,255,0.03); border-radius:14px; border-left:3px solid #ff4d4d; color:rgba(255,255,255,0.5); font-size:0.95rem; margin-top:10px; }
-        .pdf-viewer { background:rgba(0,0,0,0.2); border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,0.05); min-height:500px; }
-        .pdf-viewer iframe { width:100%; height:75vh; border:none; min-height:500px; }
-        .pdf-viewer .placeholder { display:flex; flex-direction:column; align-items:center; justify-content:center; height:75vh; min-height:500px; color:rgba(255,255,255,0.2); text-align:center; padding:40px; }
-        .pdf-viewer .placeholder i { font-size:4rem; margin-bottom:20px; color:#ff4d4d; opacity:0.5; }
-        .pdf-viewer .placeholder h3 { color:rgba(255,255,255,0.5); margin-bottom:10px; }
-        .action-bar { display:flex; gap:12px; margin-top:20px; flex-wrap:wrap; }
-        .action-bar a, .action-bar button { padding:10px 24px; border-radius:60px; font-weight:600; font-size:0.9rem; text-decoration:none; border:none; cursor:pointer; transition:all 0.25s; display:inline-flex; align-items:center; gap:8px; font-family:inherit; }
-        .btn-back { background:rgba(255,45,45,0.08); color:#ff4d4d; border:1px solid rgba(255,45,45,0.08); }
-        .btn-back:hover { background:rgba(255,45,45,0.15); }
-        .btn-download { background:rgba(0,255,65,0.08); color:#00ff41; border:1px solid rgba(0,255,65,0.08); }
-        .btn-download:hover { background:rgba(0,255,65,0.15); }
-        /* Passcode Modal - Beautiful */
-        .passcode-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); z-index:2000; justify-content:center; align-items:center; animation:fadeIn 0.3s ease; }
-        .passcode-modal.active { display:flex; }
-        .passcode-box { background:rgba(15,15,26,0.95); border:1px solid rgba(255,255,255,0.1); border-radius:40px; padding:48px 40px 40px; max-width:440px; width:90%; text-align:center; box-shadow:0 0 80px rgba(255,26,26,0.15); position:relative; animation:scaleUp 0.35s cubic-bezier(0.34,1.56,0.64,1); }
-        .passcode-box .lock-icon { font-size:3rem; color:#ff9800; margin-bottom:16px; display:block; }
-        .passcode-box h3 { color:#fff; font-size:1.5rem; font-weight:600; margin-bottom:8px; }
-        .passcode-box p { color:rgba(255,255,255,0.4); font-size:0.95rem; margin-bottom:24px; line-height:1.5; }
-        .passcode-box input { width:100%; padding:16px; background:rgba(255,255,255,0.04); border:2px solid rgba(255,255,255,0.08); border-radius:60px; color:#fff; font-size:1.6rem; font-family:monospace; letter-spacing:12px; text-align:center; transition:0.3s; outline:none; }
-        .passcode-box input:focus { border-color:#ff2d2d; box-shadow:0 0 0 4px rgba(255,45,45,0.08); }
-        .passcode-box input::placeholder { letter-spacing:2px; font-size:1rem; color:rgba(255,255,255,0.2); }
-        .passcode-box .error-msg { color:#ff4444; font-size:0.85rem; margin-top:12px; display:none; }
-        .passcode-box .error-msg.show { display:block; }
-        .passcode-box .unlock-btn { width:100%; padding:14px; margin-top:20px; background:linear-gradient(135deg,#ff2d2d,#ff6b6b); border:none; border-radius:60px; color:#fff; font-weight:700; font-size:1.1rem; cursor:pointer; transition:0.3s; }
-        .passcode-box .unlock-btn:hover { transform:scale(1.02); box-shadow:0 10px 30px -10px rgba(255,45,45,0.4); }
-        .passcode-box .back-btn { background:none; border:none; color:rgba(255,255,255,0.3); margin-top:16px; cursor:pointer; font-size:0.9rem; transition:0.3s; }
-        .passcode-box .back-btn:hover { color:#fff; }
-        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-        @keyframes scaleUp { from{transform:scale(0.9);opacity:0} to{transform:scale(1);opacity:1} }
+
+        /* Upload */
+        .upload-container { max-width:700px; margin:30px auto; padding:0 20px 100px; position:relative; z-index:3; }
+        .upload-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:28px; padding:40px; transition:all 0.3s; }
+        .upload-header { text-align:center; margin-bottom:32px; }
+        .upload-header .icon { font-size:3.5rem; background:linear-gradient(135deg,#ff3333,#00ff44); -webkit-background-clip:text; background-clip:text; color:transparent; display:inline-block; animation:float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+        .upload-header h2 { font-size:1.8rem; color:#fff; margin-top:8px; font-weight:700; }
+        .upload-header p { color:rgba(255,255,255,0.4); font-size:0.95rem; margin-top:4px; }
+
+        .form-group { margin-bottom:22px; }
+        .form-label { display:block; font-weight:600; color:rgba(255,255,255,0.8); font-size:0.9rem; margin-bottom:6px; }
+        .form-label .required { color:#ff4d4d; margin-left:4px; }
+        .form-label .optional { color:rgba(255,255,255,0.3); font-weight:400; font-size:0.8rem; margin-left:5px; }
+        .form-input, .form-textarea, .form-select {
+            width:100%; padding:14px 18px; border:1px solid rgba(255,255,255,0.08); border-radius:16px; font-size:1rem; transition:all 0.3s; font-family:inherit; background:rgba(255,255,255,0.03); color:#fff;
+        }
+        .form-input:hover, .form-textarea:hover, .form-select:hover { border-color:rgba(255,255,255,0.15); }
+        .form-input:focus, .form-textarea:focus, .form-select:focus { outline:none; border-color:#ff2d2d; box-shadow:0 0 0 4px rgba(255,45,45,0.06); background:rgba(255,255,255,0.05); }
+        .form-textarea { resize:vertical; min-height:100px; }
+        .form-select { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ff4d4d' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 18px center; padding-right:45px; cursor:pointer; }
+        .form-select option { background:#1a1a2e; color:#fff; }
+
+        /* File Type & Privacy radio */
+        .radio-group { display:flex; gap:12px; flex-wrap:wrap; margin-top:4px; }
+        .radio-option { flex:1; min-width:100px; position:relative; }
+        .radio-option input[type="radio"] { position:absolute; opacity:0; width:100%; height:100%; cursor:pointer; }
+        .radio-option label { display:flex; align-items:center; justify-content:center; gap:8px; padding:12px 16px; background:rgba(255,255,255,0.03); border:2px solid rgba(255,255,255,0.06); border-radius:16px; cursor:pointer; transition:all 0.3s; font-weight:600; color:rgba(255,255,255,0.5); font-size:0.9rem; margin:0; }
+        .radio-option input[type="radio"]:checked + label { border-color:#ff2d2d; background:rgba(255,45,45,0.08); color:#fff; box-shadow:0 0 20px rgba(255,45,45,0.05); }
+        .radio-option label i { font-size:1.1rem; color:#ff4d4d; }
+        .radio-option input[type="radio"]:checked + label i { color:#ff2d2d; }
+        .radio-option label:hover { border-color:rgba(255,45,45,0.3); background:rgba(255,45,45,0.03); }
+
+        /* Drop Zone */
+        .drop-zone { border:2px dashed rgba(255,255,255,0.1); border-radius:20px; padding:40px 20px; text-align:center; transition:all 0.3s; cursor:pointer; position:relative; }
+        .drop-zone:hover { border-color:rgba(255,45,45,0.3); background:rgba(255,45,45,0.02); }
+        .drop-zone.dragover { border-color:#00ff41; background:rgba(0,255,65,0.03); transform:scale(1.01); }
+        .drop-zone i { font-size:3rem; color:#ff4d4d; margin-bottom:10px; display:block; opacity:0.6; }
+        .drop-zone h4 { color:#fff; font-size:1.1rem; margin-bottom:4px; }
+        .drop-zone p { color:rgba(255,255,255,0.3); font-size:0.85rem; }
+        .drop-zone .browse-btn { display:inline-block; margin-top:12px; padding:8px 24px; background:rgba(255,45,45,0.08); border:1px solid rgba(255,45,45,0.1); border-radius:60px; color:#ff4d4d; font-weight:600; font-size:0.85rem; transition:0.3s; }
+        .drop-zone:hover .browse-btn { background:rgba(255,45,45,0.15); border-color:#ff1a1a; }
+        .drop-zone input[type="file"] { position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+
+        /* File list */
+        .file-list { margin-top:12px; }
+        .file-item { display:flex; align-items:center; gap:12px; padding:10px 14px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.04); border-radius:12px; margin-bottom:6px; animation:slideIn 0.3s ease; }
+        .file-item .file-icon { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; background:rgba(255,45,45,0.08); color:#ff4d4d; }
+        .file-item .file-info { flex:1; min-width:0; }
+        .file-item .file-name { color:#ddd; font-weight:500; font-size:0.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .file-item .file-size { color:rgba(255,255,255,0.3); font-size:0.7rem; }
+        .file-item .file-remove { background:none; border:none; color:rgba(255,255,255,0.2); font-size:1rem; cursor:pointer; transition:0.2s; padding:4px; }
+        .file-item .file-remove:hover { color:#ff4444; }
+        @keyframes slideIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+
+        /* Passcode Section */
+        .passcode-section { display:none; animation:slideDown 0.3s ease; background:rgba(255,152,0,0.03); border:1px solid rgba(255,152,0,0.1); border-radius:16px; padding:16px 20px; margin-top:10px; }
+        .passcode-section.show { display:block; }
+        @keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+        .passcode-section .warning { display:flex; align-items:center; gap:10px; color:#ff9800; font-size:0.85rem; padding:10px 0; }
+        .passcode-section .warning i { font-size:1.2rem; }
+        .passcode-input { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+        .passcode-input input { flex:1; min-width:150px; padding:12px 16px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; color:#fff; font-size:1.2rem; font-family:monospace; letter-spacing:8px; text-align:center; transition:0.3s; }
+        .passcode-input input:focus { outline:none; border-color:#ff2d2d; box-shadow:0 0 0 4px rgba(255,45,45,0.06); }
+        .passcode-input input::placeholder { letter-spacing:2px; font-size:0.9rem; color:rgba(255,255,255,0.2); }
+
+        /* Button */
+        .btn-submit { width:100%; padding:16px; background:linear-gradient(135deg,#ff2d2d,#ff6b6b); border:none; border-radius:60px; color:#fff; font-weight:700; font-size:1.1rem; cursor:pointer; transition:all 0.3s; margin-top:8px; }
+        .btn-submit:hover { transform:translateY(-2px); box-shadow:0 12px 30px -10px rgba(255,45,45,0.4); }
+        .btn-submit:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+        /* Messages */
+        .message { padding:14px 20px; border-radius:16px; margin-bottom:20px; display:flex; align-items:center; gap:12px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.05); }
+        .message.success { border-color:rgba(0,255,65,0.2); color:#00ff41; }
+        .message.error { border-color:rgba(255,45,45,0.2); color:#ff6b6b; }
+        .message i { font-size:1.2rem; }
+
+        .allowed-types { text-align:center; margin-top:20px; padding:12px; background:rgba(255,255,255,0.02); border-radius:60px; color:rgba(255,255,255,0.3); font-size:0.75rem; }
+        .allowed-types i { margin-right:6px; color:#ff4d4d; }
+        .allowed-types span { color:#ff6b6b; font-weight:600; }
+
+        /* Custom university input */
+        .custom-uni-input { display:none; margin-top:10px; }
+        .custom-uni-input.show { display:block; }
+
         /* Responsive */
         @media (max-width:640px) {
-            .view-card { padding:20px; }
-            .pdf-header h2 { font-size:1.2rem; }
-            .pdf-viewer iframe { height:50vh; min-height:300px; }
-            .action-bar { flex-direction:column; }
-            .action-bar a, .action-bar button { justify-content:center; }
-            .passcode-box { padding:32px 24px; }
+            .upload-card { padding:24px 18px; }
+            .upload-header h2 { font-size:1.4rem; }
+            .radio-group { flex-direction:column; }
+            .radio-option { min-width:auto; }
+            .drop-zone { padding:30px 15px; }
+            .passcode-input { flex-direction:column; }
+            .passcode-input input { width:100%; min-width:unset; }
         }
     </style>
 </head>
@@ -115,106 +182,338 @@
             </div>
         </div>
 
-        <!-- View -->
-        <div class="view-container">
-            <div class="view-card">
-                <div class="pdf-header">
-                    <h2><i class="fas fa-file-pdf"></i> {{ note.original_filename|default:note.filename }}</h2>
-                    <div class="pdf-meta">
-                        <span><i class="fas fa-tag"></i> {{ note.module|default:"N/A" }}</span>
-                        <span><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
-                        <span><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
-                        <span><i class="fas fa-university"></i> {{ note.university|default:"Not specified" }}</span>
-                        <span>
-                            {% if note.privacy == 'private' %}
-                                <i class="fas fa-lock" style="color:#ff9800;"></i> Private
-                            {% else %}
-                                <i class="fas fa-globe" style="color:#00ff41;"></i> Public
-                            {% endif %}
-                        </span>
-                        <span><i class="fas fa-file"></i> {{ note.file_size|filesizeformat|default:"0 KB" }}</span>
-                    </div>
-                    {% if note.description %}
-                        <div class="pdf-desc"><i class="fas fa-quote-left" style="color:#ff4d4d;margin-right:8px;"></i>{{ note.description }}</div>
-                    {% endif %}
+        <!-- Upload -->
+        <div class="upload-container">
+            <div class="upload-card">
+                <div class="upload-header">
+                    <div class="icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <h2>📤 Upload Notes & Papers</h2>
+                    <p>Share your study materials with fellow students</p>
                 </div>
 
-                <div class="pdf-viewer" id="pdfViewer">
-                    {% if note.can_view_inline %}
-                        <iframe src="{{ pdf_url }}" title="PDF Viewer"></iframe>
-                    {% else %}
-                        <div class="placeholder">
-                            <i class="fas fa-file"></i>
-                            <h3>Preview Not Available</h3>
-                            <p>Download to view this file</p>
+                <!-- Messages -->
+                {% if message %}
+                    <div class="message success"><i class="fas fa-check-circle"></i> {{ message }}</div>
+                {% endif %}
+                {% if error %}
+                    <div class="message error"><i class="fas fa-exclamation-triangle"></i> {{ error }}</div>
+                {% endif %}
+                <div id="messageContainer"></div>
+
+                <form method="post" enctype="multipart/form-data" id="uploadForm" action="/upload/">
+                    {% csrf_token %}
+
+                    <!-- 1. File Upload -->
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-paperclip"></i> Upload Your File <span class="required">*</span></label>
+                        <div class="drop-zone" id="dropZone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <h4>Drag & Drop Files Here</h4>
+                            <p>or click to browse</p>
+                            <span class="browse-btn"><i class="fas fa-folder-open"></i> Browse Files</span>
+                            {{ form.file }}
                         </div>
-                    {% endif %}
-                </div>
+                        <div class="file-list" id="fileList"></div>
+                        <small style="display:block;margin-top:6px;color:rgba(255,255,255,0.2);font-size:0.7rem;">
+                            <i class="fas fa-info-circle"></i> Max: 100MB | PDF, PPT, DOC, XLS, TXT, JPG, PNG, ZIP
+                        </small>
+                    </div>
 
-                <div class="action-bar">
-                    <a href="/browse/" class="btn-back"><i class="fas fa-arrow-left"></i> Back</a>
-                    <a href="/download/{{ note.id }}/" class="btn-download" download><i class="fas fa-download"></i> Download</a>
-                </div>
+                    <!-- 2. File Type -->
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-tag"></i> File Type <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="file_type" value="notes" id="typeNotes" checked>
+                                <label for="typeNotes"><i class="fas fa-sticky-note"></i> Notes</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="file_type" value="pastpaper" id="typePastPaper">
+                                <label for="typePastPaper"><i class="fas fa-file-alt"></i> Past Paper</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Module -->
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-tag"></i> Module Name <span class="required">*</span></label>
+                        {{ form.module }}
+                    </div>
+
+                    <!-- 4. Course -->
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-book"></i> Course Code <span class="required">*</span></label>
+                        {{ form.course }}
+                    </div>
+
+                    <!-- 5. Description -->
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-align-left"></i> Description</label>
+                        {{ form.description }}
+                    </div>
+
+                    <!-- 6. Privacy -->
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-lock"></i> Privacy Setting <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" name="privacy" value="public" id="privacyPublic" checked>
+                                <label for="privacyPublic"><i class="fas fa-globe"></i> Public</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="privacy" value="private" id="privacyPrivate">
+                                <label for="privacyPrivate"><i class="fas fa-lock"></i> Private</label>
+                            </div>
+                        </div>
+                        <small style="display:block;margin-top:4px;color:rgba(255,255,255,0.2);font-size:0.7rem;">
+                            <i class="fas fa-info-circle"></i> Private files require a 4-digit passcode to access
+                        </small>
+                    </div>
+
+                    <!-- 7. Passcode (Private) -->
+                    <div class="passcode-section" id="passcodeSection">
+                        <div class="warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span><strong>⚠️ IMPORTANT:</strong> No backup for passcode. Remember it!</span>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="form-label"><i class="fas fa-key"></i> Set 4-Digit Passcode <span class="required">*</span></label>
+                            <div class="passcode-input">
+                                {{ form.passcode }}
+                                <span style="color:rgba(255,255,255,0.2);font-size:0.8rem;">(4 numbers only)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 8. University -->
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-university"></i> Your University <span class="optional">(optional)</span></label>
+                        <div class="uni-select-wrapper">
+                            {{ form.university }}
+                            <div class="custom-uni-input" id="customUniInput">
+                                {{ form.custom_university }}
+                            </div>
+                        </div>
+                        <small style="display:block;margin-top:4px;color:rgba(255,255,255,0.2);font-size:0.7rem;">
+                            <i class="fas fa-info-circle"></i> Select from list or choose "Other" to type custom name
+                        </small>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i class="fas fa-upload"></i> Upload File
+                    </button>
+
+                    <div class="allowed-types">
+                        <i class="fas fa-shield-alt"></i> <span>Secure & Fast</span> — Your files are stored safely
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- Passcode Modal -->
-    {% if note.privacy == 'private' %}
-    <div class="passcode-modal active" id="passcodeModal">
-        <div class="passcode-box">
-            <span class="lock-icon"><i class="fas fa-lock"></i></span>
-            <h3>🔒 Private Document</h3>
-            <p>Enter the 4-digit passcode to view this document.</p>
-            <input type="password" id="passcodeInput" placeholder="••••" maxlength="4" inputmode="numeric" autofocus>
-            <div class="error-msg" id="passcodeError">❌ Incorrect passcode. Try again.</div>
-            <button class="unlock-btn" id="unlockBtn"><i class="fas fa-unlock"></i> Unlock</button>
-            <button class="back-btn" onclick="window.location.href='/browse/'"><i class="fas fa-arrow-left"></i> Go Back</button>
-        </div>
-    </div>
-    {% endif %}
-
     <script>
-        // Rain effect, lightning, theme, passcode handler
-        // (same as before, but with the new beautiful modal)
-        // ... include full JS
+        // ===== RAIN EFFECT =====
+        const canvas = document.getElementById('rain-canvas');
+        const ctx = canvas.getContext('2d');
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
 
-        // For brevity, I'll include the key passcode logic:
-        {% if note.privacy == 'private' %}
-        document.addEventListener('DOMContentLoaded', function() {
-            const modal = document.getElementById('passcodeModal');
-            const input = document.getElementById('passcodeInput');
-            const btn = document.getElementById('unlockBtn');
-            const error = document.getElementById('passcodeError');
-            const correct = '{{ note.passcode|default:"" }}'.trim();
+        class Drop {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height - canvas.height;
+                this.len = Math.random() * 20 + 10;
+                this.speed = Math.random() * 5 + 3;
+                this.opacity = Math.random() * 0.3 + 0.1;
+                this.width = Math.random() * 1.5 + 0.5;
+            }
+            fall() {
+                this.y += this.speed;
+                if (this.y > canvas.height) { this.y = -this.len; this.x = Math.random() * canvas.width; }
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x, this.y + this.len);
+                ctx.strokeStyle = `rgba(150, 200, 255, ${this.opacity})`;
+                ctx.lineWidth = this.width;
+                ctx.stroke();
+            }
+        }
+        const drops = [];
+        for (let i = 0; i < 200; i++) drops.push(new Drop());
 
-            // Hide viewer until passcode is entered
-            document.getElementById('pdfViewer').style.display = 'none';
+        function drawRain() {
+            ctx.fillStyle = 'rgba(10, 10, 20, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            for (let d of drops) { d.draw(); d.fall(); }
+            requestAnimationFrame(drawRain);
+        }
+        drawRain();
 
-            btn.addEventListener('click', function() {
-                const entered = input.value.trim();
-                if (entered === correct) {
-                    modal.classList.remove('active');
-                    document.getElementById('pdfViewer').style.display = 'block';
-                    // Trigger lightning flash
-                    lightningFlash(0.3, 0.05);
+        // ===== LIGHTNING =====
+        const lightning = document.getElementById('lightning');
+        let lightningTimeout;
+        function flash() {
+            lightning.style.backgroundColor = `rgba(255, 255, 255, ${Math.random() * 0.4 + 0.2})`;
+            clearTimeout(lightningTimeout);
+            lightningTimeout = setTimeout(() => { lightning.style.backgroundColor = 'transparent'; }, Math.random() * 100 + 50);
+            setTimeout(flash, Math.random() * 4000 + 1000);
+        }
+        setTimeout(flash, 1000);
+
+        // ===== THEME =====
+        function setTheme(theme) {
+            document.body.className = '';
+            if (theme === 'dark') document.body.classList.add('dark-theme');
+            else if (theme === 'light') document.body.classList.add('light-theme');
+            localStorage.setItem('twarvis-theme', theme);
+        }
+        const saved = localStorage.getItem('twarvis-theme') || 'dark';
+        setTheme(saved);
+
+        // ===== PRIVACY TOGGLE =====
+        const privacyPublic = document.getElementById('privacyPublic');
+        const privacyPrivate = document.getElementById('privacyPrivate');
+        const passcodeSection = document.getElementById('passcodeSection');
+        const passcodeInput = document.querySelector('#passcodeSection input');
+
+        privacyPrivate.addEventListener('change', function() {
+            if (this.checked) { passcodeSection.classList.add('show'); if (passcodeInput) passcodeInput.required = true; }
+        });
+        privacyPublic.addEventListener('change', function() {
+            if (this.checked) { passcodeSection.classList.remove('show'); if (passcodeInput) { passcodeInput.required = false; passcodeInput.value = ''; } }
+        });
+        if (passcodeInput) {
+            passcodeInput.addEventListener('input', function() { this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4); });
+        }
+
+        // ===== UNIVERSITY "OTHER" =====
+        const uniSelect = document.querySelector('#id_university');
+        const customUniInput = document.getElementById('customUniInput');
+        const customUniText = document.querySelector('#customUniInput input');
+        if (uniSelect) {
+            uniSelect.addEventListener('change', function() {
+                if (this.value === 'Other') {
+                    customUniInput.classList.add('show');
+                    if (customUniText) customUniText.required = true;
+                    if (customUniText) customUniText.focus();
                 } else {
-                    error.classList.add('show');
-                    input.value = '';
-                    input.focus();
-                    lightningFlash(0.3, 0.05);
+                    customUniInput.classList.remove('show');
+                    if (customUniText) { customUniText.required = false; customUniText.value = ''; }
                 }
             });
+        }
 
-            input.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') btn.click();
-                // Only allow numbers
-                this.value = this.value.replace(/\D/g, '').slice(0, 4);
+        // ===== DRAG & DROP =====
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.querySelector('#id_file');
+        const fileList = document.getElementById('fileList');
+        let selectedFile = null;
+
+        if (dropZone && fileInput) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
             });
 
-            input.focus();
+            function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => { dropZone.classList.add('dragover'); });
+            });
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => { dropZone.classList.remove('dragover'); });
+            });
+
+            dropZone.addEventListener('drop', function(e) {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) handleFile(files[0]);
+            });
+            fileInput.addEventListener('change', function() {
+                if (this.files.length > 0) handleFile(this.files[0]);
+            });
+
+            function handleFile(file) {
+                const allowed = ['.pdf','.ppt','.pptx','.doc','.docx','.xls','.xlsx','.txt','.md','.jpg','.jpeg','.png','.gif','.zip','.rar','.csv','.json','.xml'];
+                const ext = '.' + file.name.split('.').pop().toLowerCase();
+                if (!allowed.includes(ext)) { showMessage('File type not allowed: ' + file.name, 'error'); return; }
+                if (file.size > 100 * 1024 * 1024) { showMessage('File too large: ' + file.name + ' (Max 100MB)', 'error'); return; }
+                selectedFile = file;
+                renderFileList();
+            }
+
+            function renderFileList() {
+                fileList.innerHTML = '';
+                if (!selectedFile) return;
+                const file = selectedFile;
+                const div = document.createElement('div');
+                div.className = 'file-item';
+                const ext = file.name.split('.').pop().toLowerCase();
+                const iconMap = { 'pdf':'file-pdf','doc':'file-word','docx':'file-word','ppt':'file-powerpoint','pptx':'file-powerpoint','xls':'file-excel','xlsx':'file-excel','jpg':'file-image','jpeg':'file-image','png':'file-image','gif':'file-image','zip':'file-archive','rar':'file-archive' };
+                const icon = iconMap[ext] || 'file';
+                div.innerHTML = `
+                    <div class="file-icon"><i class="fas fa-${icon}"></i></div>
+                    <div class="file-info"><div class="file-name">${file.name}</div><div class="file-size">${(file.size/1024/1024).toFixed(2)} MB</div></div>
+                    <button class="file-remove"><i class="fas fa-times"></i></button>
+                `;
+                fileList.appendChild(div);
+                div.querySelector('.file-remove').addEventListener('click', function() {
+                    selectedFile = null;
+                    fileInput.value = '';
+                    renderFileList();
+                });
+            }
+        }
+
+        // ===== MESSAGES =====
+        function showMessage(text, type) {
+            const container = document.getElementById('messageContainer');
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+            msg.innerHTML = `<i class="fas ${icon}"></i> ${text}`;
+            container.appendChild(msg);
+            setTimeout(() => { msg.remove(); }, 5000);
+        }
+
+        // ===== FORM SUBMIT =====
+        const form = document.getElementById('uploadForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', function(e) {
+            if (!selectedFile && fileInput && !fileInput.files.length) {
+                e.preventDefault();
+                showMessage('Please select a file to upload', 'error');
+                return;
+            }
+            if (privacyPrivate && privacyPrivate.checked) {
+                const passcode = document.querySelector('#passcodeSection input');
+                if (passcode) {
+                    const val = passcode.value;
+                    if (val.length !== 4 || !/^\d{4}$/.test(val)) {
+                        e.preventDefault();
+                        showMessage('Please enter a valid 4-digit passcode for private file', 'error');
+                        return;
+                    }
+                }
+            }
+            // Show uploading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+            submitBtn.disabled = true;
         });
-        {% endif %}
+
+        // ===== KEYBOARD =====
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                // Close any open modals if present
+            }
+        });
+
+        console.log('⚡ TWARVIS Upload Page Loaded!');
+        console.log('📤 Upload files with metadata');
+        console.log('🔒 Choose Public or Private with passcode');
+        console.log('🏫 Select university from list');
     </script>
 </body>
 </html>
