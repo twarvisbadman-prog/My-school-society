@@ -1,4 +1,4 @@
-<!-- browse.html - Full Inline View, No Preview Not Available -->
+<!-- browse.html - Final with Secret Admin Link -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,10 +60,64 @@
         .header { background:rgba(0,0,0,0.7); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid rgba(255,255,255,0.05); position:sticky; top:0; z-index:100; padding:12px 0; }
         .header-content { max-width:900px; margin:0 auto; padding:0 20px; display:flex; justify-content:space-between; align-items:center; }
         .logo { font-size:1.2rem; font-weight:700; background:linear-gradient(135deg,#ff1a1a,#00cc33); -webkit-background-clip:text; background-clip:text; color:transparent; }
-        .nav-links { display:flex; gap:16px; }
+        .nav-links { display:flex; gap:16px; align-items:center; }
         .nav-links a { color:rgba(255,255,255,0.5); text-decoration:none; font-size:0.9rem; transition:0.3s; }
         .nav-links a:hover { color:#fff; }
-        /* NO ADMIN LINK */
+
+        /* ===== SECRET ADMIN DOT ===== */
+        .admin-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-left: 4px;
+            position: relative;
+        }
+        .admin-dot:hover {
+            background: #ff1a1a;
+            box-shadow: 0 0 16px #ff1a1a;
+            transform: scale(1.8);
+        }
+        .admin-dot::after {
+            content: 'Admin';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.5rem;
+            color: rgba(255,255,255,0.1);
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .admin-dot:hover::after {
+            opacity: 1;
+            color: rgba(255,255,255,0.3);
+        }
+
+        /* ===== SECRET FOOTER LINK ===== */
+        .admin-foot {
+            position: fixed;
+            bottom: 6px;
+            right: 8px;
+            opacity: 0.04;
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.1);
+            text-decoration: none;
+            z-index: 999;
+            transition: all 0.4s ease;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        .admin-foot:hover {
+            opacity: 1;
+            color: #ff1a1a;
+            text-shadow: 0 0 20px rgba(255,26,26,0.3);
+        }
 
         .browse-container { max-width:900px; margin:0 auto; padding:16px 20px 100px; position:relative; z-index:3; }
         .search-bar { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.04); border:1.5px solid rgba(255,255,255,0.06); border-radius:60px; padding:4px 4px 4px 20px; transition:all 0.3s; margin-bottom:20px; }
@@ -116,6 +170,7 @@
             .doc-card .doc-bottom { padding-left:0; flex-direction:column; align-items:stretch; }
             .search-bar { padding:2px 2px 2px 16px; }
             .search-bar button { padding:8px 16px; font-size:0.75rem; }
+            .admin-dot { width:5px; height:5px; }
         }
     </style>
 </head>
@@ -123,7 +178,7 @@
     <canvas id="rain-canvas"></canvas>
     <div class="lightning-overlay" id="lightning"></div>
     <div class="glass-overlay">
-        <!-- HEADER - NO ADMIN LINK -->
+        <!-- HEADER -->
         <div class="header">
             <div class="header-content">
                 <span class="logo">⚡ TWARVIS</span>
@@ -131,6 +186,8 @@
                     <a href="/">Home</a>
                     <a href="/browse/">Browse</a>
                     <a href="/upload/">Upload</a>
+                    <!-- SECRET ADMIN DOT -->
+                    <a href="/admin/" class="admin-dot" title="Admin" aria-label="Admin"></a>
                 </div>
             </div>
         </div>
@@ -191,6 +248,9 @@
                 {% endif %}
             </div>
         </div>
+
+        <!-- SECRET FOOTER ADMIN LINK -->
+        <a href="/admin/" class="admin-foot">⚡ admin</a>
     </div>
 
     <script>
@@ -258,7 +318,6 @@
             document.getElementById('notesCount').textContent = notes;
             document.getElementById('papersCount').textContent = papers;
         }
-        // Initial stats
         document.addEventListener('DOMContentLoaded', function() {
             const cards = document.querySelectorAll('.doc-card');
             let notes = 0, papers = 0;
