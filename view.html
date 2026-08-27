@@ -1,4 +1,4 @@
-<!-- view.html - Full Document Viewer with Inline Display -->
+<!-- view.html - Fullscreen Multi-Format Document Viewer -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,11 +10,47 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Inter',sans-serif; background:#0a0a0a; min-height:100vh; overflow-x:hidden; }
-        #rain-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; background:linear-gradient(180deg,#0f0f1a 0%,#0a0a0f 100%); }
-        .lightning-overlay { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none; background:transparent; }
-        .glass-overlay { position:relative; z-index:2; min-height:100vh; width:100%; }
+        body { 
+            font-family:'Inter',sans-serif; 
+            background:#0a0a0a; 
+            min-height:100vh; 
+            overflow:hidden;
+            height:100vh;
+            width:100vw;
+        }
+        
+        #rain-canvas { 
+            position:fixed; 
+            top:0; 
+            left:0; 
+            width:100%; 
+            height:100%; 
+            z-index:0; 
+            background:linear-gradient(180deg,#0f0f1a 0%,#0a0a0f 100%); 
+            pointer-events:none;
+        }
+        .lightning-overlay { 
+            position:fixed; 
+            top:0; 
+            left:0; 
+            width:100%; 
+            height:100%; 
+            z-index:1; 
+            pointer-events:none; 
+            background:transparent; 
+        }
+        .glass-overlay { 
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            z-index:2; 
+            display:flex;
+            flex-direction:column;
+        }
 
+        /* Dark Theme */
         body.dark-theme { background:#0f0f1a; }
         body.dark-theme #rain-canvas { opacity:0; pointer-events:none; }
         body.dark-theme .header { background:rgba(15,15,26,0.92); border-color:rgba(50,100,255,0.1); }
@@ -27,7 +63,12 @@
         body.dark-theme .btn-download { background:rgba(0,255,65,0.08); color:#00ff41; border-color:rgba(0,255,65,0.08); }
         body.dark-theme .btn-download:hover { background:rgba(0,255,65,0.15); }
         body.dark-theme .loading-text { color:rgba(255,255,255,0.6); }
+        body.dark-theme .file-info { color:rgba(255,255,255,0.4); }
+        body.dark-theme .action-bar { background:rgba(0,0,0,0.3); }
+        body.dark-theme .action-bar a, body.dark-theme .action-bar button { color:rgba(255,255,255,0.8); }
+        body.dark-theme .action-bar a:hover, body.dark-theme .action-bar button:hover { color:#fff; }
 
+        /* Light Theme */
         body.light-theme { background:#f2f4f8; }
         body.light-theme #rain-canvas { opacity:0; pointer-events:none; }
         body.light-theme .header { background:rgba(255,255,255,0.92); border-color:rgba(0,0,0,0.06); }
@@ -41,37 +82,139 @@
         body.light-theme .btn-download { background:rgba(0,200,80,0.08); color:#008a2e; border-color:rgba(0,200,80,0.08); }
         body.light-theme .btn-download:hover { background:rgba(0,200,80,0.15); }
         body.light-theme .loading-text { color:rgba(0,0,0,0.6); }
+        body.light-theme .file-info { color:rgba(0,0,0,0.4); }
+        body.light-theme .action-bar { background:rgba(255,255,255,0.3); }
+        body.light-theme .action-bar a, body.light-theme .action-bar button { color:rgba(0,0,0,0.8); }
+        body.light-theme .action-bar a:hover, body.light-theme .action-bar button:hover { color:#000; }
 
-        .header { background:rgba(0,0,0,0.7); backdrop-filter:blur(20px); border-bottom:1px solid rgba(255,255,255,0.05); position:sticky; top:0; z-index:100; padding:12px 0; }
-        .header-content { max-width:1000px; margin:0 auto; padding:0 20px; display:flex; justify-content:space-between; align-items:center; }
-        .logo { font-size:1.2rem; font-weight:700; background:linear-gradient(135deg,#ff1a1a,#00cc33); -webkit-background-clip:text; background-clip:text; color:transparent; }
+        .header { 
+            background:rgba(0,0,0,0.7); 
+            backdrop-filter:blur(20px); 
+            border-bottom:1px solid rgba(255,255,255,0.05); 
+            padding:8px 20px;
+            flex-shrink:0;
+            z-index:100;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+        
+        .logo { 
+            font-size:1.1rem; 
+            font-weight:700; 
+            background:linear-gradient(135deg,#ff1a1a,#00cc33); 
+            -webkit-background-clip:text; 
+            background-clip:text; 
+            color:transparent; 
+        }
+        
         .nav-links { display:flex; gap:16px; }
-        .nav-links a { color:rgba(255,255,255,0.5); text-decoration:none; font-size:0.9rem; transition:0.3s; }
+        .nav-links a { 
+            color:rgba(255,255,255,0.5); 
+            text-decoration:none; 
+            font-size:0.85rem; 
+            transition:0.3s; 
+        }
         .nav-links a:hover { color:#fff; }
 
-        .view-container { max-width:1000px; margin:20px auto; padding:0 20px 100px; position:relative; z-index:3; }
-        .view-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:28px; padding:28px; transition:all 0.3s; }
-        .pdf-header { margin-bottom:20px; }
-        .pdf-header h2 { font-size:1.5rem; font-weight:600; color:#fff; display:flex; align-items:center; gap:10px; }
-        .pdf-header h2 i { color:#ff4d4d; }
-        .pdf-meta { display:flex; flex-wrap:wrap; gap:14px; font-size:0.85rem; color:rgba(255,255,255,0.4); margin:6px 0 10px; }
-        .pdf-meta span { display:flex; align-items:center; gap:6px; }
+        .view-container { 
+            flex:1;
+            padding:10px 20px 0;
+            position:relative; 
+            z-index:3;
+            display:flex;
+            flex-direction:column;
+            min-height:0;
+        }
+        
+        .view-card { 
+            background:rgba(255,255,255,0.03); 
+            border:1px solid rgba(255,255,255,0.08); 
+            border-radius:20px; 
+            padding:16px 20px 16px;
+            flex:1;
+            display:flex;
+            flex-direction:column;
+            min-height:0;
+            transition:all 0.3s; 
+        }
+        
+        .pdf-header { 
+            margin-bottom:12px;
+            flex-shrink:0;
+        }
+        
+        .pdf-header h2 { 
+            font-size:1.2rem; 
+            font-weight:600; 
+            color:#fff; 
+            display:flex; 
+            align-items:center; 
+            gap:10px; 
+            flex-wrap:wrap;
+        }
+        
+        .pdf-header h2 .file-icon { font-size:1.4rem; }
+        
+        .pdf-meta { 
+            display:flex; 
+            flex-wrap:wrap; 
+            gap:10px; 
+            font-size:0.75rem; 
+            color:rgba(255,255,255,0.4); 
+            margin:4px 0 6px; 
+        }
+        
+        .pdf-meta span { display:flex; align-items:center; gap:4px; }
+        
+        .file-info {
+            display:flex;
+            align-items:center;
+            gap:6px;
+            padding:4px 12px;
+            background:rgba(74,124,247,0.1);
+            border-radius:20px;
+            font-size:0.75rem;
+            color:rgba(255,255,255,0.6);
+        }
         
         .pdf-viewer { 
             background:rgba(0,0,0,0.2); 
-            border-radius:20px; 
+            border-radius:16px; 
             overflow:hidden; 
             border:1px solid rgba(255,255,255,0.05); 
-            min-height:500px; 
+            flex:1;
             position:relative;
+            min-height:0;
         }
         
         .pdf-viewer iframe { 
             width:100%; 
-            height:75vh; 
+            height:100%; 
             border:none; 
-            min-height:500px;
             display:block;
+        }
+        
+        .pdf-viewer img {
+            width:100%;
+            height:100%;
+            object-fit:contain;
+            display:block;
+        }
+        
+        .pdf-viewer .text-content {
+            padding:30px;
+            color:#fff;
+            font-size:1rem;
+            line-height:1.8;
+            white-space:pre-wrap;
+            font-family:monospace;
+            height:100%;
+            overflow:auto;
+        }
+        
+        body.light-theme .pdf-viewer .text-content {
+            color:#1a1a2e;
         }
         
         .loading-container {
@@ -86,8 +229,8 @@
         }
         
         .spinner {
-            width:50px;
-            height:50px;
+            width:40px;
+            height:40px;
             border:3px solid rgba(255,255,255,0.1);
             border-radius:50%;
             border-top-color:#4a7cf7;
@@ -100,47 +243,202 @@
         
         .loading-text {
             color:rgba(255,255,255,0.6);
-            margin-top:16px;
-            font-size:0.9rem;
+            margin-top:12px;
+            font-size:0.85rem;
         }
         
-        .action-bar { display:flex; gap:12px; margin-top:20px; flex-wrap:wrap; }
-        .action-bar a { padding:10px 24px; border-radius:60px; font-weight:600; font-size:0.9rem; text-decoration:none; border:1px solid transparent; transition:all 0.25s; display:inline-flex; align-items:center; gap:8px; font-family:inherit; cursor:pointer; }
+        .action-bar { 
+            display:flex; 
+            gap:8px; 
+            padding:10px 16px;
+            background:rgba(0,0,0,0.2);
+            border-radius:16px;
+            margin-top:10px;
+            flex-shrink:0;
+            flex-wrap:wrap;
+            justify-content:center;
+        }
+        
+        .action-bar a, .action-bar button { 
+            padding:8px 18px; 
+            border-radius:60px; 
+            font-weight:600; 
+            font-size:0.8rem; 
+            text-decoration:none; 
+            border:1px solid transparent; 
+            transition:all 0.25s; 
+            display:inline-flex; 
+            align-items:center; 
+            gap:6px; 
+            font-family:inherit; 
+            cursor:pointer;
+            background:transparent;
+            color:rgba(255,255,255,0.8);
+        }
+        
+        .action-bar a:hover, .action-bar button:hover { 
+            transform:scale(1.05);
+            color:#fff;
+        }
+        
         .btn-back { background:rgba(255,45,45,0.08); color:#ff4d4d; border-color:rgba(255,45,45,0.08); }
         .btn-back:hover { background:rgba(255,45,45,0.15); }
         .btn-download { background:rgba(0,255,65,0.08); color:#00ff41; border-color:rgba(0,255,65,0.08); }
         .btn-download:hover { background:rgba(0,255,65,0.15); }
         .btn-fullscreen { background:rgba(74,124,247,0.08); color:#4a7cf7; border-color:rgba(74,124,247,0.08); }
         .btn-fullscreen:hover { background:rgba(74,124,247,0.15); }
+        .btn-print { background:rgba(255,193,7,0.08); color:#ffc107; border-color:rgba(255,193,7,0.08); }
+        .btn-print:hover { background:rgba(255,193,7,0.15); }
 
         /* Passcode Popup */
-        .passcode-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); backdrop-filter:blur(16px); z-index:2000; justify-content:center; align-items:center; animation:fadeIn 0.3s ease; }
+        .passcode-overlay { 
+            display:none; 
+            position:fixed; 
+            top:0; 
+            left:0; 
+            width:100%; 
+            height:100%; 
+            background:rgba(0,0,0,0.85); 
+            backdrop-filter:blur(20px); 
+            z-index:2000; 
+            justify-content:center; 
+            align-items:center; 
+            animation:fadeIn 0.3s ease; 
+        }
         .passcode-overlay.active { display:flex; }
-        .passcode-box { background:rgba(15,15,26,0.95); border:1px solid rgba(255,255,255,0.08); border-radius:40px; padding:48px 40px 36px; max-width:420px; width:90%; text-align:center; box-shadow:0 0 80px rgba(255,26,26,0.12); animation:scaleUp 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+        .passcode-box { 
+            background:rgba(15,15,26,0.95); 
+            border:1px solid rgba(255,255,255,0.08); 
+            border-radius:40px; 
+            padding:48px 40px 36px; 
+            max-width:420px; 
+            width:90%; 
+            text-align:center; 
+            box-shadow:0 0 80px rgba(255,26,26,0.12); 
+            animation:scaleUp 0.35s cubic-bezier(0.34,1.56,0.64,1); 
+        }
         .passcode-box .lock-icon { font-size:3rem; color:#ff9800; display:block; margin-bottom:12px; }
         .passcode-box h3 { color:#fff; font-size:1.4rem; font-weight:600; margin-bottom:6px; }
         .passcode-box p { color:rgba(255,255,255,0.35); font-size:0.9rem; margin-bottom:24px; line-height:1.5; }
-        .passcode-box input { width:100%; padding:16px; background:rgba(255,255,255,0.04); border:2px solid rgba(255,255,255,0.06); border-radius:60px; color:#fff; font-size:1.6rem; font-family:monospace; letter-spacing:12px; text-align:center; transition:0.3s; outline:none; }
+        .passcode-box input { 
+            width:100%; 
+            padding:16px; 
+            background:rgba(255,255,255,0.04); 
+            border:2px solid rgba(255,255,255,0.06); 
+            border-radius:60px; 
+            color:#fff; 
+            font-size:1.6rem; 
+            font-family:monospace; 
+            letter-spacing:12px; 
+            text-align:center; 
+            transition:0.3s; 
+            outline:none; 
+        }
         .passcode-box input:focus { border-color:#ff2d2d; box-shadow:0 0 0 4px rgba(255,45,45,0.08); }
         .passcode-box input::placeholder { letter-spacing:2px; font-size:1rem; color:rgba(255,255,255,0.15); }
         .passcode-box .error-msg { color:#ff4444; font-size:0.85rem; margin-top:12px; display:none; }
         .passcode-box .error-msg.show { display:block; }
-        .passcode-box .unlock-btn { width:100%; padding:14px; margin-top:18px; background:linear-gradient(135deg,#ff2d2d,#ff6b6b); border:none; border-radius:60px; color:#fff; font-weight:700; font-size:1.1rem; cursor:pointer; transition:0.3s; }
+        .passcode-box .unlock-btn { 
+            width:100%; 
+            padding:14px; 
+            margin-top:18px; 
+            background:linear-gradient(135deg,#ff2d2d,#ff6b6b); 
+            border:none; 
+            border-radius:60px; 
+            color:#fff; 
+            font-weight:700; 
+            font-size:1.1rem; 
+            cursor:pointer; 
+            transition:0.3s; 
+        }
         .passcode-box .unlock-btn:hover { transform:scale(1.02); box-shadow:0 10px 30px -10px rgba(255,45,45,0.4); }
-        .passcode-box .back-btn { background:none; border:none; color:rgba(255,255,255,0.25); margin-top:14px; cursor:pointer; font-size:0.85rem; transition:0.3s; }
+        .passcode-box .back-btn { 
+            background:none; 
+            border:none; 
+            color:rgba(255,255,255,0.25); 
+            margin-top:14px; 
+            cursor:pointer; 
+            font-size:0.85rem; 
+            transition:0.3s; 
+        }
         .passcode-box .back-btn:hover { color:#fff; }
 
         @keyframes fadeIn { from{opacity:0} to{opacity:1} }
         @keyframes scaleUp { from{transform:scale(0.9);opacity:0} to{transform:scale(1);opacity:1} }
 
-        @media (max-width:640px) {
-            .view-card { padding:18px; }
-            .pdf-header h2 { font-size:1.1rem; }
-            .pdf-viewer iframe { height:50vh; min-height:300px; }
-            .action-bar { flex-direction:column; }
-            .action-bar a { justify-content:center; }
+        .unsupported-message {
+            text-align:center;
+            padding:40px 20px;
+            color:rgba(255,255,255,0.6);
+            height:100%;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+        }
+        
+        .unsupported-message i {
+            font-size:48px;
+            color:#ff6b6b;
+            margin-bottom:16px;
+        }
+        
+        .unsupported-message h3 {
+            color:#fff;
+            margin-bottom:8px;
+        }
+        
+        body.light-theme .unsupported-message h3 {
+            color:#1a1a2e;
+        }
+
+        /* Fullscreen styles */
+        .pdf-viewer:fullscreen {
+            border-radius:0;
+            border:none;
+            background:#0a0a0a;
+        }
+        
+        .pdf-viewer:fullscreen .loading-container {
+            background:rgba(0,0,0,0.8);
+        }
+        
+        .pdf-viewer:fullscreen .action-bar {
+            display:none;
+        }
+        
+        .pdf-viewer:fullscreen .pdf-header {
+            display:none;
+        }
+
+        /* Hide scrollbar */
+        ::-webkit-scrollbar {
+            width:6px;
+        }
+        ::-webkit-scrollbar-track {
+            background:rgba(255,255,255,0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background:rgba(74,124,247,0.3);
+            border-radius:3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background:rgba(74,124,247,0.5);
+        }
+
+        @media (max-width:768px) {
+            .header { padding:6px 12px; }
+            .logo { font-size:0.9rem; }
+            .nav-links a { font-size:0.75rem; }
+            .view-container { padding:6px 10px 0; }
+            .view-card { padding:10px 12px 10px; border-radius:12px; }
+            .pdf-header h2 { font-size:1rem; }
+            .pdf-meta { font-size:0.65rem; gap:6px; }
+            .action-bar { padding:8px 12px; gap:6px; }
+            .action-bar a, .action-bar button { padding:6px 14px; font-size:0.75rem; }
             .passcode-box { padding:32px 24px; }
             .passcode-box input { font-size:1.2rem; letter-spacing:8px; }
+            .pdf-viewer .text-content { padding:16px; font-size:0.85rem; }
         }
     </style>
 </head>
@@ -149,26 +447,32 @@
     <div class="lightning-overlay" id="lightning"></div>
     <div class="glass-overlay">
         <div class="header">
-            <div class="header-content">
-                <span class="logo">⚡ TWARVIS</span>
-                <div class="nav-links">
-                    <a href="/">Home</a>
-                    <a href="/browse/">Browse</a>
-                    <a href="/upload/">Upload</a>
-                </div>
+            <span class="logo">⚡ TWARVIS</span>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/browse/">Browse</a>
+                <a href="/upload/">Upload</a>
             </div>
         </div>
 
         <div class="view-container">
             <div class="view-card">
                 <div class="pdf-header">
-                    <h2><i class="fas fa-file-pdf"></i> {{ note.original_filename|default:note.filename }}</h2>
+                    <h2>
+                        <span class="file-icon" id="fileIcon"><i class="fas fa-file-pdf"></i></span>
+                        {{ note.original_filename|default:note.filename }}
+                        <span class="file-info" id="fileInfo">
+                            <i class="fas fa-file"></i> 
+                            <span id="fileType">{{ note.file_extension|default:"PDF" }}</span>
+                        </span>
+                    </h2>
                     <div class="pdf-meta">
                         <span><i class="fas fa-tag"></i> {{ note.module|default:"N/A" }}</span>
                         <span><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
                         <span><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
                         <span><i class="fas fa-university"></i> {{ note.university|default:"Not specified" }}</span>
                         <span>{% if note.privacy == 'private' %}<i class="fas fa-lock" style="color:#ff9800;"></i> Private{% else %}<i class="fas fa-globe" style="color:#00ff41;"></i> Public{% endif %}</span>
+                        <span><i class="fas fa-file"></i> <span id="fileSize">{% if note.file_size %}{{ note.file_size|filesizeformat }}{% else %}Unknown size{% endif %}</span></span>
                     </div>
                 </div>
 
@@ -177,20 +481,16 @@
                         <div class="spinner"></div>
                         <div class="loading-text">Loading document...</div>
                     </div>
-                    <!-- Use Google Docs Viewer for better rendering -->
-                    <iframe 
-                        id="documentFrame"
-                        src="https://docs.google.com/viewer?url={{ pdf_url|urlencode }}&embedded=true"
-                        title="Document Viewer"
-                        onload="document.getElementById('loadingContainer').style.display='none'"
-                        onerror="document.getElementById('loadingContainer').innerHTML='<div style=text-align:center;padding:40px;><i class=fas fa-exclamation-triangle style=font-size:48px;color:#ff6b6b;></i><p style=color:#fff;margin-top:16px;>Unable to load document. <a href={{ pdf_url }} target=_blank style=color:#4a7cf7;>Download</a> to view.</p></div>'"
-                    ></iframe>
+                    
+                    <!-- Content will be rendered here based on file type -->
+                    <div id="viewerContent" style="height:100%;"></div>
                 </div>
 
                 <div class="action-bar">
                     <a href="/browse/" class="btn-back"><i class="fas fa-arrow-left"></i> Back</a>
                     <a href="/download/{{ note.id }}/" class="btn-download" download><i class="fas fa-download"></i> Download</a>
-                    <a href="#" class="btn-fullscreen" onclick="toggleFullscreen()"><i class="fas fa-expand"></i> Fullscreen</a>
+                    <button class="btn-fullscreen" onclick="toggleFullscreen()"><i class="fas fa-expand"></i> Fullscreen</button>
+                    <button class="btn-print" onclick="printDocument()"><i class="fas fa-print"></i> Print</button>
                 </div>
             </div>
         </div>
@@ -211,6 +511,28 @@
     {% endif %}
 
     <script>
+        // ===== FULLSCREEN ON LOAD =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait for content to load then enter fullscreen
+            setTimeout(function() {
+                enterFullscreen();
+            }, 1000);
+        });
+
+        function enterFullscreen() {
+            const viewer = document.getElementById('pdfViewer');
+            if (viewer && !document.fullscreenElement) {
+                viewer.requestFullscreen().catch(function(err) {
+                    // If fullscreen fails, try on the document
+                    if (document.documentElement.requestFullscreen) {
+                        document.documentElement.requestFullscreen().catch(function(e) {
+                            console.log('Fullscreen not available:', e);
+                        });
+                    }
+                });
+            }
+        }
+
         // ===== RAIN =====
         const canvas = document.getElementById('rain-canvas');
         const ctx = canvas.getContext('2d');
@@ -254,13 +576,244 @@
         const saved = localStorage.getItem('twarvis-theme') || 'dark';
         setTheme(saved);
 
-        // ===== FULLSCREEN =====
+        // ===== FILE VIEWER =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileUrl = '{{ note.file.url|default:"" }}';
+            const fileName = '{{ note.original_filename|default:note.filename }}';
+            const fileExtension = getFileExtension(fileName).toLowerCase();
+            
+            // Update file icon and type
+            updateFileInfo(fileExtension);
+            
+            // Render the document based on file type
+            renderDocument(fileUrl, fileExtension);
+        });
+
+        function getFileExtension(filename) {
+            return filename.split('.').pop() || '';
+        }
+
+        function updateFileInfo(extension) {
+            const iconMap = {
+                'pdf': 'fa-file-pdf',
+                'doc': 'fa-file-word',
+                'docx': 'fa-file-word',
+                'ppt': 'fa-file-powerpoint',
+                'pptx': 'fa-file-powerpoint',
+                'xls': 'fa-file-excel',
+                'xlsx': 'fa-file-excel',
+                'jpg': 'fa-file-image',
+                'jpeg': 'fa-file-image',
+                'png': 'fa-file-image',
+                'gif': 'fa-file-image',
+                'svg': 'fa-file-image',
+                'webp': 'fa-file-image',
+                'txt': 'fa-file-alt',
+                'csv': 'fa-file-csv',
+                'zip': 'fa-file-archive',
+                'rar': 'fa-file-archive',
+                '7z': 'fa-file-archive',
+                'mp4': 'fa-file-video',
+                'mp3': 'fa-file-audio',
+                'wav': 'fa-file-audio'
+            };
+            
+            const iconClass = iconMap[extension] || 'fa-file';
+            document.getElementById('fileIcon').innerHTML = `<i class="fas ${iconClass}"></i>`;
+            document.getElementById('fileType').textContent = extension.toUpperCase();
+        }
+
+        function renderDocument(fileUrl, extension) {
+            const container = document.getElementById('viewerContent');
+            const loading = document.getElementById('loadingContainer');
+            
+            // Image formats
+            const imageFormats = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'bmp', 'ico'];
+            
+            // Text formats
+            const textFormats = ['txt', 'csv', 'log', 'md', 'json', 'xml'];
+            
+            // Office formats that can be viewed with Google Docs Viewer
+            const officeFormats = ['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'pdf'];
+            
+            // Video formats
+            const videoFormats = ['mp4', 'webm', 'ogg', 'avi', 'mov', 'mkv'];
+            
+            // Audio formats
+            const audioFormats = ['mp3', 'wav', 'ogg', 'aac', 'flac'];
+            
+            if (imageFormats.includes(extension)) {
+                // Display image
+                loading.style.display = 'none';
+                container.innerHTML = `<img src="${fileUrl}" alt="Document Image" onerror="showError('Failed to load image')">`;
+            } 
+            else if (textFormats.includes(extension)) {
+                // Load and display text file
+                fetch(fileUrl)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Failed to load text file');
+                        return response.text();
+                    })
+                    .then(text => {
+                        loading.style.display = 'none';
+                        container.innerHTML = `<div class="text-content">${escapeHtml(text)}</div>`;
+                    })
+                    .catch(error => {
+                        showError('Failed to load text file: ' + error.message);
+                    });
+            }
+            else if (videoFormats.includes(extension)) {
+                // Display video
+                loading.style.display = 'none';
+                container.innerHTML = `
+                    <video controls style="width:100%;height:100%;background:#000;">
+                        <source src="${fileUrl}" type="video/${extension}">
+                        Your browser does not support video playback.
+                    </video>
+                `;
+            }
+            else if (audioFormats.includes(extension)) {
+                // Display audio player
+                loading.style.display = 'none';
+                container.innerHTML = `
+                    <div style="padding:40px;text-align:center;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+                        <i class="fas fa-music" style="font-size:64px;color:#4a7cf7;margin-bottom:20px;display:block;"></i>
+                        <audio controls style="width:100%;max-width:500px;margin:0 auto;display:block;">
+                            <source src="${fileUrl}" type="audio/${extension}">
+                            Your browser does not support audio playback.
+                        </audio>
+                        <p style="color:rgba(255,255,255,0.4);margin-top:20px;">Audio file - ${extension.toUpperCase()}</p>
+                    </div>
+                `;
+            }
+            else if (officeFormats.includes(extension) || extension === 'pdf') {
+                // Use Google Docs Viewer for Office documents and PDFs
+                const googleViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+                container.innerHTML = `
+                    <iframe 
+                        src="${googleViewerUrl}"
+                        title="Document Viewer"
+                        style="width:100%;height:100%;border:none;"
+                        onload="document.getElementById('loadingContainer').style.display='none'"
+                        onerror="showError('Failed to load document')"
+                    ></iframe>
+                `;
+                
+                // Hide loading when iframe loads or after timeout
+                setTimeout(() => {
+                    document.getElementById('loadingContainer').style.display = 'none';
+                }, 5000);
+            }
+            else {
+                // Unsupported format - show download option
+                loading.style.display = 'none';
+                container.innerHTML = `
+                    <div class="unsupported-message">
+                        <i class="fas fa-file"></i>
+                        <h3>Preview Not Available</h3>
+                        <p>This file type (.${extension}) cannot be previewed directly.</p>
+                        <p style="margin-top:12px;">
+                            <a href="${fileUrl}" download class="btn-download" style="display:inline-block;padding:10px 24px;border-radius:60px;text-decoration:none;border:1px solid transparent;">
+                                <i class="fas fa-download"></i> Download to view
+                            </a>
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showError(message) {
+            const container = document.getElementById('viewerContent');
+            const loading = document.getElementById('loadingContainer');
+            loading.style.display = 'none';
+            container.innerHTML = `
+                <div class="unsupported-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Error Loading Document</h3>
+                    <p>${message}</p>
+                    <p style="margin-top:12px;">
+                        <a href="{{ note.file.url }}" download class="btn-download" style="display:inline-block;padding:10px 24px;border-radius:60px;text-decoration:none;border:1px solid transparent;">
+                            <i class="fas fa-download"></i> Download to view
+                        </a>
+                    </p>
+                </div>
+            `;
+        }
+
+        // ===== FULLSCREEN TOGGLE =====
         function toggleFullscreen() {
             const viewer = document.getElementById('pdfViewer');
             if (!document.fullscreenElement) {
-                viewer.requestFullscreen().catch(err => {});
+                viewer.requestFullscreen().catch(function(err) {
+                    document.documentElement.requestFullscreen().catch(function(e) {
+                        console.log('Fullscreen not available:', e);
+                    });
+                });
             } else {
                 document.exitFullscreen();
+            }
+        }
+
+        // Listen for fullscreen change events
+        document.addEventListener('fullscreenchange', function() {
+            const viewer = document.getElementById('pdfViewer');
+            const isFullscreen = document.fullscreenElement === viewer || document.fullscreenElement === document.documentElement;
+            
+            // Update the button text
+            const fullscreenBtn = document.querySelector('.btn-fullscreen');
+            if (fullscreenBtn) {
+                if (isFullscreen) {
+                    fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i> Exit Fullscreen';
+                } else {
+                    fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i> Fullscreen';
+                }
+            }
+        });
+
+        // ===== PRINT =====
+        function printDocument() {
+            const content = document.getElementById('viewerContent');
+            const iframe = content.querySelector('iframe');
+            const img = content.querySelector('img');
+            const text = content.querySelector('.text-content');
+            const video = content.querySelector('video');
+            
+            if (iframe) {
+                // Try to print iframe content
+                try {
+                    iframe.contentWindow.print();
+                } catch (e) {
+                    alert('Printing not available for this document type. Please download to print.');
+                }
+            } else if (img) {
+                // Print image
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html><head><title>Print</title>
+                    <style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;min-height:100vh;}img{max-width:100%;max-height:100vh;}</style>
+                    </head><body><img src="${img.src}" onload="window.print();"></body></html>
+                `);
+                printWindow.document.close();
+            } else if (text) {
+                // Print text
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html><head><title>Print</title>
+                    <style>body{font-family:monospace;padding:40px;white-space:pre-wrap;}</style>
+                    </head><body>${text.innerHTML}</body></html>
+                `);
+                printWindow.document.close();
+                printWindow.print();
+            } else if (video) {
+                alert('Cannot print video content. Please download the file.');
+            } else {
+                alert('Printing not available for this document type. Please download to print.');
             }
         }
 
@@ -281,7 +834,11 @@
                 const entered = input.value.trim();
                 if (entered === correct) {
                     overlay.classList.remove('active');
-                    viewer.style.display = 'block';
+                    viewer.style.display = 'flex';
+                    // Enter fullscreen after unlocking
+                    setTimeout(function() {
+                        enterFullscreen();
+                    }, 500);
                     // Flash lightning on success
                     lightning.style.backgroundColor = 'rgba(255,255,255,0.4)';
                     setTimeout(() => { lightning.style.backgroundColor = 'transparent'; }, 80);
