@@ -1,4 +1,4 @@
-<!-- browse.html - Beautiful App-Like UI -->
+<!-- browse.html - Fixed Django Version -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,7 +23,6 @@
             overflow-x: hidden;
         }
 
-        /* ===== REAL RAIN ===== */
         #rain-canvas {
             position: fixed;
             top: 0;
@@ -155,7 +154,6 @@
             color: #4a7cf7;
         }
 
-        /* ===== LIGHT THEME ===== */
         body.light-theme {
             background: #f2f4f8;
         }
@@ -256,18 +254,6 @@
         body.light-theme .sidebar-item:hover i {
             color: #4a7cf7;
         }
-        body.light-theme .sidebar-header h2 {
-            background: linear-gradient(135deg, #2b4f8c, #4a7cf7);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        body.light-theme .sidebar-close {
-            color: rgba(0, 0, 0, 0.5);
-        }
-        body.light-theme .sidebar-close:hover {
-            color: #000;
-        }
 
         /* ===== SIDEBAR ===== */
         .sidebar {
@@ -277,7 +263,7 @@
             width: 280px;
             height: 100%;
             background: rgba(0, 0, 0, 0.96);
-            border-right: 1px solid rgba(255, 45, 45, 0.1);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
             z-index: 1000;
             transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-y: auto;
@@ -407,7 +393,6 @@
             top: 0;
             z-index: 100;
             padding: 12px 0;
-            transition: all 0.3s;
         }
 
         .header-content {
@@ -470,23 +455,7 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
-        .header-icon .badge-dot {
-            position: relative;
-        }
-
-        .header-icon .badge-dot::after {
-            content: '';
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            width: 8px;
-            height: 8px;
-            background: #ff1a1a;
-            border-radius: 50%;
-            border: 2px solid #0a0a0a;
-        }
-
-        /* ===== BROWSE CONTAINER ===== */
+        /* ===== BROWSE ===== */
         .browse-container {
             max-width: 900px;
             margin: 0 auto;
@@ -495,7 +464,6 @@
             z-index: 3;
         }
 
-        /* ===== SEARCH BAR ===== */
         .search-bar {
             display: flex;
             align-items: center;
@@ -553,7 +521,6 @@
             box-shadow: 0 8px 25px rgba(255, 26, 26, 0.3);
         }
 
-        /* ===== STATS ===== */
         .stats-row {
             display: flex;
             gap: 16px;
@@ -583,7 +550,6 @@
             font-weight: 600;
         }
 
-        /* ===== DOCUMENT CARDS ===== */
         .doc-list {
             display: flex;
             flex-direction: column;
@@ -734,7 +700,6 @@
             gap: 8px;
         }
 
-        .doc-card .doc-actions button,
         .doc-card .doc-actions a {
             padding: 6px 16px;
             border-radius: 50px;
@@ -773,7 +738,6 @@
             color: #fff;
         }
 
-        /* ===== EMPTY STATE ===== */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -816,15 +780,127 @@
             box-shadow: 0 20px 40px -10px rgba(255, 26, 26, 0.3);
         }
 
-        /* ===== ANIMATIONS ===== */
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
+        /* ===== MODALS ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #ff1a1a;
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 0 50px rgba(255, 26, 26, 0.3);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            color: #ff1a1a;
+            cursor: pointer;
+            transition: 0.3s;
+            background: none;
+            border: none;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+            color: #00ff41;
+        }
+
+        .modal h2 {
+            color: #fff;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #ff3333, #00ff44);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .gpa-calc {
+            color: #ddd;
+        }
+
+        .gpa-calc input,
+        .gpa-calc select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 45, 45, 0.3);
+            border-radius: 15px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .gpa-calc input:focus,
+        .gpa-calc select:focus {
+            outline: none;
+            border-color: #ff2d2d;
+            box-shadow: 0 0 0 3px rgba(255, 45, 45, 0.2);
+        }
+
+        .gpa-calc select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        .gpa-calc button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #ff1a1a, #00cc33);
+            border: none;
+            border-radius: 50px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .gpa-calc button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(255, 26, 26, 0.3);
+        }
+
+        .gpa-result {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 255, 68, 0.1);
+            border: 1px solid #00ff41;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
         }
 
         /* ===== RESPONSIVE ===== */
@@ -879,21 +955,6 @@
             .sidebar {
                 width: 260px;
                 left: -260px;
-            }
-        }
-
-        @media (max-width: 400px) {
-            .doc-card .doc-top {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .doc-card .doc-meta {
-                font-size: 0.65rem;
-                gap: 6px;
-            }
-            .doc-card .doc-actions a {
-                font-size: 0.65rem;
-                padding: 4px 12px;
             }
         }
     </style>
@@ -952,8 +1013,8 @@
             <!-- Stats -->
             <div class="stats-row">
                 <span class="stat-pill"><i class="fas fa-file"></i> <strong id="totalCount">{{ notes|length }}</strong> Total</span>
-                <span class="stat-pill"><i class="fas fa-sticky-note"></i> <strong>{{ notes|selectattr('file_type', 'equalto', 'notes')|length }}</strong> Notes</span>
-                <span class="stat-pill"><i class="fas fa-file-alt"></i> <strong>{{ notes|selectattr('file_type', 'equalto', 'pastpaper')|length }}</strong> Papers</span>
+                <span class="stat-pill"><i class="fas fa-sticky-note"></i> <strong id="notesCount">0</strong> Notes</span>
+                <span class="stat-pill"><i class="fas fa-file-alt"></i> <strong id="papersCount">0</strong> Papers</span>
             </div>
 
             <!-- Document List -->
@@ -962,7 +1023,8 @@
                     {% for note in notes %}
                         <div class="doc-card" 
                              data-search="{{ note.original_filename|default:note.filename|lower }} {{ note.module|default:''|lower }} {{ note.course|default:''|lower }} {{ note.description|default:''|lower }}"
-                             style="animation-delay: {{ forloop.counter0|divisibleby:2|yesno:'0.05s,0.12s' }}">
+                             data-file-type="{{ note.file_type }}"
+                             data-privacy="{{ note.privacy }}">
                             
                             <div class="doc-top">
                                 <div class="doc-icon">
@@ -1020,29 +1082,29 @@
     </div>
 
     <!-- ===== MODALS ===== -->
-    <div class="modal" id="gpaModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:1100; justify-content:center; align-items:center;">
-        <div class="modal-content" style="background:rgba(0,0,0,0.95); border:2px solid #ff1a1a; border-radius:30px; padding:40px; max-width:500px; width:90%; max-height:90vh; overflow-y:auto; position:relative; box-shadow:0 0 50px rgba(255,26,26,0.3);">
-            <button class="modal-close" id="closeGpa" style="position:absolute; top:15px; right:20px; font-size:2rem; color:#ff1a1a; cursor:pointer; transition:0.3s; background:none; border:none;">&times;</button>
-            <h2 style="color:#fff; margin-bottom:25px; text-align:center; font-size:1.8rem; background:linear-gradient(135deg, #ff3333, #00ff44); -webkit-background-clip:text; background-clip:text; color:transparent;"><i class="fas fa-calculator"></i> GPA Calculator</h2>
-            <div class="gpa-calc" style="color:#ddd;">
+    <div class="modal" id="gpaModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeGpa">&times;</button>
+            <h2><i class="fas fa-calculator"></i> GPA Calculator</h2>
+            <div class="gpa-calc">
                 <label>Program:</label>
-                <select id="programType" style="width:100%; padding:12px; margin:8px 0; background:rgba(255,255,255,0.05); border:1px solid rgba(255,45,45,0.3); border-radius:15px; color:#fff; font-size:1rem;">
+                <select id="programType">
                     <option value="diploma">Diploma (4.0 GPA)</option>
                     <option value="bachelor">Bachelor (5.0 GPA)</option>
                 </select>
                 <label>Courses:</label>
-                <input type="number" id="numCourses" min="1" value="4" style="width:100%; padding:12px; margin:8px 0; background:rgba(255,255,255,0.05); border:1px solid rgba(255,45,45,0.3); border-radius:15px; color:#fff; font-size:1rem;">
+                <input type="number" id="numCourses" min="1" value="4">
                 <div id="courseInputs"></div>
-                <button id="calculateGpa" style="width:100%; padding:14px; background:linear-gradient(135deg, #ff1a1a, #00cc33); border:none; border-radius:50px; color:#fff; font-weight:700; font-size:1.1rem; cursor:pointer; transition:0.3s; margin-top:10px;">Calculate GPA</button>
-                <div class="gpa-result" id="gpaResult" style="margin-top:15px; padding:15px; background:rgba(0,255,68,0.1); border:1px solid #00ff41; border-radius:15px; text-align:center; font-size:1.2rem; font-weight:700; color:#fff;"></div>
+                <button id="calculateGpa">Calculate GPA</button>
+                <div class="gpa-result" id="gpaResult"></div>
             </div>
         </div>
     </div>
 
-    <div class="modal" id="settingsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:1100; justify-content:center; align-items:center;">
-        <div class="modal-content" style="background:rgba(0,0,0,0.95); border:2px solid #ff1a1a; border-radius:30px; padding:40px; max-width:500px; width:90%; max-height:90vh; overflow-y:auto; position:relative; box-shadow:0 0 50px rgba(255,26,26,0.3);">
-            <button class="modal-close" id="closeSettings" style="position:absolute; top:15px; right:20px; font-size:2rem; color:#ff1a1a; cursor:pointer; transition:0.3s; background:none; border:none;">&times;</button>
-            <h2 style="color:#fff; margin-bottom:25px; text-align:center; font-size:1.8rem; background:linear-gradient(135deg, #ff3333, #00ff44); -webkit-background-clip:text; background-clip:text; color:transparent;"><i class="fas fa-cog"></i> Settings</h2>
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeSettings">&times;</button>
+            <h2><i class="fas fa-cog"></i> Settings</h2>
             <div style="color:#ddd;">
                 <div style="margin-bottom:20px;">
                     <label style="display:block; margin-bottom:10px; font-weight:600;"><i class="fas fa-palette"></i> Theme</label>
@@ -1170,28 +1232,32 @@
         });
 
         // ===== MODALS =====
-        function closeModal(id) {
+        function showModal(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function hideModal(id) {
             document.getElementById(id).style.display = 'none';
         }
 
-        document.getElementById('closeSettings').addEventListener('click', () => closeModal('settingsModal'));
+        document.getElementById('closeSettings').addEventListener('click', () => hideModal('settingsModal'));
         document.getElementById('settingsModal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) closeModal('settingsModal');
+            if (e.target === e.currentTarget) hideModal('settingsModal');
         });
 
-        document.getElementById('closeGpa').addEventListener('click', () => closeModal('gpaModal'));
+        document.getElementById('closeGpa').addEventListener('click', () => hideModal('gpaModal'));
         document.getElementById('gpaModal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) closeModal('gpaModal');
+            if (e.target === e.currentTarget) hideModal('gpaModal');
         });
 
         document.getElementById('sideSettings').addEventListener('click', () => {
             closeSidebar();
-            document.getElementById('settingsModal').style.display = 'flex';
+            showModal('settingsModal');
         });
 
         document.getElementById('sideGpa').addEventListener('click', () => {
             closeSidebar();
-            document.getElementById('gpaModal').style.display = 'flex';
+            showModal('gpaModal');
             generateCourseInputs();
         });
 
@@ -1264,6 +1330,7 @@
             const q = document.getElementById('searchInput').value.toLowerCase().trim();
             const cards = document.querySelectorAll('.doc-card');
             let count = 0;
+
             cards.forEach(card => {
                 const data = card.dataset.search || '';
                 if (!q || data.includes(q)) {
@@ -1273,15 +1340,45 @@
                     card.style.display = 'none';
                 }
             });
+
             document.getElementById('totalCount').textContent = count;
+
+            // Update notes and papers count
+            const visibleCards = document.querySelectorAll('.doc-card[style*="display: none"]');
+            const totalVisible = document.querySelectorAll('.doc-card:not([style*="display: none"])');
+            
+            let notesCount = 0;
+            let papersCount = 0;
+            totalVisible.forEach(card => {
+                if (card.dataset.fileType === 'notes') notesCount++;
+                else if (card.dataset.fileType === 'pastpaper') papersCount++;
+                else notesCount++; // default to notes
+            });
+            
+            document.getElementById('notesCount').textContent = notesCount;
+            document.getElementById('papersCount').textContent = papersCount;
         }
+
+        // Initial stats
+        document.addEventListener('DOMContentLoaded', function() {
+            const allCards = document.querySelectorAll('.doc-card');
+            let notesCount = 0;
+            let papersCount = 0;
+            allCards.forEach(card => {
+                if (card.dataset.fileType === 'notes') notesCount++;
+                else if (card.dataset.fileType === 'pastpaper') papersCount++;
+                else notesCount++;
+            });
+            document.getElementById('notesCount').textContent = notesCount;
+            document.getElementById('papersCount').textContent = papersCount;
+        });
 
         // ===== KEYBOARD =====
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 if (sidebar.classList.contains('open')) closeSidebar();
-                if (document.getElementById('gpaModal').style.display === 'flex') closeModal('gpaModal');
-                if (document.getElementById('settingsModal').style.display === 'flex') closeModal('settingsModal');
+                if (document.getElementById('gpaModal').style.display === 'flex') hideModal('gpaModal');
+                if (document.getElementById('settingsModal').style.display === 'flex') hideModal('settingsModal');
             }
             if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
                 e.preventDefault();
