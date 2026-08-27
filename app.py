@@ -1,7 +1,8 @@
-# app.py - UPDATED VERSION with all fixes
+# app.py - COMPLETE UPDATED VERSION
 import os
 import uuid
 import mimetypes
+import requests
 from datetime import datetime
 from django.conf import settings
 from django.core.wsgi import get_wsgi_application
@@ -116,22 +117,18 @@ UNIVERSITIES = [
 ]
 
 class UploadForm(forms.Form):
-    # File upload
     file = forms.FileField(label="File", widget=forms.FileInput(attrs={"class": "form-file", "required": True}))
     
-    # File type selection
     FILE_TYPE_CHOICES = [
         ('notes', 'Notes'),
         ('pastpaper', 'Past Paper'),
     ]
     file_type = forms.ChoiceField(choices=FILE_TYPE_CHOICES, widget=forms.RadioSelect, initial='notes')
     
-    # Module/Course info
     module = forms.CharField(max_length=200, label="Module Name", widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., Computer Networks, Database Systems..."}))
     course = forms.CharField(max_length=200, label="Course Code", widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., CIT 3102, BCS 2101..."}))
     description = forms.CharField(widget=forms.Textarea(attrs={"class": "form-textarea", "rows": 3, "placeholder": "Brief description of the file content..."}), label="Description", required=False)
     
-    # Privacy
     PRIVACY_CHOICES = [
         ('public', 'Public'),
         ('private', 'Private'),
@@ -139,7 +136,6 @@ class UploadForm(forms.Form):
     privacy = forms.ChoiceField(choices=PRIVACY_CHOICES, widget=forms.RadioSelect, initial='public')
     passcode = forms.CharField(max_length=4, required=False, widget=forms.PasswordInput(attrs={"class": "passcode-input", "placeholder": "••••", "maxlength": "4", "pattern": "[0-9]{4}"}))
     
-    # University
     university = forms.ChoiceField(choices=[('', '-- Select your university --')] + [(u, u) for u in UNIVERSITIES] + [('Other', 'Other (Type your university name)')], required=False, widget=forms.Select(attrs={"class": "form-select"}))
     custom_university = forms.CharField(max_length=200, required=False, widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "Type your university name..."}))
 
@@ -172,10 +168,38 @@ def get_file_icon(filename):
     }
     return icons.get(ext, '📁')
 
+# ========== VIEWER LOGIC - UPDATED ==========
 def can_view_inline(filename):
+    """Check if the browser can display this file natively"""
     ext = os.path.splitext(filename)[1].lower()
-    inline_extensions = ['.pdf', '.txt', '.md', '.jpg', '.jpeg', '.png', '.gif', '.csv']
-    return ext in inline_extensions
+    viewable = [
+        '.pdf', '.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg',
+        '.txt', '.md', '.csv', '.json', '.xml', '.html', '.css', '.js'
+    ]
+    return ext in viewable
+
+def get_viewer_url(filename, file_url):
+    """Get the URL for inline viewing - returns None if not viewable"""
+    ext = os.path.splitext(filename)[1].lower()
+    # Files the browser can display natively
+    if ext in ['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg']:
+        return file_url
+    if ext in ['.txt', '.md', '.csv', '.json', '.xml', '.html', '.css', '.js']:
+        return file_url
+    # Office files and others - not viewable in browser
+    return None
+
+def is_image_file(filename):
+    ext = os.path.splitext(filename)[1].lower()
+    return ext in ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg']
+
+def is_pdf_file(filename):
+    ext = os.path.splitext(filename)[1].lower()
+    return ext == '.pdf'
+
+def is_text_file(filename):
+    ext = os.path.splitext(filename)[1].lower()
+    return ext in ['.txt', '.md', '.csv', '.json', '.xml', '.html', '.css', '.js']
 
 def get_all_notes():
     try:
@@ -192,8 +216,8 @@ def get_all_notes():
                 note["file_type"] = "notes"
             if note.get("university") is None:
                 note["university"] = "Not specified"
-            if note.get("passcode") is None:
-                note["passcode"] = ""
+            # Set can_view_inline for each note
+            note["can_view_inline"] = can_view_inline(note.get("filename", ""))
         return notes
     except Exception as e:
         print(f"Error: {e}")
@@ -223,7 +247,6 @@ def upload_view(request):
                 if ext not in ALLOWED_EXTENSIONS:
                     error = f"File type not allowed. Allowed: {', '.join(ALLOWED_EXTENSIONS)}"
                 else:
-                    # Get form data
                     file_type = form.cleaned_data.get("file_type", "notes")
                     module = form.cleaned_data.get("module", "")
                     course = form.cleaned_data.get("course", "")
@@ -231,16 +254,13 @@ def upload_view(request):
                     privacy = form.cleaned_data.get("privacy", "public")
                     passcode = form.cleaned_data.get("passcode", "")
                     
-                    # Get university (handle custom)
                     university = form.cleaned_data.get("university", "")
                     if university == "Other":
                         university = form.cleaned_data.get("custom_university", "")
                     
-                    # If no university selected, set default
                     if not university:
                         university = "Not specified"
                     
-                    # Create unique filename
                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                     unique_id = str(uuid.uuid4())[:8]
                     original_name = file.name.replace(' ', '_')
@@ -250,54 +270,37 @@ def upload_view(request):
                     file_content = file.read()
                     
                     # Upload to storage
-                    try:
-                        supabase.storage.from_("notes").upload(
-                            safe_filename, 
-                            file_content,
-                            {"content-type": file.content_type or "application/octet-stream"}
-                        )
-                        print(f"✅ File uploaded: {safe_filename}")
-                    except Exception as storage_error:
-                        print(f"❌ Storage error: {storage_error}")
-                        error = f"Storage upload failed: {str(storage_error)}"
-                        raise Exception(error)
+                    supabase.storage.from_("notes").upload(
+                        safe_filename, 
+                        file_content,
+                        {"content-type": file.content_type or "application/octet-stream"}
+                    )
                     
-                    # Save metadata to database
-                    try:
-                        note_data = {
-                            "filename": safe_filename,
-                            "original_filename": file.name,
-                            "module": module,
-                            "course": course,
-                            "description": description,
-                            "file_type": file_type,
-                            "privacy": privacy,
-                            "passcode": passcode if privacy == "private" else "",
-                            "university": university,
-                            "uploader": "user",
-                            "uploaded_at": datetime.now().isoformat(),
-                            "file_size": len(file_content)
-                        }
-                        
-                        print(f"📝 Saving metadata: {note_data}")
-                        
-                        # Insert into database
-                        result = supabase.table("notes").insert(note_data).execute()
-                        
-                        # Verify the insert worked
-                        verify = supabase.table("notes").select("*").eq("filename", safe_filename).execute()
-                        if verify.data:
-                            print(f"✅ Metadata saved! ID: {verify.data[0]['id']}")
-                            message = f"✅ {file.name} uploaded successfully!"
-                            form = UploadForm()
-                        else:
-                            error = "File uploaded but metadata could not be saved."
-                            
-                    except Exception as db_error:
-                        print(f"❌ Database error: {db_error}")
-                        error = f"Database save failed: {str(db_error)}"
-                        raise Exception(error)
+                    # Save metadata
+                    note_data = {
+                        "filename": safe_filename,
+                        "original_filename": file.name,
+                        "module": module,
+                        "course": course,
+                        "description": description,
+                        "file_type": file_type,
+                        "privacy": privacy,
+                        "passcode": passcode if privacy == "private" else "",
+                        "university": university,
+                        "uploader": "user",
+                        "uploaded_at": datetime.now().isoformat(),
+                        "file_size": len(file_content)
+                    }
                     
+                    result = supabase.table("notes").insert(note_data).execute()
+                    
+                    verify = supabase.table("notes").select("*").eq("filename", safe_filename).execute()
+                    if verify.data:
+                        message = f"✅ {file.name} uploaded successfully!"
+                        form = UploadForm()
+                    else:
+                        error = "File uploaded but metadata could not be saved."
+                        
             except Exception as e:
                 error = f"Upload failed: {str(e)}"
                 print(f"❌ ERROR: {error}")
@@ -323,17 +326,14 @@ def browse_view(request):
         note["can_view_inline"] = can_view_inline(note.get("filename", ""))
         note["is_private"] = note.get("privacy", "public") == "private"
         note["has_passcode"] = bool(note.get("passcode", ""))
-        # Ensure university is set
         if not note.get("university"):
             note["university"] = "Not specified"
-        # Ensure file_type is set
         if not note.get("file_type"):
             note["file_type"] = "notes"
     return render(request, "browse.html", {"notes": notes, "query": query})
 
 def view_file(request, id):
     try:
-        # Get the note from database
         result = supabase.table("notes").select("*").eq("id", id).execute()
         
         if not result.data:
@@ -348,27 +348,40 @@ def view_file(request, id):
         note["description"] = note.get("description", "")
         note["file_type"] = note.get("file_type", "notes")
         note["privacy"] = note.get("privacy", "public")
-        note["passcode"] = note.get("passcode", "")
+        note["passcode"] = note.get("passcode", "").strip()
         note["university"] = note.get("university", "Not specified")
         note["uploaded_at"] = note.get("uploaded_at", "")
         note["file_size"] = note.get("file_size", 0)
         
-        # Get file URL for viewing
+        # Get file URL
         file_url = supabase.storage.from_("notes").get_public_url(note["filename"])
         
-        # Check if file can be viewed inline
-        can_view = can_view_inline(note.get("filename", ""))
+        # Determine if viewable inline
+        viewer_url = get_viewer_url(note["filename"], file_url)
+        note["can_view_inline"] = viewer_url is not None
+        
+        # File type flags
+        note["is_pdf"] = is_pdf_file(note["filename"])
+        note["is_image"] = is_image_file(note["filename"])
+        note["is_text"] = is_text_file(note["filename"])
+        
+        # For text files, fetch content
+        note["text_content"] = ""
+        if note["is_text"] and viewer_url:
+            try:
+                response = requests.get(file_url, timeout=10)
+                if response.status_code == 200:
+                    note["text_content"] = response.text
+            except Exception as e:
+                print(f"Could not fetch text content: {e}")
         
         print(f"📄 Viewing file: {note['original_filename']}")
         print(f"🔒 Privacy: {note['privacy']}")
-        print(f"🏫 University: {note['university']}")
-        print(f"📚 File Type: {note['file_type']}")
-        print(f"🔑 Passcode: {note['passcode'] if note['privacy'] == 'private' else 'N/A'}")
+        print(f"👁️ Can view inline: {note['can_view_inline']}")
         
-        # Prepare data for template
         context = {
             "note": note,
-            "pdf_url": file_url,
+            "pdf_url": viewer_url if viewer_url else "",
             "admin": ADMIN
         }
         
@@ -387,7 +400,6 @@ def download_file(request, id):
         
         note = result.data[0]
         
-        # Check if private - require passcode
         if note.get("privacy") == "private":
             passcode = request.GET.get("passcode", "")
             if passcode != note.get("passcode", ""):
