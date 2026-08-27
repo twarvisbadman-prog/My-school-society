@@ -1,7 +1,6 @@
-# app.py - COMPLETE UPDATED VERSION
+# app.py - COMPLETE FIXED VERSION
 import os
 import uuid
-import mimetypes
 import requests
 from datetime import datetime
 from django.conf import settings
@@ -12,13 +11,13 @@ from django import forms
 from django.urls import path
 from supabase import create_client, Client
 
-# Environment variables
+# ========== ENVIRONMENT VARIABLES ==========
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-key")
 ADMIN = os.environ.get("ADMIN", "true") == "true"
 
-# Django settings
+# ========== DJANGO SETTINGS ==========
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 if not settings.configured:
@@ -50,19 +49,16 @@ if not settings.configured:
         X_FRAME_OPTIONS="SAMEORIGIN",
     )
 
-from django import forms
-
-# Supabase client
+# ========== SUPABASE ==========
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# Allowed file extensions
+# ========== CONSTANTS ==========
 ALLOWED_EXTENSIONS = [
     '.pdf', '.ppt', '.pptx', '.doc', '.docx', '.txt', '.md',
     '.xls', '.xlsx', '.csv', '.jpg', '.jpeg', '.png', '.gif',
     '.zip', '.rar'
 ]
 
-# University list
 UNIVERSITIES = [
     "University of Dar es Salaam (UDSM)",
     "Sokoine University of Agriculture (SUA)",
@@ -116,29 +112,19 @@ UNIVERSITIES = [
     "Manyara Technical College",
 ]
 
+# ========== FORMS ==========
 class UploadForm(forms.Form):
     file = forms.FileField(label="File", widget=forms.FileInput(attrs={"class": "form-file", "required": True}))
-    
-    FILE_TYPE_CHOICES = [
-        ('notes', 'Notes'),
-        ('pastpaper', 'Past Paper'),
-    ]
-    file_type = forms.ChoiceField(choices=FILE_TYPE_CHOICES, widget=forms.RadioSelect, initial='notes')
-    
-    module = forms.CharField(max_length=200, label="Module Name", widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., Computer Networks, Database Systems..."}))
-    course = forms.CharField(max_length=200, label="Course Code", widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., CIT 3102, BCS 2101..."}))
-    description = forms.CharField(widget=forms.Textarea(attrs={"class": "form-textarea", "rows": 3, "placeholder": "Brief description of the file content..."}), label="Description", required=False)
-    
-    PRIVACY_CHOICES = [
-        ('public', 'Public'),
-        ('private', 'Private'),
-    ]
-    privacy = forms.ChoiceField(choices=PRIVACY_CHOICES, widget=forms.RadioSelect, initial='public')
-    passcode = forms.CharField(max_length=4, required=False, widget=forms.PasswordInput(attrs={"class": "passcode-input", "placeholder": "••••", "maxlength": "4", "pattern": "[0-9]{4}"}))
-    
-    university = forms.ChoiceField(choices=[('', '-- Select your university --')] + [(u, u) for u in UNIVERSITIES] + [('Other', 'Other (Type your university name)')], required=False, widget=forms.Select(attrs={"class": "form-select"}))
+    file_type = forms.ChoiceField(choices=[('notes', 'Notes'), ('pastpaper', 'Past Paper')], widget=forms.RadioSelect, initial='notes')
+    module = forms.CharField(max_length=200, label="Module Name", widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., Computer Networks..."}))
+    course = forms.CharField(max_length=200, label="Course Code", widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., CIT 3102..."}))
+    description = forms.CharField(widget=forms.Textarea(attrs={"class": "form-textarea", "rows": 3, "placeholder": "Brief description..."}), label="Description", required=False)
+    privacy = forms.ChoiceField(choices=[('public', 'Public'), ('private', 'Private')], widget=forms.RadioSelect, initial='public')
+    passcode = forms.CharField(max_length=4, required=False, widget=forms.PasswordInput(attrs={"class": "passcode-input", "placeholder": "••••", "maxlength": "4"}))
+    university = forms.ChoiceField(choices=[('', '-- Select your university --')] + [(u, u) for u in UNIVERSITIES] + [('Other', 'Other')], required=False, widget=forms.Select(attrs={"class": "form-select"}))
     custom_university = forms.CharField(max_length=200, required=False, widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "Type your university name..."}))
 
+# ========== HELPER FUNCTIONS ==========
 def get_content_type(filename):
     ext = os.path.splitext(filename)[1].lower()
     types = {
@@ -168,55 +154,21 @@ def get_file_icon(filename):
     }
     return icons.get(ext, '📁')
 
-# ========== VIEWER LOGIC - UPDATED ==========
 def can_view_inline(filename):
-    """Check if the browser can display this file natively"""
     ext = os.path.splitext(filename)[1].lower()
-    viewable = [
-        '.pdf', '.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg',
-        '.txt', '.md', '.csv', '.json', '.xml', '.html', '.css', '.js'
-    ]
+    viewable = ['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg', '.txt', '.md', '.csv']
     return ext in viewable
-
-def get_viewer_url(filename, file_url):
-    """Get the URL for inline viewing - returns None if not viewable"""
-    ext = os.path.splitext(filename)[1].lower()
-    # Files the browser can display natively
-    if ext in ['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg']:
-        return file_url
-    if ext in ['.txt', '.md', '.csv', '.json', '.xml', '.html', '.css', '.js']:
-        return file_url
-    # Office files and others - not viewable in browser
-    return None
-
-def is_image_file(filename):
-    ext = os.path.splitext(filename)[1].lower()
-    return ext in ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg']
-
-def is_pdf_file(filename):
-    ext = os.path.splitext(filename)[1].lower()
-    return ext == '.pdf'
-
-def is_text_file(filename):
-    ext = os.path.splitext(filename)[1].lower()
-    return ext in ['.txt', '.md', '.csv', '.json', '.xml', '.html', '.css', '.js']
 
 def get_all_notes():
     try:
         response = supabase.table("notes").select("*").order("uploaded_at", desc=True).execute()
         notes = response.data if response.data else []
         for note in notes:
-            if note.get("original_filename") is None:
-                note["original_filename"] = note.get("filename", "")
-            if note.get("file_size") is None:
-                note["file_size"] = 0
-            if note.get("privacy") is None:
-                note["privacy"] = "public"
-            if note.get("file_type") is None:
-                note["file_type"] = "notes"
-            if note.get("university") is None:
-                note["university"] = "Not specified"
-            # Set can_view_inline for each note
+            note["original_filename"] = note.get("original_filename", note.get("filename", ""))
+            note["file_size"] = note.get("file_size", 0)
+            note["privacy"] = note.get("privacy", "public")
+            note["file_type"] = note.get("file_type", "notes")
+            note["university"] = note.get("university", "Not specified")
             note["can_view_inline"] = can_view_inline(note.get("filename", ""))
         return notes
     except Exception as e:
@@ -230,6 +182,7 @@ def search_notes(query):
     except Exception as e:
         return get_all_notes()
 
+# ========== VIEWS ==========
 def index(request):
     return render(request, "index.html")
 
@@ -245,7 +198,7 @@ def upload_view(request):
                 ext = os.path.splitext(file.name)[1].lower()
                 
                 if ext not in ALLOWED_EXTENSIONS:
-                    error = f"File type not allowed. Allowed: {', '.join(ALLOWED_EXTENSIONS)}"
+                    error = f"File type not allowed."
                 else:
                     file_type = form.cleaned_data.get("file_type", "notes")
                     module = form.cleaned_data.get("module", "")
@@ -257,15 +210,12 @@ def upload_view(request):
                     university = form.cleaned_data.get("university", "")
                     if university == "Other":
                         university = form.cleaned_data.get("custom_university", "")
-                    
                     if not university:
                         university = "Not specified"
                     
                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                     unique_id = str(uuid.uuid4())[:8]
-                    original_name = file.name.replace(' ', '_')
-                    name_without_ext = os.path.splitext(original_name)[0]
-                    safe_filename = f"{timestamp}_{unique_id}_{name_without_ext}{ext}"
+                    safe_filename = f"{timestamp}_{unique_id}_{file.name.replace(' ', '_')}"
                     
                     file_content = file.read()
                     
@@ -277,7 +227,7 @@ def upload_view(request):
                     )
                     
                     # Save metadata
-                    note_data = {
+                    supabase.table("notes").insert({
                         "filename": safe_filename,
                         "original_filename": file.name,
                         "module": module,
@@ -290,25 +240,16 @@ def upload_view(request):
                         "uploader": "user",
                         "uploaded_at": datetime.now().isoformat(),
                         "file_size": len(file_content)
-                    }
+                    }).execute()
                     
-                    result = supabase.table("notes").insert(note_data).execute()
-                    
-                    verify = supabase.table("notes").select("*").eq("filename", safe_filename).execute()
-                    if verify.data:
-                        message = f"✅ {file.name} uploaded successfully!"
-                        form = UploadForm()
-                    else:
-                        error = "File uploaded but metadata could not be saved."
+                    message = f"✅ {file.name} uploaded successfully!"
+                    form = UploadForm()
                         
             except Exception as e:
                 error = f"Upload failed: {str(e)}"
                 print(f"❌ ERROR: {error}")
-                import traceback
-                traceback.print_exc()
         else:
             error = "Please fill all required fields."
-            print(f"❌ Form errors: {form.errors}")
     else:
         form = UploadForm()
     
@@ -341,54 +282,16 @@ def view_file(request, id):
         
         note = result.data[0]
         
-        # Ensure all fields have defaults
-        note["original_filename"] = note.get("original_filename", note.get("filename", "Unknown"))
-        note["module"] = note.get("module", "N/A")
-        note["course"] = note.get("course", "N/A")
-        note["description"] = note.get("description", "")
-        note["file_type"] = note.get("file_type", "notes")
-        note["privacy"] = note.get("privacy", "public")
-        note["passcode"] = note.get("passcode", "").strip()
-        note["university"] = note.get("university", "Not specified")
-        note["uploaded_at"] = note.get("uploaded_at", "")
-        note["file_size"] = note.get("file_size", 0)
+        # ========== DIRECT FILE SERVING - NO FORMATTING ==========
+        file_data = supabase.storage.from_("notes").download(note["filename"])
+        content_type = get_content_type(note["filename"])
         
-        # Get file URL
-        file_url = supabase.storage.from_("notes").get_public_url(note["filename"])
-        
-        # Determine if viewable inline
-        viewer_url = get_viewer_url(note["filename"], file_url)
-        note["can_view_inline"] = viewer_url is not None
-        
-        # File type flags
-        note["is_pdf"] = is_pdf_file(note["filename"])
-        note["is_image"] = is_image_file(note["filename"])
-        note["is_text"] = is_text_file(note["filename"])
-        
-        # For text files, fetch content
-        note["text_content"] = ""
-        if note["is_text"] and viewer_url:
-            try:
-                response = requests.get(file_url, timeout=10)
-                if response.status_code == 200:
-                    note["text_content"] = response.text
-            except Exception as e:
-                print(f"Could not fetch text content: {e}")
-        
-        print(f"📄 Viewing file: {note['original_filename']}")
-        print(f"🔒 Privacy: {note['privacy']}")
-        print(f"👁️ Can view inline: {note['can_view_inline']}")
-        
-        context = {
-            "note": note,
-            "pdf_url": viewer_url if viewer_url else "",
-            "admin": ADMIN
-        }
-        
-        return render(request, "view.html", context)
+        response = HttpResponse(file_data, content_type=content_type)
+        response["Content-Disposition"] = f"inline; filename=\"{note.get('original_filename', note['filename'])}\""
+        return response
+        # =========================================================
         
     except Exception as e:
-        print(f"❌ Error viewing file: {e}")
         return HttpResponse(f"Error: {str(e)}", status=500)
 
 def download_file(request, id):
@@ -427,7 +330,7 @@ def delete_file(request, id):
 def favicon(request):
     return HttpResponse(status=204)
 
-# ========== ADMIN DASHBOARD ==========
+# ========== ADMIN ==========
 def admin_dashboard(request):
     if not ADMIN:
         return HttpResponse("Access Denied. Admin only.", status=403)
@@ -467,10 +370,9 @@ def admin_dashboard(request):
 def admin_settings(request):
     if not ADMIN:
         return HttpResponse("Access Denied. Admin only.", status=403)
-    
     return render(request, "admin_settings.html", {})
 
-# URL patterns
+# ========== URLS ==========
 urlpatterns = [
     path("", index),
     path("admin/", admin_dashboard),
