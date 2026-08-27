@@ -1,14 +1,16 @@
-# app.py - COMPLETE FIXED VERSION
+# app.py - COMPLETE UPDATED VERSION with Admin Passcode Management
 import os
 import uuid
+import json
 import requests
 from datetime import datetime
 from django.conf import settings
 from django.core.wsgi import get_wsgi_application
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django import forms
 from django.urls import path
+from django.views.decorators.csrf import csrf_exempt
 from supabase import create_client, Client
 
 # ========== ENVIRONMENT VARIABLES ==========
@@ -48,6 +50,8 @@ if not settings.configured:
         CSRF_TRUSTED_ORIGINS=["https://*.onrender.com", "http://localhost:8000"],
         X_FRAME_OPTIONS="SAMEORIGIN",
     )
+
+from django import forms
 
 # ========== SUPABASE ==========
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -169,6 +173,7 @@ def get_all_notes():
             note["privacy"] = note.get("privacy", "public")
             note["file_type"] = note.get("file_type", "notes")
             note["university"] = note.get("university", "Not specified")
+            note["passcode"] = note.get("passcode", "")
             note["can_view_inline"] = can_view_inline(note.get("filename", ""))
         return notes
     except Exception as e:
@@ -282,14 +287,13 @@ def view_file(request, id):
         
         note = result.data[0]
         
-        # ========== DIRECT FILE SERVING - NO FORMATTING ==========
+        # ========== DIRECT FILE SERVING ==========
         file_data = supabase.storage.from_("notes").download(note["filename"])
         content_type = get_content_type(note["filename"])
         
         response = HttpResponse(file_data, content_type=content_type)
         response["Content-Disposition"] = f"inline; filename=\"{note.get('original_filename', note['filename'])}\""
         return response
-        # =========================================================
         
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", status=500)
@@ -330,7 +334,54 @@ def delete_file(request, id):
 def favicon(request):
     return HttpResponse(status=204)
 
-# ========== ADMIN ==========
+# ========== ADMIN PASCODE MANAGEMENT ==========
+@csrf_exempt
+def update_passcode(request, id):
+    """Update the passcode for a private file"""
+    if not ADMIN:
+        return JsonResponse({"success": False, "error": "Not authorized"}, status=403)
+    
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "Method not allowed"}, status=405)
+    
+    try:
+        # Parse JSON data
+        data = json.loads(request.body)
+        new_passcode = data.get("passcode", "").strip()
+        
+        # Validate passcode
+        if not new_passcode:
+            return JsonResponse({"success": False, "error": "Passcode is required"})
+        
+        if not new_passcode.isdigit():
+            return JsonResponse({"success": False, "error": "Passcode must contain only numbers"})
+        
+        if len(new_passcode) != 4:
+            return JsonResponse({"success": False, "error": "Passcode must be exactly 4 digits"})
+        
+        # Check if the file exists and is private
+        check_result = supabase.table("notes").select("*").eq("id", id).execute()
+        if not check_result.data:
+            return JsonResponse({"success": False, "error": "File not found"})
+        
+        note = check_result.data[0]
+        if note.get("privacy") != "private":
+            return JsonResponse({"success": False, "error": "File is not private"})
+        
+        # Update the passcode in Supabase
+        supabase.table("notes").update({"passcode": new_passcode}).eq("id", id).execute()
+        
+        print(f"🔑 Passcode updated for file ID {id}: {new_passcode}")
+        
+        return JsonResponse({"success": True, "message": "Passcode updated successfully"})
+        
+    except json.JSONDecodeError:
+        return JsonResponse({"success": False, "error": "Invalid JSON data"}, status=400)
+    except Exception as e:
+        print(f"❌ Error updating passcode: {e}")
+        return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+# ========== ADMIN DASHBOARD ==========
 def admin_dashboard(request):
     if not ADMIN:
         return HttpResponse("Access Denied. Admin only.", status=403)
@@ -382,6 +433,7 @@ urlpatterns = [
     path("view/<int:id>/", view_file),
     path("download/<int:id>/", download_file),
     path("delete/<int:id>/", delete_file),
+    path("update-passcode/<int:id>/", update_passcode, name="update_passcode"),
     path("favicon.ico", favicon),
 ]
 
