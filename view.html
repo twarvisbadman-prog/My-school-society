@@ -1,4 +1,4 @@
-<!-- view.html - Fast Document Viewer -->
+<!-- view.html - Native Document Viewer -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,7 +51,6 @@
             flex-direction:column;
         }
 
-        /* Dark Theme */
         body.dark-theme { background:#0f0f1a; }
         body.dark-theme #rain-canvas { opacity:0; pointer-events:none; }
         body.dark-theme .header { background:rgba(15,15,26,0.92); border-color:rgba(50,100,255,0.1); }
@@ -66,15 +65,12 @@
         body.dark-theme .loading-text { color:rgba(255,255,255,0.6); }
         body.dark-theme .file-info { color:rgba(255,255,255,0.4); }
         body.dark-theme .action-bar { background:rgba(0,0,0,0.3); }
-        body.dark-theme .action-bar a, body.dark-theme .action-bar button { color:rgba(255,255,255,0.8); }
-        body.dark-theme .action-bar a:hover, body.dark-theme .action-bar button:hover { color:#fff; }
 
         body.light-theme { background:#f2f4f8; }
         body.light-theme #rain-canvas { opacity:0; pointer-events:none; }
         body.light-theme .header { background:rgba(255,255,255,0.92); border-color:rgba(0,0,0,0.06); }
         body.light-theme .logo { background:linear-gradient(135deg,#2b4f8c,#4a7cf7); -webkit-background-clip:text; background-clip:text; color:transparent; }
         body.light-theme .view-card { background:#fff; border-color:rgba(0,0,0,0.08); }
-        body.light-theme .view-card:hover { border-color:#4a7cf7; box-shadow:0 8px 30px rgba(74,124,247,0.08); }
         body.light-theme .pdf-header h2 { color:#1a1a2e; }
         body.light-theme .pdf-meta { color:rgba(0,0,0,0.5); }
         body.light-theme .btn-back { background:rgba(74,124,247,0.1); color:#2b4f8c; border-color:rgba(74,124,247,0.1); }
@@ -84,8 +80,6 @@
         body.light-theme .loading-text { color:rgba(0,0,0,0.6); }
         body.light-theme .file-info { color:rgba(0,0,0,0.4); }
         body.light-theme .action-bar { background:rgba(255,255,255,0.3); }
-        body.light-theme .action-bar a, body.light-theme .action-bar button { color:rgba(0,0,0,0.8); }
-        body.light-theme .action-bar a:hover, body.light-theme .action-bar button:hover { color:#000; }
 
         .header { 
             background:rgba(0,0,0,0.7); 
@@ -187,6 +181,16 @@
             min-height:0;
         }
         
+        /* Native document viewers */
+        .pdf-viewer iframe,
+        .pdf-viewer embed,
+        .pdf-viewer object {
+            width:100%;
+            height:100%;
+            border:none;
+            display:block;
+        }
+        
         .pdf-viewer img {
             width:100%;
             height:100%;
@@ -194,29 +198,17 @@
             display:block;
         }
         
-        .pdf-viewer .text-content {
-            padding:20px;
-            color:#fff;
-            font-size:0.9rem;
-            line-height:1.6;
-            white-space:pre-wrap;
-            font-family:monospace;
+        .pdf-viewer video {
+            width:100%;
             height:100%;
-            overflow:auto;
+            object-fit:contain;
+            background:#000;
         }
         
-        .pdf-viewer .word-content {
-            padding:20px;
-            color:#fff;
-            font-size:0.9rem;
-            line-height:1.6;
-            height:100%;
-            overflow:auto;
-        }
-        
-        body.light-theme .pdf-viewer .text-content,
-        body.light-theme .pdf-viewer .word-content {
-            color:#1a1a2e;
+        .pdf-viewer audio {
+            width:100%;
+            padding:40px;
+            background:rgba(0,0,0,0.3);
         }
         
         .loading-container {
@@ -291,6 +283,45 @@
         .btn-fullscreen:hover { background:rgba(74,124,247,0.15); }
         .btn-print { background:rgba(255,193,7,0.08); color:#ffc107; border-color:rgba(255,193,7,0.08); }
         .btn-print:hover { background:rgba(255,193,7,0.15); }
+
+        .unsupported-message {
+            text-align:center;
+            padding:30px 20px;
+            color:rgba(255,255,255,0.6);
+            height:100%;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+        }
+        
+        .unsupported-message i {
+            font-size:40px;
+            color:#ff6b6b;
+            margin-bottom:12px;
+        }
+        
+        .unsupported-message h3 {
+            color:#fff;
+            margin-bottom:6px;
+            font-size:1.1rem;
+        }
+        
+        body.light-theme .unsupported-message h3 {
+            color:#1a1a2e;
+        }
+
+        .pdf-viewer:fullscreen {
+            border-radius:0;
+            border:none;
+            background:#0a0a0a;
+        }
+        
+        .pdf-viewer:fullscreen .loading-container {
+            background:rgba(0,0,0,0.8);
+        }
+        .pdf-viewer:fullscreen .action-bar { display:none; }
+        .pdf-viewer:fullscreen .pdf-header { display:none; }
 
         /* Passcode Popup */
         .passcode-overlay { 
@@ -367,51 +398,6 @@
 
         @keyframes fadeIn { from{opacity:0} to{opacity:1} }
         @keyframes scaleUp { from{transform:scale(0.9);opacity:0} to{transform:scale(1);opacity:1} }
-
-        .unsupported-message {
-            text-align:center;
-            padding:30px 20px;
-            color:rgba(255,255,255,0.6);
-            height:100%;
-            display:flex;
-            flex-direction:column;
-            justify-content:center;
-            align-items:center;
-        }
-        
-        .unsupported-message i {
-            font-size:40px;
-            color:#ff6b6b;
-            margin-bottom:12px;
-        }
-        
-        .unsupported-message h3 {
-            color:#fff;
-            margin-bottom:6px;
-            font-size:1.1rem;
-        }
-        
-        body.light-theme .unsupported-message h3 {
-            color:#1a1a2e;
-        }
-
-        .pdf-viewer:fullscreen {
-            border-radius:0;
-            border:none;
-            background:#0a0a0a;
-        }
-        
-        .pdf-viewer:fullscreen .loading-container {
-            background:rgba(0,0,0,0.8);
-        }
-        
-        .pdf-viewer:fullscreen .action-bar {
-            display:none;
-        }
-        
-        .pdf-viewer:fullscreen .pdf-header {
-            display:none;
-        }
 
         ::-webkit-scrollbar { width:4px; }
         ::-webkit-scrollbar-track { background:rgba(255,255,255,0.03); }
@@ -497,18 +483,14 @@
     {% endif %}
 
     <script>
-        // ===== FAST LOADING WITH CACHING =====
+        // ===== NATIVE DOCUMENT VIEWER =====
         document.addEventListener('DOMContentLoaded', function() {
             const fileUrl = '{{ note.file.url|default:"" }}';
             const fileName = '{{ note.original_filename|default:note.filename }}';
             const fileExtension = getFileExtension(fileName).toLowerCase();
             
             updateFileInfo(fileExtension);
-            
-            // Start loading immediately
-            loadDocument(fileUrl, fileExtension);
-            
-            // Enter fullscreen after a short delay
+            loadDocumentNative(fileUrl, fileExtension);
             setTimeout(enterFullscreen, 500);
         });
 
@@ -542,19 +524,103 @@
             document.getElementById('fileType').textContent = extension.toUpperCase();
         }
 
-        // ===== FAST DOCUMENT LOADER =====
-        function loadDocument(url, extension) {
+        // ===== NATIVE DOCUMENT LOADER =====
+        function loadDocumentNative(url, extension) {
             const container = document.getElementById('viewerContent');
             const loading = document.getElementById('loadingContainer');
             const loadingText = document.getElementById('loadingText');
             
-            // Use browser's built-in viewers for faster loading
             const imageFormats = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'bmp', 'ico'];
             const videoFormats = ['mp4', 'webm', 'ogg', 'avi', 'mov', 'mkv'];
             const audioFormats = ['mp3', 'wav', 'ogg', 'aac', 'flac'];
             const textFormats = ['txt', 'csv', 'log', 'md', 'json', 'xml'];
             
-            // IMAGES - Fastest
+            // ===== PDF - Use native browser PDF viewer =====
+            if (extension === 'pdf') {
+                loadingText.textContent = 'Loading PDF...';
+                // Use embed for native PDF viewing
+                container.innerHTML = `
+                    <embed src="${url}#toolbar=1&navpanes=1&scrollbar=1" 
+                        type="application/pdf"
+                        style="width:100%;height:100%;"
+                        onload="document.getElementById('loadingContainer').style.display='none'"
+                        onerror="showError('Failed to load PDF')">
+                `;
+                // Fallback if embed fails
+                setTimeout(() => {
+                    const embed = container.querySelector('embed');
+                    if (embed && loading.style.display !== 'none') {
+                        container.innerHTML = `
+                            <iframe src="${url}#toolbar=1" 
+                                style="width:100%;height:100%;border:none;"
+                                onload="document.getElementById('loadingContainer').style.display='none'">
+                            </iframe>
+                        `;
+                    }
+                }, 3000);
+                return;
+            }
+            
+            // ===== WORD (DOCX) - Use native Office Online or download =====
+            if (extension === 'docx' || extension === 'doc') {
+                loadingText.textContent = 'Opening Word document...';
+                // Use browser's built-in Office viewer if available (Edge/Chrome)
+                container.innerHTML = `
+                    <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}" 
+                        style="width:100%;height:100%;border:none;"
+                        onload="document.getElementById('loadingContainer').style.display='none'"
+                        onerror="showOfficeFallback('${url}')">
+                    </iframe>
+                `;
+                // Fallback if Office Online fails
+                setTimeout(() => {
+                    const iframe = container.querySelector('iframe');
+                    if (iframe && loading.style.display !== 'none') {
+                        showOfficeFallback(url);
+                    }
+                }, 5000);
+                return;
+            }
+            
+            // ===== EXCEL - Use native Office Online =====
+            if (extension === 'xlsx' || extension === 'xls') {
+                loadingText.textContent = 'Opening Excel spreadsheet...';
+                container.innerHTML = `
+                    <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}" 
+                        style="width:100%;height:100%;border:none;"
+                        onload="document.getElementById('loadingContainer').style.display='none'"
+                        onerror="showOfficeFallback('${url}')">
+                    </iframe>
+                `;
+                setTimeout(() => {
+                    const iframe = container.querySelector('iframe');
+                    if (iframe && loading.style.display !== 'none') {
+                        showOfficeFallback(url);
+                    }
+                }, 5000);
+                return;
+            }
+            
+            // ===== POWERPOINT - Use native Office Online =====
+            if (extension === 'pptx' || extension === 'ppt') {
+                loadingText.textContent = 'Opening PowerPoint presentation...';
+                container.innerHTML = `
+                    <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}" 
+                        style="width:100%;height:100%;border:none;"
+                        onload="document.getElementById('loadingContainer').style.display='none'"
+                        onerror="showOfficeFallback('${url}')">
+                    </iframe>
+                `;
+                setTimeout(() => {
+                    const iframe = container.querySelector('iframe');
+                    if (iframe && loading.style.display !== 'none') {
+                        showOfficeFallback(url);
+                    }
+                }, 5000);
+                return;
+            }
+            
+            // ===== IMAGES =====
             if (imageFormats.includes(extension)) {
                 loadingText.textContent = 'Loading image...';
                 const img = new Image();
@@ -562,14 +628,15 @@
                     loading.style.display = 'none';
                     container.innerHTML = `<img src="${url}" alt="Document">`;
                 };
-                img.onerror = function() {
-                    showError('Failed to load image');
+                img.onerror = function() { 
+                    loading.style.display = 'none';
+                    container.innerHTML = `<img src="${url}" alt="Document" style="object-fit:contain;">`;
                 };
                 img.src = url;
                 return;
             }
             
-            // VIDEOS
+            // ===== VIDEOS =====
             if (videoFormats.includes(extension)) {
                 loading.style.display = 'none';
                 container.innerHTML = `
@@ -581,7 +648,7 @@
                 return;
             }
             
-            // AUDIO
+            // ===== AUDIO =====
             if (audioFormats.includes(extension)) {
                 loading.style.display = 'none';
                 container.innerHTML = `
@@ -596,53 +663,47 @@
                 return;
             }
             
-            // TEXT FILES - Fast
+            // ===== TEXT FILES =====
             if (textFormats.includes(extension)) {
                 loadingText.textContent = 'Loading text...';
                 fetch(url)
                     .then(response => response.text())
                     .then(text => {
                         loading.style.display = 'none';
-                        container.innerHTML = `<div class="text-content">${escapeHtml(text)}</div>`;
+                        container.innerHTML = `<pre style="padding:20px;color:inherit;font-family:monospace;font-size:0.9rem;line-height:1.6;height:100%;overflow:auto;margin:0;">${escapeHtml(text)}</pre>`;
                     })
-                    .catch(() => showError('Failed to load text file'));
+                    .catch(() => {
+                        loading.style.display = 'none';
+                        container.innerHTML = `<pre style="padding:20px;color:inherit;font-family:monospace;height:100%;overflow:auto;margin:0;">Failed to load text file</pre>`;
+                    });
                 return;
             }
             
-            // PDF - Load with built-in viewer first (fastest)
-            if (extension === 'pdf') {
-                loadingText.textContent = 'Loading PDF...';
-                // Use browser's built-in PDF viewer if available
-                container.innerHTML = `
-                    <iframe src="${url}#toolbar=1" style="width:100%;height:100%;border:none;" 
-                        onload="document.getElementById('loadingContainer').style.display='none'"
-                        onerror="loadPDFFallback('${url}')">
-                    </iframe>
-                `;
-                // Fallback if iframe fails
-                setTimeout(() => {
-                    const iframe = container.querySelector('iframe');
-                    if (iframe && loading.style.display !== 'none') {
-                        loadPDFFallback(url);
-                    }
-                }, 3000);
-                return;
-            }
-            
-            // WORD - Fast with mammoth.js only for docx
-            if (extension === 'docx') {
-                loadingText.textContent = 'Loading Word document...';
-                loadWordDocument(url);
-                return;
-            }
-            
-            // Other formats - Show download option
+            // ===== UNSUPPORTED =====
             loading.style.display = 'none';
             container.innerHTML = `
                 <div class="unsupported-message">
                     <i class="fas fa-file"></i>
-                    <h3>${extension.toUpperCase()} File</h3>
-                    <p>Download to view this file type.</p>
+                    <h3>Unsupported File Type</h3>
+                    <p>This file type (.${extension}) cannot be previewed in the browser.</p>
+                    <p style="margin-top:10px;">
+                        <a href="${url}" download class="btn-download" style="display:inline-block;padding:8px 20px;border-radius:60px;text-decoration:none;border:1px solid transparent;">
+                            <i class="fas fa-download"></i> Download to view
+                        </a>
+                    </p>
+                </div>
+            `;
+        }
+
+        function showOfficeFallback(url) {
+            const container = document.getElementById('viewerContent');
+            const loading = document.getElementById('loadingContainer');
+            loading.style.display = 'none';
+            container.innerHTML = `
+                <div class="unsupported-message">
+                    <i class="fas fa-file"></i>
+                    <h3>Office Document</h3>
+                    <p>Download to view this document in its native format.</p>
                     <p style="margin-top:10px;">
                         <a href="${url}" download class="btn-download" style="display:inline-block;padding:8px 20px;border-radius:60px;text-decoration:none;border:1px solid transparent;">
                             <i class="fas fa-download"></i> Download
@@ -650,58 +711,6 @@
                     </p>
                 </div>
             `;
-        }
-
-        // ===== PDF FALLBACK =====
-        function loadPDFFallback(url) {
-            const container = document.getElementById('viewerContent');
-            const loading = document.getElementById('loadingContainer');
-            
-            // Try using Google's viewer as fallback (lightweight)
-            loading.style.display = 'none';
-            container.innerHTML = `
-                <iframe src="https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true" 
-                    style="width:100%;height:100%;border:none;">
-                </iframe>
-            `;
-        }
-
-        // ===== WORD DOCUMENT LOADER (Mammoth.js) =====
-        function loadWordDocument(url) {
-            const container = document.getElementById('viewerContent');
-            const loading = document.getElementById('loadingContainer');
-            
-            // Load mammoth.js dynamically only when needed
-            if (typeof mammoth === 'undefined') {
-                const script = document.createElement('script');
-                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js';
-                script.onload = function() {
-                    processWordFile(url);
-                };
-                script.onerror = function() {
-                    showError('Failed to load Word viewer. Please download the file.');
-                };
-                document.head.appendChild(script);
-            } else {
-                processWordFile(url);
-            }
-        }
-
-        function processWordFile(url) {
-            const container = document.getElementById('viewerContent');
-            const loading = document.getElementById('loadingContainer');
-            
-            fetch(url)
-                .then(response => response.arrayBuffer())
-                .then(arrayBuffer => {
-                    mammoth.convertToHtml({arrayBuffer: arrayBuffer})
-                        .then(result => {
-                            loading.style.display = 'none';
-                            container.innerHTML = `<div class="word-content">${result.value}</div>`;
-                        })
-                        .catch(() => showError('Failed to convert Word document'));
-                })
-                .catch(() => showError('Failed to load Word document'));
         }
 
         function escapeHtml(text) {
@@ -754,7 +763,7 @@
             const btn = document.querySelector('.btn-fullscreen');
             if (btn) {
                 btn.innerHTML = isFullscreen ? 
-                    '<i class="fas fa-compress"></i> Exit Fullscreen' : 
+                    '<i class="fas fa-compress"></i> Exit' : 
                     '<i class="fas fa-expand"></i> Fullscreen';
             }
         });
@@ -762,12 +771,24 @@
         // ===== PRINT =====
         function printDocument() {
             const content = document.getElementById('viewerContent');
-            const img = content.querySelector('img');
-            const text = content.querySelector('.text-content');
-            const word = content.querySelector('.word-content');
             const iframe = content.querySelector('iframe');
+            const embed = content.querySelector('embed');
+            const img = content.querySelector('img');
+            const pre = content.querySelector('pre');
             
-            if (img) {
+            if (iframe) {
+                try { 
+                    iframe.contentWindow.print(); 
+                } catch(e) { 
+                    alert('Please download to print.'); 
+                }
+            } else if (embed) {
+                try { 
+                    embed.print(); 
+                } catch(e) { 
+                    alert('Please download to print.'); 
+                }
+            } else if (img) {
                 const win = window.open('', '_blank');
                 win.document.write(`
                     <html><head><title>Print</title>
@@ -775,33 +796,21 @@
                     </head><body><img src="${img.src}" onload="window.print();"></body></html>
                 `);
                 win.document.close();
-            } else if (text) {
+            } else if (pre) {
                 const win = window.open('', '_blank');
                 win.document.write(`
                     <html><head><title>Print</title>
                     <style>body{font-family:monospace;padding:30px;white-space:pre-wrap;}</style>
-                    </head><body>${text.innerHTML}</body></html>
+                    </head><body>${pre.innerHTML}</body></html>
                 `);
                 win.document.close();
                 win.print();
-            } else if (word) {
-                const win = window.open('', '_blank');
-                win.document.write(`
-                    <html><head><title>Print</title>
-                    <style>body{font-family:Arial;padding:30px;max-width:800px;margin:0 auto;line-height:1.6;}</style>
-                    </head><body>${word.innerHTML}</body></html>
-                `);
-                win.document.close();
-                win.print();
-            } else if (iframe) {
-                try { iframe.contentWindow.print(); } 
-                catch(e) { alert('Please download to print.'); }
             } else {
                 alert('Printing not available for this document type.');
             }
         }
 
-        // ===== RAIN EFFECT (Lightweight) =====
+        // ===== RAIN EFFECT =====
         const canvas = document.getElementById('rain-canvas');
         const ctx = canvas.getContext('2d');
         function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
@@ -843,7 +852,7 @@
         }
         drawRain();
 
-        // ===== LIGHTNING (Lightweight) =====
+        // ===== LIGHTNING =====
         const lightning = document.getElementById('lightning');
         function flash() {
             lightning.style.backgroundColor = `rgba(255, 255, 255, ${Math.random() * 0.3 + 0.1})`;
