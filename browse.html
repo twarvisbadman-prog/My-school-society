@@ -1,10 +1,10 @@
-<!-- view.html - COMPLETE UPDATED VERSION -->
+<!-- browse.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>View Document | Twarvis School</title>
+    <title>Browse | Twarvis School</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -66,8 +66,7 @@
             pointer-events: none;
         }
         body.dark-theme .upload-card,
-        body.dark-theme .pdf-viewer,
-        body.dark-theme .pdf-header {
+        body.dark-theme .note-card {
             background: rgba(10, 10, 15, 0.9);
             border-color: rgba(50, 100, 255, 0.3);
         }
@@ -111,22 +110,33 @@
         body.dark-theme .nav-icon:hover i {
             color: #fff;
         }
-        body.dark-theme .back-btn {
-            background: linear-gradient(135deg, #3355aa, #5599ff);
-        }
-        body.dark-theme .back-btn:hover {
-            box-shadow: 0 15px 30px -10px rgba(50, 100, 255, 0.5);
-        }
         body.dark-theme .footer {
             color: #888;
         }
-        body.dark-theme .action-btn.download {
-            background: rgba(50, 100, 255, 0.15);
-            color: #5599ff;
+        body.dark-theme .search-box input {
+            background: rgba(10, 10, 15, 0.8);
             border-color: rgba(50, 100, 255, 0.3);
+            color: #e0e0e0;
         }
-        body.dark-theme .action-btn.download:hover {
-            background: rgba(50, 100, 255, 0.25);
+        body.dark-theme .search-box input:focus {
+            border-color: #5599ff;
+            box-shadow: 0 0 20px rgba(50, 100, 255, 0.1);
+        }
+        body.dark-theme .search-box button {
+            background: rgba(50, 100, 255, 0.2);
+            color: #5599ff;
+        }
+        body.dark-theme .search-box button:hover {
+            background: rgba(50, 100, 255, 0.3);
+        }
+        body.dark-theme .note-card .note-title {
+            color: #e0e0e0;
+        }
+        body.dark-theme .note-card .note-meta {
+            color: #888;
+        }
+        body.dark-theme .note-card .note-description {
+            color: #aaa;
         }
         body.dark-theme .privacy-badge.public {
             background: rgba(50, 100, 255, 0.15);
@@ -143,8 +153,7 @@
             pointer-events: none;
         }
         body.light-theme .upload-card,
-        body.light-theme .pdf-viewer,
-        body.light-theme .pdf-header {
+        body.light-theme .note-card {
             background: rgba(255, 255, 255, 0.9);
             border-color: rgba(50, 100, 255, 0.2);
         }
@@ -185,22 +194,32 @@
         body.light-theme .nav-icon:hover i {
             color: #fff;
         }
-        body.light-theme .back-btn {
-            background: linear-gradient(135deg, #3355aa, #5577cc);
-        }
-        body.light-theme .back-btn:hover {
-            box-shadow: 0 15px 30px -10px rgba(50, 100, 255, 0.3);
-        }
         body.light-theme .footer {
             color: #777;
         }
-        body.light-theme .pdf-header h2 {
+        body.light-theme .search-box input {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(50, 100, 255, 0.2);
             color: #1a1a2e;
         }
-        body.light-theme .pdf-meta {
-            color: #555;
+        body.light-theme .search-box input:focus {
+            border-color: #3355aa;
+            box-shadow: 0 0 20px rgba(50, 100, 255, 0.05);
         }
-        body.light-theme .pdf-description {
+        body.light-theme .search-box button {
+            background: rgba(50, 100, 255, 0.1);
+            color: #3355aa;
+        }
+        body.light-theme .search-box button:hover {
+            background: rgba(50, 100, 255, 0.2);
+        }
+        body.light-theme .note-card .note-title {
+            color: #1a1a2e;
+        }
+        body.light-theme .note-card .note-meta {
+            color: #777;
+        }
+        body.light-theme .note-card .note-description {
             color: #555;
         }
 
@@ -499,8 +518,8 @@
             color: #fff;
         }
 
-        /* ========== VIEWER SECTION ========== */
-        .viewer-container {
+        /* ========== BROWSE SECTION ========== */
+        .browse-container {
             max-width: 1200px;
             margin: 30px auto;
             padding: 0 24px;
@@ -554,345 +573,332 @@
             background: rgba(0, 0, 0, 0.7);
         }
 
-        /* ========== PDF HEADER ========== */
-        .pdf-header {
+        /* ========== BROWSE HEADER ========== */
+        .browse-header {
             position: relative;
             z-index: 1;
-            margin-bottom: 25px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 45, 45, 0.15);
+            margin-bottom: 30px;
         }
 
-        .pdf-header .file-icon-big {
-            font-size: 3rem;
-            color: #ff4d4d;
-            margin-right: 15px;
-            float: left;
-        }
-
-        .pdf-header h2 {
-            font-size: 1.5rem;
+        .browse-header h1 {
+            font-size: 2rem;
             color: #fff;
             margin-bottom: 8px;
+        }
+
+        .browse-header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+        }
+
+        /* ========== SEARCH BAR ========== */
+        .search-box {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 14px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 45, 45, 0.3);
+            border-radius: 16px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #ff2d2d;
+            box-shadow: 0 0 20px rgba(255, 45, 45, 0.1);
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .search-box button {
+            padding: 14px 30px;
+            background: rgba(255, 45, 45, 0.15);
+            border: 1px solid rgba(255, 45, 45, 0.3);
+            border-radius: 16px;
+            color: #ff4d4d;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .search-box button:hover {
+            background: rgba(255, 45, 45, 0.25);
+            border-color: #ff1a1a;
+        }
+
+        .search-box button i {
+            margin-right: 8px;
+        }
+
+        /* ========== FILTERS ========== */
+        .filters {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .filter-btn {
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255, 45, 45, 0.1);
+            border-color: rgba(255, 45, 45, 0.3);
+            color: #fff;
+        }
+
+        .filter-btn.active {
+            background: rgba(255, 45, 45, 0.15);
+            border-color: #ff2d2d;
+            color: #fff;
+        }
+
+        .filter-btn .count {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1px 8px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            margin-left: 5px;
+        }
+
+        /* ========== NOTES GRID ========== */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .note-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 45, 45, 0.15);
+            border-radius: 20px;
+            padding: 25px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .note-card:hover {
+            transform: translateY(-5px);
+            border-color: #ff1a1a;
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 15px 30px -10px rgba(255, 26, 26, 0.2);
+        }
+
+        .note-card .note-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .note-card .note-icon {
+            font-size: 2rem;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .note-card .note-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #fff;
+            line-height: 1.3;
+            flex: 1;
             word-break: break-word;
         }
 
-        .pdf-meta {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
+        .note-card .note-title i {
+            color: #ff4d4d;
+            margin-right: 8px;
+        }
+
+        .note-card .note-meta {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
-            align-items: center;
-            margin: 10px 0;
-            clear: both;
+            gap: 12px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 10px;
         }
 
-        .pdf-meta .meta-item {
+        .note-card .note-meta span {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
         }
 
-        .pdf-meta .meta-item i {
+        .note-card .note-meta i {
             color: #ff4d4d;
-            width: 18px;
+            font-size: 0.7rem;
         }
 
-        .pdf-description {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.95rem;
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            border-left: 3px solid #ff4d4d;
-            margin-top: 5px;
-            clear: both;
+        .note-card .note-description {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 15px;
+            line-height: 1.5;
         }
 
-        /* ========== PRIVACY BADGE ========== */
+        .note-card .note-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .note-card .note-footer .note-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
         .privacy-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 4px 14px;
+            gap: 4px;
+            padding: 3px 12px;
             border-radius: 50px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
         }
 
         .privacy-badge.public {
-            background: rgba(0, 255, 65, 0.15);
+            background: rgba(0, 255, 65, 0.12);
             color: #00ff41;
-            border: 1px solid rgba(0, 255, 65, 0.3);
+            border: 1px solid rgba(0, 255, 65, 0.2);
         }
 
         .privacy-badge.private {
-            background: rgba(255, 152, 0, 0.15);
+            background: rgba(255, 152, 0, 0.12);
             color: #ff9800;
-            border: 1px solid rgba(255, 152, 0, 0.3);
+            border: 1px solid rgba(255, 152, 0, 0.2);
         }
 
         .file-type-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 4px 14px;
+            gap: 4px;
+            padding: 3px 12px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: rgba(255, 45, 45, 0.1);
+            color: #ff4d4d;
+            border: 1px solid rgba(255, 45, 45, 0.15);
+        }
+
+        .note-card .note-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .note-card .note-actions a {
+            padding: 6px 14px;
             border-radius: 50px;
             font-size: 0.75rem;
             font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .note-card .note-actions .view-btn {
             background: rgba(255, 45, 45, 0.15);
             color: #ff4d4d;
-            border: 1px solid rgba(255, 45, 45, 0.3);
+            border: 1px solid rgba(255, 45, 45, 0.2);
         }
 
-        /* ========== PDF VIEWER ========== */
-        .pdf-viewer {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 20px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 45, 45, 0.15);
+        .note-card .note-actions .view-btn:hover {
+            background: rgba(255, 45, 45, 0.25);
+            border-color: #ff1a1a;
+        }
+
+        .note-card .note-actions .download-btn {
+            background: rgba(0, 255, 65, 0.1);
+            color: #00ff41;
+            border: 1px solid rgba(0, 255, 65, 0.15);
+        }
+
+        .note-card .note-actions .download-btn:hover {
+            background: rgba(0, 255, 65, 0.2);
+        }
+
+        /* ========== EMPTY STATE ========== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
             position: relative;
             z-index: 1;
-            min-height: 500px;
         }
 
-        .pdf-viewer iframe {
-            width: 100%;
-            height: 75vh;
-            border: none;
-            min-height: 500px;
-        }
-
-        .pdf-viewer .viewer-placeholder {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 75vh;
-            min-height: 500px;
-            color: rgba(255, 255, 255, 0.4);
-            text-align: center;
-            padding: 40px;
-        }
-
-        .pdf-viewer .viewer-placeholder i {
+        .empty-state i {
             font-size: 4rem;
             color: #ff4d4d;
             margin-bottom: 20px;
+            opacity: 0.5;
         }
 
-        .pdf-viewer .viewer-placeholder h3 {
-            color: #fff;
-            margin-bottom: 10px;
-        }
-
-        /* ========== PASSCODE MODAL ========== */
-        .passcode-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .passcode-modal.active {
-            display: flex;
-        }
-
-        .passcode-modal-content {
-            background: rgba(0, 0, 0, 0.95);
-            border: 2px solid #ff1a1a;
-            border-radius: 30px;
-            padding: 40px;
-            max-width: 450px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 0 50px rgba(255, 26, 26, 0.3);
-            animation: modalGlow 3s ease-in-out infinite;
-        }
-
-        @keyframes modalGlow {
-            0%, 100% { box-shadow: 0 0 50px rgba(255, 26, 26, 0.3); }
-            50% { box-shadow: 0 0 80px rgba(255, 26, 26, 0.5); }
-        }
-
-        .passcode-modal-content i {
-            font-size: 3rem;
-            color: #ff9800;
-            margin-bottom: 15px;
-        }
-
-        .passcode-modal-content h3 {
+        .empty-state h3 {
             color: #fff;
             font-size: 1.5rem;
             margin-bottom: 10px;
         }
 
-        .passcode-modal-content p {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
-            margin-bottom: 20px;
+        .empty-state p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1rem;
+            max-width: 400px;
+            margin: 0 auto;
         }
 
-        .passcode-modal-content input {
-            width: 100%;
-            padding: 14px;
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 45, 45, 0.3);
-            border-radius: 16px;
-            color: #fff;
-            font-size: 1.5rem;
-            font-family: monospace;
-            letter-spacing: 12px;
-            text-align: center;
-            transition: 0.3s;
-        }
-
-        .passcode-modal-content input:focus {
-            outline: none;
-            border-color: #ff2d2d;
-            box-shadow: 0 0 20px rgba(255, 45, 45, 0.2);
-        }
-
-        .passcode-modal-content .passcode-error {
-            color: #ff4444;
-            font-size: 0.85rem;
-            margin-top: 10px;
-            display: none;
-        }
-
-        .passcode-modal-content .passcode-error.show {
-            display: block;
-        }
-
-        .passcode-modal-content .passcode-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #ff2d2d, #ff6b6b);
-            border: none;
-            border-radius: 50px;
-            color: #fff;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 15px;
-        }
-
-        .passcode-modal-content .passcode-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px -10px rgba(255, 45, 45, 0.5);
-        }
-
-        .passcode-modal-content .passcode-close {
-            margin-top: 15px;
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.4);
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: 0.3s;
-        }
-
-        .passcode-modal-content .passcode-close:hover {
-            color: #fff;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        /* ========== ACTION BUTTONS ========== */
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+        .empty-state .upload-link {
+            display: inline-block;
             margin-top: 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
             padding: 12px 30px;
             background: linear-gradient(135deg, #ff2d2d, #ff6b6b);
-            color: white;
-            text-decoration: none;
+            color: #fff;
             border-radius: 50px;
+            text-decoration: none;
             font-weight: 600;
             transition: all 0.3s;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
         }
 
-        .back-btn:hover {
+        .empty-state .upload-link:hover {
             transform: translateY(-2px);
             box-shadow: 0 15px 30px -10px rgba(255, 45, 45, 0.5);
-        }
-
-        .back-btn i {
-            font-size: 1.1rem;
-        }
-
-        .action-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
-            font-size: 0.95rem;
-        }
-
-        .action-btn.download {
-            background: rgba(0, 255, 65, 0.15);
-            color: #00ff41;
-            border: 1px solid rgba(0, 255, 65, 0.3);
-        }
-
-        .action-btn.download:hover {
-            background: rgba(0, 255, 65, 0.25);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -10px rgba(0, 255, 65, 0.2);
-        }
-
-        .action-btn.share {
-            background: rgba(59, 130, 246, 0.15);
-            color: #3b82f6;
-            border: 1px solid rgba(59, 130, 246, 0.3);
-        }
-
-        .action-btn.share:hover {
-            background: rgba(59, 130, 246, 0.25);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -10px rgba(59, 130, 246, 0.2);
-        }
-
-        .action-btn.delete {
-            background: rgba(255, 0, 0, 0.15);
-            color: #ff4444;
-            border: 1px solid rgba(255, 0, 0, 0.3);
-        }
-
-        .action-btn.delete:hover {
-            background: rgba(255, 0, 0, 0.25);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -10px rgba(255, 0, 0, 0.2);
         }
 
         /* ========== FOOTER ========== */
@@ -1027,6 +1033,16 @@
             color: #fff;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
             .upload-card {
@@ -1040,28 +1056,24 @@
                 width: 280px;
                 left: -300px;
             }
-            .pdf-header h2 {
-                font-size: 1.1rem;
+            .notes-grid {
+                grid-template-columns: 1fr;
             }
-            .pdf-meta {
-                flex-direction: column;
-                gap: 5px;
+            .browse-header h1 {
+                font-size: 1.5rem;
             }
-            .pdf-viewer iframe {
-                height: 50vh;
-                min-height: 300px;
-            }
-            .action-buttons {
+            .search-box {
                 flex-direction: column;
             }
-            .action-btn {
-                justify-content: center;
+            .search-box button {
+                width: 100%;
             }
-            .pdf-header .file-icon-big {
-                float: none;
-                display: block;
-                text-align: center;
-                margin: 0 auto 10px;
+            .note-card .note-footer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .note-card .note-actions {
+                justify-content: flex-start;
             }
         }
 
@@ -1078,11 +1090,12 @@
             .upload-card {
                 padding: 15px;
             }
-            .passcode-modal-content {
-                padding: 25px 20px;
+            .filters {
+                gap: 8px;
             }
-            .pdf-header .file-icon-big {
-                font-size: 2rem;
+            .filter-btn {
+                padding: 6px 14px;
+                font-size: 0.75rem;
             }
         }
     </style>
@@ -1110,6 +1123,7 @@
             </a>
             <a class="sidebar-item" href="/browse/">
                 <i class="fas fa-book-open"></i> Browse Notes
+                <span class="badge" style="background:#ff2d2d;">Active</span>
             </a>
             <a class="sidebar-item" href="/upload/">
                 <i class="fas fa-cloud-upload-alt"></i> Upload Files
@@ -1158,82 +1172,105 @@
             </div>
         </div>
 
-        <!-- ========== VIEWER CONTAINER ========== -->
-        <div class="viewer-container">
+        <!-- ========== BROWSE CONTAINER ========== -->
+        <div class="browse-container">
             <div class="upload-card">
-                <!-- PDF Header -->
-                <div class="pdf-header" id="pdfHeader">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
-                        <div style="flex:1;">
-                            <div style="display:flex; align-items:center; gap:15px; flex-wrap:wrap;">
-                                <span class="file-icon-big"><i class="fas fa-file-pdf"></i></span>
-                                <div>
-                                    <h2>{{ note.original_filename|default:note.filename }}</h2>
+                <!-- Browse Header -->
+                <div class="browse-header">
+                    <h1>📚 Browse Study Materials</h1>
+                    <p>Explore notes and past papers shared by fellow students</p>
+                </div>
+
+                <!-- Search Bar -->
+                <form class="search-box" method="get" action="/browse/">
+                    <input type="text" name="q" placeholder="Search by module, course, or description..." value="{{ query }}">
+                    <button type="submit"><i class="fas fa-search"></i> Search</button>
+                    {% if query %}
+                        <button type="button" onclick="window.location.href='/browse/'" style="background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.1); color:rgba(255,255,255,0.5);">
+                            <i class="fas fa-times"></i> Clear
+                        </button>
+                    {% endif %}
+                </form>
+
+                <!-- Filters -->
+                <div class="filters">
+                    <button class="filter-btn active" onclick="filterNotes('all')">
+                        All <span class="count">{{ notes|length }}</span>
+                    </button>
+                    <button class="filter-btn" onclick="filterNotes('notes')">
+                        <i class="fas fa-sticky-note"></i> Notes <span class="count">{{ notes|selectattr('file_type', 'equalto', 'notes')|length }}</span>
+                    </button>
+                    <button class="filter-btn" onclick="filterNotes('pastpaper')">
+                        <i class="fas fa-file-alt"></i> Past Papers <span class="count">{{ notes|selectattr('file_type', 'equalto', 'pastpaper')|length }}</span>
+                    </button>
+                    <button class="filter-btn" onclick="filterNotes('public')">
+                        <i class="fas fa-globe"></i> Public <span class="count">{{ notes|selectattr('privacy', 'equalto', 'public')|length }}</span>
+                    </button>
+                    <button class="filter-btn" onclick="filterNotes('private')">
+                        <i class="fas fa-lock"></i> Private <span class="count">{{ notes|selectattr('privacy', 'equalto', 'private')|length }}</span>
+                    </button>
+                </div>
+
+                <!-- Notes Grid -->
+                {% if notes %}
+                    <div class="notes-grid" id="notesGrid">
+                        {% for note in notes %}
+                            <div class="note-card" data-file-type="{{ note.file_type }}" data-privacy="{{ note.privacy }}">
+                                <div class="note-header">
+                                    <span class="note-icon">{{ note.icon|default:"📄" }}</span>
+                                    <div class="note-title">
+                                        {% if note.privacy == 'private' %}
+                                            <i class="fas fa-lock" style="color:#ff9800; font-size:0.8rem;"></i>
+                                        {% endif %}
+                                        {{ note.display_name|default:note.original_filename|default:note.filename }}
+                                    </div>
+                                </div>
+                                <div class="note-meta">
+                                    <span><i class="fas fa-tag"></i> {{ note.module|default:"N/A" }}</span>
+                                    <span><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
+                                    <span><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
+                                    <span><i class="fas fa-university"></i> {{ note.university|default:"Not specified"|truncatechars:20 }}</span>
+                                </div>
+                                {% if note.description %}
+                                    <div class="note-description">{{ note.description|truncatechars:100 }}</div>
+                                {% endif %}
+                                <div class="note-footer">
+                                    <div class="note-badges">
+                                        {% if note.privacy == 'private' %}
+                                            <span class="privacy-badge private"><i class="fas fa-lock"></i> Private</span>
+                                        {% else %}
+                                            <span class="privacy-badge public"><i class="fas fa-globe"></i> Public</span>
+                                        {% endif %}
+                                        <span class="file-type-badge">
+                                            <i class="fas fa-{% if note.file_type == 'pastpaper' %}file-alt{% else %}sticky-note{% endif %}"></i>
+                                            {{ note.file_type|default:"notes"|title }}
+                                        </span>
+                                    </div>
+                                    <div class="note-actions">
+                                        <a href="/view/{{ note.id }}/" class="view-btn"><i class="fas fa-eye"></i> View</a>
+                                        <a href="/download/{{ note.id }}/" class="download-btn"><i class="fas fa-download"></i> Download</a>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="pdf-meta">
-                                <span class="meta-item"><i class="fas fa-tag"></i> Module: {{ note.module|default:"N/A" }}</span>
-                                <span class="meta-item"><i class="fas fa-book"></i> Course: {{ note.course|default:"N/A" }}</span>
-                                <span class="meta-item"><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
-                                <span class="meta-item"><i class="fas fa-file"></i> {{ note.file_size|filesizeformat|default:"0 KB" }}</span>
-                            </div>
-                            <div class="pdf-meta" style="margin-top:5px;">
-                                <span class="meta-item"><i class="fas fa-university"></i> {{ note.university|default:"Not specified" }}</span>
-                            </div>
-                        </div>
-                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                            {% if note.privacy == 'private' %}
-                                <span class="privacy-badge private"><i class="fas fa-lock"></i> Private</span>
-                            {% else %}
-                                <span class="privacy-badge public"><i class="fas fa-globe"></i> Public</span>
-                            {% endif %}
-                            <span class="file-type-badge">
-                                <i class="fas fa-{% if note.file_type == 'pastpaper' %}file-alt{% else %}sticky-note{% endif %}"></i>
-                                {{ note.file_type|default:"notes"|title }}
-                            </span>
-                        </div>
+                        {% endfor %}
                     </div>
-                    {% if note.description %}
-                        <div class="pdf-description">
-                            <i class="fas fa-quote-left" style="color:#ff4d4d; margin-right:8px;"></i>
-                            {{ note.description }}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- PDF Viewer -->
-                <div class="pdf-viewer" id="pdfViewer">
-                    {% if note.can_view_inline %}
-                        <iframe src="{{ pdf_url }}" title="PDF Viewer" id="pdfFrame"></iframe>
-                    {% else %}
-                        <div class="viewer-placeholder">
-                            <i class="fas fa-file"></i>
-                            <h3>Preview Not Available</h3>
-                            <p>This file type cannot be previewed inline. Please download to view.</p>
-                            <a href="/download/{{ note.id }}/" class="back-btn" style="margin-top:20px;">
-                                <i class="fas fa-download"></i> Download File
-                            </a>
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="action-buttons" id="actionButtons">
-                    <a href="/browse/" class="back-btn">
-                        <i class="fas fa-arrow-left"></i> Back to Browse
-                    </a>
-                    <a href="/download/{{ note.id }}/" class="action-btn download">
-                        <i class="fas fa-download"></i> Download
-                    </a>
-                    <button class="action-btn share" onclick="copyLink()">
-                        <i class="fas fa-share-alt"></i> Share
-                    </button>
-                    {% if admin %}
-                        <a href="/delete/{{ note.id }}/" class="action-btn delete" onclick="return confirm('Are you sure you want to delete this file?');">
-                            <i class="fas fa-trash"></i> Delete
+                {% else %}
+                    <!-- Empty State -->
+                    <div class="empty-state">
+                        <i class="fas fa-book-open"></i>
+                        <h3>No Files Found</h3>
+                        <p>
+                            {% if query %}
+                                No results found for "<strong>{{ query }}</strong>". Try a different search term.
+                            {% else %}
+                                There are no files uploaded yet. Be the first to share your study materials!
+                            {% endif %}
+                        </p>
+                        <a href="/upload/" class="upload-link">
+                            <i class="fas fa-cloud-upload-alt"></i> Upload Files
                         </a>
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
 
@@ -1242,28 +1279,6 @@
             <p>⚡ TWARVIS SCHOOL — Knowledge shared is knowledge multiplied ⚡</p>
         </div>
     </div>
-
-    <!-- ========== PASSCODE MODAL ========== -->
-    {% if note.privacy == 'private' %}
-    <div class="passcode-modal active" id="passcodeModal">
-        <div class="passcode-modal-content">
-            <i class="fas fa-lock"></i>
-            <h3>🔒 Private Document</h3>
-            <p>This document is protected with a passcode. Please enter the 4-digit passcode to view it.</p>
-            <p style="color: #888; font-size: 0.8rem; margin-bottom: 15px;">
-                <i class="fas fa-info-circle"></i> Contact the uploader for the passcode
-            </p>
-            <input type="password" id="passcodeInput" placeholder="••••" maxlength="4" inputmode="numeric" autofocus>
-            <div class="passcode-error" id="passcodeError">❌ Incorrect passcode. Please try again.</div>
-            <button class="passcode-btn" id="passcodeSubmit">
-                <i class="fas fa-unlock"></i> Unlock Document
-            </button>
-            <button class="passcode-close" onclick="window.location.href='/browse/'">
-                <i class="fas fa-arrow-left"></i> Go Back to Browse
-            </button>
-        </div>
-    </div>
-    {% endif %}
 
     <!-- ========== GPA CALCULATOR MODAL ========== -->
     <div class="modal" id="gpaModal">
@@ -1618,90 +1633,31 @@
             result.style.color = '#fff';
         });
 
-        // ========== SHARE FUNCTION ==========
-        function copyLink() {
-            const url = window.location.href;
-            navigator.clipboard.writeText(url).then(() => {
-                alert('✅ Link copied to clipboard!');
-            }).catch(() => {
-                prompt('Copy this link:', url);
+        // ========== FILTER FUNCTION ==========
+        function filterNotes(type) {
+            const cards = document.querySelectorAll('.note-card');
+            const buttons = document.querySelectorAll('.filter-btn');
+            
+            // Update active button
+            buttons.forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.filter-btn[onclick*="'${type}'"]`)?.classList.add('active');
+            
+            cards.forEach(card => {
+                const fileType = card.dataset.fileType;
+                const privacy = card.dataset.privacy;
+                
+                let show = false;
+                if (type === 'all') {
+                    show = true;
+                } else if (type === 'notes' || type === 'pastpaper') {
+                    show = fileType === type;
+                } else if (type === 'public' || type === 'private') {
+                    show = privacy === type;
+                }
+                
+                card.style.display = show ? 'block' : 'none';
             });
         }
-
-        // ========== PASSCODE HANDLING - FIXED ==========
-        {% if note.privacy == 'private' %}
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get elements
-            const passcodeModal = document.getElementById('passcodeModal');
-            const passcodeInput = document.getElementById('passcodeInput');
-            const passcodeSubmit = document.getElementById('passcodeSubmit');
-            const passcodeError = document.getElementById('passcodeError');
-            const pdfViewer = document.getElementById('pdfViewer');
-            const pdfHeader = document.getElementById('pdfHeader');
-            const actionButtons = document.getElementById('actionButtons');
-            
-            // Get the correct passcode from the server
-            const correctPasscode = "{{ note.passcode|default:'' }}".trim();
-            
-            console.log('🔑 PASSCODE DEBUG:');
-            console.log('  Correct passcode:', correctPasscode);
-            console.log('  Passcode length:', correctPasscode.length);
-            console.log('  Passcode type:', typeof correctPasscode);
-            
-            // Show the passcode modal
-            passcodeModal.classList.add('active');
-            
-            // Hide the viewer content initially
-            if (pdfViewer) pdfViewer.style.display = 'none';
-            if (pdfHeader) pdfHeader.style.display = 'none';
-            if (actionButtons) actionButtons.style.display = 'none';
-            
-            // Input validation - only numbers, max 4 digits
-            passcodeInput.addEventListener('input', function() {
-                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);
-                passcodeError.classList.remove('show');
-            });
-            
-            // Submit button click handler
-            passcodeSubmit.addEventListener('click', function() {
-                const entered = passcodeInput.value.trim();
-                console.log('🔑 Entered passcode:', entered);
-                console.log('🔑 Correct passcode:', correctPasscode);
-                console.log('🔑 Match?', entered === correctPasscode);
-                
-                if (entered === correctPasscode) {
-                    // Correct passcode - show the content
-                    passcodeModal.classList.remove('active');
-                    if (pdfViewer) pdfViewer.style.display = 'block';
-                    if (pdfHeader) pdfHeader.style.display = 'block';
-                    if (actionButtons) actionButtons.style.display = 'flex';
-                    
-                    // Trigger lightning flash for success
-                    lightningFlash(0.3, 0.05);
-                } else {
-                    // Wrong passcode
-                    passcodeError.classList.add('show');
-                    passcodeInput.value = '';
-                    passcodeInput.focus();
-                    
-                    // Trigger lightning flash for error
-                    lightningFlash(0.3, 0.05);
-                }
-            });
-            
-            // Enter key support
-            passcodeInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    passcodeSubmit.click();
-                }
-            });
-            
-            // Auto-focus the input
-            setTimeout(function() {
-                passcodeInput.focus();
-            }, 300);
-        });
-        {% endif %}
 
         // ========== KEYBOARD SHORTCUTS ==========
         document.addEventListener('keydown', function(e) {
@@ -1714,18 +1670,17 @@
                     document.getElementById('settingsModal').classList.remove('active');
                 }
             }
+            // Ctrl+F to focus search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                e.preventDefault();
+                document.querySelector('.search-box input').focus();
+            }
         });
 
-        console.log('⚡ TWARVIS View Page Loaded!');
-        console.log('📄 Document: {{ note.original_filename|default:note.filename }}');
-        {% if note.privacy == 'private' %}
-        console.log('🔒 This document is PRIVATE. Passcode required.');
-        {% else %}
-        console.log('🌍 This document is PUBLIC.');
-        {% endif %}
-        console.log('📚 Module: {{ note.module|default:"N/A" }}');
-        console.log('📖 Course: {{ note.course|default:"N/A" }}');
-        console.log('🏫 University: {{ note.university|default:"Not specified" }}');
+        console.log('⚡ TWARVIS Browse Page Loaded!');
+        console.log(`📚 Found {{ notes|length }} files`);
+        console.log('⌨️ Ctrl+F to focus search');
+        console.log('🔍 Use filters to narrow down results');
     </script>
 </body>
 </html>
