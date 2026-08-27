@@ -1,4 +1,4 @@
-<!-- view.html - Fullscreen Document Viewer (No Google) -->
+<!-- view.html - Fast Document Viewer -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,11 +8,6 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- PDF.js for PDF rendering -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <!-- Mammoth.js for Word documents -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -73,9 +68,7 @@
         body.dark-theme .action-bar { background:rgba(0,0,0,0.3); }
         body.dark-theme .action-bar a, body.dark-theme .action-bar button { color:rgba(255,255,255,0.8); }
         body.dark-theme .action-bar a:hover, body.dark-theme .action-bar button:hover { color:#fff; }
-        body.dark-theme .pdf-viewer .page-number { color:rgba(255,255,255,0.5); }
 
-        /* Light Theme */
         body.light-theme { background:#f2f4f8; }
         body.light-theme #rain-canvas { opacity:0; pointer-events:none; }
         body.light-theme .header { background:rgba(255,255,255,0.92); border-color:rgba(0,0,0,0.06); }
@@ -93,7 +86,6 @@
         body.light-theme .action-bar { background:rgba(255,255,255,0.3); }
         body.light-theme .action-bar a, body.light-theme .action-bar button { color:rgba(0,0,0,0.8); }
         body.light-theme .action-bar a:hover, body.light-theme .action-bar button:hover { color:#000; }
-        body.light-theme .pdf-viewer .page-number { color:rgba(0,0,0,0.5); }
 
         .header { 
             background:rgba(0,0,0,0.7); 
@@ -139,38 +131,37 @@
             background:rgba(255,255,255,0.03); 
             border:1px solid rgba(255,255,255,0.08); 
             border-radius:20px; 
-            padding:16px 20px 16px;
+            padding:12px 16px 12px;
             flex:1;
             display:flex;
             flex-direction:column;
             min-height:0;
-            transition:all 0.3s; 
         }
         
         .pdf-header { 
-            margin-bottom:12px;
+            margin-bottom:8px;
             flex-shrink:0;
         }
         
         .pdf-header h2 { 
-            font-size:1.2rem; 
+            font-size:1.1rem; 
             font-weight:600; 
             color:#fff; 
             display:flex; 
             align-items:center; 
-            gap:10px; 
+            gap:8px; 
             flex-wrap:wrap;
         }
         
-        .pdf-header h2 .file-icon { font-size:1.4rem; }
+        .pdf-header h2 .file-icon { font-size:1.2rem; }
         
         .pdf-meta { 
             display:flex; 
             flex-wrap:wrap; 
-            gap:10px; 
-            font-size:0.75rem; 
+            gap:8px; 
+            font-size:0.7rem; 
             color:rgba(255,255,255,0.4); 
-            margin:4px 0 6px; 
+            margin:2px 0 4px; 
         }
         
         .pdf-meta span { display:flex; align-items:center; gap:4px; }
@@ -178,69 +169,22 @@
         .file-info {
             display:flex;
             align-items:center;
-            gap:6px;
-            padding:4px 12px;
+            gap:4px;
+            padding:2px 10px;
             background:rgba(74,124,247,0.1);
             border-radius:20px;
-            font-size:0.75rem;
+            font-size:0.7rem;
             color:rgba(255,255,255,0.6);
         }
         
         .pdf-viewer { 
             background:rgba(0,0,0,0.2); 
-            border-radius:16px; 
+            border-radius:12px; 
             overflow:hidden; 
             border:1px solid rgba(255,255,255,0.05); 
             flex:1;
             position:relative;
             min-height:0;
-        }
-        
-        /* PDF Viewer Styles */
-        #pdfCanvas {
-            width:100%;
-            height:100%;
-            display:block;
-        }
-        
-        .pdf-controls {
-            position:absolute;
-            bottom:20px;
-            left:50%;
-            transform:translateX(-50%);
-            background:rgba(0,0,0,0.7);
-            backdrop-filter:blur(10px);
-            padding:8px 16px;
-            border-radius:30px;
-            display:flex;
-            align-items:center;
-            gap:12px;
-            border:1px solid rgba(255,255,255,0.1);
-            z-index:20;
-        }
-        
-        .pdf-controls button {
-            background:none;
-            border:none;
-            color:#fff;
-            font-size:1rem;
-            cursor:pointer;
-            padding:4px 8px;
-            border-radius:20px;
-            transition:0.3s;
-            font-family:inherit;
-        }
-        
-        .pdf-controls button:hover {
-            background:rgba(255,255,255,0.1);
-        }
-        
-        .pdf-controls .page-number {
-            color:rgba(255,255,255,0.7);
-            font-size:0.85rem;
-            min-width:80px;
-            text-align:center;
-            font-family:inherit;
         }
         
         .pdf-viewer img {
@@ -251,10 +195,10 @@
         }
         
         .pdf-viewer .text-content {
-            padding:30px;
+            padding:20px;
             color:#fff;
-            font-size:1rem;
-            line-height:1.8;
+            font-size:0.9rem;
+            line-height:1.6;
             white-space:pre-wrap;
             font-family:monospace;
             height:100%;
@@ -262,53 +206,16 @@
         }
         
         .pdf-viewer .word-content {
-            padding:40px;
+            padding:20px;
             color:#fff;
-            font-size:1rem;
-            line-height:1.8;
+            font-size:0.9rem;
+            line-height:1.6;
             height:100%;
             overflow:auto;
-            max-height:100%;
         }
         
-        .pdf-viewer .word-content h1, 
-        .pdf-viewer .word-content h2,
-        .pdf-viewer .word-content h3,
-        .pdf-viewer .word-content h4 {
-            margin:20px 0 10px;
-        }
-        
-        .pdf-viewer .word-content p {
-            margin:10px 0;
-        }
-        
-        .pdf-viewer .word-content ul, 
-        .pdf-viewer .word-content ol {
-            margin:10px 0 10px 30px;
-        }
-        
-        .pdf-viewer .word-content table {
-            border-collapse:collapse;
-            margin:15px 0;
-            width:100%;
-        }
-        
-        .pdf-viewer .word-content td, 
-        .pdf-viewer .word-content th {
-            border:1px solid rgba(255,255,255,0.2);
-            padding:8px;
-        }
-        
+        body.light-theme .pdf-viewer .text-content,
         body.light-theme .pdf-viewer .word-content {
-            color:#1a1a2e;
-        }
-        
-        body.light-theme .pdf-viewer .word-content td, 
-        body.light-theme .pdf-viewer .word-content th {
-            border-color:rgba(0,0,0,0.2);
-        }
-        
-        body.light-theme .pdf-viewer .text-content {
             color:#1a1a2e;
         }
         
@@ -319,17 +226,17 @@
             flex-direction:column;
             align-items:center;
             justify-content:center;
-            background:rgba(0,0,0,0.3);
+            background:rgba(0,0,0,0.4);
             z-index:10;
         }
         
         .spinner {
-            width:40px;
-            height:40px;
-            border:3px solid rgba(255,255,255,0.1);
+            width:30px;
+            height:30px;
+            border:2px solid rgba(255,255,255,0.1);
             border-radius:50%;
             border-top-color:#4a7cf7;
-            animation:spin 0.8s ease-in-out infinite;
+            animation:spin 0.6s linear infinite;
         }
         
         @keyframes spin {
@@ -338,33 +245,33 @@
         
         .loading-text {
             color:rgba(255,255,255,0.6);
-            margin-top:12px;
-            font-size:0.85rem;
+            margin-top:8px;
+            font-size:0.8rem;
         }
         
         .action-bar { 
             display:flex; 
-            gap:8px; 
-            padding:10px 16px;
+            gap:6px; 
+            padding:8px 12px;
             background:rgba(0,0,0,0.2);
-            border-radius:16px;
-            margin-top:10px;
+            border-radius:12px;
+            margin-top:8px;
             flex-shrink:0;
             flex-wrap:wrap;
             justify-content:center;
         }
         
         .action-bar a, .action-bar button { 
-            padding:8px 18px; 
+            padding:6px 14px; 
             border-radius:60px; 
             font-weight:600; 
-            font-size:0.8rem; 
+            font-size:0.75rem; 
             text-decoration:none; 
             border:1px solid transparent; 
-            transition:all 0.25s; 
+            transition:all 0.2s; 
             display:inline-flex; 
             align-items:center; 
-            gap:6px; 
+            gap:4px; 
             font-family:inherit; 
             cursor:pointer;
             background:transparent;
@@ -384,8 +291,6 @@
         .btn-fullscreen:hover { background:rgba(74,124,247,0.15); }
         .btn-print { background:rgba(255,193,7,0.08); color:#ffc107; border-color:rgba(255,193,7,0.08); }
         .btn-print:hover { background:rgba(255,193,7,0.15); }
-        .btn-zoom { background:rgba(74,124,247,0.08); color:#4a7cf7; border-color:rgba(74,124,247,0.08); }
-        .btn-zoom:hover { background:rgba(74,124,247,0.15); }
 
         /* Passcode Popup */
         .passcode-overlay { 
@@ -407,44 +312,44 @@
             background:rgba(15,15,26,0.95); 
             border:1px solid rgba(255,255,255,0.08); 
             border-radius:40px; 
-            padding:48px 40px 36px; 
-            max-width:420px; 
+            padding:40px 32px 32px; 
+            max-width:380px; 
             width:90%; 
             text-align:center; 
             box-shadow:0 0 80px rgba(255,26,26,0.12); 
             animation:scaleUp 0.35s cubic-bezier(0.34,1.56,0.64,1); 
         }
-        .passcode-box .lock-icon { font-size:3rem; color:#ff9800; display:block; margin-bottom:12px; }
-        .passcode-box h3 { color:#fff; font-size:1.4rem; font-weight:600; margin-bottom:6px; }
-        .passcode-box p { color:rgba(255,255,255,0.35); font-size:0.9rem; margin-bottom:24px; line-height:1.5; }
+        .passcode-box .lock-icon { font-size:2.5rem; color:#ff9800; display:block; margin-bottom:10px; }
+        .passcode-box h3 { color:#fff; font-size:1.2rem; font-weight:600; margin-bottom:4px; }
+        .passcode-box p { color:rgba(255,255,255,0.35); font-size:0.85rem; margin-bottom:18px; line-height:1.4; }
         .passcode-box input { 
             width:100%; 
-            padding:16px; 
+            padding:14px; 
             background:rgba(255,255,255,0.04); 
             border:2px solid rgba(255,255,255,0.06); 
             border-radius:60px; 
             color:#fff; 
-            font-size:1.6rem; 
+            font-size:1.4rem; 
             font-family:monospace; 
-            letter-spacing:12px; 
+            letter-spacing:10px; 
             text-align:center; 
             transition:0.3s; 
             outline:none; 
         }
         .passcode-box input:focus { border-color:#ff2d2d; box-shadow:0 0 0 4px rgba(255,45,45,0.08); }
-        .passcode-box input::placeholder { letter-spacing:2px; font-size:1rem; color:rgba(255,255,255,0.15); }
-        .passcode-box .error-msg { color:#ff4444; font-size:0.85rem; margin-top:12px; display:none; }
+        .passcode-box input::placeholder { letter-spacing:2px; font-size:0.9rem; color:rgba(255,255,255,0.15); }
+        .passcode-box .error-msg { color:#ff4444; font-size:0.8rem; margin-top:10px; display:none; }
         .passcode-box .error-msg.show { display:block; }
         .passcode-box .unlock-btn { 
             width:100%; 
-            padding:14px; 
-            margin-top:18px; 
+            padding:12px; 
+            margin-top:14px; 
             background:linear-gradient(135deg,#ff2d2d,#ff6b6b); 
             border:none; 
             border-radius:60px; 
             color:#fff; 
             font-weight:700; 
-            font-size:1.1rem; 
+            font-size:1rem; 
             cursor:pointer; 
             transition:0.3s; 
         }
@@ -453,9 +358,9 @@
             background:none; 
             border:none; 
             color:rgba(255,255,255,0.25); 
-            margin-top:14px; 
+            margin-top:10px; 
             cursor:pointer; 
-            font-size:0.85rem; 
+            font-size:0.8rem; 
             transition:0.3s; 
         }
         .passcode-box .back-btn:hover { color:#fff; }
@@ -465,7 +370,7 @@
 
         .unsupported-message {
             text-align:center;
-            padding:40px 20px;
+            padding:30px 20px;
             color:rgba(255,255,255,0.6);
             height:100%;
             display:flex;
@@ -475,21 +380,21 @@
         }
         
         .unsupported-message i {
-            font-size:48px;
+            font-size:40px;
             color:#ff6b6b;
-            margin-bottom:16px;
+            margin-bottom:12px;
         }
         
         .unsupported-message h3 {
             color:#fff;
-            margin-bottom:8px;
+            margin-bottom:6px;
+            font-size:1.1rem;
         }
         
         body.light-theme .unsupported-message h3 {
             color:#1a1a2e;
         }
 
-        /* Fullscreen styles */
         .pdf-viewer:fullscreen {
             border-radius:0;
             border:none;
@@ -507,42 +412,23 @@
         .pdf-viewer:fullscreen .pdf-header {
             display:none;
         }
-        
-        .pdf-viewer:fullscreen .pdf-controls {
-            bottom:30px;
-        }
 
-        /* Hide scrollbar */
-        ::-webkit-scrollbar {
-            width:6px;
-        }
-        ::-webkit-scrollbar-track {
-            background:rgba(255,255,255,0.05);
-        }
-        ::-webkit-scrollbar-thumb {
-            background:rgba(74,124,247,0.3);
-            border-radius:3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background:rgba(74,124,247,0.5);
-        }
+        ::-webkit-scrollbar { width:4px; }
+        ::-webkit-scrollbar-track { background:rgba(255,255,255,0.03); }
+        ::-webkit-scrollbar-thumb { background:rgba(74,124,247,0.3); border-radius:2px; }
 
         @media (max-width:768px) {
-            .header { padding:6px 12px; }
-            .logo { font-size:0.9rem; }
-            .nav-links a { font-size:0.75rem; }
-            .view-container { padding:6px 10px 0; }
-            .view-card { padding:10px 12px 10px; border-radius:12px; }
-            .pdf-header h2 { font-size:1rem; }
-            .pdf-meta { font-size:0.65rem; gap:6px; }
-            .action-bar { padding:8px 12px; gap:6px; }
-            .action-bar a, .action-bar button { padding:6px 14px; font-size:0.75rem; }
-            .passcode-box { padding:32px 24px; }
-            .passcode-box input { font-size:1.2rem; letter-spacing:8px; }
-            .pdf-viewer .text-content { padding:16px; font-size:0.85rem; }
-            .pdf-viewer .word-content { padding:20px; font-size:0.85rem; }
-            .pdf-controls { padding:6px 12px; gap:8px; }
-            .pdf-controls button { font-size:0.85rem; }
+            .header { padding:4px 10px; }
+            .logo { font-size:0.85rem; }
+            .nav-links a { font-size:0.7rem; }
+            .view-container { padding:4px 8px 0; }
+            .view-card { padding:8px 10px 8px; border-radius:12px; }
+            .pdf-header h2 { font-size:0.9rem; }
+            .pdf-meta { font-size:0.6rem; gap:4px; }
+            .action-bar { padding:6px 8px; gap:4px; }
+            .action-bar a, .action-bar button { padding:4px 10px; font-size:0.65rem; }
+            .passcode-box { padding:24px 20px; }
+            .passcode-box input { font-size:1.2rem; letter-spacing:6px; }
         }
     </style>
 </head>
@@ -574,37 +460,16 @@
                         <span><i class="fas fa-tag"></i> {{ note.module|default:"N/A" }}</span>
                         <span><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
                         <span><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
-                        <span><i class="fas fa-university"></i> {{ note.university|default:"Not specified" }}</span>
                         <span>{% if note.privacy == 'private' %}<i class="fas fa-lock" style="color:#ff9800;"></i> Private{% else %}<i class="fas fa-globe" style="color:#00ff41;"></i> Public{% endif %}</span>
-                        <span><i class="fas fa-file"></i> <span id="fileSize">{% if note.file_size %}{{ note.file_size|filesizeformat }}{% else %}Unknown size{% endif %}</span></span>
                     </div>
                 </div>
 
                 <div class="pdf-viewer" id="pdfViewer">
                     <div class="loading-container" id="loadingContainer">
                         <div class="spinner"></div>
-                        <div class="loading-text">Loading document...</div>
+                        <div class="loading-text" id="loadingText">Loading document...</div>
                     </div>
-                    
-                    <!-- Content will be rendered here based on file type -->
-                    <div id="viewerContent" style="height:100%;position:relative;"></div>
-                    
-                    <!-- PDF Controls (hidden by default) -->
-                    <div class="pdf-controls" id="pdfControls" style="display:none;">
-                        <button onclick="prevPage()" title="Previous Page">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <span class="page-number" id="pageInfo">Page 1 / 1</span>
-                        <button onclick="nextPage()" title="Next Page">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <button onclick="zoomIn()" title="Zoom In">
-                            <i class="fas fa-search-plus"></i>
-                        </button>
-                        <button onclick="zoomOut()" title="Zoom Out">
-                            <i class="fas fa-search-minus"></i>
-                        </button>
-                    </div>
+                    <div id="viewerContent" style="height:100%;"></div>
                 </div>
 
                 <div class="action-bar">
@@ -632,89 +497,19 @@
     {% endif %}
 
     <script>
-        // ===== PDF.js Configuration =====
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        
-        let pdfDoc = null;
-        let pageNum = 1;
-        let pageRendering = false;
-        let pageNumPending = null;
-        let scale = 1.2;
-        let totalPages = 0;
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        // ===== FULLSCREEN ON LOAD =====
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                enterFullscreen();
-            }, 1000);
-        });
-
-        function enterFullscreen() {
-            const viewer = document.getElementById('pdfViewer');
-            if (viewer && !document.fullscreenElement) {
-                viewer.requestFullscreen().catch(function(err) {
-                    if (document.documentElement.requestFullscreen) {
-                        document.documentElement.requestFullscreen().catch(function(e) {
-                            console.log('Fullscreen not available:', e);
-                        });
-                    }
-                });
-            }
-        }
-
-        // ===== RAIN =====
-        const canvasRain = document.getElementById('rain-canvas');
-        const ctxRain = canvasRain.getContext('2d');
-        function resizeCanvas() { canvasRain.width = window.innerWidth; canvasRain.height = window.innerHeight; }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-        class Drop {
-            constructor() {
-                this.x = Math.random() * canvasRain.width;
-                this.y = Math.random() * canvasRain.height - canvasRain.height;
-                this.len = Math.random() * 20 + 10;
-                this.speed = Math.random() * 5 + 3;
-                this.opacity = Math.random() * 0.3 + 0.1;
-                this.width = Math.random() * 1.5 + 0.5;
-            }
-            fall() { this.y += this.speed; if (this.y > canvasRain.height) { this.y = -this.len; this.x = Math.random() * canvasRain.width; } }
-            draw() { ctxRain.beginPath(); ctxRain.moveTo(this.x, this.y); ctxRain.lineTo(this.x, this.y + this.len); ctxRain.strokeStyle = `rgba(150, 200, 255, ${this.opacity})`; ctxRain.lineWidth = this.width; ctxRain.stroke(); }
-        }
-        const drops = []; for (let i = 0; i < 200; i++) drops.push(new Drop());
-        function drawRain() { ctxRain.fillStyle = 'rgba(10, 10, 20, 0.1)'; ctxRain.fillRect(0, 0, canvasRain.width, canvasRain.height); for (let d of drops) { d.draw(); d.fall(); } requestAnimationFrame(drawRain); }
-        drawRain();
-
-        // ===== LIGHTNING =====
-        const lightning = document.getElementById('lightning');
-        let lightningTimeout;
-        function flash() {
-            lightning.style.backgroundColor = `rgba(255, 255, 255, ${Math.random() * 0.4 + 0.2})`;
-            clearTimeout(lightningTimeout);
-            lightningTimeout = setTimeout(() => { lightning.style.backgroundColor = 'transparent'; }, Math.random() * 100 + 50);
-            setTimeout(flash, Math.random() * 4000 + 1000);
-        }
-        setTimeout(flash, 1000);
-
-        // ===== THEME =====
-        function setTheme(theme) {
-            document.body.className = '';
-            if (theme === 'dark') document.body.classList.add('dark-theme');
-            else if (theme === 'light') document.body.classList.add('light-theme');
-            localStorage.setItem('twarvis-theme', theme);
-        }
-        const saved = localStorage.getItem('twarvis-theme') || 'dark';
-        setTheme(saved);
-
-        // ===== FILE VIEWER =====
+        // ===== FAST LOADING WITH CACHING =====
         document.addEventListener('DOMContentLoaded', function() {
             const fileUrl = '{{ note.file.url|default:"" }}';
             const fileName = '{{ note.original_filename|default:note.filename }}';
             const fileExtension = getFileExtension(fileName).toLowerCase();
             
             updateFileInfo(fileExtension);
-            renderDocument(fileUrl, fileExtension);
+            
+            // Start loading immediately
+            loadDocument(fileUrl, fileExtension);
+            
+            // Enter fullscreen after a short delay
+            setTimeout(enterFullscreen, 500);
         });
 
         function getFileExtension(filename) {
@@ -738,12 +533,8 @@
                 'webp': 'fa-file-image',
                 'txt': 'fa-file-alt',
                 'csv': 'fa-file-csv',
-                'zip': 'fa-file-archive',
-                'rar': 'fa-file-archive',
-                '7z': 'fa-file-archive',
                 'mp4': 'fa-file-video',
-                'mp3': 'fa-file-audio',
-                'wav': 'fa-file-audio'
+                'mp3': 'fa-file-audio'
             };
             
             const iconClass = iconMap[extension] || 'fa-file';
@@ -751,239 +542,166 @@
             document.getElementById('fileType').textContent = extension.toUpperCase();
         }
 
-        function renderDocument(fileUrl, extension) {
+        // ===== FAST DOCUMENT LOADER =====
+        function loadDocument(url, extension) {
             const container = document.getElementById('viewerContent');
             const loading = document.getElementById('loadingContainer');
+            const loadingText = document.getElementById('loadingText');
             
+            // Use browser's built-in viewers for faster loading
             const imageFormats = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'bmp', 'ico'];
-            const textFormats = ['txt', 'csv', 'log', 'md', 'json', 'xml'];
             const videoFormats = ['mp4', 'webm', 'ogg', 'avi', 'mov', 'mkv'];
             const audioFormats = ['mp3', 'wav', 'ogg', 'aac', 'flac'];
-            const wordFormats = ['doc', 'docx'];
-            const excelFormats = ['xls', 'xlsx'];
-            const pptFormats = ['ppt', 'pptx'];
+            const textFormats = ['txt', 'csv', 'log', 'md', 'json', 'xml'];
             
-            if (extension === 'pdf') {
-                // Use PDF.js for PDF rendering
-                renderPDF(fileUrl);
+            // IMAGES - Fastest
+            if (imageFormats.includes(extension)) {
+                loadingText.textContent = 'Loading image...';
+                const img = new Image();
+                img.onload = function() {
+                    loading.style.display = 'none';
+                    container.innerHTML = `<img src="${url}" alt="Document">`;
+                };
+                img.onerror = function() {
+                    showError('Failed to load image');
+                };
+                img.src = url;
+                return;
             }
-            else if (imageFormats.includes(extension)) {
-                loading.style.display = 'none';
-                container.innerHTML = `<img src="${fileUrl}" alt="Document Image" onerror="showError('Failed to load image')">`;
-            }
-            else if (wordFormats.includes(extension)) {
-                // Use Mammoth.js for Word documents
-                renderWord(fileUrl);
-            }
-            else if (excelFormats.includes(extension) || pptFormats.includes(extension)) {
-                // For Excel and PowerPoint, show download option with preview message
+            
+            // VIDEOS
+            if (videoFormats.includes(extension)) {
                 loading.style.display = 'none';
                 container.innerHTML = `
-                    <div class="unsupported-message">
-                        <i class="fas fa-file-excel"></i>
-                        <h3>${extension.toUpperCase()} File</h3>
-                        <p>${extension.toUpperCase()} files cannot be previewed directly in the browser.</p>
-                        <p style="margin-top:12px;font-size:0.9rem;color:rgba(255,255,255,0.4);">
-                            Download the file to view it in Microsoft Office or Google Sheets/Slides.
-                        </p>
-                        <p style="margin-top:16px;">
-                            <a href="${fileUrl}" download class="btn-download" style="display:inline-block;padding:10px 24px;border-radius:60px;text-decoration:none;border:1px solid transparent;">
-                                <i class="fas fa-download"></i> Download ${extension.toUpperCase()}
-                            </a>
-                        </p>
+                    <video controls style="width:100%;height:100%;background:#000;object-fit:contain;">
+                        <source src="${url}" type="video/${extension}">
+                        Your browser does not support video playback.
+                    </video>
+                `;
+                return;
+            }
+            
+            // AUDIO
+            if (audioFormats.includes(extension)) {
+                loading.style.display = 'none';
+                container.innerHTML = `
+                    <div style="padding:30px;text-align:center;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+                        <i class="fas fa-music" style="font-size:48px;color:#4a7cf7;margin-bottom:16px;"></i>
+                        <audio controls style="width:100%;max-width:400px;">
+                            <source src="${url}" type="audio/${extension}">
+                            Your browser does not support audio playback.
+                        </audio>
                     </div>
                 `;
+                return;
             }
-            else if (textFormats.includes(extension)) {
-                fetch(fileUrl)
-                    .then(response => {
-                        if (!response.ok) throw new Error('Failed to load text file');
-                        return response.text();
-                    })
+            
+            // TEXT FILES - Fast
+            if (textFormats.includes(extension)) {
+                loadingText.textContent = 'Loading text...';
+                fetch(url)
+                    .then(response => response.text())
                     .then(text => {
                         loading.style.display = 'none';
                         container.innerHTML = `<div class="text-content">${escapeHtml(text)}</div>`;
                     })
-                    .catch(error => {
-                        showError('Failed to load text file: ' + error.message);
-                    });
+                    .catch(() => showError('Failed to load text file'));
+                return;
             }
-            else if (videoFormats.includes(extension)) {
-                loading.style.display = 'none';
+            
+            // PDF - Load with built-in viewer first (fastest)
+            if (extension === 'pdf') {
+                loadingText.textContent = 'Loading PDF...';
+                // Use browser's built-in PDF viewer if available
                 container.innerHTML = `
-                    <video controls style="width:100%;height:100%;background:#000;object-fit:contain;">
-                        <source src="${fileUrl}" type="video/${extension}">
-                        Your browser does not support video playback.
-                    </video>
+                    <iframe src="${url}#toolbar=1" style="width:100%;height:100%;border:none;" 
+                        onload="document.getElementById('loadingContainer').style.display='none'"
+                        onerror="loadPDFFallback('${url}')">
+                    </iframe>
                 `;
+                // Fallback if iframe fails
+                setTimeout(() => {
+                    const iframe = container.querySelector('iframe');
+                    if (iframe && loading.style.display !== 'none') {
+                        loadPDFFallback(url);
+                    }
+                }, 3000);
+                return;
             }
-            else if (audioFormats.includes(extension)) {
-                loading.style.display = 'none';
-                container.innerHTML = `
-                    <div style="padding:40px;text-align:center;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
-                        <i class="fas fa-music" style="font-size:64px;color:#4a7cf7;margin-bottom:20px;display:block;"></i>
-                        <audio controls style="width:100%;max-width:500px;margin:0 auto;display:block;">
-                            <source src="${fileUrl}" type="audio/${extension}">
-                            Your browser does not support audio playback.
-                        </audio>
-                        <p style="color:rgba(255,255,255,0.4);margin-top:20px;">Audio file - ${extension.toUpperCase()}</p>
-                    </div>
-                `;
+            
+            // WORD - Fast with mammoth.js only for docx
+            if (extension === 'docx') {
+                loadingText.textContent = 'Loading Word document...';
+                loadWordDocument(url);
+                return;
             }
-            else {
-                loading.style.display = 'none';
-                container.innerHTML = `
-                    <div class="unsupported-message">
-                        <i class="fas fa-file"></i>
-                        <h3>Preview Not Available</h3>
-                        <p>This file type (.${extension}) cannot be previewed directly.</p>
-                        <p style="margin-top:12px;">
-                            <a href="${fileUrl}" download class="btn-download" style="display:inline-block;padding:10px 24px;border-radius:60px;text-decoration:none;border:1px solid transparent;">
-                                <i class="fas fa-download"></i> Download to view
-                            </a>
-                        </p>
-                    </div>
-                `;
-            }
+            
+            // Other formats - Show download option
+            loading.style.display = 'none';
+            container.innerHTML = `
+                <div class="unsupported-message">
+                    <i class="fas fa-file"></i>
+                    <h3>${extension.toUpperCase()} File</h3>
+                    <p>Download to view this file type.</p>
+                    <p style="margin-top:10px;">
+                        <a href="${url}" download class="btn-download" style="display:inline-block;padding:8px 20px;border-radius:60px;text-decoration:none;border:1px solid transparent;">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                    </p>
+                </div>
+            `;
         }
 
-        // ===== PDF RENDERER (PDF.js) =====
-        function renderPDF(url) {
+        // ===== PDF FALLBACK =====
+        function loadPDFFallback(url) {
             const container = document.getElementById('viewerContent');
             const loading = document.getElementById('loadingContainer');
-            const controls = document.getElementById('pdfControls');
             
-            // Append canvas to container
-            canvas.id = 'pdfCanvas';
-            container.appendChild(canvas);
-            
-            // Load PDF
-            pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
-                pdfDoc = pdfDoc_;
-                totalPages = pdfDoc.numPages;
-                document.getElementById('pageInfo').textContent = `Page 1 / ${totalPages}`;
-                controls.style.display = 'flex';
-                loading.style.display = 'none';
-                renderPage(pageNum);
-            }).catch(function(error) {
-                console.error('PDF loading error:', error);
-                loading.style.display = 'none';
-                container.innerHTML = `
-                    <div class="unsupported-message">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h3>Unable to Load PDF</h3>
-                        <p>${error.message || 'The PDF file could not be loaded.'}</p>
-                        <p style="margin-top:12px;">
-                            <a href="${url}" download class="btn-download" style="display:inline-block;padding:10px 24px;border-radius:60px;text-decoration:none;border:1px solid transparent;">
-                                <i class="fas fa-download"></i> Download to view
-                            </a>
-                        </p>
-                    </div>
-                `;
-            });
-            
-            // Handle resize
-            window.addEventListener('resize', function() {
-                if (pdfDoc) renderPage(pageNum);
-            });
+            // Try using Google's viewer as fallback (lightweight)
+            loading.style.display = 'none';
+            container.innerHTML = `
+                <iframe src="https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true" 
+                    style="width:100%;height:100%;border:none;">
+                </iframe>
+            `;
         }
 
-        function renderPage(num) {
-            pageRendering = true;
-            pdfDoc.getPage(num).then(function(page) {
-                const viewport = page.getViewport({scale: scale});
-                
-                // Set canvas size
-                const container = document.getElementById('pdfViewer');
-                const containerWidth = container.clientWidth - 4;
-                const containerHeight = container.clientHeight - 4;
-                
-                // Calculate scale to fit
-                const widthScale = containerWidth / viewport.width;
-                const heightScale = containerHeight / viewport.height;
-                const fitScale = Math.min(widthScale, heightScale, 2);
-                
-                // Use fit scale but not less than 0.5
-                const finalScale = Math.max(fitScale, 0.5);
-                const finalViewport = page.getViewport({scale: finalScale});
-                
-                canvas.height = finalViewport.height;
-                canvas.width = finalViewport.width;
-                canvas.style.width = '100%';
-                canvas.style.height = '100%';
-                canvas.style.objectFit = 'contain';
-                
-                const renderContext = {
-                    canvasContext: ctx,
-                    viewport: finalViewport
+        // ===== WORD DOCUMENT LOADER (Mammoth.js) =====
+        function loadWordDocument(url) {
+            const container = document.getElementById('viewerContent');
+            const loading = document.getElementById('loadingContainer');
+            
+            // Load mammoth.js dynamically only when needed
+            if (typeof mammoth === 'undefined') {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js';
+                script.onload = function() {
+                    processWordFile(url);
                 };
-                
-                const renderTask = page.render(renderContext);
-                renderTask.promise.then(function() {
-                    pageRendering = false;
-                    if (pageNumPending !== null) {
-                        renderPage(pageNumPending);
-                        pageNumPending = null;
-                    }
-                });
-            });
-            
-            document.getElementById('pageInfo').textContent = `Page ${num} / ${totalPages}`;
-        }
-
-        function queueRenderPage(num) {
-            if (pageRendering) {
-                pageNumPending = num;
+                script.onerror = function() {
+                    showError('Failed to load Word viewer. Please download the file.');
+                };
+                document.head.appendChild(script);
             } else {
-                renderPage(num);
+                processWordFile(url);
             }
         }
 
-        function prevPage() {
-            if (pageNum <= 1) return;
-            pageNum--;
-            queueRenderPage(pageNum);
-        }
-
-        function nextPage() {
-            if (pageNum >= totalPages) return;
-            pageNum++;
-            queueRenderPage(pageNum);
-        }
-
-        function zoomIn() {
-            scale = Math.min(scale + 0.2, 3);
-            if (pdfDoc) renderPage(pageNum);
-        }
-
-        function zoomOut() {
-            scale = Math.max(scale - 0.2, 0.5);
-            if (pdfDoc) renderPage(pageNum);
-        }
-
-        // ===== WORD RENDERER (Mammoth.js) =====
-        function renderWord(url) {
+        function processWordFile(url) {
             const container = document.getElementById('viewerContent');
             const loading = document.getElementById('loadingContainer');
             
             fetch(url)
-                .then(response => {
-                    if (!response.ok) throw new Error('Failed to load Word document');
-                    return response.arrayBuffer();
-                })
+                .then(response => response.arrayBuffer())
                 .then(arrayBuffer => {
                     mammoth.convertToHtml({arrayBuffer: arrayBuffer})
                         .then(result => {
                             loading.style.display = 'none';
                             container.innerHTML = `<div class="word-content">${result.value}</div>`;
                         })
-                        .catch(error => {
-                            showError('Failed to convert Word document: ' + error.message);
-                        });
+                        .catch(() => showError('Failed to convert Word document'));
                 })
-                .catch(error => {
-                    showError('Failed to load Word document: ' + error.message);
-                });
+                .catch(() => showError('Failed to load Word document'));
         }
 
         function escapeHtml(text) {
@@ -999,25 +717,32 @@
             container.innerHTML = `
                 <div class="unsupported-message">
                     <i class="fas fa-exclamation-triangle"></i>
-                    <h3>Error Loading Document</h3>
+                    <h3>Error</h3>
                     <p>${message}</p>
-                    <p style="margin-top:12px;">
-                        <a href="{{ note.file.url }}" download class="btn-download" style="display:inline-block;padding:10px 24px;border-radius:60px;text-decoration:none;border:1px solid transparent;">
-                            <i class="fas fa-download"></i> Download to view
+                    <p style="margin-top:10px;">
+                        <a href="{{ note.file.url }}" download class="btn-download" style="display:inline-block;padding:8px 20px;border-radius:60px;text-decoration:none;border:1px solid transparent;">
+                            <i class="fas fa-download"></i> Download
                         </a>
                     </p>
                 </div>
             `;
         }
 
-        // ===== FULLSCREEN TOGGLE =====
+        // ===== FULLSCREEN =====
+        function enterFullscreen() {
+            const viewer = document.getElementById('pdfViewer');
+            if (viewer && !document.fullscreenElement) {
+                viewer.requestFullscreen().catch(() => {
+                    document.documentElement.requestFullscreen().catch(() => {});
+                });
+            }
+        }
+
         function toggleFullscreen() {
             const viewer = document.getElementById('pdfViewer');
             if (!document.fullscreenElement) {
-                viewer.requestFullscreen().catch(function(err) {
-                    document.documentElement.requestFullscreen().catch(function(e) {
-                        console.log('Fullscreen not available:', e);
-                    });
+                viewer.requestFullscreen().catch(() => {
+                    document.documentElement.requestFullscreen().catch(() => {});
                 });
             } else {
                 document.exitFullscreen();
@@ -1025,21 +750,12 @@
         }
 
         document.addEventListener('fullscreenchange', function() {
-            const viewer = document.getElementById('pdfViewer');
-            const isFullscreen = document.fullscreenElement === viewer || document.fullscreenElement === document.documentElement;
-            
-            const fullscreenBtn = document.querySelector('.btn-fullscreen');
-            if (fullscreenBtn) {
-                if (isFullscreen) {
-                    fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i> Exit Fullscreen';
-                } else {
-                    fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i> Fullscreen';
-                }
-            }
-            
-            // Re-render PDF if in fullscreen
-            if (pdfDoc) {
-                setTimeout(() => renderPage(pageNum), 300);
+            const isFullscreen = !!document.fullscreenElement;
+            const btn = document.querySelector('.btn-fullscreen');
+            if (btn) {
+                btn.innerHTML = isFullscreen ? 
+                    '<i class="fas fa-compress"></i> Exit Fullscreen' : 
+                    '<i class="fas fa-expand"></i> Fullscreen';
             }
         });
 
@@ -1049,40 +765,101 @@
             const img = content.querySelector('img');
             const text = content.querySelector('.text-content');
             const word = content.querySelector('.word-content');
-            const video = content.querySelector('video');
+            const iframe = content.querySelector('iframe');
             
             if (img) {
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write(`
+                const win = window.open('', '_blank');
+                win.document.write(`
                     <html><head><title>Print</title>
                     <style>body{margin:0;padding:0;display:flex;justify-content:center;align-items:center;min-height:100vh;}img{max-width:100%;max-height:100vh;}</style>
                     </head><body><img src="${img.src}" onload="window.print();"></body></html>
                 `);
-                printWindow.document.close();
+                win.document.close();
             } else if (text) {
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write(`
+                const win = window.open('', '_blank');
+                win.document.write(`
                     <html><head><title>Print</title>
-                    <style>body{font-family:monospace;padding:40px;white-space:pre-wrap;}</style>
+                    <style>body{font-family:monospace;padding:30px;white-space:pre-wrap;}</style>
                     </head><body>${text.innerHTML}</body></html>
                 `);
-                printWindow.document.close();
-                printWindow.print();
+                win.document.close();
+                win.print();
             } else if (word) {
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write(`
+                const win = window.open('', '_blank');
+                win.document.write(`
                     <html><head><title>Print</title>
-                    <style>body{font-family:Arial, sans-serif;padding:40px;max-width:800px;margin:0 auto;line-height:1.8;}</style>
+                    <style>body{font-family:Arial;padding:30px;max-width:800px;margin:0 auto;line-height:1.6;}</style>
                     </head><body>${word.innerHTML}</body></html>
                 `);
-                printWindow.document.close();
-                printWindow.print();
-            } else if (video) {
-                alert('Cannot print video content. Please download the file.');
+                win.document.close();
+                win.print();
+            } else if (iframe) {
+                try { iframe.contentWindow.print(); } 
+                catch(e) { alert('Please download to print.'); }
             } else {
-                alert('Printing not available for this document type. Please download to print.');
+                alert('Printing not available for this document type.');
             }
         }
+
+        // ===== RAIN EFFECT (Lightweight) =====
+        const canvas = document.getElementById('rain-canvas');
+        const ctx = canvas.getContext('2d');
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        class Drop {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height - canvas.height;
+                this.len = Math.random() * 15 + 8;
+                this.speed = Math.random() * 4 + 2;
+                this.opacity = Math.random() * 0.2 + 0.05;
+                this.width = Math.random() * 1 + 0.5;
+            }
+            fall() { 
+                this.y += this.speed; 
+                if (this.y > canvas.height) { 
+                    this.y = -this.len; 
+                    this.x = Math.random() * canvas.width; 
+                } 
+            }
+            draw() { 
+                ctx.beginPath(); 
+                ctx.moveTo(this.x, this.y); 
+                ctx.lineTo(this.x, this.y + this.len); 
+                ctx.strokeStyle = `rgba(150, 200, 255, ${this.opacity})`; 
+                ctx.lineWidth = this.width; 
+                ctx.stroke(); 
+            }
+        }
+        const drops = []; 
+        for (let i = 0; i < 150; i++) drops.push(new Drop());
+        
+        function drawRain() { 
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let d of drops) { d.draw(); d.fall(); } 
+            requestAnimationFrame(drawRain); 
+        }
+        drawRain();
+
+        // ===== LIGHTNING (Lightweight) =====
+        const lightning = document.getElementById('lightning');
+        function flash() {
+            lightning.style.backgroundColor = `rgba(255, 255, 255, ${Math.random() * 0.3 + 0.1})`;
+            setTimeout(() => { lightning.style.backgroundColor = 'transparent'; }, 60);
+            setTimeout(flash, Math.random() * 5000 + 2000);
+        }
+        setTimeout(flash, 2000);
+
+        // ===== THEME =====
+        function setTheme(theme) {
+            document.body.className = '';
+            if (theme === 'dark') document.body.classList.add('dark-theme');
+            else if (theme === 'light') document.body.classList.add('light-theme');
+            localStorage.setItem('twarvis-theme', theme);
+        }
+        setTheme(localStorage.getItem('twarvis-theme') || 'dark');
 
         // ===== PASSCODE =====
         {% if note.privacy == 'private' %}
@@ -1101,17 +878,11 @@
                 if (entered === correct) {
                     overlay.classList.remove('active');
                     viewer.style.display = 'flex';
-                    setTimeout(function() {
-                        enterFullscreen();
-                    }, 500);
-                    lightning.style.backgroundColor = 'rgba(255,255,255,0.4)';
-                    setTimeout(() => { lightning.style.backgroundColor = 'transparent'; }, 80);
+                    setTimeout(enterFullscreen, 300);
                 } else {
                     error.classList.add('show');
                     input.value = '';
                     input.focus();
-                    lightning.style.backgroundColor = 'rgba(255,0,0,0.2)';
-                    setTimeout(() => { lightning.style.backgroundColor = 'transparent'; }, 80);
                 }
             });
 
