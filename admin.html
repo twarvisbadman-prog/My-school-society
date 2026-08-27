@@ -30,13 +30,14 @@
             background: linear-gradient(180deg, #0a4a6e 0%, #0c5a7a 25%, #0e6b8a 50%, #0a5a7a 75%, #074a6a 100%);
         }
 
-        /* ===== GLASS OVERLAY (transparent, no blur) ===== */
+        /* ===== GLASS OVERLAY ===== */
         .glass-overlay {
             position: relative;
             z-index: 2;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
             min-height: 100vh;
             width: 100%;
+            backdrop-filter: blur(2px);
         }
 
         /* ===== ADMIN CONTAINER ===== */
@@ -46,15 +47,72 @@
             padding: 20px;
         }
 
+        /* ===== TOP BAR ===== */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .top-bar .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            text-decoration: none;
+            padding: 10px 22px;
+            border-radius: 40px;
+            transition: all 0.3s;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .top-bar .back-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-3px);
+        }
+
+        .top-bar .admin-badge {
+            background: rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            padding: 8px 20px;
+            border-radius: 40px;
+            color: #ffd700;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
         /* ===== GLASS CARD HEADER ===== */
         .admin-header {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 24px;
-            padding: 25px;
+            padding: 30px 35px;
             margin-bottom: 30px;
             text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(255,215,0,0.05), transparent 70%);
+            animation: shimmer 10s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
         }
 
         .admin-header h1 {
@@ -63,156 +121,252 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            position: relative;
         }
 
         .admin-header p {
-            color: #fff;
-            text-shadow: 0 0 5px rgba(0,0,0,0.3);
+            color: rgba(255, 255, 255, 0.7);
+            text-shadow: 0 0 10px rgba(0,0,0,0.3);
+            position: relative;
+            font-size: 1.05rem;
         }
 
         /* ===== STATS GRID ===== */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-bottom: 35px;
         }
 
         .stat-card {
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 20px;
-            padding: 25px;
-            transition: transform 0.3s, box-shadow 0.3s;
+            padding: 22px 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.18);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
         }
 
-        .stat-card h3 {
-            color: #ffd700;
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .stat-card .stat-icon {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            display: block;
         }
 
-        .stat-number {
-            font-size: 2.8rem;
+        .stat-card .stat-number {
+            font-size: 2.4rem;
             font-weight: 800;
             color: #fff;
-            text-shadow: 0 0 10px rgba(0,0,0,0.3);
+            text-shadow: 0 0 15px rgba(0,0,0,0.3);
         }
 
-        .stat-detail {
-            color: rgba(255, 255, 255, 0.8);
+        .stat-card .stat-label {
+            color: rgba(255, 255, 255, 0.6);
             font-size: 0.85rem;
-            margin-top: 10px;
+            margin-top: 4px;
+        }
+
+        .stat-card .stat-detail {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.75rem;
+            margin-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 8px;
         }
 
         /* ===== FILE LIST ===== */
         .file-list {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 24px;
             padding: 25px;
             margin-bottom: 30px;
         }
 
-        .file-list h2 {
-            color: #ffd700;
+        .file-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
             margin-bottom: 20px;
-            font-size: 1.5rem;
+        }
+
+        .file-list-header h2 {
+            color: #ffd700;
+            font-size: 1.4rem;
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+
+        .file-list-header .file-count {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 4px 14px;
+            border-radius: 30px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
         }
 
         .file-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 12px;
             transition: background 0.2s;
-        }
-
-        .file-item:hover {
-            background: rgba(255, 255, 255, 0.08);
             border-radius: 12px;
         }
 
-        .file-info {
-            flex: 2;
+        .file-item:hover {
+            background: rgba(255, 255, 255, 0.05);
         }
 
-        .file-name {
+        .file-item .file-info {
+            flex: 2;
+            min-width: 200px;
+        }
+
+        .file-item .file-name {
             color: #fff;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.95rem;
             word-break: break-all;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .file-meta {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.75rem;
-            margin-top: 5px;
+        .file-item .file-name .privacy-badge {
+            font-size: 0.6rem;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-weight: 600;
+            background: rgba(0, 255, 100, 0.15);
+            color: #00ff64;
+            border: 1px solid rgba(0, 255, 100, 0.15);
+        }
+
+        .file-item .file-name .privacy-badge.private {
+            background: rgba(255, 152, 0, 0.15);
+            color: #ff9800;
+            border-color: rgba(255, 152, 0, 0.15);
+        }
+
+        .file-item .file-meta {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.7rem;
+            margin-top: 4px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .file-item .file-meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .file-item .file-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .admin-btn {
-            padding: 8px 20px;
-            background: rgba(255, 69, 69, 0.8);
+            padding: 7px 18px;
             border: none;
             border-radius: 30px;
             color: white;
             cursor: pointer;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             transition: all 0.3s;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
         }
 
-        .admin-btn:hover {
+        .admin-btn.danger {
+            background: rgba(255, 69, 69, 0.7);
+        }
+
+        .admin-btn.danger:hover {
             background: #ff4444;
-            transform: scale(1.02);
-            box-shadow: 0 5px 15px rgba(255, 68, 68, 0.4);
+            transform: scale(1.03);
+            box-shadow: 0 5px 20px rgba(255, 68, 68, 0.3);
         }
 
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-            text-decoration: none;
-            padding: 12px 25px;
-            border-radius: 40px;
-            transition: all 0.3s;
-            margin-top: 20px;
+        .admin-btn.view-btn {
+            background: rgba(59, 130, 246, 0.5);
         }
 
-        .back-link:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateX(-5px);
+        .admin-btn.view-btn:hover {
+            background: #3b82f6;
+            transform: scale(1.03);
+            box-shadow: 0 5px 20px rgba(59, 130, 246, 0.3);
         }
 
+        .admin-btn.download-btn {
+            background: rgba(0, 255, 100, 0.2);
+            color: #00ff64;
+        }
+
+        .admin-btn.download-btn:hover {
+            background: rgba(0, 255, 100, 0.35);
+            transform: scale(1.03);
+        }
+
+        /* ===== EMPTY STATE ===== */
         .empty-state {
             text-align: center;
-            padding: 60px;
-            color: rgba(255, 255, 255, 0.7);
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.5);
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .empty-state i {
+            font-size: 4rem;
+            opacity: 0.3;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h3 {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .admin-header h1 { font-size: 1.8rem; }
+            .stats-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+            .stat-card .stat-number { font-size: 1.8rem; }
+            .file-item { flex-direction: column; align-items: stretch; }
+            .file-item .file-actions { justify-content: flex-start; }
+            .top-bar { flex-direction: column; align-items: stretch; text-align: center; }
+            .top-bar .back-link { justify-content: center; }
+        }
+
+        @media (max-width: 480px) {
+            .admin-header { padding: 20px; }
+            .admin-header h1 { font-size: 1.4rem; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .stat-card { padding: 15px; }
+            .stat-card .stat-number { font-size: 1.5rem; }
+            .file-list { padding: 15px; }
         }
     </style>
 </head>
@@ -223,67 +377,100 @@
 
     <div class="glass-overlay">
         <div class="admin-container">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <a href="/" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+                <span class="admin-badge"><i class="fas fa-crown"></i> Admin Access</span>
+            </div>
+
+            <!-- Header -->
             <div class="admin-header">
                 <h1>🐠 ADMIN PORTAL 🐠</h1>
-                <p>Welcome to the underwater command center — full control over your school files</p>
+                <p>Full control over your school files — view, manage, and delete</p>
             </div>
 
+            <!-- Stats -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <h3><i class="fas fa-database"></i> Total Files</h3>
+                    <span class="stat-icon">📁</span>
                     <div class="stat-number">{{ stats.total_files }}</div>
-                    <div class="stat-detail">📊 {{ stats.total_size_mb }} MB total storage</div>
+                    <div class="stat-label">Total Files</div>
+                    <div class="stat-detail">📊 {{ stats.total_size_mb }} MB used</div>
                 </div>
                 <div class="stat-card">
-                    <h3><i class="fas fa-file-alt"></i> File Types</h3>
-                    <div class="stat-detail">
-                        {% for ext, count in stats.file_types.items %}
-                        <div>📁 {{ ext }}: {{ count }} files</div>
-                        {% endfor %}
-                    </div>
+                    <span class="stat-icon">🔓</span>
+                    <div class="stat-number">{{ stats.public_count|default:0 }}</div>
+                    <div class="stat-label">Public Files</div>
+                    <div class="stat-detail">🌍 Visible to everyone</div>
                 </div>
                 <div class="stat-card">
-                    <h3><i class="fas fa-graduation-cap"></i> Top Modules</h3>
+                    <span class="stat-icon">🔒</span>
+                    <div class="stat-number">{{ stats.private_count|default:0 }}</div>
+                    <div class="stat-label">Private Files</div>
+                    <div class="stat-detail">🔐 Passcode protected</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">📚</span>
+                    <div class="stat-number">{{ stats.top_modules|length }}</div>
+                    <div class="stat-label">Modules</div>
                     <div class="stat-detail">
-                        {% for module, count in stats.top_modules.items %}
-                        <div>📚 {{ module }}: {{ count }} files</div>
+                        {% for module, count in stats.top_modules.items|slice:":3" %}
+                            {{ module }} ({{ count }}){% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     </div>
                 </div>
             </div>
 
+            <!-- File List -->
             <div class="file-list">
-                <h2><i class="fas fa-fish"></i> All Uploaded Files</h2>
+                <div class="file-list-header">
+                    <h2><i class="fas fa-fish"></i> All Uploaded Files</h2>
+                    <span class="file-count">{{ notes|length }} files</span>
+                </div>
+
                 {% if notes %}
                     {% for note in notes %}
                     <div class="file-item">
                         <div class="file-info">
                             <div class="file-name">
                                 <i class="fas fa-file"></i> {{ note.filename }}
+                                {% if note.privacy == 'private' %}
+                                    <span class="privacy-badge private"><i class="fas fa-lock"></i> Private</span>
+                                {% else %}
+                                    <span class="privacy-badge"><i class="fas fa-globe"></i> Public</span>
+                                {% endif %}
                             </div>
                             <div class="file-meta">
-                                Module: {{ note.module }} | Course: {{ note.course }} | 
-                                Uploaded: {{ note.uploaded_at|slice:":10" }} | Size: {{ note.file_size|default:0|filesizeformat }}
+                                <span><i class="fas fa-tag"></i> {{ note.module|default:"N/A" }}</span>
+                                <span><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
+                                <span><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
+                                <span><i class="fas fa-file"></i> {{ note.file_size|default:0|filesizeformat }}</span>
+                                <span><i class="fas fa-university"></i> {{ note.university|default:"Not specified" }}</span>
                             </div>
                         </div>
-                        <div>
-                            <a href="/delete/{{ note.id }}/" class="admin-btn" onclick="return confirm('Delete this file permanently?')">
-                                <i class="fas fa-trash-alt"></i> DELETE
+                        <div class="file-actions">
+                            <a href="/view/{{ note.id }}/" class="admin-btn view-btn" target="_blank">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            <a href="/download/{{ note.id }}/" class="admin-btn download-btn">
+                                <i class="fas fa-download"></i> Download
+                            </a>
+                            <a href="/delete/{{ note.id }}/" class="admin-btn danger" onclick="return confirm('⚠️ Delete this file permanently? This cannot be undone!')">
+                                <i class="fas fa-trash-alt"></i> Delete
                             </a>
                         </div>
                     </div>
                     {% endfor %}
                 {% else %}
                     <div class="empty-state">
-                        <i class="fas fa-water" style="font-size: 3rem;"></i>
-                        <p>No files uploaded yet. The ocean is empty!</p>
+                        <i class="fas fa-water"></i>
+                        <h3>No files uploaded yet</h3>
+                        <p>The ocean is empty! Students haven't shared any files yet.</p>
                     </div>
                 {% endif %}
             </div>
-
-            <a href="/" class="back-link">
-                <i class="fas fa-arrow-left"></i> Back to Home
-            </a>
         </div>
     </div>
 
@@ -307,62 +494,87 @@
                 this.size = size;
                 this.speed = speed;
                 this.color = color;
-                this.direction = direction; // 1 = right, -1 = left
+                this.direction = direction;
                 this.tailAngle = 0;
+                this.tailSpeed = 0.15 + Math.random() * 0.1;
             }
 
             update() {
                 this.x += this.speed * this.direction;
-                this.tailAngle += 0.2;
+                this.tailAngle += this.tailSpeed;
 
-                // Wrap around edges
-                if (this.x > canvas.width + this.size) {
-                    this.x = -this.size;
-                }
-                if (this.x < -this.size) {
-                    this.x = canvas.width + this.size;
-                }
+                // Wrap around
+                if (this.x > canvas.width + this.size) this.x = -this.size;
+                if (this.x < -this.size) this.x = canvas.width + this.size;
 
-                // Random vertical movement
-                this.y += (Math.random() - 0.5) * 0.5;
-                this.y = Math.min(Math.max(this.y, this.size + 20), canvas.height - this.size - 20);
+                // Slight vertical drift
+                this.y += Math.sin(this.x * 0.01) * 0.3;
+                this.y = Math.min(Math.max(this.y, this.size + 30), canvas.height - this.size - 30);
             }
 
             draw() {
                 ctx.save();
-                ctx.shadowBlur = 0;
-                
-                // Draw fish body
+
+                // Fish body
                 ctx.beginPath();
-                if (this.direction === 1) {
-                    ctx.ellipse(this.x, this.y, this.size, this.size * 0.6, 0, 0, Math.PI * 2);
-                } else {
-                    ctx.ellipse(this.x, this.y, this.size, this.size * 0.6, 0, 0, Math.PI * 2);
-                }
+                ctx.ellipse(this.x, this.y, this.size, this.size * 0.55, 0, 0, Math.PI * 2);
                 ctx.fillStyle = this.color;
                 ctx.fill();
-                
-                // Draw eye
-                ctx.beginPath();
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+
+                // Eye
+                ctx.shadowBlur = 0;
                 const eyeX = this.direction === 1 ? this.x + this.size * 0.4 : this.x - this.size * 0.4;
-                ctx.arc(eyeX, this.y - this.size * 0.2, this.size * 0.12, 0, Math.PI * 2);
+                ctx.beginPath();
+                ctx.arc(eyeX, this.y - this.size * 0.15, this.size * 0.13, 0, Math.PI * 2);
                 ctx.fillStyle = 'white';
                 ctx.fill();
                 ctx.beginPath();
-                ctx.arc(eyeX + (this.direction === 1 ? 2 : -2), this.y - this.size * 0.22, this.size * 0.05, 0, Math.PI * 2);
+                ctx.arc(eyeX + (this.direction === 1 ? 2 : -2), this.y - this.size * 0.17, this.size * 0.06, 0, Math.PI * 2);
                 ctx.fillStyle = 'black';
                 ctx.fill();
-                
-                // Draw tail
-                ctx.beginPath();
+
+                // Tail
+                ctx.shadowBlur = 5;
+                ctx.shadowColor = this.color;
                 const tailX = this.direction === 1 ? this.x - this.size * 0.7 : this.x + this.size * 0.7;
+                const tailWag = Math.sin(this.tailAngle) * this.size * 0.2;
+                ctx.beginPath();
                 ctx.moveTo(tailX, this.y);
-                ctx.lineTo(tailX - this.size * 0.4 * this.direction, this.y - this.size * 0.4);
-                ctx.lineTo(tailX - this.size * 0.4 * this.direction, this.y + this.size * 0.4);
+                ctx.quadraticCurveTo(
+                    tailX - this.size * 0.5 * this.direction,
+                    this.y - this.size * 0.4 + tailWag,
+                    tailX - this.size * 0.7 * this.direction,
+                    this.y + tailWag * 0.5
+                );
+                ctx.quadraticCurveTo(
+                    tailX - this.size * 0.5 * this.direction,
+                    this.y + this.size * 0.4 + tailWag,
+                    tailX,
+                    this.y
+                );
                 ctx.fill();
-                
+                ctx.shadowBlur = 0;
+
                 ctx.restore();
             }
+        }
+
+        // Create fish
+        const fishColors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#ff9999', '#66ccff', '#ffcc66', '#99ff99', '#ff85a2', '#7b68ee'];
+        const fishes = [];
+
+        for (let i = 0; i < 18; i++) {
+            fishes.push(new Fish(
+                Math.random() * canvas.width,
+                Math.random() * canvas.height,
+                Math.random() * 22 + 14,
+                Math.random() * 1.2 + 0.6,
+                fishColors[Math.floor(Math.random() * fishColors.length)],
+                Math.random() > 0.5 ? 1 : -1
+            ));
         }
 
         // Bubble class
@@ -371,148 +583,138 @@
                 this.x = x;
                 this.y = y;
                 this.size = size;
-                this.speed = Math.random() * 0.5 + 0.3;
+                this.speed = Math.random() * 0.6 + 0.3;
+                this.wobble = Math.random() * 0.02;
             }
 
             update() {
                 this.y -= this.speed;
-                this.x += (Math.random() - 0.5) * 0.3;
+                this.x += Math.sin(this.y * this.wobble) * 0.5;
             }
 
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                ctx.lineWidth = 0.5;
+                ctx.stroke();
+
+                // Highlight
+                ctx.beginPath();
+                ctx.arc(this.x - this.size * 0.3, this.y - this.size * 0.3, this.size * 0.2, 0, Math.PI * 2);
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
                 ctx.fill();
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-                ctx.stroke();
             }
         }
 
-        // Create fish
-        const fishColors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#ff9999', '#66ccff', '#ffcc66', '#99ff99'];
-        const fishes = [];
-        
-        for (let i = 0; i < 15; i++) {
-            fishes.push(new Fish(
-                Math.random() * canvas.width,
-                Math.random() * canvas.height,
-                Math.random() * 25 + 15,
-                Math.random() * 1.5 + 0.8,
-                fishColors[Math.floor(Math.random() * fishColors.length)],
-                Math.random() > 0.5 ? 1 : -1
-            ));
-        }
-
-        // Create bubbles
         const bubbles = [];
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 35; i++) {
             bubbles.push(new Bubble(
                 Math.random() * canvas.width,
                 Math.random() * canvas.height,
-                Math.random() * 6 + 2
+                Math.random() * 5 + 2
             ));
         }
 
-        // Water plants (decorative)
+        // Seaweed/plants
         function drawPlants() {
-            for (let i = 0; i < canvas.width; i += 80) {
+            for (let i = 0; i < canvas.width; i += 70) {
+                const sway = Math.sin(i * 0.02 + Date.now() * 0.0005) * 8;
                 ctx.beginPath();
                 ctx.moveTo(i, canvas.height);
-                ctx.quadraticCurveTo(i + 30, canvas.height - 60, i + 10, canvas.height - 120);
-                ctx.quadraticCurveTo(i - 10, canvas.height - 180, i + 20, canvas.height - 220);
-                ctx.strokeStyle = 'rgba(34, 139, 34, 0.5)';
-                ctx.lineWidth = 8;
+                ctx.quadraticCurveTo(i + 20 + sway, canvas.height - 70, i - 5 + sway, canvas.height - 140);
+                ctx.quadraticCurveTo(i + 15 + sway, canvas.height - 200, i + 5 + sway, canvas.height - 250);
+                ctx.strokeStyle = 'rgba(34, 160, 34, 0.35)';
+                ctx.lineWidth = 10;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+
+                // Second smaller plant
+                ctx.beginPath();
+                ctx.moveTo(i + 25, canvas.height);
+                ctx.quadraticCurveTo(i + 40 - sway * 0.5, canvas.height - 50, i + 20 - sway * 0.5, canvas.height - 100);
+                ctx.strokeStyle = 'rgba(34, 160, 34, 0.25)';
+                ctx.lineWidth = 6;
                 ctx.stroke();
             }
         }
 
-        // Light rays effect
+        // Light rays
         let lightAngle = 0;
-        
+
         function drawLightRays() {
-            lightAngle += 0.005;
-            for (let i = 0; i < 5; i++) {
+            lightAngle += 0.003;
+            for (let i = 0; i < 6; i++) {
+                const xOffset = i * 150 + 50;
+                const sway = Math.sin(lightAngle + i) * 40;
                 ctx.beginPath();
-                ctx.moveTo(canvas.width * 0.2 + i * 100, 0);
-                ctx.lineTo(canvas.width * 0.1 + i * 100 + Math.sin(lightAngle) * 30, canvas.height);
-                ctx.lineTo(canvas.width * 0.3 + i * 100 + Math.cos(lightAngle) * 20, canvas.height);
-                ctx.fillStyle = 'rgba(255, 255, 200, 0.03)';
+                ctx.moveTo(xOffset + sway, 0);
+                ctx.lineTo(xOffset - 80 + sway, canvas.height);
+                ctx.lineTo(xOffset + 80 + sway, canvas.height);
+                ctx.fillStyle = 'rgba(255, 255, 220, 0.02)';
                 ctx.fill();
             }
         }
 
         // Animation loop
         function animate() {
-            // Clear with gradient water
+            // Water background with gradient
             const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
             gradient.addColorStop(0, '#0a4a6e');
-            gradient.addColorStop(0.5, '#0e6b8a');
-            gradient.addColorStop(1, '#074a6a');
+            gradient.addColorStop(0.4, '#0e6b8a');
+            gradient.addColorStop(0.7, '#0c5a7a');
+            gradient.addColorStop(1, '#064a6a');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw light rays
+
             drawLightRays();
-            
-            // Draw water plants
             drawPlants();
-            
-            // Update and draw fish
+
             for (let fish of fishes) {
                 fish.update();
                 fish.draw();
             }
-            
-            // Update and draw bubbles
-            for (let i = 0; i < bubbles.length; i++) {
-                bubbles[i].update();
-                bubbles[i].draw();
-                
-                // Reset bubbles that go above the screen
-                if (bubbles[i].y + bubbles[i].size < 0) {
-                    bubbles[i] = new Bubble(
-                        Math.random() * canvas.width,
-                        canvas.height + 10,
-                        Math.random() * 6 + 2
-                    );
+
+            for (let bubble of bubbles) {
+                bubble.update();
+                bubble.draw();
+                if (bubble.y + bubble.size < 0) {
+                    bubble.x = Math.random() * canvas.width;
+                    bubble.y = canvas.height + 10;
                 }
             }
-            
+
             requestAnimationFrame(animate);
         }
-        
+
         animate();
-        
-        // Add more bubbles on mouse move
-        canvas.addEventListener('mousemove', (e) => {
-            for (let i = 0; i < 3; i++) {
+
+        // Mouse/Touch interaction - create bubbles
+        function createBubbles(x, y) {
+            for (let i = 0; i < 4; i++) {
                 bubbles.push(new Bubble(
-                    e.clientX + (Math.random() - 0.5) * 30,
-                    canvas.height - 20,
-                    Math.random() * 6 + 2
+                    x + (Math.random() - 0.5) * 40,
+                    y + (Math.random() - 0.5) * 20,
+                    Math.random() * 5 + 2
                 ));
             }
-            // Keep bubble count reasonable
-            if (bubbles.length > 150) {
-                bubbles.splice(0, 30);
+            if (bubbles.length > 120) {
+                bubbles.splice(0, 20);
             }
-        });
-        
-        // Touch support for mobile
+        }
+
+        canvas.addEventListener('mousemove', (e) => createBubbles(e.clientX, e.clientY));
         canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
             const touch = e.touches[0];
-            for (let i = 0; i < 3; i++) {
-                bubbles.push(new Bubble(
-                    touch.clientX + (Math.random() - 0.5) * 30,
-                    canvas.height - 20,
-                    Math.random() * 6 + 2
-                ));
-            }
-            if (bubbles.length > 150) {
-                bubbles.splice(0, 30);
-            }
+            createBubbles(touch.clientX, touch.clientY);
         });
+
+        console.log('🐠 Admin Portal Loaded!');
+        console.log('📚 Total Files: {{ stats.total_files }}');
+        console.log('🔒 Private: {{ stats.private_count|default:0 }} | 🌍 Public: {{ stats.public_count|default:0 }}');
     </script>
 </body>
 </html>
