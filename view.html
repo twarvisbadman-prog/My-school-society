@@ -1,4 +1,4 @@
-<!-- view.html - Full Document Viewer with Google Docs and Passcode -->
+<!-- view.html - Full Document Viewer with Inline Display -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,8 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Inter',sans-serif; background:#0a0a0a; min-height:100vh; overflow-x:hidden; transition:background 0.5s; }
-        #rain-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; background:linear-gradient(180deg,#0f0f1a 0%,#0a0a0f 100%); transition:opacity 0.8s; }
+        body { font-family:'Inter',sans-serif; background:#0a0a0a; min-height:100vh; overflow-x:hidden; }
+        #rain-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; background:linear-gradient(180deg,#0f0f1a 0%,#0a0a0f 100%); }
         .lightning-overlay { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none; background:transparent; }
         .glass-overlay { position:relative; z-index:2; min-height:100vh; width:100%; }
 
@@ -26,6 +26,7 @@
         body.dark-theme .btn-back:hover { background:#4a7cf7; color:#fff; }
         body.dark-theme .btn-download { background:rgba(0,255,65,0.08); color:#00ff41; border-color:rgba(0,255,65,0.08); }
         body.dark-theme .btn-download:hover { background:rgba(0,255,65,0.15); }
+        body.dark-theme .loading-text { color:rgba(255,255,255,0.6); }
 
         body.light-theme { background:#f2f4f8; }
         body.light-theme #rain-canvas { opacity:0; pointer-events:none; }
@@ -39,6 +40,7 @@
         body.light-theme .btn-back:hover { background:#4a7cf7; color:#fff; }
         body.light-theme .btn-download { background:rgba(0,200,80,0.08); color:#008a2e; border-color:rgba(0,200,80,0.08); }
         body.light-theme .btn-download:hover { background:rgba(0,200,80,0.15); }
+        body.light-theme .loading-text { color:rgba(0,0,0,0.6); }
 
         .header { background:rgba(0,0,0,0.7); backdrop-filter:blur(20px); border-bottom:1px solid rgba(255,255,255,0.05); position:sticky; top:0; z-index:100; padding:12px 0; }
         .header-content { max-width:1000px; margin:0 auto; padding:0 20px; display:flex; justify-content:space-between; align-items:center; }
@@ -46,7 +48,6 @@
         .nav-links { display:flex; gap:16px; }
         .nav-links a { color:rgba(255,255,255,0.5); text-decoration:none; font-size:0.9rem; transition:0.3s; }
         .nav-links a:hover { color:#fff; }
-        /* NO ADMIN LINK */
 
         .view-container { max-width:1000px; margin:20px auto; padding:0 20px 100px; position:relative; z-index:3; }
         .view-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:28px; padding:28px; transition:all 0.3s; }
@@ -55,14 +56,62 @@
         .pdf-header h2 i { color:#ff4d4d; }
         .pdf-meta { display:flex; flex-wrap:wrap; gap:14px; font-size:0.85rem; color:rgba(255,255,255,0.4); margin:6px 0 10px; }
         .pdf-meta span { display:flex; align-items:center; gap:6px; }
-        .pdf-viewer { background:rgba(0,0,0,0.2); border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,0.05); min-height:500px; }
-        .pdf-viewer iframe { width:100%; height:75vh; border:none; min-height:500px; }
+        
+        .pdf-viewer { 
+            background:rgba(0,0,0,0.2); 
+            border-radius:20px; 
+            overflow:hidden; 
+            border:1px solid rgba(255,255,255,0.05); 
+            min-height:500px; 
+            position:relative;
+        }
+        
+        .pdf-viewer iframe { 
+            width:100%; 
+            height:75vh; 
+            border:none; 
+            min-height:500px;
+            display:block;
+        }
+        
+        .loading-container {
+            position:absolute;
+            top:0; left:0; right:0; bottom:0;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            background:rgba(0,0,0,0.3);
+            z-index:10;
+        }
+        
+        .spinner {
+            width:50px;
+            height:50px;
+            border:3px solid rgba(255,255,255,0.1);
+            border-radius:50%;
+            border-top-color:#4a7cf7;
+            animation:spin 0.8s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform:rotate(360deg); }
+        }
+        
+        .loading-text {
+            color:rgba(255,255,255,0.6);
+            margin-top:16px;
+            font-size:0.9rem;
+        }
+        
         .action-bar { display:flex; gap:12px; margin-top:20px; flex-wrap:wrap; }
         .action-bar a { padding:10px 24px; border-radius:60px; font-weight:600; font-size:0.9rem; text-decoration:none; border:1px solid transparent; transition:all 0.25s; display:inline-flex; align-items:center; gap:8px; font-family:inherit; cursor:pointer; }
         .btn-back { background:rgba(255,45,45,0.08); color:#ff4d4d; border-color:rgba(255,45,45,0.08); }
         .btn-back:hover { background:rgba(255,45,45,0.15); }
         .btn-download { background:rgba(0,255,65,0.08); color:#00ff41; border-color:rgba(0,255,65,0.08); }
         .btn-download:hover { background:rgba(0,255,65,0.15); }
+        .btn-fullscreen { background:rgba(74,124,247,0.08); color:#4a7cf7; border-color:rgba(74,124,247,0.08); }
+        .btn-fullscreen:hover { background:rgba(74,124,247,0.15); }
 
         /* Passcode Popup */
         .passcode-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); backdrop-filter:blur(16px); z-index:2000; justify-content:center; align-items:center; animation:fadeIn 0.3s ease; }
@@ -124,12 +173,24 @@
                 </div>
 
                 <div class="pdf-viewer" id="pdfViewer">
-                    <iframe src="{{ pdf_url }}" title="Document Viewer"></iframe>
+                    <div class="loading-container" id="loadingContainer">
+                        <div class="spinner"></div>
+                        <div class="loading-text">Loading document...</div>
+                    </div>
+                    <!-- Use Google Docs Viewer for better rendering -->
+                    <iframe 
+                        id="documentFrame"
+                        src="https://docs.google.com/viewer?url={{ pdf_url|urlencode }}&embedded=true"
+                        title="Document Viewer"
+                        onload="document.getElementById('loadingContainer').style.display='none'"
+                        onerror="document.getElementById('loadingContainer').innerHTML='<div style=text-align:center;padding:40px;><i class=fas fa-exclamation-triangle style=font-size:48px;color:#ff6b6b;></i><p style=color:#fff;margin-top:16px;>Unable to load document. <a href={{ pdf_url }} target=_blank style=color:#4a7cf7;>Download</a> to view.</p></div>'"
+                    ></iframe>
                 </div>
 
                 <div class="action-bar">
                     <a href="/browse/" class="btn-back"><i class="fas fa-arrow-left"></i> Back</a>
                     <a href="/download/{{ note.id }}/" class="btn-download" download><i class="fas fa-download"></i> Download</a>
+                    <a href="#" class="btn-fullscreen" onclick="toggleFullscreen()"><i class="fas fa-expand"></i> Fullscreen</a>
                 </div>
             </div>
         </div>
@@ -193,6 +254,16 @@
         const saved = localStorage.getItem('twarvis-theme') || 'dark';
         setTheme(saved);
 
+        // ===== FULLSCREEN =====
+        function toggleFullscreen() {
+            const viewer = document.getElementById('pdfViewer');
+            if (!document.fullscreenElement) {
+                viewer.requestFullscreen().catch(err => {});
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
         // ===== PASSCODE =====
         {% if note.privacy == 'private' %}
         document.addEventListener('DOMContentLoaded', function() {
@@ -201,15 +272,16 @@
             const btn = document.getElementById('unlockBtn');
             const error = document.getElementById('passcodeError');
             const correct = '{{ note.passcode|default:"" }}'.trim();
+            const viewer = document.getElementById('pdfViewer');
 
             // Hide viewer initially
-            document.getElementById('pdfViewer').style.display = 'none';
+            viewer.style.display = 'none';
 
             btn.addEventListener('click', function() {
                 const entered = input.value.trim();
                 if (entered === correct) {
                     overlay.classList.remove('active');
-                    document.getElementById('pdfViewer').style.display = 'block';
+                    viewer.style.display = 'block';
                     // Flash lightning on success
                     lightning.style.backgroundColor = 'rgba(255,255,255,0.4)';
                     setTimeout(() => { lightning.style.backgroundColor = 'transparent'; }, 80);
