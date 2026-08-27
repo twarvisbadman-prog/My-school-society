@@ -1,4 +1,4 @@
-<!-- view.html - Shows the actual document, exactly as uploaded -->
+<!-- view.html - Shows the REAL file directly -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,35 +10,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Inter',sans-serif; background:#0a0a0a; min-height:100vh; overflow-x:hidden; transition:background 0.5s; }
-        #rain-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; background:linear-gradient(180deg,#0f0f1a 0%,#0a0a0f 100%); transition:opacity 0.8s; }
-        .lightning-overlay { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none; background:transparent; }
+        body { 
+            font-family:'Inter',sans-serif; 
+            background:#0a0a0a; 
+            min-height:100vh; 
+            overflow-x:hidden;
+        }
+        #rain-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; background:linear-gradient(180deg,#0f0f1a 0%,#0a0a0f 100%); }
         .glass-overlay { position:relative; z-index:2; min-height:100vh; width:100%; }
-
-        body.dark-theme { background:#0f0f1a; }
-        body.dark-theme #rain-canvas { opacity:0; pointer-events:none; }
-        body.dark-theme .header { background:rgba(15,15,26,0.92); border-color:rgba(50,100,255,0.1); }
-        body.dark-theme .logo { background:linear-gradient(135deg,#4a7cf7,#6c9aff); -webkit-background-clip:text; background-clip:text; color:transparent; }
-        body.dark-theme .view-card { background:rgba(255,255,255,0.04); border-color:rgba(50,100,255,0.15); }
-        body.dark-theme .pdf-header h2 { color:#fff; }
-        body.dark-theme .pdf-meta { color:rgba(255,255,255,0.5); }
-        body.dark-theme .btn-back { background:rgba(255,45,45,0.08); color:#ff4d4d; border-color:rgba(255,45,45,0.08); }
-        body.dark-theme .btn-back:hover { background:rgba(255,45,45,0.15); }
-        body.dark-theme .btn-download { background:rgba(0,255,65,0.08); color:#00ff41; border-color:rgba(0,255,65,0.08); }
-        body.dark-theme .btn-download:hover { background:rgba(0,255,65,0.15); }
-
-        body.light-theme { background:#f2f4f8; }
-        body.light-theme #rain-canvas { opacity:0; pointer-events:none; }
-        body.light-theme .header { background:rgba(255,255,255,0.92); border-color:rgba(0,0,0,0.06); }
-        body.light-theme .logo { background:linear-gradient(135deg,#2b4f8c,#4a7cf7); -webkit-background-clip:text; background-clip:text; color:transparent; }
-        body.light-theme .view-card { background:#fff; border-color:rgba(0,0,0,0.08); }
-        body.light-theme .view-card:hover { border-color:#4a7cf7; box-shadow:0 8px 30px rgba(74,124,247,0.08); }
-        body.light-theme .pdf-header h2 { color:#1a1a2e; }
-        body.light-theme .pdf-meta { color:rgba(0,0,0,0.5); }
-        body.light-theme .btn-back { background:rgba(255,45,45,0.08); color:#ff4d4d; border-color:rgba(255,45,45,0.08); }
-        body.light-theme .btn-back:hover { background:rgba(255,45,45,0.15); }
-        body.light-theme .btn-download { background:rgba(0,200,80,0.08); color:#008a2e; border-color:rgba(0,200,80,0.08); }
-        body.light-theme .btn-download:hover { background:rgba(0,200,80,0.15); }
 
         .header { background:rgba(0,0,0,0.7); backdrop-filter:blur(20px); border-bottom:1px solid rgba(255,255,255,0.05); position:sticky; top:0; z-index:100; padding:12px 0; }
         .header-content { max-width:1000px; margin:0 auto; padding:0 20px; display:flex; justify-content:space-between; align-items:center; }
@@ -47,74 +26,38 @@
         .nav-links a { color:rgba(255,255,255,0.5); text-decoration:none; font-size:0.9rem; transition:0.3s; }
         .nav-links a:hover { color:#fff; }
 
-        .view-container { max-width:1000px; margin:20px auto; padding:0 20px 100px; position:relative; z-index:3; }
-        .view-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:28px; padding:28px; transition:all 0.3s; }
+        .viewer-container { max-width:1000px; margin:20px auto; padding:0 20px 40px; position:relative; z-index:3; }
+        .view-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:28px; padding:28px; }
         .pdf-header { margin-bottom:20px; }
-        .pdf-header h2 { font-size:1.5rem; font-weight:600; color:#fff; display:flex; align-items:center; gap:10px; }
+        .pdf-header h2 { font-size:1.3rem; font-weight:600; color:#fff; display:flex; align-items:center; gap:10px; }
         .pdf-header h2 i { color:#ff4d4d; }
-        .pdf-meta { display:flex; flex-wrap:wrap; gap:14px; font-size:0.85rem; color:rgba(255,255,255,0.4); margin:6px 0 10px; }
+        .pdf-meta { display:flex; flex-wrap:wrap; gap:14px; font-size:0.85rem; color:rgba(255,255,255,0.4); margin:6px 0; }
         .pdf-meta span { display:flex; align-items:center; gap:6px; }
 
-        .pdf-viewer { background:rgba(0,0,0,0.2); border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,0.05); min-height:500px; display:flex; align-items:center; justify-content:center; }
-
-        /* For files the browser can display natively */
-        .pdf-viewer iframe,
-        .pdf-viewer embed {
-            width: 100%;
-            height: 75vh;
-            min-height: 500px;
-            border: none;
-        }
-
-        .pdf-viewer img {
-            max-width: 100%;
-            max-height: 75vh;
-            object-fit: contain;
-        }
-
-        .pdf-viewer textarea {
-            width: 100%;
-            height: 75vh;
-            min-height: 500px;
-            background: rgba(255,255,255,0.05);
-            color: #fff;
-            border: none;
-            padding: 20px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            resize: none;
-            outline: none;
-        }
-
-        .pdf-viewer .viewer-placeholder {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 75vh;
-            min-height: 500px;
-            color: rgba(255,255,255,0.3);
-            text-align: center;
-            padding: 40px;
-        }
-        .pdf-viewer .viewer-placeholder i { font-size:4rem; color:#ff4d4d; margin-bottom:20px; opacity:0.5; }
-        .pdf-viewer .viewer-placeholder h3 { color:rgba(255,255,255,0.5); margin-bottom:10px; }
-        .pdf-viewer .viewer-placeholder p { color:rgba(255,255,255,0.2); }
+        .pdf-viewer { background:rgba(0,0,0,0.2); border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,0.05); min-height:500px; }
+        .pdf-viewer iframe { width:100%; height:75vh; border:none; min-height:500px; }
+        .pdf-viewer embed { width:100%; height:75vh; min-height:500px; }
+        .pdf-viewer img { width:100%; height:auto; max-height:75vh; object-fit:contain; }
+        .pdf-viewer textarea { width:100%; height:75vh; min-height:500px; background:rgba(0,0,0,0.8); color:#ddd; border:none; padding:20px; font-family:'Courier New',monospace; font-size:14px; outline:none; resize:none; }
 
         .action-bar { display:flex; gap:12px; margin-top:20px; flex-wrap:wrap; }
-        .action-bar a { padding:10px 24px; border-radius:60px; font-weight:600; font-size:0.9rem; text-decoration:none; border:1px solid transparent; transition:all 0.25s; display:inline-flex; align-items:center; gap:8px; font-family:inherit; cursor:pointer; }
+        .action-bar a { padding:10px 24px; border-radius:60px; font-weight:600; font-size:0.9rem; text-decoration:none; border:1px solid transparent; transition:all 0.25s; display:inline-flex; align-items:center; gap:8px; font-family:inherit; }
         .btn-back { background:rgba(255,45,45,0.08); color:#ff4d4d; border-color:rgba(255,45,45,0.08); }
         .btn-back:hover { background:rgba(255,45,45,0.15); }
         .btn-download { background:rgba(0,255,65,0.08); color:#00ff41; border-color:rgba(0,255,65,0.08); }
         .btn-download:hover { background:rgba(0,255,65,0.15); }
 
-        /* Passcode Popup */
-        .passcode-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); backdrop-filter:blur(16px); z-index:2000; justify-content:center; align-items:center; animation:fadeIn 0.3s ease; }
+        .error-box { display:flex; flex-direction:column; align-items:center; justify-content:center; height:50vh; color:rgba(255,255,255,0.3); text-align:center; }
+        .error-box i { font-size:4rem; color:#ff4d4d; margin-bottom:20px; opacity:0.5; }
+        .error-box h3 { color:rgba(255,255,255,0.5); font-size:1.3rem; margin-bottom:10px; }
+        .error-box p { color:rgba(255,255,255,0.2); }
+
+        .passcode-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); backdrop-filter:blur(16px); z-index:2000; justify-content:center; align-items:center; }
         .passcode-overlay.active { display:flex; }
-        .passcode-box { background:rgba(15,15,26,0.95); border:1px solid rgba(255,255,255,0.08); border-radius:40px; padding:48px 40px 36px; max-width:420px; width:90%; text-align:center; box-shadow:0 0 80px rgba(255,26,26,0.12); animation:scaleUp 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+        .passcode-box { background:rgba(15,15,26,0.95); border:1px solid rgba(255,255,255,0.08); border-radius:40px; padding:48px 40px 36px; max-width:420px; width:90%; text-align:center; box-shadow:0 0 80px rgba(255,26,26,0.12); }
         .passcode-box .lock-icon { font-size:3rem; color:#ff9800; display:block; margin-bottom:12px; }
         .passcode-box h3 { color:#fff; font-size:1.4rem; font-weight:600; margin-bottom:6px; }
-        .passcode-box p { color:rgba(255,255,255,0.35); font-size:0.9rem; margin-bottom:24px; line-height:1.5; }
+        .passcode-box p { color:rgba(255,255,255,0.35); font-size:0.9rem; margin-bottom:24px; }
         .passcode-box input { width:100%; padding:16px; background:rgba(255,255,255,0.04); border:2px solid rgba(255,255,255,0.06); border-radius:60px; color:#fff; font-size:1.6rem; font-family:monospace; letter-spacing:12px; text-align:center; transition:0.3s; outline:none; }
         .passcode-box input:focus { border-color:#ff2d2d; box-shadow:0 0 0 4px rgba(255,45,45,0.08); }
         .passcode-box input::placeholder { letter-spacing:2px; font-size:1rem; color:rgba(255,255,255,0.15); }
@@ -125,23 +68,18 @@
         .passcode-box .back-btn { background:none; border:none; color:rgba(255,255,255,0.25); margin-top:14px; cursor:pointer; font-size:0.85rem; transition:0.3s; }
         .passcode-box .back-btn:hover { color:#fff; }
 
-        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-        @keyframes scaleUp { from{transform:scale(0.9);opacity:0} to{transform:scale(1);opacity:1} }
-
         @media (max-width:640px) {
             .view-card { padding:18px; }
-            .pdf-header h2 { font-size:1.1rem; }
+            .pdf-header h2 { font-size:1rem; }
             .pdf-viewer iframe, .pdf-viewer embed { height:50vh; min-height:300px; }
             .action-bar { flex-direction:column; }
             .action-bar a { justify-content:center; }
             .passcode-box { padding:32px 24px; }
-            .passcode-box input { font-size:1.2rem; letter-spacing:8px; }
         }
     </style>
 </head>
 <body>
     <canvas id="rain-canvas"></canvas>
-    <div class="lightning-overlay" id="lightning"></div>
     <div class="glass-overlay">
         <div class="header">
             <div class="header-content">
@@ -154,7 +92,7 @@
             </div>
         </div>
 
-        <div class="view-container">
+        <div class="viewer-container">
             <div class="view-card">
                 <div class="pdf-header">
                     <h2><i class="fas fa-file-pdf"></i> {{ note.original_filename|default:note.filename }}</h2>
@@ -168,17 +106,21 @@
                 </div>
 
                 <div class="pdf-viewer" id="pdfViewer">
-                    {% if note.is_pdf %}
-                        <iframe src="{{ pdf_url }}" title="PDF Viewer"></iframe>
-                    {% elif note.is_image %}
-                        <img src="{{ pdf_url }}" alt="{{ note.original_filename }}">
-                    {% elif note.is_text %}
-                        <textarea readonly>{{ note.text_content }}</textarea>
+                    {% if note.can_view_inline %}
+                        {% if note.is_pdf %}
+                            <embed src="{{ pdf_url }}" type="application/pdf">
+                        {% elif note.is_image %}
+                            <img src="{{ pdf_url }}" alt="{{ note.original_filename }}">
+                        {% elif note.is_text %}
+                            <textarea readonly>{{ note.text_content|default:"Loading..." }}</textarea>
+                        {% else %}
+                            <iframe src="{{ pdf_url }}" title="Document Viewer"></iframe>
+                        {% endif %}
                     {% else %}
-                        <div class="viewer-placeholder">
+                        <div class="error-box">
                             <i class="fas fa-file"></i>
-                            <h3>Preview Not Available</h3>
-                            <p>Download to view this file</p>
+                            <h3>Cannot Preview This File</h3>
+                            <p>Please download to view</p>
                         </div>
                     {% endif %}
                 </div>
@@ -191,12 +133,13 @@
         </div>
     </div>
 
+    <!-- Passcode Modal -->
     {% if note.privacy == 'private' %}
     <div class="passcode-overlay active" id="passcodeOverlay">
         <div class="passcode-box">
             <span class="lock-icon"><i class="fas fa-lock"></i></span>
             <h3>🔒 Private Document</h3>
-            <p>Enter the 4-digit passcode to view this document</p>
+            <p>Enter the 4-digit passcode to view</p>
             <input type="password" id="passcodeInput" placeholder="••••" maxlength="4" inputmode="numeric" autofocus>
             <div class="error-msg" id="passcodeError">❌ Incorrect passcode</div>
             <button class="unlock-btn" id="unlockBtn"><i class="fas fa-unlock"></i> Unlock</button>
@@ -212,6 +155,7 @@
         function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
+
         class Drop {
             constructor() {
                 this.x = Math.random() * canvas.width;
@@ -228,27 +172,6 @@
         function drawRain() { ctx.fillStyle = 'rgba(10, 10, 20, 0.1)'; ctx.fillRect(0, 0, canvas.width, canvas.height); for (let d of drops) { d.draw(); d.fall(); } requestAnimationFrame(drawRain); }
         drawRain();
 
-        // ===== LIGHTNING =====
-        const lightning = document.getElementById('lightning');
-        let lightningTimeout;
-        function flash() {
-            lightning.style.backgroundColor = `rgba(255, 255, 255, ${Math.random() * 0.4 + 0.2})`;
-            clearTimeout(lightningTimeout);
-            lightningTimeout = setTimeout(() => { lightning.style.backgroundColor = 'transparent'; }, Math.random() * 100 + 50);
-            setTimeout(flash, Math.random() * 4000 + 1000);
-        }
-        setTimeout(flash, 1000);
-
-        // ===== THEME =====
-        function setTheme(theme) {
-            document.body.className = '';
-            if (theme === 'dark') document.body.classList.add('dark-theme');
-            else if (theme === 'light') document.body.classList.add('light-theme');
-            localStorage.setItem('twarvis-theme', theme);
-        }
-        const saved = localStorage.getItem('twarvis-theme') || 'dark';
-        setTheme(saved);
-
         // ===== PASSCODE =====
         {% if note.privacy == 'private' %}
         document.addEventListener('DOMContentLoaded', function() {
@@ -264,15 +187,11 @@
                 const entered = input.value.trim();
                 if (entered === correct) {
                     overlay.classList.remove('active');
-                    document.getElementById('pdfViewer').style.display = 'flex';
-                    lightning.style.backgroundColor = 'rgba(255,255,255,0.4)';
-                    setTimeout(() => { lightning.style.backgroundColor = 'transparent'; }, 80);
+                    document.getElementById('pdfViewer').style.display = 'block';
                 } else {
                     error.classList.add('show');
                     input.value = '';
                     input.focus();
-                    lightning.style.backgroundColor = 'rgba(255,0,0,0.2)';
-                    setTimeout(() => { lightning.style.backgroundColor = 'transparent'; }, 80);
                 }
             });
 
