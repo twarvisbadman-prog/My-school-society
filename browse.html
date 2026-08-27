@@ -1,9 +1,10 @@
+<!-- view.html - COMPLETE UPDATED VERSION -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Browse | Twarvis School</title>
+    <title>View Document | Twarvis School</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -16,39 +17,366 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: #000;
+            background: #0a0a0a;
             min-height: 100vh;
             overflow-x: hidden;
+            transition: background 0.5s, color 0.5s;
         }
 
-        /* ----- STARRY NIGHT SKY CANVAS ----- */
-        #stars-canvas {
+        /* ----- REAL RAIN CANVAS ----- */
+        #rain-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 0;
-            background: radial-gradient(ellipse at center, #0a0a2a 0%, #000000 100%);
+            background: linear-gradient(180deg, #1a1a2e 0%, #0a0a15 100%);
+            transition: opacity 0.8s ease;
         }
 
-        /* ----- CLEAR GLASS OVERLAY (NO BLUR) ----- */
+        /* ----- LIGHTNING OVERLAY ----- */
+        .lightning-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            background: transparent;
+        }
+
+        /* ----- GLASS OVERLAY ----- */
         .glass-overlay {
             position: relative;
             z-index: 2;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             min-height: 100vh;
             width: 100%;
         }
 
-        /* COMPACT HEADER - CLEAR GLASS */
+        /* ========== THEME ========== */
+        body.dark-theme {
+            background: #0a0a0f;
+            color: #e0e0e0;
+        }
+        body.dark-theme #rain-canvas {
+            opacity: 0;
+            pointer-events: none;
+        }
+        body.dark-theme .upload-card,
+        body.dark-theme .pdf-viewer,
+        body.dark-theme .pdf-header {
+            background: rgba(10, 10, 15, 0.9);
+            border-color: rgba(50, 100, 255, 0.3);
+        }
+        body.dark-theme .sidebar {
+            background: rgba(10, 10, 15, 0.95);
+            border-color: rgba(50, 100, 255, 0.3);
+        }
+        body.dark-theme .sidebar::before {
+            border-right: 3px solid rgba(50, 100, 255, 0.6);
+        }
+        body.dark-theme .sidebar-item {
+            color: #ccc;
+        }
+        body.dark-theme .sidebar-item:hover {
+            background: rgba(50, 100, 255, 0.1);
+            border-left-color: #5599ff;
+            color: #fff;
+        }
+        body.dark-theme .sidebar-item i {
+            color: #5599ff;
+        }
+        body.dark-theme .header {
+            background: rgba(10, 10, 15, 0.8);
+            border-color: rgba(50, 100, 255, 0.3);
+        }
+        body.dark-theme .logo {
+            background: linear-gradient(135deg, #5599ff, #88bbff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        body.dark-theme .nav-icon {
+            background: rgba(10, 10, 15, 0.8);
+            border-color: rgba(50, 100, 255, 0.3);
+        }
+        body.dark-theme .nav-icon a,
+        body.dark-theme .nav-icon i {
+            color: #5599ff;
+        }
+        body.dark-theme .nav-icon:hover a,
+        body.dark-theme .nav-icon:hover i {
+            color: #fff;
+        }
+        body.dark-theme .back-btn {
+            background: linear-gradient(135deg, #3355aa, #5599ff);
+        }
+        body.dark-theme .back-btn:hover {
+            box-shadow: 0 15px 30px -10px rgba(50, 100, 255, 0.5);
+        }
+        body.dark-theme .footer {
+            color: #888;
+        }
+        body.dark-theme .action-btn.download {
+            background: rgba(50, 100, 255, 0.15);
+            color: #5599ff;
+            border-color: rgba(50, 100, 255, 0.3);
+        }
+        body.dark-theme .action-btn.download:hover {
+            background: rgba(50, 100, 255, 0.25);
+        }
+        body.dark-theme .privacy-badge.public {
+            background: rgba(50, 100, 255, 0.15);
+            color: #5599ff;
+            border-color: rgba(50, 100, 255, 0.3);
+        }
+
+        body.light-theme {
+            background: #f0f0f5;
+            color: #1a1a2e;
+        }
+        body.light-theme #rain-canvas {
+            opacity: 0;
+            pointer-events: none;
+        }
+        body.light-theme .upload-card,
+        body.light-theme .pdf-viewer,
+        body.light-theme .pdf-header {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(50, 100, 255, 0.2);
+        }
+        body.light-theme .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(50, 100, 255, 0.2);
+        }
+        body.light-theme .sidebar-item {
+            color: #1a1a2e;
+        }
+        body.light-theme .sidebar-item:hover {
+            background: rgba(50, 100, 255, 0.08);
+            border-left-color: #3355aa;
+            color: #000;
+        }
+        body.light-theme .sidebar-item i {
+            color: #3355aa;
+        }
+        body.light-theme .header {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(50, 100, 255, 0.2);
+        }
+        body.light-theme .logo {
+            background: linear-gradient(135deg, #3355aa, #5577cc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        body.light-theme .nav-icon {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(50, 100, 255, 0.2);
+        }
+        body.light-theme .nav-icon a,
+        body.light-theme .nav-icon i {
+            color: #3355aa;
+        }
+        body.light-theme .nav-icon:hover a,
+        body.light-theme .nav-icon:hover i {
+            color: #fff;
+        }
+        body.light-theme .back-btn {
+            background: linear-gradient(135deg, #3355aa, #5577cc);
+        }
+        body.light-theme .back-btn:hover {
+            box-shadow: 0 15px 30px -10px rgba(50, 100, 255, 0.3);
+        }
+        body.light-theme .footer {
+            color: #777;
+        }
+        body.light-theme .pdf-header h2 {
+            color: #1a1a2e;
+        }
+        body.light-theme .pdf-meta {
+            color: #555;
+        }
+        body.light-theme .pdf-description {
+            color: #555;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 280px;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            border-right: 3px solid rgba(255, 45, 45, 0.6);
+            box-shadow: 5px 0 60px rgba(255, 26, 26, 0.3);
+            z-index: 1000;
+            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            padding: 20px 0;
+            animation: sidebarGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes sidebarGlow {
+            0%, 100% { border-right-color: rgba(255, 45, 45, 0.6); box-shadow: 5px 0 60px rgba(255, 26, 26, 0.3); }
+            25% { border-right-color: rgba(255, 100, 100, 0.9); box-shadow: 5px 0 80px rgba(255, 26, 26, 0.6); }
+            50% { border-right-color: rgba(0, 255, 65, 0.7); box-shadow: 5px 0 80px rgba(0, 255, 65, 0.3); }
+            75% { border-right-color: rgba(255, 100, 100, 0.9); box-shadow: 5px 0 80px rgba(255, 26, 26, 0.6); }
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 25px 25px 20px;
+            border-bottom: 2px solid rgba(255, 45, 45, 0.3);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #ff1a1a, #00cc33);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .sidebar-header p {
+            color: #888;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: #ff1a1a;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: 0.3s;
+            background: none;
+            border: none;
+        }
+
+        .sidebar-close:hover {
+            transform: rotate(90deg);
+            color: #00ff41;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 25px;
+            color: #ddd;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            font-size: 1rem;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 45, 45, 0.05), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+            pointer-events: none;
+        }
+
+        .sidebar-item:hover::after {
+            transform: translateX(100%);
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 45, 45, 0.1);
+            border-left-color: #ff1a1a;
+            color: #fff;
+            transform: translateX(5px);
+            box-shadow: inset 0 0 30px rgba(255, 26, 26, 0.05);
+        }
+
+        .sidebar-item i {
+            width: 28px;
+            font-size: 1.3rem;
+            color: #ff4d4d;
+            transition: 0.3s;
+        }
+
+        .sidebar-item:hover i {
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 26, 26, 0.5);
+        }
+
+        .sidebar-item .badge {
+            margin-left: auto;
+            background: #ff1a1a;
+            color: #fff;
+            padding: 2px 12px;
+            border-radius: 50px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            animation: badgeGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes badgeGlow {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 26, 26, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(255, 26, 26, 0.6); }
+        }
+
+        .sidebar-item .badge.maintenance {
+            background: #ff8800;
+        }
+
+        .sidebar-item .badge.soon {
+            background: #00cc33;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(255, 45, 45, 0.2);
+            margin: 10px 25px;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            display: none;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* ========== HEADER ========== */
         .header {
-            background: rgba(0, 0, 0, 0.3);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(255, 45, 45, 0.4);
             position: sticky;
             top: 0;
             z-index: 100;
             padding: 8px 0;
+            transition: all 0.3s;
         }
 
         .header-content {
@@ -65,10 +393,41 @@
         .logo {
             font-size: 1.3rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            background: linear-gradient(135deg, #ff1a1a, #00cc33);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .menu-toggle {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 45, 45, 0.4);
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            color: #ff4d4d;
+            font-size: 1.2rem;
+            animation: menuGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes menuGlow {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 26, 26, 0.2); border-color: rgba(255, 45, 45, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(255, 26, 26, 0.5); border-color: rgba(255, 45, 45, 0.8); }
+        }
+
+        .menu-toggle:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 45, 45, 0.3);
+            border-color: #ff1a1a;
+            box-shadow: 0 0 30px rgba(255, 26, 26, 0.5);
+            color: #fff;
         }
 
         .nav-links {
@@ -78,355 +437,884 @@
         }
 
         .nav-icon {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 45, 45, 0.4);
             border-radius: 50%;
             width: 42px;
             height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
+            animation: navGlow 4s ease-in-out infinite;
+            position: relative;
+        }
+
+        @keyframes navGlow {
+            0%, 100% { box-shadow: 0 0 5px rgba(255, 26, 26, 0.1); }
+            50% { box-shadow: 0 0 20px rgba(255, 26, 26, 0.3); }
+        }
+
+        .nav-icon::before {
+            content: attr(data-label);
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: #00ff41;
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+            pointer-events: none;
+            border: 1px solid #ff2d2d;
+            font-weight: 500;
+        }
+
+        .nav-icon:hover::before {
+            opacity: 1;
+            visibility: visible;
+            bottom: -35px;
         }
 
         .nav-icon:hover {
             transform: translateY(-2px);
-            background: rgba(255, 215, 0, 0.2);
-            border-color: #ffd700;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            background: rgba(255, 45, 45, 0.3);
+            border-color: #ff1a1a;
+            box-shadow: 0 0 30px rgba(255, 26, 26, 0.5);
         }
 
         .nav-icon a {
             text-decoration: none;
-            color: #ffd700;
+            color: #ff4d4d;
             font-size: 1.3rem;
+            transition: all 0.2s;
         }
 
         .nav-icon:hover a {
             color: #fff;
         }
 
-        /* SEARCH SECTION - CLEAR GLASS */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 30px 24px;
+        /* ========== VIEWER SECTION ========== */
+        .viewer-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 3;
         }
 
-        .search-section {
-            margin-bottom: 40px;
-        }
-
-        .search-bar {
-            display: flex;
-            gap: 15px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .search-input {
-            flex: 1;
-            padding: 14px 20px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            border-radius: 50px;
-            color: #fff;
-            font-size: 1rem;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: #ffd700;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
-        }
-
-        .search-btn {
-            padding: 14px 30px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            color: #ffd700;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
+        .upload-card {
+            background: rgba(0, 0, 0, 0.55);
+            border: 2px solid rgba(255, 45, 45, 0.3);
+            border-radius: 32px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            animation: lightningEdge 3s ease-in-out infinite;
         }
 
-        .search-btn:hover {
-            background: rgba(255, 215, 0, 0.2);
-            border-color: #ffd700;
+        @keyframes lightningEdge {
+            0%, 100% { border-color: rgba(255, 45, 45, 0.3); box-shadow: 0 0 20px rgba(255, 26, 26, 0.1); }
+            25% { border-color: rgba(255, 100, 100, 0.8); box-shadow: 0 0 50px rgba(255, 26, 26, 0.3); }
+            50% { border-color: rgba(0, 255, 65, 0.5); box-shadow: 0 0 60px rgba(0, 255, 65, 0.2); }
+            75% { border-color: rgba(255, 100, 100, 0.8); box-shadow: 0 0 50px rgba(255, 26, 26, 0.3); }
+        }
+
+        .upload-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 32px;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 45, 45, 0.1) 50%, transparent 70%);
+            background-size: 200% 200%;
+            animation: lightningBolt 4s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes lightningBolt {
+            0%, 100% { background-position: 0% 0%; }
+            25% { background-position: 100% 0%; opacity: 0.3; }
+            50% { background-position: 100% 100%; opacity: 0.8; }
+            75% { background-position: 0% 100%; opacity: 0.3; }
+        }
+
+        .upload-card:hover {
+            border-color: rgba(255, 45, 45, 0.6);
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        /* ========== PDF HEADER ========== */
+        .pdf-header {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 45, 45, 0.15);
+        }
+
+        .pdf-header .file-icon-big {
+            font-size: 3rem;
+            color: #ff4d4d;
+            margin-right: 15px;
+            float: left;
+        }
+
+        .pdf-header h2 {
+            font-size: 1.5rem;
             color: #fff;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            margin-bottom: 8px;
+            word-break: break-word;
         }
 
-        /* NOTES GRID - CLEAR GLASS CARDS (NO BLUR) */
-        .notes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
-            margin-top: 40px;
-        }
-
-        .note-card {
-            background: rgba(0, 0, 0, 0.45);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 22px;
-            transition: all 0.3s;
-            animation: fadeInUp 0.4s ease;
-        }
-
-        .note-card:hover {
-            transform: translateY(-5px);
-            border-color: #ffd700;
-            box-shadow: 0 0 25px rgba(255, 215, 0, 0.15);
-            background: rgba(0, 0, 0, 0.6);
-        }
-
-        .note-title {
-            font-size: 1rem;
-            font-weight: bold;
-            color: #ffd700;
-            margin-bottom: 10px;
-            word-break: break-all;
-        }
-
-        .note-meta {
-            display: flex;
-            gap: 15px;
-            font-size: 0.75rem;
-            color: #ccc;
-            margin-bottom: 12px;
-        }
-
-        .note-description {
-            margin: 12px 0;
-            color: #ddd;
-            line-height: 1.5;
+        .pdf-meta {
+            color: rgba(255, 255, 255, 0.7);
             font-size: 0.9rem;
-        }
-
-        .note-actions {
             display: flex;
-            gap: 12px;
-            margin-top: 16px;
             flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            margin: 10px 0;
+            clear: both;
         }
 
-        .btn-sm {
-            padding: 8px 16px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-size: 0.8rem;
+        .pdf-meta .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pdf-meta .meta-item i {
+            color: #ff4d4d;
+            width: 18px;
+        }
+
+        .pdf-description {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border-left: 3px solid #ff4d4d;
+            margin-top: 5px;
+            clear: both;
+        }
+
+        /* ========== PRIVACY BADGE ========== */
+        .privacy-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.75rem;
             font-weight: 600;
-            transition: all 0.2s;
-            display: inline-block;
         }
 
-        .btn-view {
-            border: 1px solid #ffd700;
-            color: #ffd700;
-            background: transparent;
+        .privacy-badge.public {
+            background: rgba(0, 255, 65, 0.15);
+            color: #00ff41;
+            border: 1px solid rgba(0, 255, 65, 0.3);
         }
 
-        .btn-view:hover {
-            background: #ffd700;
-            color: #000;
-            box-shadow: 0 0 10px #ffd700;
-        }
-
-        .btn-download {
-            border: 1px solid #ffaa00;
-            color: #ffaa00;
-            background: transparent;
-        }
-
-        .btn-download:hover {
-            background: #ffaa00;
-            color: #000;
-            box-shadow: 0 0 10px #ffaa00;
+        .privacy-badge.private {
+            background: rgba(255, 152, 0, 0.15);
+            color: #ff9800;
+            border: 1px solid rgba(255, 152, 0, 0.3);
         }
 
         .file-type-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.65rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.75rem;
             font-weight: 600;
-            margin-left: 8px;
+            background: rgba(255, 45, 45, 0.15);
+            color: #ff4d4d;
+            border: 1px solid rgba(255, 45, 45, 0.3);
         }
 
-        .badge-supported {
-            background: rgba(255, 215, 0, 0.2);
-            color: #ffd700;
-            border: 1px solid #ffd700;
+        /* ========== PDF VIEWER ========== */
+        .pdf-viewer {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 45, 45, 0.15);
+            position: relative;
+            z-index: 1;
+            min-height: 500px;
         }
 
-        .badge-unsupported {
-            background: rgba(255, 100, 100, 0.2);
-            color: #ffaa66;
-            border: 1px solid #ff6644;
+        .pdf-viewer iframe {
+            width: 100%;
+            height: 75vh;
+            border: none;
+            min-height: 500px;
         }
 
-        .warning-message {
-            background: rgba(255, 69, 0, 0.1);
-            border-left: 3px solid #ff4500;
-            padding: 8px 12px;
-            border-radius: 8px;
-            margin: 10px 0;
-            font-size: 0.7rem;
-            color: #ffaa66;
+        .pdf-viewer .viewer-placeholder {
             display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 75vh;
+            min-height: 500px;
+            color: rgba(255, 255, 255, 0.4);
+            text-align: center;
+            padding: 40px;
+        }
+
+        .pdf-viewer .viewer-placeholder i {
+            font-size: 4rem;
+            color: #ff4d4d;
+            margin-bottom: 20px;
+        }
+
+        .pdf-viewer .viewer-placeholder h3 {
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        /* ========== PASSCODE MODAL ========== */
+        .passcode-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .passcode-modal.active {
+            display: flex;
+        }
+
+        .passcode-modal-content {
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #ff1a1a;
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255, 26, 26, 0.3);
+            animation: modalGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes modalGlow {
+            0%, 100% { box-shadow: 0 0 50px rgba(255, 26, 26, 0.3); }
+            50% { box-shadow: 0 0 80px rgba(255, 26, 26, 0.5); }
+        }
+
+        .passcode-modal-content i {
+            font-size: 3rem;
+            color: #ff9800;
+            margin-bottom: 15px;
+        }
+
+        .passcode-modal-content h3 {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .passcode-modal-content p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .passcode-modal-content input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 45, 45, 0.3);
+            border-radius: 16px;
+            color: #fff;
+            font-size: 1.5rem;
+            font-family: monospace;
+            letter-spacing: 12px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .passcode-modal-content input:focus {
+            outline: none;
+            border-color: #ff2d2d;
+            box-shadow: 0 0 20px rgba(255, 45, 45, 0.2);
+        }
+
+        .passcode-modal-content .passcode-error {
+            color: #ff4444;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .passcode-modal-content .passcode-error.show {
+            display: block;
+        }
+
+        .passcode-modal-content .passcode-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #ff2d2d, #ff6b6b);
+            border: none;
+            border-radius: 50px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 15px;
+        }
+
+        .passcode-modal-content .passcode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -10px rgba(255, 45, 45, 0.5);
+        }
+
+        .passcode-modal-content .passcode-close {
+            margin-top: 15px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .passcode-modal-content .passcode-close:hover {
+            color: #fff;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* ========== ACTION BUTTONS ========== */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #ff2d2d, #ff6b6b);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -10px rgba(255, 45, 45, 0.5);
+        }
+
+        .back-btn i {
+            font-size: 1.1rem;
+        }
+
+        .action-btn {
+            display: inline-flex;
             align-items: center;
             gap: 8px;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
         }
 
-        .no-results {
-            text-align: center;
-            padding: 60px;
-            color: #ffd700;
+        .action-btn.download {
+            background: rgba(0, 255, 65, 0.15);
+            color: #00ff41;
+            border: 1px solid rgba(0, 255, 65, 0.3);
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .action-btn.download:hover {
+            background: rgba(0, 255, 65, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -10px rgba(0, 255, 65, 0.2);
         }
 
-        /* Shooting star animation */
-        .shooting-star {
-            position: fixed;
-            width: 2px;
-            height: 2px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.8);
-            z-index: 1;
-            pointer-events: none;
-            animation: shoot linear forwards;
+        .action-btn.share {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
         }
 
-        @keyframes shoot {
-            0% {
-                transform: translateX(0) translateY(0);
-                opacity: 1;
-            }
-            100% {
-                transform: translateX(-300px) translateY(150px);
-                opacity: 0;
-            }
+        .action-btn.share:hover {
+            background: rgba(59, 130, 246, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -10px rgba(59, 130, 246, 0.2);
         }
 
+        .action-btn.delete {
+            background: rgba(255, 0, 0, 0.15);
+            color: #ff4444;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+        }
+
+        .action-btn.delete:hover {
+            background: rgba(255, 0, 0, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -10px rgba(255, 0, 0, 0.2);
+        }
+
+        /* ========== FOOTER ========== */
         .footer {
             text-align: center;
             padding: 30px;
             color: rgba(255, 255, 255, 0.4);
-            border-top: 1px solid rgba(255, 215, 0, 0.1);
-            margin-top: 40px;
+            margin-top: 30px;
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255, 45, 45, 0.2);
+            position: relative;
+            z-index: 3;
         }
 
-        ::-webkit-scrollbar {
-            width: 8px;
+        /* ========== MODALS ========== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1100;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
         }
-        ::-webkit-scrollbar-track {
-            background: #000;
+
+        .modal.active {
+            display: flex;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #ffd700;
-            border-radius: 4px;
+
+        .modal-content {
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #ff1a1a;
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 0 50px rgba(255, 26, 26, 0.3);
+            animation: modalGlow 3s ease-in-out infinite;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            color: #ff1a1a;
+            cursor: pointer;
+            transition: 0.3s;
+            background: none;
+            border: none;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+            color: #00ff41;
+        }
+
+        .modal h2 {
+            color: #fff;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #ff3333, #00ff44);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .gpa-calc {
+            color: #ddd;
+        }
+
+        .gpa-calc input,
+        .gpa-calc select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 45, 45, 0.3);
+            border-radius: 15px;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .gpa-calc input:focus,
+        .gpa-calc select:focus {
+            outline: none;
+            border-color: #ff2d2d;
+            box-shadow: 0 0 0 3px rgba(255, 45, 45, 0.2);
+        }
+
+        .gpa-calc select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        .gpa-calc button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #ff1a1a, #00cc33);
+            border: none;
+            border-radius: 50px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .gpa-calc button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(255, 26, 26, 0.3);
+        }
+
+        .gpa-result {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 255, 68, 0.1);
+            border: 1px solid #00ff41;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .upload-card {
+                padding: 25px 20px;
+            }
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .sidebar {
+                width: 280px;
+                left: -300px;
+            }
+            .pdf-header h2 {
+                font-size: 1.1rem;
+            }
+            .pdf-meta {
+                flex-direction: column;
+                gap: 5px;
+            }
+            .pdf-viewer iframe {
+                height: 50vh;
+                min-height: 300px;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+            .action-btn {
+                justify-content: center;
+            }
+            .pdf-header .file-icon-big {
+                float: none;
+                display: block;
+                text-align: center;
+                margin: 0 auto 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 100%;
+                left: -100%;
+            }
+            .nav-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+            .upload-card {
+                padding: 15px;
+            }
+            .passcode-modal-content {
+                padding: 25px 20px;
+            }
+            .pdf-header .file-icon-big {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Starry Night Canvas -->
-    <canvas id="stars-canvas"></canvas>
+    <!-- Real Rain Canvas -->
+    <canvas id="rain-canvas"></canvas>
+    
+    <!-- Lightning Overlay -->
+    <div class="lightning-overlay" id="lightning"></div>
 
     <div class="glass-overlay">
+        <!-- ========== SIDEBAR ========== -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <div class="sidebar" id="sidebar">
+            <button class="sidebar-close" id="sidebarClose">&times;</button>
+            <div class="sidebar-header">
+                <h2>⚡ TWARVIS</h2>
+                <p>Navigation Menu</p>
+            </div>
+            
+            <a class="sidebar-item" href="/">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a class="sidebar-item" href="/browse/">
+                <i class="fas fa-book-open"></i> Browse Notes
+            </a>
+            <a class="sidebar-item" href="/upload/">
+                <i class="fas fa-cloud-upload-alt"></i> Upload Files
+            </a>
+            
+            <div class="sidebar-divider"></div>
+            
+            <div class="sidebar-item" id="sideGpa">
+                <i class="fas fa-calculator"></i> GPA Calculator
+                <span class="badge soon">New</span>
+            </div>
+            
+            <div class="sidebar-divider"></div>
+            
+            <div class="sidebar-item" id="sideHackathon">
+                <i class="fas fa-code"></i> Hackathon
+                <span class="badge soon">Soon</span>
+            </div>
+            <div class="sidebar-item" id="sideCourses">
+                <i class="fas fa-graduation-cap"></i> Free Courses
+                <span class="badge maintenance">Maint</span>
+            </div>
+            
+            <div class="sidebar-divider"></div>
+            
+            <div class="sidebar-item" id="sideSettings">
+                <i class="fas fa-cog"></i> Settings
+                <span class="badge">⚡</span>
+            </div>
+        </div>
+
+        <!-- ========== HEADER ========== -->
         <div class="header">
             <div class="header-content">
-                <div class="logo">⭐ TWARVIS</div>
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="logo">⚡ TWARVIS</div>
+                </div>
                 <div class="nav-links">
-                    <div class="nav-icon"><a href="/"><i class="fas fa-home"></i></a></div>
-                    <div class="nav-icon"><a href="/browse/"><i class="fas fa-search"></i></a></div>
-                    <div class="nav-icon"><a href="/upload/"><i class="fas fa-cloud-upload-alt"></i></a></div>
+                    <div class="nav-icon" data-label="Home"><a href="/"><i class="fas fa-home"></i></a></div>
+                    <div class="nav-icon" data-label="Browse"><a href="/browse/"><i class="fas fa-book-open"></i></a></div>
+                    <div class="nav-icon" data-label="Upload"><a href="/upload/"><i class="fas fa-cloud-upload-alt"></i></a></div>
                 </div>
             </div>
         </div>
 
-        <div class="container">
-            <div class="search-section">
-                <form method="get" class="search-bar">
-                    <input type="text" name="q" class="search-input" placeholder="🔭 Search by module, course, or description..." value="{{ query }}">
-                    <button type="submit" class="search-btn">SEARCH</button>
-                </form>
-            </div>
-
-            <div class="notes-grid">
-                {% if notes %}
-                    {% for note in notes %}
-                    <div class="note-card">
-                        <div class="note-title">
-                            {{ note.icon }} [{{ note.file_ext }}] {{ note.display_name|default:note.filename|truncatechars:50 }}
-                            {% if note.can_view_inline %}
-                            <span class="file-type-badge badge-supported">✨ INLINE SUPPORTED</span>
+        <!-- ========== VIEWER CONTAINER ========== -->
+        <div class="viewer-container">
+            <div class="upload-card">
+                <!-- PDF Header -->
+                <div class="pdf-header" id="pdfHeader">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
+                        <div style="flex:1;">
+                            <div style="display:flex; align-items:center; gap:15px; flex-wrap:wrap;">
+                                <span class="file-icon-big"><i class="fas fa-file-pdf"></i></span>
+                                <div>
+                                    <h2>{{ note.original_filename|default:note.filename }}</h2>
+                                </div>
+                            </div>
+                            <div class="pdf-meta">
+                                <span class="meta-item"><i class="fas fa-tag"></i> Module: {{ note.module|default:"N/A" }}</span>
+                                <span class="meta-item"><i class="fas fa-book"></i> Course: {{ note.course|default:"N/A" }}</span>
+                                <span class="meta-item"><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
+                                <span class="meta-item"><i class="fas fa-file"></i> {{ note.file_size|filesizeformat|default:"0 KB" }}</span>
+                            </div>
+                            <div class="pdf-meta" style="margin-top:5px;">
+                                <span class="meta-item"><i class="fas fa-university"></i> {{ note.university|default:"Not specified" }}</span>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            {% if note.privacy == 'private' %}
+                                <span class="privacy-badge private"><i class="fas fa-lock"></i> Private</span>
                             {% else %}
-                            <span class="file-type-badge badge-unsupported">⚠️ NOT SUPPORTED</span>
+                                <span class="privacy-badge public"><i class="fas fa-globe"></i> Public</span>
                             {% endif %}
-                        </div>
-                        <div class="note-meta">
-                            <span>📚 {{ note.module }}</span>
-                            <span>📖 {{ note.course }}</span>
-                        </div>
-                        <div class="note-description">{{ note.description|truncatechars:100 }}</div>
-                        <div class="note-meta">
-                            📅 {{ note.uploaded_at|slice:":10" }}
-                            {% if note.has_drive_backup %}
-                            <span style="color: #ffd700;">⭐ Drive backup</span>
-                            {% endif %}
-                        </div>
-                        
-                        {% if not note.can_view_inline %}
-                        <div class="warning-message">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <span>⚠️ This file type ({{ note.file_ext }}) cannot be viewed directly in your browser. Please download it to view on your device.</span>
-                        </div>
-                        {% endif %}
-                        
-                        <div class="note-actions">
-                            {% if note.can_view_inline %}
-                            <a href="/view/{{ note.id }}/" class="btn-sm btn-view" target="_blank">✨ VIEW INLINE</a>
-                            {% else %}
-                            <span class="btn-sm btn-view" style="opacity: 0.4; cursor: not-allowed; border-color: #666; color: #666;" title="This file type cannot be viewed inline">
-                                🚫 VIEW NOT AVAILABLE
+                            <span class="file-type-badge">
+                                <i class="fas fa-{% if note.file_type == 'pastpaper' %}file-alt{% else %}sticky-note{% endif %}"></i>
+                                {{ note.file_type|default:"notes"|title }}
                             </span>
-                            {% endif %}
-                            <a href="/download/{{ note.id }}/" class="btn-sm btn-download">⭐ DOWNLOAD</a>
                         </div>
                     </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="no-results">
-                        <i class="fas fa-star" style="font-size: 3rem;"></i>
-                        <h3>✨ NO FILES FOUND ✨</h3>
-                        <p>Try a different search term or <a href="/upload/" style="color:#ffd700">upload some files</a></p>
-                    </div>
-                {% endif %}
+                    {% if note.description %}
+                        <div class="pdf-description">
+                            <i class="fas fa-quote-left" style="color:#ff4d4d; margin-right:8px;"></i>
+                            {{ note.description }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- PDF Viewer -->
+                <div class="pdf-viewer" id="pdfViewer">
+                    {% if note.can_view_inline %}
+                        <iframe src="{{ pdf_url }}" title="PDF Viewer" id="pdfFrame"></iframe>
+                    {% else %}
+                        <div class="viewer-placeholder">
+                            <i class="fas fa-file"></i>
+                            <h3>Preview Not Available</h3>
+                            <p>This file type cannot be previewed inline. Please download to view.</p>
+                            <a href="/download/{{ note.id }}/" class="back-btn" style="margin-top:20px;">
+                                <i class="fas fa-download"></i> Download File
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons" id="actionButtons">
+                    <a href="/browse/" class="back-btn">
+                        <i class="fas fa-arrow-left"></i> Back to Browse
+                    </a>
+                    <a href="/download/{{ note.id }}/" class="action-btn download">
+                        <i class="fas fa-download"></i> Download
+                    </a>
+                    <button class="action-btn share" onclick="copyLink()">
+                        <i class="fas fa-share-alt"></i> Share
+                    </button>
+                    {% if admin %}
+                        <a href="/delete/{{ note.id }}/" class="action-btn delete" onclick="return confirm('Are you sure you want to delete this file?');">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+                    {% endif %}
+                </div>
             </div>
         </div>
 
+        <!-- ========== FOOTER ========== -->
         <div class="footer">
-            <p>⭐ TWARVIS SCHOOL — STARLIGHT KNOWLEDGE ✨</p>
+            <p>⚡ TWARVIS SCHOOL — Knowledge shared is knowledge multiplied ⚡</p>
+        </div>
+    </div>
+
+    <!-- ========== PASSCODE MODAL ========== -->
+    {% if note.privacy == 'private' %}
+    <div class="passcode-modal active" id="passcodeModal">
+        <div class="passcode-modal-content">
+            <i class="fas fa-lock"></i>
+            <h3>🔒 Private Document</h3>
+            <p>This document is protected with a passcode. Please enter the 4-digit passcode to view it.</p>
+            <p style="color: #888; font-size: 0.8rem; margin-bottom: 15px;">
+                <i class="fas fa-info-circle"></i> Contact the uploader for the passcode
+            </p>
+            <input type="password" id="passcodeInput" placeholder="••••" maxlength="4" inputmode="numeric" autofocus>
+            <div class="passcode-error" id="passcodeError">❌ Incorrect passcode. Please try again.</div>
+            <button class="passcode-btn" id="passcodeSubmit">
+                <i class="fas fa-unlock"></i> Unlock Document
+            </button>
+            <button class="passcode-close" onclick="window.location.href='/browse/'">
+                <i class="fas fa-arrow-left"></i> Go Back to Browse
+            </button>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ========== GPA CALCULATOR MODAL ========== -->
+    <div class="modal" id="gpaModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeGpa">&times;</button>
+            <h2><i class="fas fa-calculator"></i> GPA Calculator</h2>
+            <div class="gpa-calc">
+                <label>Select Program:</label>
+                <select id="programType">
+                    <option value="diploma">Diploma (4.0 GPA)</option>
+                    <option value="bachelor">Bachelor (5.0 GPA)</option>
+                </select>
+                
+                <label>Number of Courses:</label>
+                <input type="number" id="numCourses" placeholder="Enter number of courses" min="1" value="4">
+                
+                <div id="courseInputs"></div>
+                
+                <button id="calculateGpa">Calculate GPA</button>
+                <div class="gpa-result" id="gpaResult"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== SETTINGS MODAL ========== -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeSettings">&times;</button>
+            <h2><i class="fas fa-cog"></i> Settings</h2>
+            
+            <div class="gpa-calc">
+                <div style="margin-bottom:20px;">
+                    <label style="display:block; margin-bottom:10px; font-weight:600;"><i class="fas fa-palette"></i> Theme Mode</label>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <button id="themeMatrix" style="flex:1; padding:12px; border:2px solid rgba(255,45,45,0.3); border-radius:15px; background:rgba(0,0,0,0.3); color:#ddd; cursor:pointer; transition:0.3s; font-weight:600;">🌿 Matrix</button>
+                        <button id="themeDark" style="flex:1; padding:12px; border:2px solid rgba(255,45,45,0.3); border-radius:15px; background:rgba(0,0,0,0.3); color:#ddd; cursor:pointer; transition:0.3s; font-weight:600;">🌙 Dark</button>
+                        <button id="themeLight" style="flex:1; padding:12px; border:2px solid rgba(255,45,45,0.3); border-radius:15px; background:rgba(0,0,0,0.3); color:#ddd; cursor:pointer; transition:0.3s; font-weight:600;">☀️ Light</button>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom:20px;">
+                    <label style="display:block; margin-bottom:5px;"><i class="fas fa-sync"></i> Refresh Page</label>
+                    <button id="refreshBtn" style="width:100%; padding:14px; background:linear-gradient(135deg,#ff1a1a,#00cc33); border:none; border-radius:50px; color:#fff; font-weight:700; cursor:pointer; font-size:1rem; transition:0.3s;">Refresh Now</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // ========== STARRY NIGHT SKY ==========
-        const canvas = document.getElementById('stars-canvas');
+        // ========== REAL RAIN EFFECT ==========
+        const canvas = document.getElementById('rain-canvas');
         const ctx = canvas.getContext('2d');
         
         function resizeCanvas() {
@@ -436,104 +1324,408 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
         
-        // Create stars
-        const stars = [];
-        const starCount = 400;
-        
-        for (let i = 0; i < starCount; i++) {
-            stars.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                radius: Math.random() * 2.5,
-                alpha: Math.random() * 0.5 + 0.3,
-                twinkleSpeed: Math.random() * 0.02 + 0.01,
-                twinkleDir: Math.random() > 0.5 ? 1 : -1
-            });
-        }
-        
-        // Add some twinkling stars
-        let time = 0;
-        
-        function drawStars() {
-            // Clear with dark gradient
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, '#0a0a2a');
-            gradient.addColorStop(0.5, '#050515');
-            gradient.addColorStop(1, '#000000');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        class Raindrop {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height - canvas.height;
+                this.length = Math.random() * 20 + 10;
+                this.speed = Math.random() * 5 + 3;
+                this.opacity = Math.random() * 0.4 + 0.2;
+                this.width = Math.random() * 1.5 + 0.5;
+            }
             
-            // Draw stars
-            for (let star of stars) {
-                // Twinkling effect
-                let currentAlpha = star.alpha + Math.sin(time * star.twinkleSpeed) * 0.15;
-                currentAlpha = Math.min(Math.max(currentAlpha, 0.2), 0.8);
-                
-                ctx.beginPath();
-                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 255, 200, ${currentAlpha})`;
-                ctx.fill();
-                
-                // Add glow to brighter stars
-                if (star.radius > 1.5) {
-                    ctx.beginPath();
-                    ctx.arc(star.x, star.y, star.radius * 1.5, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(255, 255, 200, ${currentAlpha * 0.3})`;
-                    ctx.fill();
+            fall() {
+                this.y += this.speed;
+                if (this.y > canvas.height) {
+                    this.y = -this.length;
+                    this.x = Math.random() * canvas.width;
                 }
             }
             
-            time += 0.05;
-            requestAnimationFrame(drawStars);
-        }
-        
-        drawStars();
-        
-        // ========== SHOOTING STARS ==========
-        function createShootingStar() {
-            const star = document.createElement('div');
-            star.className = 'shooting-star';
-            const startX = Math.random() * canvas.width;
-            const startY = Math.random() * canvas.height * 0.3;
-            star.style.left = startX + 'px';
-            star.style.top = startY + 'px';
-            document.body.appendChild(star);
-            
-            setTimeout(() => {
-                star.remove();
-            }, 1500);
-        }
-        
-        // Random shooting stars every 5-15 seconds
-        setInterval(() => {
-            if (Math.random() > 0.7) {
-                createShootingStar();
+            draw() {
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x, this.y + this.length);
+                ctx.strokeStyle = `rgba(180, 220, 255, ${this.opacity})`;
+                ctx.lineWidth = this.width;
+                ctx.stroke();
             }
-        }, 8000);
+        }
         
-        // Create a few shooting stars on page load
-        setTimeout(createShootingStar, 1000);
-        setTimeout(createShootingStar, 4000);
-        setTimeout(createShootingStar, 7000);
+        const raindrops = [];
+        for (let i = 0; i < 300; i++) {
+            raindrops.push(new Raindrop());
+        }
         
-        // Mouse move effect - create temporary star glow
-        canvas.addEventListener('mousemove', (e) => {
-            const glow = document.createElement('div');
-            glow.style.position = 'fixed';
-            glow.style.left = e.clientX + 'px';
-            glow.style.top = e.clientY + 'px';
-            glow.style.width = '8px';
-            glow.style.height = '8px';
-            glow.style.background = 'radial-gradient(circle, #ffd700, transparent)';
-            glow.style.borderRadius = '50%';
-            glow.style.pointerEvents = 'none';
-            glow.style.zIndex = '3';
-            document.body.appendChild(glow);
+        class Splash {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.particles = [];
+                for (let i = 0; i < 5; i++) {
+                    this.particles.push({
+                        x: 0,
+                        y: 0,
+                        vx: (Math.random() - 0.5) * 3,
+                        vy: Math.random() * -2 - 1,
+                        life: 1
+                    });
+                }
+            }
             
+            update() {
+                let allDead = true;
+                for (let p of this.particles) {
+                    if (p.life > 0) {
+                        allDead = false;
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vy += 0.2;
+                        p.life -= 0.05;
+                    }
+                }
+                return !allDead;
+            }
+            
+            draw() {
+                for (let p of this.particles) {
+                    if (p.life > 0) {
+                        ctx.beginPath();
+                        ctx.arc(this.x + p.x, this.y + p.y, 2, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(150, 200, 255, ${p.life * 0.5})`;
+                        ctx.fill();
+                    }
+                }
+            }
+        }
+        
+        const splashes = [];
+        
+        function drawRain() {
+            ctx.fillStyle = 'rgba(10, 10, 30, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            for (let drop of raindrops) {
+                drop.draw();
+                drop.fall();
+                if (drop.y + drop.length >= canvas.height && Math.random() < 0.01) {
+                    splashes.push(new Splash(drop.x, canvas.height - 5));
+                }
+            }
+            
+            for (let i = splashes.length - 1; i >= 0; i--) {
+                splashes[i].draw();
+                if (!splashes[i].update()) {
+                    splashes.splice(i, 1);
+                }
+            }
+            
+            requestAnimationFrame(drawRain);
+        }
+        
+        drawRain();
+
+        // ========== LIGHTNING EFFECT ==========
+        const lightningDiv = document.getElementById('lightning');
+        
+        function lightningFlash(intensity, duration) {
+            lightningDiv.style.backgroundColor = `rgba(255, 255, 255, ${intensity})`;
+            lightningDiv.style.transition = `background-color ${duration}s ease`;
             setTimeout(() => {
-                glow.remove();
+                lightningDiv.style.backgroundColor = 'transparent';
+            }, duration * 1000);
+        }
+        
+        function startLightningStorm() {
+            const nextDelay = Math.random() * 1700 + 300;
+            const intensity = Math.random() * 0.6 + 0.3;
+            const duration = Math.random() * 0.09 + 0.03;
+            
+            lightningFlash(intensity, duration);
+            
+            if (Math.random() > 0.6) {
+                setTimeout(() => {
+                    lightningFlash(intensity * 0.6, duration * 0.7);
+                }, duration * 1000 + 50);
+            }
+            
+            if (Math.random() > 0.8) {
+                setTimeout(() => {
+                    lightningFlash(intensity * 0.8, duration * 0.5);
+                }, duration * 1000 + 120);
+            }
+            
+            setTimeout(startLightningStorm, nextDelay);
+        }
+        
+        setTimeout(startLightningStorm, 500);
+
+        // ========== SIDEBAR ==========
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const menuToggle = document.getElementById('menuToggle');
+        const closeBtn = document.getElementById('sidebarClose');
+        
+        function openSidebar() {
+            sidebar.classList.add('open');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        menuToggle.addEventListener('click', openSidebar);
+        closeBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        // ========== SIDEBAR NAVIGATION ==========
+        document.getElementById('sideGpa').addEventListener('click', function() {
+            closeSidebar();
+            document.getElementById('gpaModal').classList.add('active');
+            generateCourseInputs();
+        });
+        
+        document.getElementById('sideHackathon').addEventListener('click', function() {
+            closeSidebar();
+            alert('🚀 Hackathon feature coming soon!');
+        });
+        
+        document.getElementById('sideCourses').addEventListener('click', function() {
+            closeSidebar();
+            alert('🔧 Free Courses under maintenance. Check back later!');
+        });
+        
+        document.getElementById('sideSettings').addEventListener('click', function() {
+            closeSidebar();
+            document.getElementById('settingsModal').classList.add('active');
+        });
+
+        // ========== MODAL CONTROLS ==========
+        document.getElementById('closeSettings').addEventListener('click', function() {
+            document.getElementById('settingsModal').classList.remove('active');
+        });
+        
+        document.getElementById('settingsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+
+        document.getElementById('closeGpa').addEventListener('click', function() {
+            document.getElementById('gpaModal').classList.remove('active');
+        });
+        
+        document.getElementById('gpaModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+
+        // ========== THEME SYSTEM ==========
+        function setTheme(theme) {
+            document.body.className = '';
+            if (theme === 'matrix') {
+                document.body.style.background = '#0a0a0a';
+                document.getElementById('rain-canvas').style.opacity = '1';
+                document.getElementById('rain-canvas').style.pointerEvents = 'auto';
+            } else if (theme === 'dark') {
+                document.body.classList.add('dark-theme');
+                document.getElementById('rain-canvas').style.opacity = '0';
+                document.getElementById('rain-canvas').style.pointerEvents = 'none';
+            } else if (theme === 'light') {
+                document.body.classList.add('light-theme');
+                document.getElementById('rain-canvas').style.opacity = '0';
+                document.getElementById('rain-canvas').style.pointerEvents = 'none';
+            }
+            localStorage.setItem('twarvis-theme', theme);
+        }
+
+        const savedTheme = localStorage.getItem('twarvis-theme') || 'matrix';
+        setTheme(savedTheme);
+
+        document.getElementById('themeMatrix').addEventListener('click', function() {
+            setTheme('matrix');
+            document.getElementById('settingsModal').classList.remove('active');
+        });
+        document.getElementById('themeDark').addEventListener('click', function() {
+            setTheme('dark');
+            document.getElementById('settingsModal').classList.remove('active');
+        });
+        document.getElementById('themeLight').addEventListener('click', function() {
+            setTheme('light');
+            document.getElementById('settingsModal').classList.remove('active');
+        });
+
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            location.reload();
+        });
+
+        // ========== GPA CALCULATOR ==========
+        function generateCourseInputs() {
+            const num = parseInt(document.getElementById('numCourses').value) || 4;
+            const container = document.getElementById('courseInputs');
+            container.innerHTML = '';
+            for (let i = 0; i < num; i++) {
+                const div = document.createElement('div');
+                div.style.margin = '10px 0';
+                div.innerHTML = `
+                    <label>Course ${i+1}:</label>
+                    <input type="number" class="course-grade" placeholder="Grade (0-100)" min="0" max="100" step="0.01">
+                `;
+                container.appendChild(div);
+            }
+        }
+        
+        document.getElementById('numCourses').addEventListener('change', generateCourseInputs);
+        document.getElementById('numCourses').addEventListener('input', generateCourseInputs);
+        
+        document.getElementById('calculateGpa').addEventListener('click', function() {
+            const program = document.getElementById('programType').value;
+            const maxGpa = program === 'diploma' ? 4.0 : 5.0;
+            const grades = document.querySelectorAll('.course-grade');
+            let total = 0;
+            let count = 0;
+            
+            grades.forEach(input => {
+                const val = parseFloat(input.value);
+                if (!isNaN(val) && val >= 0 && val <= 100) {
+                    total += val;
+                    count++;
+                }
+            });
+            
+            if (count === 0) {
+                document.getElementById('gpaResult').innerHTML = 'Please enter valid grades!';
+                document.getElementById('gpaResult').style.color = '#ff4444';
+                return;
+            }
+            
+            const average = total / count;
+            const gpa = (average / 100) * maxGpa;
+            const result = document.getElementById('gpaResult');
+            result.innerHTML = `
+                <div>Program: ${program.charAt(0).toUpperCase() + program.slice(1)}</div>
+                <div>Average Grade: ${average.toFixed(1)}%</div>
+                <div style="font-size:1.5rem; margin-top:5px;">GPA: ${gpa.toFixed(2)} / ${maxGpa.toFixed(1)}</div>
+                <div style="font-size:0.9rem; margin-top:5px; color: ${gpa >= maxGpa * 0.7 ? '#00ff41' : '#ff4444'}">
+                    ${gpa >= maxGpa * 0.7 ? '✅ Good Standing' : '⚠️ Needs Improvement'}
+                </div>
+            `;
+            result.style.color = '#fff';
+        });
+
+        // ========== SHARE FUNCTION ==========
+        function copyLink() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('✅ Link copied to clipboard!');
+            }).catch(() => {
+                prompt('Copy this link:', url);
+            });
+        }
+
+        // ========== PASSCODE HANDLING - FIXED ==========
+        {% if note.privacy == 'private' %}
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get elements
+            const passcodeModal = document.getElementById('passcodeModal');
+            const passcodeInput = document.getElementById('passcodeInput');
+            const passcodeSubmit = document.getElementById('passcodeSubmit');
+            const passcodeError = document.getElementById('passcodeError');
+            const pdfViewer = document.getElementById('pdfViewer');
+            const pdfHeader = document.getElementById('pdfHeader');
+            const actionButtons = document.getElementById('actionButtons');
+            
+            // Get the correct passcode from the server
+            const correctPasscode = "{{ note.passcode|default:'' }}".trim();
+            
+            console.log('🔑 PASSCODE DEBUG:');
+            console.log('  Correct passcode:', correctPasscode);
+            console.log('  Passcode length:', correctPasscode.length);
+            console.log('  Passcode type:', typeof correctPasscode);
+            
+            // Show the passcode modal
+            passcodeModal.classList.add('active');
+            
+            // Hide the viewer content initially
+            if (pdfViewer) pdfViewer.style.display = 'none';
+            if (pdfHeader) pdfHeader.style.display = 'none';
+            if (actionButtons) actionButtons.style.display = 'none';
+            
+            // Input validation - only numbers, max 4 digits
+            passcodeInput.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);
+                passcodeError.classList.remove('show');
+            });
+            
+            // Submit button click handler
+            passcodeSubmit.addEventListener('click', function() {
+                const entered = passcodeInput.value.trim();
+                console.log('🔑 Entered passcode:', entered);
+                console.log('🔑 Correct passcode:', correctPasscode);
+                console.log('🔑 Match?', entered === correctPasscode);
+                
+                if (entered === correctPasscode) {
+                    // Correct passcode - show the content
+                    passcodeModal.classList.remove('active');
+                    if (pdfViewer) pdfViewer.style.display = 'block';
+                    if (pdfHeader) pdfHeader.style.display = 'block';
+                    if (actionButtons) actionButtons.style.display = 'flex';
+                    
+                    // Trigger lightning flash for success
+                    lightningFlash(0.3, 0.05);
+                } else {
+                    // Wrong passcode
+                    passcodeError.classList.add('show');
+                    passcodeInput.value = '';
+                    passcodeInput.focus();
+                    
+                    // Trigger lightning flash for error
+                    lightningFlash(0.3, 0.05);
+                }
+            });
+            
+            // Enter key support
+            passcodeInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    passcodeSubmit.click();
+                }
+            });
+            
+            // Auto-focus the input
+            setTimeout(function() {
+                passcodeInput.focus();
             }, 300);
         });
+        {% endif %}
+
+        // ========== KEYBOARD SHORTCUTS ==========
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (sidebar.classList.contains('open')) closeSidebar();
+                if (document.getElementById('gpaModal').classList.contains('active')) {
+                    document.getElementById('gpaModal').classList.remove('active');
+                }
+                if (document.getElementById('settingsModal').classList.contains('active')) {
+                    document.getElementById('settingsModal').classList.remove('active');
+                }
+            }
+        });
+
+        console.log('⚡ TWARVIS View Page Loaded!');
+        console.log('📄 Document: {{ note.original_filename|default:note.filename }}');
+        {% if note.privacy == 'private' %}
+        console.log('🔒 This document is PRIVATE. Passcode required.');
+        {% else %}
+        console.log('🌍 This document is PUBLIC.');
+        {% endif %}
+        console.log('📚 Module: {{ note.module|default:"N/A" }}');
+        console.log('📖 Course: {{ note.course|default:"N/A" }}');
+        console.log('🏫 University: {{ note.university|default:"Not specified" }}');
     </script>
 </body>
 </html>
