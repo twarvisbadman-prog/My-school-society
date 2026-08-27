@@ -1,4 +1,4 @@
-<!-- browse.html - Final, No Delete, Fast View -->
+<!-- browse.html - Fixed: Hide VIEW for non-inline files -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,13 +9,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* (same styles as previous fixed version, kept concise) */
+        /* ===== FULL STYLES (same as before) ===== */
+        /* ... keep all your existing CSS ... */
+        /* I'll include the full styles for completeness, but you can reuse yours */
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
         body { font-family:'Inter',sans-serif; background:#0a0a0a; min-height:100vh; overflow-x:hidden; }
         #rain-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; background:linear-gradient(180deg,#0f0f1a 0%,#0a0a0f 100%); transition:opacity 0.8s; }
         .lightning-overlay { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none; background:transparent; }
         .glass-overlay { position:relative; z-index:2; min-height:100vh; width:100%; }
-        /* dark/light themes */
         body.dark-theme { background:#0f0f1a; }
         body.dark-theme #rain-canvas { opacity:0; pointer-events:none; }
         body.dark-theme .header { background:rgba(15,15,26,0.92); border-color:rgba(50,100,255,0.1); }
@@ -41,7 +42,6 @@
         body.dark-theme .sidebar-item:hover { background:rgba(74,124,247,0.08); color:#fff; }
         body.dark-theme .sidebar-item i { color:rgba(255,255,255,0.4); }
         body.dark-theme .sidebar-item:hover i { color:#4a7cf7; }
-
         body.light-theme { background:#f2f4f8; }
         body.light-theme #rain-canvas { opacity:0; pointer-events:none; }
         body.light-theme .header { background:rgba(255,255,255,0.92); border-color:rgba(0,0,0,0.06); }
@@ -67,7 +67,6 @@
         body.light-theme .sidebar-item:hover { background:rgba(74,124,247,0.05); color:#000; }
         body.light-theme .sidebar-item i { color:rgba(0,0,0,0.3); }
         body.light-theme .sidebar-item:hover i { color:#4a7cf7; }
-        /* sidebar styles */
         .sidebar { position:fixed; top:0; left:-280px; width:280px; height:100%; background:rgba(0,0,0,0.96); border-right:1px solid rgba(255,255,255,0.05); z-index:1000; transition:left 0.35s cubic-bezier(0.4,0,0.2,1); overflow-y:auto; padding:20px 0; }
         .sidebar.open { left:0; }
         .sidebar-header { padding:20px 24px 16px; border-bottom:1px solid rgba(255,255,255,0.05); margin-bottom:12px; }
@@ -85,7 +84,6 @@
         .sidebar-divider { height:1px; background:rgba(255,255,255,0.05); margin:8px 24px; }
         .sidebar-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999; display:none; backdrop-filter:blur(4px); }
         .sidebar-overlay.active { display:block; }
-        /* header */
         .header { background:rgba(0,0,0,0.7); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid rgba(255,255,255,0.05); position:sticky; top:0; z-index:100; padding:12px 0; }
         .header-content { max-width:900px; margin:0 auto; padding:0 20px; display:flex; justify-content:space-between; align-items:center; }
         .header-left { display:flex; align-items:center; gap:14px; }
@@ -95,7 +93,6 @@
         .header-right { display:flex; align-items:center; gap:10px; }
         .header-icon { background:none; border:none; color:rgba(255,255,255,0.4); font-size:1.2rem; cursor:pointer; padding:8px; border-radius:50%; transition:0.3s; }
         .header-icon:hover { color:#fff; background:rgba(255,255,255,0.05); }
-        /* browse */
         .browse-container { max-width:900px; margin:0 auto; padding:16px 20px 100px; position:relative; z-index:3; }
         .search-bar { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.04); border:1.5px solid rgba(255,255,255,0.06); border-radius:60px; padding:4px 4px 4px 20px; transition:all 0.3s; margin-bottom:20px; }
         .search-bar:focus-within { border-color:#ff1a1a; box-shadow:0 0 0 4px rgba(255,26,26,0.08); background:rgba(255,255,255,0.06); }
@@ -141,7 +138,6 @@
         .empty-state .upload-link { display:inline-block; margin-top:20px; padding:12px 32px; background:linear-gradient(135deg,#ff1a1a,#cc0033); color:#fff; border-radius:60px; text-decoration:none; font-weight:600; font-size:0.95rem; transition:all 0.3s; }
         .empty-state .upload-link:hover { transform:translateY(-3px); box-shadow:0 20px 40px -10px rgba(255,26,26,0.3); }
         @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-        /* modals */
         .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:1100; justify-content:center; align-items:center; }
         .modal.active { display:flex; }
         .modal-content { background:rgba(0,0,0,0.95); border:2px solid #ff1a1a; border-radius:30px; padding:40px; max-width:500px; width:90%; max-height:90vh; overflow-y:auto; position:relative; box-shadow:0 0 50px rgba(255,26,26,0.3); }
@@ -234,7 +230,10 @@
                                     {% if note.can_view_inline %}<span class="badge badge-inline"><i class="fas fa-check-circle"></i> Inline</span>{% endif %}
                                 </div>
                                 <div class="doc-actions">
-                                    <a href="/view/{{ note.id }}/" class="btn-view"><i class="fas fa-eye"></i> VIEW</a>
+                                    {# Only show VIEW button if file can be viewed inline #}
+                                    {% if note.can_view_inline %}
+                                        <a href="/view/{{ note.id }}/" class="btn-view"><i class="fas fa-eye"></i> VIEW</a>
+                                    {% endif %}
                                     <a href="/download/{{ note.id }}/" class="btn-download" download><i class="fas fa-download"></i> DOWNLOAD</a>
                                 </div>
                             </div>
@@ -253,16 +252,127 @@
     </div>
 
     <!-- Modals -->
-    <div class="modal" id="gpaModal">...</div> <!-- truncated for brevity, same as before -->
-    <div class="modal" id="settingsModal">...</div>
+    <div class="modal" id="gpaModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeGpa">&times;</button>
+            <h2><i class="fas fa-calculator"></i> GPA Calculator</h2>
+            <div class="gpa-calc">
+                <label>Program:</label>
+                <select id="programType">
+                    <option value="diploma">Diploma (4.0 GPA)</option>
+                    <option value="bachelor">Bachelor (5.0 GPA)</option>
+                </select>
+                <label>Courses:</label>
+                <input type="number" id="numCourses" min="1" value="4">
+                <div id="courseInputs"></div>
+                <button id="calculateGpa">Calculate GPA</button>
+                <div class="gpa-result" id="gpaResult"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeSettings">&times;</button>
+            <h2><i class="fas fa-cog"></i> Settings</h2>
+            <div style="color:#ddd;">
+                <div style="margin-bottom:20px;">
+                    <label style="display:block; margin-bottom:10px; font-weight:600;"><i class="fas fa-palette"></i> Theme</label>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <button id="themeMatrix" style="flex:1; padding:12px; border:2px solid rgba(255,45,45,0.3); border-radius:15px; background:rgba(0,0,0,0.3); color:#ddd; cursor:pointer; transition:0.3s; font-weight:600;">🌿 Matrix</button>
+                        <button id="themeDark" style="flex:1; padding:12px; border:2px solid rgba(255,45,45,0.3); border-radius:15px; background:rgba(0,0,0,0.3); color:#ddd; cursor:pointer; transition:0.3s; font-weight:600;">🌙 Dark</button>
+                        <button id="themeLight" style="flex:1; padding:12px; border:2px solid rgba(255,45,45,0.3); border-radius:15px; background:rgba(0,0,0,0.3); color:#ddd; cursor:pointer; transition:0.3s; font-weight:600;">☀️ Light</button>
+                    </div>
+                </div>
+                <button id="refreshBtn" style="width:100%; padding:14px; background:linear-gradient(135deg, #ff1a1a, #00cc33); border:none; border-radius:50px; color:#fff; font-weight:700; cursor:pointer; font-size:1rem; transition:0.3s;"><i class="fas fa-sync"></i> Refresh</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // (same JS as before with filter, sidebar, theme, GPA, etc.)
-        // ... (keep all previous JavaScript code)
-        // Just make sure filter function updates counts correctly
-        // and that the modals work.
+        // ===== RAIN =====
+        const canvas = document.getElementById('rain-canvas');
+        const ctx = canvas.getContext('2d');
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        class Drop {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height - canvas.height;
+                this.len = Math.random() * 20 + 10;
+                this.speed = Math.random() * 5 + 3;
+                this.opacity = Math.random() * 0.3 + 0.1;
+                this.width = Math.random() * 1.5 + 0.5;
+            }
+            fall() { this.y += this.speed; if (this.y > canvas.height) { this.y = -this.len; this.x = Math.random() * canvas.width; } }
+            draw() { ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x, this.y + this.len); ctx.strokeStyle = `rgba(150, 200, 255, ${this.opacity})`; ctx.lineWidth = this.width; ctx.stroke(); }
+        }
+        const drops = []; for (let i = 0; i < 200; i++) drops.push(new Drop());
+        function drawRain() { ctx.fillStyle = 'rgba(10, 10, 20, 0.1)'; ctx.fillRect(0, 0, canvas.width, canvas.height); for (let d of drops) { d.draw(); d.fall(); } requestAnimationFrame(drawRain); }
+        drawRain();
 
-        // For brevity, I'll include the full JS in the final answer.
-    </script>
-</body>
-</html>
+        // ===== LIGHTNING =====
+        const lightning = document.getElementById('lightning');
+        let lightningTimeout;
+        function flash() {
+            lightning.style.backgroundColor = `rgba(255, 255, 255, ${Math.random() * 0.4 + 0.2})`;
+            clearTimeout(lightningTimeout);
+            lightningTimeout = setTimeout(() => { lightning.style.backgroundColor = 'transparent'; }, Math.random() * 100 + 50);
+            setTimeout(flash, Math.random() * 4000 + 1000);
+        }
+        setTimeout(flash, 1000);
+
+        // ===== SIDEBAR =====
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const menuBtn = document.getElementById('menuToggle');
+        const closeBtn = document.getElementById('sidebarClose');
+        function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
+        menuBtn.addEventListener('click', openSidebar);
+        closeBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        // ===== THEME =====
+        function setTheme(theme) {
+            document.body.className = '';
+            if (theme === 'dark') document.body.classList.add('dark-theme');
+            else if (theme === 'light') document.body.classList.add('light-theme');
+            localStorage.setItem('twarvis-theme', theme);
+        }
+        const saved = localStorage.getItem('twarvis-theme') || 'dark';
+        setTheme(saved);
+
+        // ===== MODALS =====
+        function showModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function hideModal(id) { document.getElementById(id).style.display = 'none'; }
+        document.getElementById('closeSettings').addEventListener('click', () => hideModal('settingsModal'));
+        document.getElementById('settingsModal').addEventListener('click', (e) => { if (e.target === e.currentTarget) hideModal('settingsModal'); });
+        document.getElementById('closeGpa').addEventListener('click', () => hideModal('gpaModal'));
+        document.getElementById('gpaModal').addEventListener('click', (e) => { if (e.target === e.currentTarget) hideModal('gpaModal'); });
+        document.getElementById('sideSettings').addEventListener('click', () => { closeSidebar(); showModal('settingsModal'); });
+        document.getElementById('sideGpa').addEventListener('click', () => { closeSidebar(); showModal('gpaModal'); generateCourseInputs(); });
+        document.getElementById('sideHackathon').addEventListener('click', () => { closeSidebar(); alert('🚀 Hackathon coming soon!'); });
+        document.getElementById('sideCourses').addEventListener('click', () => { closeSidebar(); alert('🔧 Under maintenance'); });
+        document.getElementById('refreshBtn').addEventListener('click', () => location.reload());
+
+        // ===== GPA =====
+        function generateCourseInputs() {
+            const num = parseInt(document.getElementById('numCourses').value) || 4;
+            const container = document.getElementById('courseInputs');
+            container.innerHTML = '';
+            for (let i = 0; i < num; i++) {
+                const div = document.createElement('div');
+                div.style.margin = '8px 0';
+                div.innerHTML = `
+                    <label>Course ${i+1}</label>
+                    <input type="number" class="course-grade" placeholder="Grade (0-100)" min="0" max="100" step="0.01" style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,45,45,0.3); border-radius:12px; color:#fff; font-size:1rem;">
+                `;
+                container.appendChild(div);
+            }
+        }
+        document.getElementById('numCourses').addEventListener('change', generateCourseInputs);
+        document.getElementById('numCourses').addEventListener('input', generateCourseInputs);
+        document.getElementById('calculateGpa').addEventListener('click', function() {
+            const program = document.getElementById('programType').value;
