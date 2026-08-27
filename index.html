@@ -381,20 +381,6 @@
             margin-top: -2px;
         }
 
-        body.theme-dark .logo {
-            background: linear-gradient(135deg, #5599ff, #88bbff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        body.theme-light .logo {
-            background: linear-gradient(135deg, #3355aa, #5577cc);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
         .nav-links {
             display: flex;
             gap: 12px;
@@ -451,18 +437,6 @@
             box-shadow: 0 0 15px rgba(255, 26, 26, 0.3);
         }
 
-        body.theme-dark .nav-icon:hover {
-            background: rgba(50, 100, 255, 0.15);
-            border-color: #5599ff;
-            box-shadow: 0 0 15px rgba(50, 100, 255, 0.25);
-        }
-
-        body.theme-light .nav-icon:hover {
-            background: rgba(50, 100, 255, 0.1);
-            border-color: #3355aa;
-            box-shadow: 0 0 15px rgba(50, 100, 255, 0.15);
-        }
-
         .nav-icon a {
             text-decoration: none;
             color: #ff4d4d;
@@ -474,7 +448,7 @@
             color: #fff;
         }
 
-        /* ========== SIDEBAR BUTTON - STUNNING ========== */
+        /* ========== SIDEBAR BUTTON - MENU WITH LIST ICON ========== */
         .sidebar-toggle-container {
             position: sticky;
             top: 68px;
@@ -544,7 +518,7 @@
             50% { text-shadow: 0 0 25px rgba(255, 26, 26, 0.6), 0 0 50px rgba(255, 26, 26, 0.15); }
         }
 
-        /* ========== SIDEBAR - PREMIUM, SMALL, EDGE ========== */
+        /* ========== SIDEBAR ========== */
         .sidebar {
             position: fixed;
             top: 0;
@@ -733,20 +707,6 @@
             line-height: 1.2;
         }
 
-        body.theme-dark .hero h1 {
-            background: linear-gradient(135deg, #88bbff, #5599ff, #3355aa);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        body.theme-light .hero h1 {
-            background: linear-gradient(135deg, #3355aa, #5577cc, #7799dd);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
         .hero .highlight {
             background: linear-gradient(135deg, #ffd700, #ff6b00);
             -webkit-background-clip: text;
@@ -777,7 +737,7 @@
             text-transform: uppercase;
         }
 
-        /* ========== FEATURES ========== */
+        /* ========== FEATURES - UPDATED ========== */
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -788,8 +748,6 @@
         }
 
         .glass-card {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 45, 45, 0.2);
             border-radius: 32px;
             padding: 32px 20px;
             transition: all 0.35s ease;
@@ -797,44 +755,119 @@
             text-decoration: none;
             display: block;
             cursor: pointer;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
         }
 
-        .glass-card::after {
+        /* ===== INSTANT UPLOAD - DARKER WITH LIGHTNING EDGE ===== */
+        .glass-card.upload-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1.5px solid rgba(255, 45, 45, 0.2);
+            box-shadow: 0 0 40px rgba(255, 26, 26, 0.05);
+        }
+
+        .glass-card.upload-card::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at center, rgba(255, 45, 45, 0.02), transparent 70%);
-            opacity: 0;
-            transition: opacity 0.4s;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 34px;
+            background: linear-gradient(135deg, #ff1a1a, #00cc33, #ff1a1a);
+            background-size: 300% 300%;
+            animation: lightningEdge 2.5s ease-in-out infinite;
+            z-index: -1;
+            opacity: 0.6;
         }
 
-        .glass-card:hover::after {
-            opacity: 1;
+        @keyframes lightningEdge {
+            0%, 100% { background-position: 0% 50%; opacity: 0.4; }
+            25% { opacity: 0.8; }
+            50% { background-position: 100% 50%; opacity: 0.6; }
+            75% { opacity: 0.9; }
         }
 
-        .glass-card:hover {
+        .glass-card.upload-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 32px;
+            background: radial-gradient(circle at center, rgba(255, 26, 26, 0.05), transparent 70%);
+            pointer-events: none;
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .glass-card.upload-card:hover {
             transform: translateY(-4px);
-            background: rgba(0, 0, 0, 0.7);
-            border-color: #ff1a1a;
-            box-shadow: 0 0 30px rgba(255, 26, 26, 0.15);
+            box-shadow: 0 0 60px rgba(255, 26, 26, 0.2);
+            border-color: rgba(255, 45, 45, 0.4);
         }
 
-        body.theme-dark .glass-card:hover {
-            background: rgba(10, 10, 15, 0.9);
-            border-color: #5599ff;
-            box-shadow: 0 0 30px rgba(50, 100, 255, 0.15);
+        /* ===== BROWSE CARDS - FLOATING WITH LIGHT BLUE EDGE & GREEN INSIDE ===== */
+        .glass-card.browse-card {
+            background: rgba(0, 255, 65, 0.05);
+            border: 1.5px solid rgba(100, 180, 255, 0.2);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            animation: float 4s ease-in-out infinite;
         }
 
-        body.theme-light .glass-card:hover {
-            background: rgba(255, 255, 255, 0.95);
-            border-color: #3355aa;
-            box-shadow: 0 0 30px rgba(50, 100, 255, 0.1);
+        .glass-card.browse-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 34px;
+            background: linear-gradient(135deg, rgba(100, 180, 255, 0.3), rgba(0, 255, 65, 0.2), rgba(100, 180, 255, 0.3));
+            background-size: 200% 200%;
+            animation: floatEdge 4s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes floatEdge {
+            0%, 100% { background-position: 0% 50%; opacity: 0.3; }
+            50% { background-position: 100% 50%; opacity: 0.6; }
+        }
+
+        .glass-card.browse-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 32px;
+            background: radial-gradient(circle at center, rgba(0, 255, 65, 0.05), transparent 70%);
+            pointer-events: none;
+        }
+
+        .glass-card.browse-card:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .glass-card.browse-card:nth-child(3) {
+            animation-delay: 1s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .glass-card.browse-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(100, 180, 255, 0.5);
+            box-shadow: 0 0 50px rgba(100, 180, 255, 0.1);
         }
 
         .glass-card i {
@@ -845,21 +878,42 @@
             color: transparent;
             margin-bottom: 16px;
             transition: transform 0.3s;
+            display: inline-block;
+        }
+
+        .glass-card.browse-card i {
+            background: linear-gradient(135deg, #66ccff, #00ff64);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .glass-card.upload-card i {
+            background: linear-gradient(135deg, #ff4444, #ff8800);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .glass-card:hover i {
-            transform: scale(1.05);
+            transform: scale(1.08);
         }
 
         .glass-card h3 {
-            color: #fff;
             font-size: 1.3rem;
             margin-bottom: 10px;
             font-weight: 700;
         }
 
-        body.theme-dark .glass-card h3 { color: #e0e0e0; }
-        body.theme-light .glass-card h3 { color: #1a1a2e; }
+        .glass-card.upload-card h3 {
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 26, 26, 0.1);
+        }
+
+        .glass-card.browse-card h3 {
+            color: #fff;
+            text-shadow: 0 0 20px rgba(100, 180, 255, 0.05);
+        }
 
         .glass-card p {
             color: rgba(255, 255, 255, 0.5);
@@ -1296,10 +1350,10 @@
             </div>
         </div>
 
-        <!-- ========== SIDEBAR TOGGLE - STUNNING ========== -->
+        <!-- ========== SIDEBAR TOGGLE - MENU WITH LIST ICON ========== -->
         <div class="sidebar-toggle-container">
             <button class="toggle-btn" id="sidebarToggle">
-                <i class="fas fa-bolt"></i> <span style="font-weight:600; letter-spacing:0.5px;">MENU</span>
+                <i class="fas fa-list-ul"></i> <span style="font-weight:600; letter-spacing:0.5px;">MENU</span>
                 <i class="fas fa-chevron-right" style="font-size:0.8rem; opacity:0.6;"></i>
             </button>
         </div>
@@ -1313,17 +1367,22 @@
 
         <!-- ========== FEATURES ========== -->
         <div class="features">
-            <a href="/upload/" class="glass-card" id="uploadCard">
+            <!-- INSTANT UPLOAD - DARKER WITH LIGHTNING EDGE -->
+            <a href="/upload/" class="glass-card upload-card" id="uploadCard">
                 <i class="fas fa-cloud-upload-alt"></i>
                 <h3>⚡ INSTANT UPLOAD</h3>
                 <p>Upload your notes & files instantly → go to upload page</p>
             </a>
-            <a href="/browse/" class="glass-card" id="browseCard">
+
+            <!-- BROWSE NOTES - FLOATING WITH LIGHT BLUE EDGE & GREEN INSIDE -->
+            <a href="/browse/" class="glass-card browse-card" id="browseCard">
                 <i class="fas fa-book-open"></i>
                 <h3>📚 BROWSE NOTES</h3>
                 <p>Browse all study materials & past papers → click to explore</p>
             </a>
-            <a href="/browse/" class="glass-card" id="searchCard">
+
+            <!-- SMART SEARCH - FLOATING WITH LIGHT BLUE EDGE & GREEN INSIDE -->
+            <a href="/browse/" class="glass-card browse-card" id="searchCard">
                 <i class="fas fa-search"></i>
                 <h3>🔍 SMART SEARCH</h3>
                 <p>Find by module, course or keyword → start searching</p>
