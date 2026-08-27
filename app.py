@@ -1,5 +1,6 @@
-# app.py - UPDATED VERSION with all fields
+# app.py - UPDATED VERSION with all fixes
 import os
+import uuid
 import mimetypes
 from datetime import datetime
 from django.conf import settings
@@ -60,7 +61,7 @@ ALLOWED_EXTENSIONS = [
     '.zip', '.rar'
 ]
 
-# University list for dropdown
+# University list
 UNIVERSITIES = [
     "University of Dar es Salaam (UDSM)",
     "Sokoine University of Agriculture (SUA)",
@@ -185,6 +186,14 @@ def get_all_notes():
                 note["original_filename"] = note.get("filename", "")
             if note.get("file_size") is None:
                 note["file_size"] = 0
+            if note.get("privacy") is None:
+                note["privacy"] = "public"
+            if note.get("file_type") is None:
+                note["file_type"] = "notes"
+            if note.get("university") is None:
+                note["university"] = "Not specified"
+            if note.get("passcode") is None:
+                note["passcode"] = ""
         return notes
     except Exception as e:
         print(f"Error: {e}")
@@ -203,14 +212,16 @@ def index(request):
 def upload_view(request):
     message = None
     error = None
+    
     if request.method == "POST":
         form = UploadForm(request.POST, request.FILES)
         if form.is_valid():
             try:
                 file = request.FILES["file"]
                 ext = os.path.splitext(file.name)[1].lower()
+                
                 if ext not in ALLOWED_EXTENSIONS:
-                    error = "File type not allowed."
+                    error = f"File type not allowed. Allowed: {', '.join(ALLOWED_EXTENSIONS)}"
                 else:
                     # Get form data
                     file_type = form.cleaned_data.get("file_type", "notes")
@@ -225,35 +236,76 @@ def upload_view(request):
                     if university == "Other":
                         university = form.cleaned_data.get("custom_university", "")
                     
+                    # If no university selected, set default
+                    if not university:
+                        university = "Not specified"
+                    
+                    # Create unique filename
                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                    safe_filename = f"{timestamp}_{file.name.replace(' ', '_')}"
+                    unique_id = str(uuid.uuid4())[:8]
+                    original_name = file.name.replace(' ', '_')
+                    name_without_ext = os.path.splitext(original_name)[0]
+                    safe_filename = f"{timestamp}_{unique_id}_{name_without_ext}{ext}"
+                    
                     file_content = file.read()
                     
-                    # Upload to Supabase storage
-                    supabase.storage.from_("notes").upload(safe_filename, file_content)
+                    # Upload to storage
+                    try:
+                        supabase.storage.from_("notes").upload(
+                            safe_filename, 
+                            file_content,
+                            {"content-type": file.content_type or "application/octet-stream"}
+                        )
+                        print(f"✅ File uploaded: {safe_filename}")
+                    except Exception as storage_error:
+                        print(f"❌ Storage error: {storage_error}")
+                        error = f"Storage upload failed: {str(storage_error)}"
+                        raise Exception(error)
                     
-                    # Save metadata to Supabase table with all fields
-                    supabase.table("notes").insert({
-                        "filename": safe_filename,
-                        "original_filename": file.name,
-                        "module": module,
-                        "course": course,
-                        "description": description,
-                        "file_type": file_type,
-                        "privacy": privacy,
-                        "passcode": passcode if privacy == "private" else "",
-                        "university": university,
-                        "uploader": "user",
-                        "uploaded_at": datetime.now().isoformat(),
-                        "file_size": len(file_content)
-                    }).execute()
+                    # Save metadata to database
+                    try:
+                        note_data = {
+                            "filename": safe_filename,
+                            "original_filename": file.name,
+                            "module": module,
+                            "course": course,
+                            "description": description,
+                            "file_type": file_type,
+                            "privacy": privacy,
+                            "passcode": passcode if privacy == "private" else "",
+                            "university": university,
+                            "uploader": "user",
+                            "uploaded_at": datetime.now().isoformat(),
+                            "file_size": len(file_content)
+                        }
+                        
+                        print(f"📝 Saving metadata: {note_data}")
+                        
+                        # Insert into database
+                        result = supabase.table("notes").insert(note_data).execute()
+                        
+                        # Verify the insert worked
+                        verify = supabase.table("notes").select("*").eq("filename", safe_filename).execute()
+                        if verify.data:
+                            print(f"✅ Metadata saved! ID: {verify.data[0]['id']}")
+                            message = f"✅ {file.name} uploaded successfully!"
+                            form = UploadForm()
+                        else:
+                            error = "File uploaded but metadata could not be saved."
+                            
+                    except Exception as db_error:
+                        print(f"❌ Database error: {db_error}")
+                        error = f"Database save failed: {str(db_error)}"
+                        raise Exception(error)
                     
-                    message = f"✅ {file.name} uploaded successfully!"
-                    form = UploadForm()
             except Exception as e:
                 error = f"Upload failed: {str(e)}"
+                print(f"❌ ERROR: {error}")
+                import traceback
+                traceback.print_exc()
         else:
             error = "Please fill all required fields."
+            print(f"❌ Form errors: {form.errors}")
     else:
         form = UploadForm()
     
@@ -271,30 +323,71 @@ def browse_view(request):
         note["can_view_inline"] = can_view_inline(note.get("filename", ""))
         note["is_private"] = note.get("privacy", "public") == "private"
         note["has_passcode"] = bool(note.get("passcode", ""))
+        # Ensure university is set
+        if not note.get("university"):
+            note["university"] = "Not specified"
+        # Ensure file_type is set
+        if not note.get("file_type"):
+            note["file_type"] = "notes"
     return render(request, "browse.html", {"notes": notes, "query": query})
 
 def view_file(request, id):
     try:
-        note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
+        # Get the note from database
+        result = supabase.table("notes").select("*").eq("id", id).execute()
         
-        # Check if private - for view.html you'll handle passcode
-        # For direct view, we'll allow it if it's public or if passcode is provided via GET
-        # You can add passcode check here
+        if not result.data:
+            return HttpResponse("File not found", status=404)
         
-        file_data = supabase.storage.from_("notes").download(note["filename"])
-        content_type = get_content_type(note["filename"])
-        response = HttpResponse(file_data, content_type=content_type)
-        response["Content-Disposition"] = f"inline; filename=\"{note.get('original_filename', note['filename'])}\""
-        return response
+        note = result.data[0]
+        
+        # Ensure all fields have defaults
+        note["original_filename"] = note.get("original_filename", note.get("filename", "Unknown"))
+        note["module"] = note.get("module", "N/A")
+        note["course"] = note.get("course", "N/A")
+        note["description"] = note.get("description", "")
+        note["file_type"] = note.get("file_type", "notes")
+        note["privacy"] = note.get("privacy", "public")
+        note["passcode"] = note.get("passcode", "")
+        note["university"] = note.get("university", "Not specified")
+        note["uploaded_at"] = note.get("uploaded_at", "")
+        note["file_size"] = note.get("file_size", 0)
+        
+        # Get file URL for viewing
+        file_url = supabase.storage.from_("notes").get_public_url(note["filename"])
+        
+        # Check if file can be viewed inline
+        can_view = can_view_inline(note.get("filename", ""))
+        
+        print(f"📄 Viewing file: {note['original_filename']}")
+        print(f"🔒 Privacy: {note['privacy']}")
+        print(f"🏫 University: {note['university']}")
+        print(f"📚 File Type: {note['file_type']}")
+        print(f"🔑 Passcode: {note['passcode'] if note['privacy'] == 'private' else 'N/A'}")
+        
+        # Prepare data for template
+        context = {
+            "note": note,
+            "pdf_url": file_url,
+            "admin": ADMIN
+        }
+        
+        return render(request, "view.html", context)
+        
     except Exception as e:
+        print(f"❌ Error viewing file: {e}")
         return HttpResponse(f"Error: {str(e)}", status=500)
 
 def download_file(request, id):
     try:
-        note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
+        result = supabase.table("notes").select("*").eq("id", id).execute()
         
-        # Check if private - add passcode check here
-        # If private, require passcode
+        if not result.data:
+            return HttpResponse("File not found", status=404)
+        
+        note = result.data[0]
+        
+        # Check if private - require passcode
         if note.get("privacy") == "private":
             passcode = request.GET.get("passcode", "")
             if passcode != note.get("passcode", ""):
@@ -332,6 +425,8 @@ def admin_dashboard(request):
     file_types = {}
     modules = {}
     total_size = 0
+    private_count = 0
+    public_count = 0
     
     for note in all_notes:
         ext = os.path.splitext(note.get("filename", ""))[1].upper()
@@ -340,12 +435,19 @@ def admin_dashboard(request):
         module = note.get("module", "Unknown")
         modules[module] = modules.get(module, 0) + 1
         total_size += note.get("file_size", 0)
+        
+        if note.get("privacy") == "private":
+            private_count += 1
+        else:
+            public_count += 1
     
     stats = {
         "total_files": total_files,
         "file_types": file_types,
         "top_modules": dict(sorted(modules.items(), key=lambda x: x[1], reverse=True)[:5]),
-        "total_size_mb": round(total_size / (1024 * 1024), 2)
+        "total_size_mb": round(total_size / (1024 * 1024), 2),
+        "private_count": private_count,
+        "public_count": public_count
     }
     
     return render(request, "admin.html", {"notes": all_notes, "stats": stats, "admin": ADMIN})
