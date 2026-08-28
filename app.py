@@ -1,4 +1,4 @@
-# app.py - COMPLETE UPDATED VERSION with all routes
+# app.py - COMPLETE UPDATED VERSION with built-in passcode page
 import os
 import uuid
 import json
@@ -187,6 +187,256 @@ def search_notes(query):
     except Exception as e:
         return get_all_notes()
 
+# ========== PASSCODE HTML TEMPLATE (built-in) ==========
+def get_passcode_html(file_id, filename, error=None):
+    error_html = f'<div class="error-msg" style="color:#ff4444;font-size:0.85rem;margin-top:12px;background:rgba(255,68,68,0.05);padding:10px;border-radius:10px;border:1px solid rgba(255,68,68,0.1);">{error}</div>' if error else '<div class="error-msg" id="passcodeError" style="color:#ff4444;font-size:0.85rem;margin-top:12px;display:none;background:rgba(255,68,68,0.05);padding:10px;border-radius:10px;border:1px solid rgba(255,68,68,0.1);">❌ Incorrect passcode. Please try again.</div>'
+    
+    return f'''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Passcode Required | Twarvis School</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {{ margin:0; padding:0; box-sizing:border-box; }}
+        body {{
+            font-family:'Inter',sans-serif;
+            background:#0a0a1a;
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            overflow-x:hidden;
+        }}
+        #matrix-canvas {{
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            z-index:0;
+            background:linear-gradient(180deg,#0a0a2e 0%,#0a0a20 50%,#0a0a1a 100%);
+        }}
+        .container {{
+            position:relative;
+            z-index:2;
+            max-width:450px;
+            width:90%;
+            padding:20px;
+            animation:fadeInUp 0.6s ease;
+        }}
+        @keyframes fadeInUp {{
+            from {{ opacity:0; transform:translateY(20px); }}
+            to {{ opacity:1; transform:translateY(0); }}
+        }}
+        .card {{
+            background:rgba(0,0,0,0.7);
+            border:2px solid rgba(255,152,0,0.15);
+            border-radius:28px;
+            padding:40px 35px;
+            backdrop-filter:blur(10px);
+            box-shadow:0 0 60px rgba(255,152,0,0.03);
+            text-align:center;
+            animation:float 3s ease-in-out infinite;
+        }}
+        @keyframes float {{
+            0%,100%{{transform:translateY(0px)}}
+            50%{{transform:translateY(-6px)}}
+        }}
+        .card .lock-icon {{
+            font-size:4rem;
+            color:#ff9800;
+            margin-bottom:16px;
+            display:block;
+            animation:pulse 2s ease-in-out infinite;
+        }}
+        @keyframes pulse {{
+            0%,100%{{transform:scale(1);opacity:0.8}}
+            50%{{transform:scale(1.05);opacity:1}}
+        }}
+        .card h1 {{
+            font-size:1.8rem;
+            font-weight:800;
+            color:#fff;
+            margin-bottom:8px;
+        }}
+        .card .sub-text {{
+            color:rgba(255,255,255,0.25);
+            font-size:0.85rem;
+            margin-bottom:4px;
+        }}
+        .card .filename {{
+            color:rgba(255,255,255,0.4);
+            font-size:0.85rem;
+            margin-bottom:20px;
+            padding:10px;
+            background:rgba(255,255,255,0.02);
+            border-radius:12px;
+            border:1px solid rgba(255,255,255,0.04);
+            word-break:break-all;
+        }}
+        .card .passcode-hint {{
+            color:rgba(255,255,255,0.12);
+            font-size:0.7rem;
+            margin-bottom:12px;
+        }}
+        .card input {{
+            width:100%;
+            padding:14px 18px;
+            background:rgba(255,255,255,0.03);
+            border:2px solid rgba(255,152,0,0.1);
+            border-radius:16px;
+            color:#fff;
+            font-size:1.4rem;
+            font-family:monospace;
+            letter-spacing:12px;
+            text-align:center;
+            transition:0.3s;
+            outline:none;
+        }}
+        .card input:focus {{
+            border-color:rgba(255,152,0,0.3);
+            box-shadow:0 0 30px rgba(255,152,0,0.05);
+        }}
+        .card input::placeholder {{
+            letter-spacing:2px;
+            font-size:0.9rem;
+            color:rgba(255,255,255,0.08);
+        }}
+        {error_html}
+        .card button {{
+            width:100%;
+            padding:14px;
+            margin-top:16px;
+            background:linear-gradient(135deg,#ff9800,#ff6b00);
+            border:none;
+            border-radius:50px;
+            color:#fff;
+            font-weight:700;
+            font-size:1.05rem;
+            cursor:pointer;
+            transition:0.3s;
+            animation:btnGlow 2s ease-in-out infinite;
+        }}
+        @keyframes btnGlow {{
+            0%,100%{{box-shadow:0 0 20px rgba(255,152,0,0.1)}}
+            50%{{box-shadow:0 0 40px rgba(255,152,0,0.25)}}
+        }}
+        .card button:hover {{
+            transform:scale(1.02);
+            box-shadow:0 0 50px rgba(255,152,0,0.3);
+        }}
+        .back-link {{
+            display:inline-block;
+            margin-top:16px;
+            color:rgba(100,180,255,0.2);
+            text-decoration:none;
+            font-size:0.85rem;
+            transition:0.3s;
+        }}
+        .back-link:hover {{
+            color:#4a7cf7;
+        }}
+        @media(max-width:480px){{
+            .card{{padding:30px 20px}}
+            .card h1{{font-size:1.4rem}}
+            .card input{{font-size:1.2rem;letter-spacing:8px}}
+        }}
+    </style>
+</head>
+<body>
+    <canvas id="matrix-canvas"></canvas>
+    <div class="container">
+        <div class="card">
+            <span class="lock-icon"><i class="fas fa-lock"></i></span>
+            <h1>🔒 Private Document</h1>
+            <p class="sub-text">Enter the passcode to view this document</p>
+            <div class="filename"><i class="fas fa-file"></i> {filename}</div>
+            <p class="passcode-hint">Enter the 4-digit passcode set by the uploader</p>
+            <input type="password" id="passcodeInput" placeholder="••••" maxlength="4" inputmode="numeric" autofocus>
+            {error_html}
+            <button id="unlockBtn"><i class="fas fa-unlock"></i> Unlock Document</button>
+            <div style="margin-top:12px;">
+                <a href="/browse/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Browse</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        function resizeCanvas() {{
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }}
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const drops = [];
+        const columns = Math.ceil(canvas.width / 20);
+        for (let i = 0; i < columns; i++) drops[i] = Math.random() * -200;
+        function drawRain() {{
+            ctx.fillStyle = 'rgba(10, 10, 30, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < drops.length; i++) {{
+                const char = chars[Math.floor(Math.random() * chars.length)];
+                const x = i * 20;
+                const y = drops[i] * 20;
+                ctx.fillStyle = '#ff9800';
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = '#ff980055';
+                ctx.font = 'bold 18px monospace';
+                if (y > 0 && y < canvas.height + 50) ctx.fillText(char, x, y);
+                ctx.shadowBlur = 0;
+                if (drops[i] * 20 > canvas.height + 50 && Math.random() > 0.98) drops[i] = 0;
+                drops[i] += 0.4 + Math.random() * 0.3;
+            }}
+            requestAnimationFrame(drawRain);
+        }}
+        drawRain();
+
+        const input = document.getElementById('passcodeInput');
+        const btn = document.getElementById('unlockBtn');
+        const error = document.getElementById('passcodeError');
+        const fileId = {file_id};
+
+        input.addEventListener('input', function() {{
+            this.value = this.value.replace(/\\D/g, '').slice(0, 4);
+            if (error) {{
+                error.classList.remove('show');
+                error.style.display = 'none';
+            }}
+        }});
+
+        btn.addEventListener('click', function() {{
+            const passcode = input.value.trim();
+            if (passcode.length === 4) {{
+                window.location.href = `/view/{file_id}/?passcode=${{passcode}}`;
+            }} else {{
+                if (error) {{
+                    error.textContent = '❌ Please enter a 4-digit passcode';
+                    error.classList.add('show');
+                    error.style.display = 'block';
+                }}
+                input.value = '';
+                input.focus();
+            }}
+        }});
+
+        input.addEventListener('keydown', function(e) {{
+            if (e.key === 'Enter') {{
+                btn.click();
+            }}
+        }});
+
+        input.focus();
+    </script>
+</body>
+</html>
+'''
+
 # ========== VIEWS ==========
 def index(request):
     return render(request, "index.html")
@@ -287,6 +537,28 @@ def view_file(request, id):
         
         note = result.data[0]
         
+        # ========== CHECK IF PRIVATE ==========
+        if note.get("privacy") == "private":
+            correct_passcode = note.get("passcode", "")
+            get_passcode = request.GET.get("passcode", "")
+            session_passcode = request.session.get(f'passcode_{id}')
+            
+            entered_passcode = get_passcode or session_passcode or ""
+            
+            # If no passcode entered yet, show the passcode page
+            if not entered_passcode:
+                html = get_passcode_html(id, note.get("original_filename", note.get("filename", "")))
+                return HttpResponse(html)
+            
+            # Verify passcode
+            if entered_passcode != correct_passcode:
+                request.session.pop(f'passcode_{id}', None)
+                html = get_passcode_html(id, note.get("original_filename", note.get("filename", "")), "❌ Incorrect passcode. Please try again.")
+                return HttpResponse(html)
+            
+            # Store valid passcode in session
+            request.session[f'passcode_{id}'] = entered_passcode
+        
         # ========== DIRECT FILE SERVING ==========
         file_data = supabase.storage.from_("notes").download(note["filename"])
         content_type = get_content_type(note["filename"])
@@ -307,9 +579,19 @@ def download_file(request, id):
         
         note = result.data[0]
         
+        # ========== CHECK IF PRIVATE ==========
         if note.get("privacy") == "private":
-            passcode = request.GET.get("passcode", "")
-            if passcode != note.get("passcode", ""):
+            correct_passcode = note.get("passcode", "")
+            get_passcode = request.GET.get("passcode", "")
+            session_passcode = request.session.get(f'passcode_{id}')
+            
+            entered_passcode = get_passcode or session_passcode or ""
+            
+            if not entered_passcode:
+                return HttpResponse("Access Denied. This file is private. Please view it first to unlock.", status=403)
+            
+            if entered_passcode != correct_passcode:
+                request.session.pop(f'passcode_{id}', None)
                 return HttpResponse("Access Denied. Incorrect passcode.", status=403)
         
         file_data = supabase.storage.from_("notes").download(note["filename"])
