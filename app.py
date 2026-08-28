@@ -1,4 +1,4 @@
-# app.py - COMPLETE UPDATED VERSION with built-in passcode page
+# app.py - COMPLETE UPDATED VERSION with all fixes
 import os
 import uuid
 import json
@@ -402,6 +402,10 @@ def get_passcode_html(file_id, filename, error=None):
         const error = document.getElementById('passcodeError');
         const fileId = {file_id};
 
+        if (error) {{
+            error.style.display = 'none';
+        }}
+
         input.addEventListener('input', function() {{
             this.value = this.value.replace(/\\D/g, '').slice(0, 4);
             if (error) {{
@@ -559,13 +563,33 @@ def view_file(request, id):
             # Store valid passcode in session
             request.session[f'passcode_{id}'] = entered_passcode
         
-        # ========== DIRECT FILE SERVING ==========
-        file_data = supabase.storage.from_("notes").download(note["filename"])
-        content_type = get_content_type(note["filename"])
+        # ========== PREPARE DATA FOR view.html ==========
+        file_url = supabase.storage.from_("notes").get_public_url(note["filename"])
         
-        response = HttpResponse(file_data, content_type=content_type)
-        response["Content-Disposition"] = f"inline; filename=\"{note.get('original_filename', note['filename'])}\""
-        return response
+        # Set flags for view.html
+        note["can_view_inline"] = can_view_inline(note.get("filename", ""))
+        note["is_pdf"] = os.path.splitext(note.get("filename", ""))[1].lower() == '.pdf'
+        note["is_image"] = os.path.splitext(note.get("filename", ""))[1].lower() in ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg']
+        note["is_text"] = os.path.splitext(note.get("filename", ""))[1].lower() in ['.txt', '.md', '.csv', '.json', '.xml']
+        
+        # For text files, fetch content
+        note["text_content"] = ""
+        if note["is_text"] and file_url:
+            try:
+                import requests
+                response = requests.get(file_url, timeout=10)
+                if response.status_code == 200:
+                    note["text_content"] = response.text
+            except:
+                pass
+        
+        context = {
+            "note": note,
+            "pdf_url": file_url,
+            "admin": ADMIN
+        }
+        
+        return render(request, "view.html", context)
         
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", status=500)
