@@ -1,4 +1,4 @@
-# app.py - COMPLETE UPDATED VERSION with URL passcode only (no sessions)
+# app.py - COMPLETE UPDATED VERSION for Cloudflare
 import os
 import uuid
 import json
@@ -27,7 +27,7 @@ if not settings.configured:
         DEBUG=True,
         SECRET_KEY=SECRET_KEY,
         ROOT_URLCONF=__name__,
-        ALLOWED_HOSTS=["*", ".onrender.com", "localhost", "127.0.0.1"],
+        ALLOWED_HOSTS=["*", ".onrender.com", "localhost", "127.0.0.1", ".pages.dev", ".workers.dev"],
         INSTALLED_APPS=["django.contrib.staticfiles"],
         MIDDLEWARE=[
             "django.middleware.common.CommonMiddleware",
@@ -47,7 +47,12 @@ if not settings.configured:
         }],
         STATIC_URL="/static/",
         STATICFILES_DIRS=[BASE_DIR],
-        CSRF_TRUSTED_ORIGINS=["https://*.onrender.com", "http://localhost:8000"],
+        CSRF_TRUSTED_ORIGINS=[
+            "https://*.onrender.com", 
+            "http://localhost:8000",
+            "https://*.pages.dev",
+            "https://*.workers.dev"
+        ],
         X_FRAME_OPTIONS="SAMEORIGIN",
     )
 
