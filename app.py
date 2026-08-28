@@ -1,4 +1,4 @@
-# app.py - COMPLETE UPDATED VERSION for Cloudflare
+# app.py - COMPLETE UPDATED VERSION with fixed browse_view
 import os
 import uuid
 import json
@@ -519,22 +519,36 @@ def upload_view(request):
     
     return render(request, "upload.html", {"form": form, "message": message, "error": error})
 
+# ========== FIXED BROWSE VIEW ==========
 def browse_view(request):
     query = request.GET.get("q", "").strip()
     notes = search_notes(query) if query else get_all_notes()
+    
+    # Process each note for display
     for note in notes:
+        # Get file extension for icon
         ext = os.path.splitext(note.get("filename", ""))[1].upper().replace(".", "")
         note["file_ext"] = ext if ext else "FILE"
+        
+        # Get file icon
         note["icon"] = get_file_icon(note.get("filename", ""))
-        original = note.get("original_filename", note.get("filename", ""))
-        note["display_name"] = original[:50] + "..." if len(original) > 50 else original
+        
+        # Display name - use module name instead of ugly filename
+        note["display_name"] = note.get("module", "Untitled")
+        
         note["can_view_inline"] = can_view_inline(note.get("filename", ""))
         note["is_private"] = note.get("privacy", "public") == "private"
         note["has_passcode"] = bool(note.get("passcode", ""))
+        
         if not note.get("university"):
             note["university"] = "Not specified"
         if not note.get("file_type"):
             note["file_type"] = "notes"
+        if not note.get("module"):
+            note["module"] = "Untitled"
+        if not note.get("course"):
+            note["course"] = "N/A"
+    
     return render(request, "browse.html", {"notes": notes, "query": query})
 
 def view_file(request, id):
