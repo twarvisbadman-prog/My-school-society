@@ -1,4 +1,4 @@
-# app.py - COMPLETE UPDATED VERSION with all fixes
+# app.py - COMPLETE UPDATED VERSION with URL passcode only (no sessions)
 import os
 import uuid
 import json
@@ -545,23 +545,16 @@ def view_file(request, id):
         if note.get("privacy") == "private":
             correct_passcode = note.get("passcode", "")
             get_passcode = request.GET.get("passcode", "")
-            session_passcode = request.session.get(f'passcode_{id}')
-            
-            entered_passcode = get_passcode or session_passcode or ""
             
             # If no passcode entered yet, show the passcode page
-            if not entered_passcode:
+            if not get_passcode:
                 html = get_passcode_html(id, note.get("original_filename", note.get("filename", "")))
                 return HttpResponse(html)
             
             # Verify passcode
-            if entered_passcode != correct_passcode:
-                request.session.pop(f'passcode_{id}', None)
+            if get_passcode != correct_passcode:
                 html = get_passcode_html(id, note.get("original_filename", note.get("filename", "")), "❌ Incorrect passcode. Please try again.")
                 return HttpResponse(html)
-            
-            # Store valid passcode in session
-            request.session[f'passcode_{id}'] = entered_passcode
         
         # ========== PREPARE DATA FOR view.html ==========
         file_url = supabase.storage.from_("notes").get_public_url(note["filename"])
@@ -607,15 +600,11 @@ def download_file(request, id):
         if note.get("privacy") == "private":
             correct_passcode = note.get("passcode", "")
             get_passcode = request.GET.get("passcode", "")
-            session_passcode = request.session.get(f'passcode_{id}')
             
-            entered_passcode = get_passcode or session_passcode or ""
-            
-            if not entered_passcode:
+            if not get_passcode:
                 return HttpResponse("Access Denied. This file is private. Please view it first to unlock.", status=403)
             
-            if entered_passcode != correct_passcode:
-                request.session.pop(f'passcode_{id}', None)
+            if get_passcode != correct_passcode:
                 return HttpResponse("Access Denied. Incorrect passcode.", status=403)
         
         file_data = supabase.storage.from_("notes").download(note["filename"])
