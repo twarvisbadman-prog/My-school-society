@@ -40,49 +40,6 @@
             border-color: rgba(50, 100, 255, 0.3);
         }
 
-        body.theme-dark .glass-card h3,
-        body.theme-dark .glass-card p,
-        body.theme-dark .link-card a,
-        body.theme-dark .link-card span,
-        body.theme-dark .hero p,
-        body.theme-dark .footer-text p,
-        body.theme-dark .contact-owner span {
-            color: #e0e0e0;
-        }
-
-        body.theme-dark .header {
-            background: rgba(10, 10, 15, 0.8);
-            border-color: rgba(50, 100, 255, 0.3);
-        }
-
-        body.theme-dark .sidebar {
-            background: rgba(10, 10, 15, 0.92);
-            border-color: rgba(50, 100, 255, 0.2);
-        }
-
-        body.theme-dark .sidebar::before {
-            border-right: 3px solid rgba(50, 100, 255, 0.4);
-            box-shadow: inset 0 0 60px rgba(50, 100, 255, 0.08), 0 0 40px rgba(50, 100, 255, 0.1);
-        }
-
-        body.theme-dark .sidebar-item {
-            color: #ccc;
-        }
-
-        body.theme-dark .sidebar-item:hover {
-            background: rgba(50, 100, 255, 0.08);
-            border-left-color: #5599ff;
-            color: #fff;
-        }
-
-        body.theme-dark .sidebar-item i {
-            color: #5599ff;
-        }
-
-        body.theme-dark .sidebar-item:hover i {
-            color: #fff;
-        }
-
         body.theme-light {
             background: #f0f0f5;
             color: #1a1a2e;
@@ -93,49 +50,6 @@
         body.theme-light .contact-owner {
             background: rgba(255, 255, 255, 0.9);
             border-color: rgba(50, 100, 255, 0.2);
-        }
-
-        body.theme-light .glass-card h3,
-        body.theme-light .glass-card p,
-        body.theme-light .link-card a,
-        body.theme-light .link-card span,
-        body.theme-light .hero p,
-        body.theme-light .footer-text p,
-        body.theme-light .contact-owner span {
-            color: #1a1a2e;
-        }
-
-        body.theme-light .header {
-            background: rgba(255, 255, 255, 0.8);
-            border-color: rgba(50, 100, 255, 0.2);
-        }
-
-        body.theme-light .sidebar {
-            background: rgba(255, 255, 255, 0.92);
-            border-color: rgba(50, 100, 255, 0.15);
-        }
-
-        body.theme-light .sidebar::before {
-            border-right: 3px solid rgba(50, 100, 255, 0.3);
-            box-shadow: inset 0 0 60px rgba(50, 100, 255, 0.03), 0 0 40px rgba(50, 100, 255, 0.05);
-        }
-
-        body.theme-light .sidebar-item {
-            color: #1a1a2e;
-        }
-
-        body.theme-light .sidebar-item:hover {
-            background: rgba(50, 100, 255, 0.05);
-            border-left-color: #3355aa;
-            color: #000;
-        }
-
-        body.theme-light .sidebar-item i {
-            color: #3355aa;
-        }
-
-        body.theme-light .sidebar-item:hover i {
-            color: #000;
         }
 
         /* ========== CANVAS - BLUE MATRIX RAIN + WATER ========== */
@@ -150,10 +64,7 @@
             transition: opacity 0.8s ease;
         }
 
-        body.theme-matrix #matrix-canvas {
-            opacity: 1;
-        }
-
+        body.theme-matrix #matrix-canvas { opacity: 1; }
         body.theme-dark #matrix-canvas,
         body.theme-light #matrix-canvas {
             opacity: 0;
@@ -168,7 +79,7 @@
             width: 100%;
         }
 
-        /* ========== HEADER - MENU AT TOP-LEFT CORNER ========== */
+        /* ========== HEADER ========== */
         .header {
             background: rgba(0, 0, 0, 0.5);
             border-bottom: 1px solid rgba(50, 150, 255, 0.1);
@@ -197,7 +108,7 @@
             gap: 16px;
         }
 
-        /* ===== MENU ICON - RED LIGHTING ===== */
+        /* ===== MENU BUTTON - FLOATING & SHAKING ===== */
         .menu-btn {
             background: rgba(0, 0, 0, 0.6);
             border: 2px solid rgba(255, 26, 26, 0.3);
@@ -212,18 +123,14 @@
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
-            animation: menuRedGlow 2s ease-in-out infinite;
+            animation: floatShake 3s ease-in-out infinite;
         }
 
-        @keyframes menuRedGlow {
-            0%, 100% {
-                box-shadow: 0 0 15px rgba(255, 26, 26, 0.2);
-                border-color: rgba(255, 26, 26, 0.3);
-            }
-            50% {
-                box-shadow: 0 0 40px rgba(255, 26, 26, 0.5), 0 0 60px rgba(255, 26, 26, 0.1);
-                border-color: rgba(255, 26, 26, 0.8);
-            }
+        @keyframes floatShake {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-3px) rotate(-2deg); }
+            50% { transform: translateY(-6px) rotate(2deg); }
+            75% { transform: translateY(-3px) rotate(-1deg); }
         }
 
         .menu-btn::before {
@@ -234,7 +141,7 @@
             right: -4px;
             bottom: -4px;
             border-radius: 50%;
-            background: radial-gradient(circle at center, rgba(255, 26, 26, 0.1), transparent 70%);
+            background: radial-gradient(circle at center, rgba(255, 26, 26, 0.15), transparent 70%);
             animation: menuPulse 2s ease-in-out infinite;
         }
 
@@ -244,7 +151,7 @@
         }
 
         .menu-btn:hover {
-            transform: scale(1.08);
+            transform: scale(1.08) translateY(-3px);
             background: rgba(255, 26, 26, 0.15);
             box-shadow: 0 0 60px rgba(255, 26, 26, 0.5);
             color: #fff;
@@ -254,12 +161,6 @@
             position: relative;
             z-index: 1;
             text-shadow: 0 0 20px rgba(255, 26, 26, 0.3);
-            animation: menuIconPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes menuIconPulse {
-            0%, 100% { text-shadow: 0 0 10px rgba(255, 26, 26, 0.2); }
-            50% { text-shadow: 0 0 30px rgba(255, 26, 26, 0.6); }
         }
 
         .logo {
@@ -288,7 +189,7 @@
             margin-top: -2px;
         }
 
-        /* ===== BROWSE TAB - PURPLE BORDER ===== */
+        /* ===== BROWSE TAB - FLOATING & SHAKING ===== */
         .browse-tab {
             display: inline-flex;
             align-items: center;
@@ -303,22 +204,14 @@
             text-decoration: none;
             transition: all 0.3s ease;
             position: relative;
-            animation: purpleBorderPulse 2.5s ease-in-out infinite;
+            animation: floatShake 3.5s ease-in-out infinite;
         }
 
-        @keyframes purpleBorderPulse {
-            0%, 100% {
-                border-color: rgba(156, 39, 176, 0.3);
-                box-shadow: 0 0 15px rgba(156, 39, 176, 0.05);
-            }
-            50% {
-                border-color: rgba(156, 39, 176, 0.7);
-                box-shadow: 0 0 30px rgba(156, 39, 176, 0.15);
-            }
-        }
+        .browse-tab:nth-child(1) { animation-delay: 0s; }
+        .browse-tab:nth-child(2) { animation-delay: 0.5s; }
 
         .browse-tab:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px) scale(1.03);
             background: rgba(156, 39, 176, 0.1);
             border-color: rgba(156, 39, 176, 0.8);
             box-shadow: 0 0 50px rgba(156, 39, 176, 0.2);
@@ -333,178 +226,60 @@
             color: #ce93d8;
         }
 
-        /* ========== SIDEBAR ========== */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -320px;
-            width: 280px;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.92);
-            border-right: 1.5px solid rgba(255, 26, 26, 0.15);
-            box-shadow: 8px 0 50px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow-y: auto;
-            padding: 20px 0;
-            backdrop-filter: blur(12px);
-        }
-
-        .sidebar.open {
-            left: 0;
-        }
-
-        .sidebar::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-right: 1px solid rgba(255, 26, 26, 0.08);
-            box-shadow: inset 0 0 60px rgba(255, 26, 26, 0.02);
-            pointer-events: none;
-            border-radius: 0 10px 10px 0;
-        }
-
-        .sidebar-header {
-            padding: 30px 28px 20px;
-            border-bottom: 1px solid rgba(255, 26, 26, 0.06);
-            margin-bottom: 12px;
-            text-align: center;
-        }
-
-        .sidebar-header h2 {
-            font-size: 1.6rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #ff1a1a, #ff4444);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.5px;
-        }
-
-        .sidebar-header p {
-            color: rgba(255, 255, 255, 0.15);
-            font-size: 0.65rem;
-            margin-top: 2px;
-            letter-spacing: 1.5px;
-            font-weight: 400;
-        }
-
-        .sidebar-close {
-            position: absolute;
-            top: 12px;
-            right: 16px;
-            color: rgba(255, 255, 255, 0.1);
-            font-size: 1.6rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: none;
-            border: none;
-        }
-
-        .sidebar-close:hover {
-            color: #ff1a1a;
-            transform: rotate(90deg);
-        }
-
-        .sidebar-item {
-            display: flex;
+        /* ===== UPLOAD BUTTON - YELLOW GLOW ===== */
+        .upload-btn {
+            display: inline-flex;
             align-items: center;
-            gap: 14px;
-            padding: 12px 28px;
-            color: rgba(255, 255, 255, 0.4);
+            gap: 8px;
+            padding: 8px 18px;
+            background: rgba(255, 193, 7, 0.1);
+            border: 2px solid rgba(255, 193, 7, 0.3);
+            border-radius: 60px;
+            color: #ffd700;
+            font-size: 0.85rem;
+            font-weight: 600;
             text-decoration: none;
-            transition: all 0.25s;
-            cursor: pointer;
-            border-left: 2px solid transparent;
-            font-size: 0.92rem;
-            font-weight: 500;
+            transition: all 0.3s ease;
             position: relative;
+            animation: floatShake 3.2s ease-in-out infinite;
+            text-shadow: 0 0 20px rgba(255, 193, 7, 0.1);
         }
 
-        .sidebar-item::after {
+        .upload-btn::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, rgba(255, 26, 26, 0.03), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 60px;
+            background: radial-gradient(circle at center, rgba(255, 193, 7, 0.1), transparent 70%);
+            animation: yellowPulse 2s ease-in-out infinite;
         }
 
-        .sidebar-item:hover::after {
-            opacity: 1;
+        @keyframes yellowPulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
         }
 
-        .sidebar-item:hover {
-            background: rgba(255, 26, 26, 0.04);
-            border-left-color: #ff1a1a;
-            color: #ff4d4d;
-            transform: translateX(4px);
+        .upload-btn:hover {
+            transform: translateY(-3px) scale(1.03);
+            background: rgba(255, 193, 7, 0.15);
+            border-color: rgba(255, 193, 7, 0.8);
+            box-shadow: 0 0 60px rgba(255, 193, 7, 0.2);
+            color: #fff;
+            text-shadow: 0 0 30px rgba(255, 193, 7, 0.3);
         }
 
-        .sidebar-item i {
-            width: 28px;
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.1);
-            transition: all 0.3s;
-            text-align: center;
+        .upload-btn i {
+            color: #ffd700;
         }
 
-        .sidebar-item:hover i {
-            color: #ff1a1a;
+        .upload-btn:hover i {
+            color: #fff;
         }
 
-        .sidebar-item .badge {
-            margin-left: auto;
-            background: rgba(255, 26, 26, 0.1);
-            color: #ff4d4d;
-            padding: 1px 12px;
-            border-radius: 50px;
-            font-size: 0.55rem;
-            font-weight: 600;
-            border: 1px solid rgba(255, 26, 26, 0.05);
-        }
-
-        .sidebar-item .badge.maintenance {
-            background: rgba(255, 136, 0, 0.1);
-            color: #ff8800;
-            border-color: rgba(255, 136, 0, 0.05);
-        }
-
-        .sidebar-item .badge.soon {
-            background: rgba(0, 204, 51, 0.1);
-            color: #00cc33;
-            border-color: rgba(0, 204, 51, 0.05);
-        }
-
-        .sidebar-divider {
-            height: 1px;
-            background: rgba(255, 26, 26, 0.04);
-            margin: 8px 28px;
-        }
-
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: 999;
-            display: none;
-            backdrop-filter: blur(2px);
-        }
-
-        .sidebar-overlay.active {
-            display: block;
-        }
-
-        /* ========== NAV LINKS ========== */
+        /* ===== NAV ICONS ===== */
         .nav-links {
             display: flex;
             gap: 12px;
@@ -543,7 +318,131 @@
             transition: all 0.3s;
         }
 
-        /* ========== HERO ========== */
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 280px;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            border-right: 1.5px solid rgba(255, 26, 26, 0.15);
+            box-shadow: 8px 0 50px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            padding: 20px 0;
+            backdrop-filter: blur(12px);
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 30px 28px 20px;
+            border-bottom: 1px solid rgba(255, 26, 26, 0.06);
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff1a1a, #ff4444);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .sidebar-header p {
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 0.65rem;
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 1.6rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: none;
+            border: none;
+        }
+
+        .sidebar-close:hover {
+            color: #ff1a1a;
+            transform: rotate(90deg);
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 28px;
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            transition: all 0.25s;
+            cursor: pointer;
+            border-left: 2px solid transparent;
+            font-size: 0.92rem;
+            font-weight: 500;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 26, 26, 0.04);
+            border-left-color: #ff1a1a;
+            color: #ff4d4d;
+            transform: translateX(4px);
+        }
+
+        .sidebar-item i {
+            width: 28px;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .sidebar-item:hover i {
+            color: #ff1a1a;
+        }
+
+        .sidebar-item .badge {
+            margin-left: auto;
+            background: rgba(255, 26, 26, 0.1);
+            color: #ff4d4d;
+            padding: 1px 12px;
+            border-radius: 50px;
+            font-size: 0.55rem;
+            font-weight: 600;
+            border: 1px solid rgba(255, 26, 26, 0.05);
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(255, 26, 26, 0.04);
+            margin: 8px 28px;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 999;
+            display: none;
+            backdrop-filter: blur(2px);
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* ========== HERO - COLOR CHANGING TITLE ========== */
         .hero {
             text-align: center;
             padding: 60px 20px 40px;
@@ -553,19 +452,23 @@
         .hero h1 {
             font-size: 2.8rem;
             font-weight: 900;
-            background: linear-gradient(135deg, #6c9aff, #4a7cf7, #88bbff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
             margin-bottom: 12px;
             line-height: 1.2;
+            animation: colorChange 1.5s ease-in-out infinite;
+        }
+
+        @keyframes colorChange {
+            0% { color: #4a7cf7; text-shadow: 0 0 30px rgba(74, 124, 247, 0.3); }
+            25% { color: #ff1a1a; text-shadow: 0 0 30px rgba(255, 26, 26, 0.3); }
+            50% { color: #00ff41; text-shadow: 0 0 30px rgba(0, 255, 65, 0.3); }
+            75% { color: #ffffff; text-shadow: 0 0 30px rgba(255, 255, 255, 0.3); }
+            100% { color: #4a7cf7; text-shadow: 0 0 30px rgba(74, 124, 247, 0.3); }
         }
 
         .hero .highlight {
-            background: linear-gradient(135deg, #88bbff, #4a7cf7);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            background: none;
+            color: inherit;
+            -webkit-text-fill-color: inherit;
         }
 
         .hero p {
@@ -591,7 +494,7 @@
             text-transform: uppercase;
         }
 
-        /* ========== FEATURES - FLOATING TABS ========== */
+        /* ========== FEATURES - FLOATING & SHAKING WITH GREEN BORDER ========== */
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -612,26 +515,20 @@
             position: relative;
             overflow: hidden;
             background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(50, 150, 255, 0.08);
+            border: 2px solid rgba(0, 255, 65, 0.2);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            animation: float 4s ease-in-out infinite;
+            animation: floatShakeGreen 3.5s ease-in-out infinite;
         }
 
-        .glass-card:nth-child(1) {
-            animation-delay: 0s;
-        }
+        .glass-card:nth-child(1) { animation-delay: 0s; }
+        .glass-card:nth-child(2) { animation-delay: 0.5s; }
+        .glass-card:nth-child(3) { animation-delay: 1s; }
 
-        .glass-card:nth-child(2) {
-            animation-delay: 0.5s;
-        }
-
-        .glass-card:nth-child(3) {
-            animation-delay: 1s;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
+        @keyframes floatShakeGreen {
+            0%, 100% { transform: translateY(0px) rotate(0deg); border-color: rgba(0, 255, 65, 0.2); }
+            25% { transform: translateY(-4px) rotate(-0.5deg); border-color: rgba(0, 255, 65, 0.4); }
+            50% { transform: translateY(-8px) rotate(0.5deg); border-color: rgba(0, 255, 65, 0.6); }
+            75% { transform: translateY(-4px) rotate(-0.3deg); border-color: rgba(0, 255, 65, 0.4); }
         }
 
         .glass-card::before {
@@ -642,13 +539,13 @@
             right: -2px;
             bottom: -2px;
             border-radius: 30px;
-            background: linear-gradient(135deg, rgba(50, 150, 255, 0.15), rgba(74, 124, 247, 0.05), rgba(50, 150, 255, 0.15));
+            background: linear-gradient(135deg, rgba(0, 255, 65, 0.1), rgba(74, 124, 247, 0.05), rgba(0, 255, 65, 0.1));
             background-size: 200% 200%;
-            animation: cardGlow 4s ease-in-out infinite;
+            animation: greenCardGlow 4s ease-in-out infinite;
             z-index: -1;
         }
 
-        @keyframes cardGlow {
+        @keyframes greenCardGlow {
             0%, 100% { background-position: 0% 50%; opacity: 0.3; }
             50% { background-position: 100% 50%; opacity: 0.6; }
         }
@@ -661,14 +558,14 @@
             right: 0;
             bottom: 0;
             border-radius: 28px;
-            background: radial-gradient(circle at center, rgba(50, 150, 255, 0.03), transparent 70%);
+            background: radial-gradient(circle at center, rgba(0, 255, 65, 0.03), transparent 70%);
             pointer-events: none;
         }
 
         .glass-card:hover {
             transform: translateY(-6px) scale(1.02);
-            border-color: rgba(50, 150, 255, 0.3);
-            box-shadow: 0 0 60px rgba(50, 150, 255, 0.08);
+            border-color: rgba(0, 255, 65, 0.6);
+            box-shadow: 0 0 60px rgba(0, 255, 65, 0.08);
         }
 
         .glass-card i {
@@ -697,6 +594,130 @@
             color: rgba(100, 180, 255, 0.4);
             font-size: 0.9rem;
             line-height: 1.5;
+        }
+
+        /* ========== SETTINGS MODAL - MINIMAL, FLOATING, SMALL ========== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1100;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(10, 10, 30, 0.92);
+            border: 2px solid rgba(0, 255, 65, 0.3);
+            border-radius: 20px;
+            padding: 28px 30px;
+            max-width: 380px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 0 60px rgba(0, 255, 65, 0.05);
+            animation: modalFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes modalFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 22px;
+            border: 1px solid rgba(0, 255, 65, 0.1);
+            pointer-events: none;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            font-size: 1.4rem;
+            color: rgba(100, 180, 255, 0.2);
+            cursor: pointer;
+            transition: 0.3s;
+            background: none;
+            border: none;
+        }
+
+        .modal-close:hover {
+            color: #4a7cf7;
+            transform: rotate(90deg);
+        }
+
+        .modal h2 {
+            color: #fff;
+            margin-bottom: 16px;
+            text-align: center;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, #4a7cf7, #6c9aff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .modal .gpa-calc {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .modal .gpa-calc input,
+        .modal .gpa-calc select {
+            width: 100%;
+            padding: 10px 12px;
+            margin: 6px 0;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 255, 65, 0.1);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        .modal .gpa-calc button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #4a7cf7, #6c9aff);
+            border: none;
+            border-radius: 50px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 8px;
+        }
+
+        .modal .gpa-calc button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(74, 124, 247, 0.2);
+        }
+
+        .modal .gpa-result {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(0, 255, 65, 0.03);
+            border: 1px solid rgba(0, 255, 65, 0.08);
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
         }
 
         /* ========== RESOURCE LINKS ========== */
@@ -881,165 +902,7 @@
 
         .back-to-top.visible { display: flex; }
 
-        /* ========== GPA CALCULATOR MODAL ========== */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 1100;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 0.3s;
-        }
-
-        .modal.active { display: flex; }
-
-        .modal-content {
-            background: rgba(0, 0, 0, 0.92);
-            border: 1px solid rgba(50, 150, 255, 0.1);
-            border-radius: 24px;
-            padding: 35px;
-            max-width: 540px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: 0 0 50px rgba(50, 150, 255, 0.03);
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 12px;
-            right: 16px;
-            font-size: 1.8rem;
-            color: rgba(100, 180, 255, 0.15);
-            cursor: pointer;
-            transition: 0.3s;
-            background: none;
-            border: none;
-        }
-
-        .modal-close:hover {
-            color: #4a7cf7;
-            transform: rotate(90deg);
-        }
-
-        .modal h2 {
-            color: #fff;
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 1.8rem;
-            background: linear-gradient(135deg, #4a7cf7, #6c9aff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .gpa-calc {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .gpa-calc input,
-        .gpa-calc select {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(50, 150, 255, 0.08);
-            border-radius: 12px;
-            color: #fff;
-            font-size: 1rem;
-        }
-
-        .gpa-calc button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #4a7cf7, #6c9aff);
-            border: none;
-            border-radius: 50px;
-            color: #fff;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
-        }
-
-        .gpa-calc button:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 30px rgba(74, 124, 247, 0.2);
-        }
-
-        .gpa-result {
-            margin-top: 15px;
-            padding: 15px;
-            background: rgba(50, 150, 255, 0.05);
-            border: 1px solid rgba(50, 150, 255, 0.08);
-            border-radius: 12px;
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #fff;
-        }
-
-        /* ========== COMING SOON ========== */
-        .coming-soon {
-            text-align: center;
-            padding: 30px 20px;
-        }
-
-        .coming-soon i {
-            font-size: 4rem;
-            color: #4a7cf7;
-            margin-bottom: 16px;
-        }
-
-        .coming-soon h3 {
-            font-size: 2rem;
-            background: linear-gradient(135deg, #4a7cf7, #6c9aff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .coming-soon p {
-            color: rgba(100, 180, 255, 0.3);
-            font-size: 1rem;
-        }
-
-        .maintenance-badge {
-            display: inline-block;
-            background: rgba(50, 150, 255, 0.15);
-            color: #4a7cf7;
-            padding: 4px 16px;
-            border-radius: 50px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            animation: pulse 1.5s infinite;
-        }
-
-        .setting-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #4a7cf7, #6c9aff);
-            border: none;
-            border-radius: 50px;
-            color: #fff;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: 0.3s;
-        }
-
-        .setting-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 30px rgba(74, 124, 247, 0.2);
-        }
-
+        /* ========== THEME SELECTOR ========== */
         .theme-selector {
             display: flex;
             gap: 8px;
@@ -1071,10 +934,24 @@
             color: #6c9aff;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        .setting-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #4a7cf7, #6c9aff);
+            border: none;
+            border-radius: 50px;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.3s;
         }
+
+        .setting-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(74, 124, 247, 0.2);
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.95); }
             to { opacity: 1; transform: scale(1); }
@@ -1093,8 +970,9 @@
             .logo { font-size: 1.4rem; }
             .features { grid-template-columns: 1fr; }
             .contact-owner { flex-direction: column; }
-            .modal-content { padding: 20px; }
+            .modal-content { padding: 20px; max-width: 320px; }
             .browse-tab { padding: 6px 14px; font-size: 0.75rem; }
+            .upload-btn { padding: 6px 14px; font-size: 0.75rem; }
         }
 
         @media (max-width: 480px) {
@@ -1111,11 +989,11 @@
     <canvas id="matrix-canvas"></canvas>
 
     <div class="glass-overlay">
-        <!-- ========== HEADER - MENU AT TOP-LEFT ========== -->
+        <!-- ========== HEADER ========== -->
         <div class="header">
             <div class="header-content">
                 <div class="header-left">
-                    <!-- MENU ICON - RED LIGHTING -->
+                    <!-- FLOATING & SHAKING MENU BUTTON -->
                     <button class="menu-btn" id="menuToggle">
                         <i class="fas fa-bars"></i>
                     </button>
@@ -1125,25 +1003,26 @@
                     </div>
                 </div>
                 <div class="nav-links">
-                    <!-- BROWSE TAB - PURPLE BORDER -->
+                    <!-- FLOATING & SHAKING BROWSE TAB -->
                     <a href="/browse/" class="browse-tab">
                         <i class="fas fa-book-open"></i> Browse
                     </a>
-                    <a href="/upload/" class="nav-icon" data-label="Upload">
-                        <i class="fas fa-cloud-upload-alt"></i>
+                    <!-- YELLOW GLOW UPLOAD BUTTON -->
+                    <a href="/upload/" class="upload-btn">
+                        <i class="fas fa-cloud-upload-alt"></i> Upload
                     </a>
                 </div>
             </div>
         </div>
 
-        <!-- ========== HERO ========== -->
+        <!-- ========== HERO - COLOR CHANGING TITLE ========== -->
         <div class="hero">
-            <h1>WELCOME TO <span class="highlight">TWARVIS</span> STUDENTS HUB</h1>
+            <h1>WELCOME TO TWARVIS STUDENTS HUB</h1>
             <p>Upload, browse, and dominate your studies — powered by the matrix.</p>
             <span class="sub-tag"><i class="fas fa-bolt"></i> Learn. Share. Grow.</span>
         </div>
 
-        <!-- ========== FEATURES - FLOATING TABS ========== -->
+        <!-- ========== FEATURES - FLOATING & SHAKING WITH GREEN BORDER ========== -->
         <div class="features">
             <a href="/upload/" class="glass-card" id="uploadCard">
                 <i class="fas fa-cloud-upload-alt"></i>
@@ -1217,10 +1096,11 @@
 
         <div class="sidebar-divider"></div>
 
-        <div class="sidebar-item" id="sideGpa">
+        <!-- CALCULATOR - LINKS TO calculator.html -->
+        <a class="sidebar-item" href="/calculator.html" id="sideGpa">
             <i class="fas fa-calculator"></i> GPA Calculator
             <span class="badge soon">New</span>
-        </div>
+        </a>
 
         <div class="sidebar-divider"></div>
 
@@ -1235,76 +1115,31 @@
 
         <div class="sidebar-divider"></div>
 
+        <!-- SETTINGS - MINIMAL FLOATING POPUP -->
         <div class="sidebar-item" id="sideSettings">
             <i class="fas fa-cog"></i> Settings
             <span class="badge">⚡</span>
         </div>
     </div>
 
-    <!-- ========== SETTINGS MODAL ========== -->
+    <!-- ========== SETTINGS MODAL - MINIMAL, FLOATING, SMALL ========== -->
     <div class="modal" id="settingsModal">
         <div class="modal-content">
             <button class="modal-close" id="closeSettings">&times;</button>
             <h2><i class="fas fa-cog"></i> Settings</h2>
-            <div class="gpa-calc">
-                <div style="margin-bottom:20px;">
-                    <label style="display:block; margin-bottom:10px; font-weight:600; color:rgba(100,180,255,0.3); font-size:0.9rem;"><i class="fas fa-palette"></i> Theme Mode</label>
+            <div>
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; margin-bottom:8px; font-weight:600; color:rgba(100,180,255,0.4); font-size:0.8rem;"><i class="fas fa-palette"></i> Theme Mode</label>
                     <div class="theme-selector">
                         <button id="themeMatrix" class="active">🌿 Matrix</button>
                         <button id="themeDark">🌙 Dark</button>
                         <button id="themeLight">☀️ Light</button>
                     </div>
                 </div>
-                <div style="margin-bottom:20px;">
-                    <label style="display:block; margin-bottom:5px; color:rgba(100,180,255,0.3); font-size:0.9rem;"><i class="fas fa-sync"></i> Refresh Page</label>
+                <div>
+                    <label style="display:block; margin-bottom:5px; color:rgba(100,180,255,0.3); font-size:0.8rem;"><i class="fas fa-sync"></i> Refresh Page</label>
                     <button class="setting-btn" id="refreshBtn">Refresh Now</button>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== GPA CALCULATOR MODAL ========== -->
-    <div class="modal" id="gpaModal">
-        <div class="modal-content">
-            <button class="modal-close" id="closeGpa">&times;</button>
-            <h2><i class="fas fa-calculator"></i> GPA Calculator</h2>
-            <div class="gpa-calc">
-                <label>Select Program:</label>
-                <select id="programType">
-                    <option value="diploma">Diploma (4.0 GPA)</option>
-                    <option value="bachelor">Bachelor (5.0 GPA)</option>
-                </select>
-                <label>Number of Courses:</label>
-                <input type="number" id="numCourses" min="1" value="4">
-                <div id="courseInputs"></div>
-                <button id="calculateGpa">Calculate GPA</button>
-                <div class="gpa-result" id="gpaResult"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== COMING SOON MODAL ========== -->
-    <div class="modal" id="comingSoonModal">
-        <div class="modal-content">
-            <button class="modal-close" id="closeComingSoon">&times;</button>
-            <div class="coming-soon">
-                <i class="fas fa-rocket"></i>
-                <h3>🚀 COMING SOON!</h3>
-                <p>We're working hard to bring you this feature. Stay tuned!</p>
-                <div style="margin-top:20px;"><span class="maintenance-badge">⚡ In Development</span></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== MAINTENANCE MODAL ========== -->
-    <div class="modal" id="maintenanceModal">
-        <div class="modal-content">
-            <button class="modal-close" id="closeMaintenance">&times;</button>
-            <div class="coming-soon">
-                <i class="fas fa-tools"></i>
-                <h3>🔧 UNDER MAINTENANCE</h3>
-                <p>This feature is currently being updated. Please check back later!</p>
-                <div style="margin-top:20px;"><span class="maintenance-badge">🛠️ Maintenance Mode</span></div>
             </div>
         </div>
     </div>
@@ -1364,7 +1199,6 @@
             ctx.fillStyle = 'rgba(10, 10, 30, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Water rain
             for (let drop of rainDrops) {
                 ctx.beginPath();
                 ctx.moveTo(drop.x, drop.y);
@@ -1390,7 +1224,6 @@
                 }
             }
 
-            // Draw splashes
             for (let i = splashes.length - 1; i >= 0; i--) {
                 const s = splashes[i];
                 ctx.beginPath();
@@ -1406,7 +1239,6 @@
                 }
             }
 
-            // Matrix code
             for (let i = 0; i < drops.length; i++) {
                 const char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
                 const x = i * fontSize;
@@ -1522,7 +1354,7 @@
                 'sideHome': '/',
                 'sideBrowse': '/browse/',
                 'sideUpload': '/upload/',
-                'sideGpa': 'gpa',
+                'sideGpa': '/calculator.html',
                 'sideHackathon': 'hackathon',
                 'sideCourses': 'courses',
                 'sideSettings': 'settings'
@@ -1533,11 +1365,7 @@
                 if (element) {
                     element.addEventListener('click', function(e) {
                         const target = sidebarItems[id];
-                        if (target === 'gpa') {
-                            closeSidebar();
-                            setTimeout(() => openModal('gpaModal'), 300);
-                            generateCourseInputs();
-                        } else if (target === 'hackathon') {
+                        if (target === 'hackathon') {
                             closeSidebar();
                             setTimeout(() => openModal('comingSoonModal'), 300);
                         } else if (target === 'courses') {
@@ -1546,6 +1374,8 @@
                         } else if (target === 'settings') {
                             closeSidebar();
                             setTimeout(() => openModal('settingsModal'), 300);
+                        } else if (target.startsWith('/')) {
+                            instantNavigate(target);
                         } else {
                             instantNavigate(target);
                         }
@@ -1553,7 +1383,7 @@
                 }
             });
 
-            // ========== MODALS ==========
+            // ========== SETTINGS MODAL ==========
             function openModal(modalId) {
                 document.getElementById(modalId).classList.add('active');
             }
@@ -1563,16 +1393,10 @@
             }
 
             document.getElementById('closeSettings').addEventListener('click', () => closeModal('settingsModal'));
-            document.getElementById('closeGpa').addEventListener('click', () => closeModal('gpaModal'));
-            document.getElementById('closeComingSoon').addEventListener('click', () => closeModal('comingSoonModal'));
-            document.getElementById('closeMaintenance').addEventListener('click', () => closeModal('maintenanceModal'));
-
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        this.classList.remove('active');
-                    }
-                });
+            document.getElementById('settingsModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
             });
 
             // ========== THEME ==========
@@ -1613,61 +1437,8 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
 
-            // ========== GPA CALCULATOR ==========
-            function generateCourseInputs() {
-                const num = parseInt(document.getElementById('numCourses').value) || 4;
-                const container = document.getElementById('courseInputs');
-                container.innerHTML = '';
-                for (let i = 0; i < num; i++) {
-                    const div = document.createElement('div');
-                    div.style.margin = '8px 0';
-                    div.innerHTML = `
-                        <label>Course ${i+1}:</label>
-                        <input type="number" class="course-grade" placeholder="Grade (0-100)" min="0" max="100" step="0.01">
-                    `;
-                    container.appendChild(div);
-                }
-            }
-
-            document.getElementById('numCourses').addEventListener('change', generateCourseInputs);
-            document.getElementById('numCourses').addEventListener('input', generateCourseInputs);
-
-            document.getElementById('calculateGpa').addEventListener('click', function() {
-                const program = document.getElementById('programType').value;
-                const maxGpa = program === 'diploma' ? 4.0 : 5.0;
-                const grades = document.querySelectorAll('.course-grade');
-                let total = 0;
-                let count = 0;
-
-                grades.forEach(input => {
-                    const val = parseFloat(input.value);
-                    if (!isNaN(val) && val >= 0 && val <= 100) {
-                        total += val;
-                        count++;
-                    }
-                });
-
-                if (count === 0) {
-                    document.getElementById('gpaResult').innerHTML = 'Please enter valid grades!';
-                    document.getElementById('gpaResult').style.color = '#ff4444';
-                    return;
-                }
-
-                const average = total / count;
-                const gpa = (average / 100) * maxGpa;
-                const result = document.getElementById('gpaResult');
-                result.innerHTML = `
-                    <div>Program: ${program.charAt(0).toUpperCase() + program.slice(1)}</div>
-                    <div>Average Grade: ${average.toFixed(1)}%</div>
-                    <div style="font-size:1.4rem; margin-top:5px;">GPA: ${gpa.toFixed(2)} / ${maxGpa.toFixed(1)}</div>
-                    <div style="font-size:0.9rem; margin-top:5px; color: ${gpa >= maxGpa * 0.7 ? '#4a7cf7' : '#ff4444'}">
-                        ${gpa >= maxGpa * 0.7 ? '✅ Good Standing' : '⚠️ Needs Improvement'}
-                    </div>
-                `;
-                result.style.color = '#fff';
-            });
-
             console.log('⚡ TWARVIS — Premium Students Hub Loaded');
+            console.log('📊 Calculator linked to calculator.html');
         });
     </script>
 </body>
