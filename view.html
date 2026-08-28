@@ -1,4 +1,4 @@
-<!-- view.html - Shows the REAL file directly -->
+<!-- view.html - Complete Updated Version -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,58 +16,343 @@
             min-height:100vh; 
             overflow-x:hidden;
         }
-        #rain-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; background:linear-gradient(180deg,#0f0f1a 0%,#0a0a0f 100%); }
-        .glass-overlay { position:relative; z-index:2; min-height:100vh; width:100%; }
+        #rain-canvas { 
+            position:fixed; 
+            top:0; 
+            left:0; 
+            width:100%; 
+            height:100%; 
+            z-index:0; 
+            background:linear-gradient(180deg,#0f0f1a 0%,#0a0a0f 100%); 
+        }
+        .glass-overlay { 
+            position:relative; 
+            z-index:2; 
+            min-height:100vh; 
+            width:100%; 
+        }
 
-        .header { background:rgba(0,0,0,0.7); backdrop-filter:blur(20px); border-bottom:1px solid rgba(255,255,255,0.05); position:sticky; top:0; z-index:100; padding:12px 0; }
-        .header-content { max-width:1000px; margin:0 auto; padding:0 20px; display:flex; justify-content:space-between; align-items:center; }
-        .logo { font-size:1.2rem; font-weight:700; background:linear-gradient(135deg,#ff1a1a,#00cc33); -webkit-background-clip:text; background-clip:text; color:transparent; }
-        .nav-links { display:flex; gap:16px; }
-        .nav-links a { color:rgba(255,255,255,0.5); text-decoration:none; font-size:0.9rem; transition:0.3s; }
-        .nav-links a:hover { color:#fff; }
+        /* ===== HEADER ===== */
+        .header { 
+            background:rgba(0,0,0,0.7); 
+            backdrop-filter:blur(20px); 
+            border-bottom:1px solid rgba(255,255,255,0.05); 
+            position:sticky; 
+            top:0; 
+            z-index:100; 
+            padding:12px 0; 
+        }
+        .header-content { 
+            max-width:1000px; 
+            margin:0 auto; 
+            padding:0 20px; 
+            display:flex; 
+            justify-content:space-between; 
+            align-items:center; 
+        }
+        .logo { 
+            font-size:1.2rem; 
+            font-weight:700; 
+            background:linear-gradient(135deg,#ff1a1a,#00cc33); 
+            -webkit-background-clip:text; 
+            background-clip:text; 
+            color:transparent; 
+        }
+        .nav-links { 
+            display:flex; 
+            gap:16px; 
+        }
+        .nav-links a { 
+            color:rgba(255,255,255,0.5); 
+            text-decoration:none; 
+            font-size:0.9rem; 
+            transition:0.3s; 
+        }
+        .nav-links a:hover { 
+            color:#fff; 
+        }
 
-        .viewer-container { max-width:1000px; margin:20px auto; padding:0 20px 40px; position:relative; z-index:3; }
-        .view-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:28px; padding:28px; }
-        .pdf-header { margin-bottom:20px; }
-        .pdf-header h2 { font-size:1.3rem; font-weight:600; color:#fff; display:flex; align-items:center; gap:10px; }
-        .pdf-header h2 i { color:#ff4d4d; }
-        .pdf-meta { display:flex; flex-wrap:wrap; gap:14px; font-size:0.85rem; color:rgba(255,255,255,0.4); margin:6px 0; }
-        .pdf-meta span { display:flex; align-items:center; gap:6px; }
+        /* ===== VIEWER ===== */
+        .viewer-container { 
+            max-width:1000px; 
+            margin:20px auto; 
+            padding:0 20px 40px; 
+            position:relative; 
+            z-index:3; 
+        }
+        .view-card { 
+            background:rgba(255,255,255,0.03); 
+            border:1px solid rgba(255,255,255,0.08); 
+            border-radius:28px; 
+            padding:28px; 
+        }
+        .pdf-header { 
+            margin-bottom:20px; 
+        }
+        .pdf-header h2 { 
+            font-size:1.3rem; 
+            font-weight:600; 
+            color:#fff; 
+            display:flex; 
+            align-items:center; 
+            gap:10px; 
+        }
+        .pdf-header h2 i { 
+            color:#ff4d4d; 
+        }
+        .pdf-meta { 
+            display:flex; 
+            flex-wrap:wrap; 
+            gap:14px; 
+            font-size:0.85rem; 
+            color:rgba(255,255,255,0.4); 
+            margin:6px 0; 
+        }
+        .pdf-meta span { 
+            display:flex; 
+            align-items:center; 
+            gap:6px; 
+        }
+        .pdf-meta .lock-icon { 
+            color:#ff9800; 
+        }
+        .pdf-meta .public-icon { 
+            color:#00ff41; 
+        }
 
-        .pdf-viewer { background:rgba(0,0,0,0.2); border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,0.05); min-height:500px; }
-        .pdf-viewer iframe { width:100%; height:75vh; border:none; min-height:500px; }
-        .pdf-viewer embed { width:100%; height:75vh; min-height:500px; }
-        .pdf-viewer img { width:100%; height:auto; max-height:75vh; object-fit:contain; }
-        .pdf-viewer textarea { width:100%; height:75vh; min-height:500px; background:rgba(0,0,0,0.8); color:#ddd; border:none; padding:20px; font-family:'Courier New',monospace; font-size:14px; outline:none; resize:none; }
+        /* ===== PDF VIEWER ===== */
+        .pdf-viewer { 
+            background:rgba(0,0,0,0.2); 
+            border-radius:20px; 
+            overflow:hidden; 
+            border:1px solid rgba(255,255,255,0.05); 
+            min-height:500px; 
+        }
+        .pdf-viewer iframe { 
+            width:100%; 
+            height:75vh; 
+            border:none; 
+            min-height:500px; 
+        }
+        .pdf-viewer embed { 
+            width:100%; 
+            height:75vh; 
+            min-height:500px; 
+        }
+        .pdf-viewer img { 
+            width:100%; 
+            height:auto; 
+            max-height:75vh; 
+            object-fit:contain; 
+        }
+        .pdf-viewer textarea { 
+            width:100%; 
+            height:75vh; 
+            min-height:500px; 
+            background:rgba(0,0,0,0.8); 
+            color:#ddd; 
+            border:none; 
+            padding:20px; 
+            font-family:'Courier New',monospace; 
+            font-size:14px; 
+            outline:none; 
+            resize:none; 
+        }
 
-        .action-bar { display:flex; gap:12px; margin-top:20px; flex-wrap:wrap; }
-        .action-bar a { padding:10px 24px; border-radius:60px; font-weight:600; font-size:0.9rem; text-decoration:none; border:1px solid transparent; transition:all 0.25s; display:inline-flex; align-items:center; gap:8px; font-family:inherit; }
-        .btn-back { background:rgba(255,45,45,0.08); color:#ff4d4d; border-color:rgba(255,45,45,0.08); }
-        .btn-back:hover { background:rgba(255,45,45,0.15); }
-        .btn-download { background:rgba(0,255,65,0.08); color:#00ff41; border-color:rgba(0,255,65,0.08); }
-        .btn-download:hover { background:rgba(0,255,65,0.15); }
+        /* ===== ERROR BOX ===== */
+        .error-box { 
+            display:flex; 
+            flex-direction:column; 
+            align-items:center; 
+            justify-content:center; 
+            height:50vh; 
+            color:rgba(255,255,255,0.3); 
+            text-align:center; 
+        }
+        .error-box i { 
+            font-size:4rem; 
+            color:#ff4d4d; 
+            margin-bottom:20px; 
+            opacity:0.5; 
+        }
+        .error-box h3 { 
+            color:rgba(255,255,255,0.5); 
+            font-size:1.3rem; 
+            margin-bottom:10px; 
+        }
+        .error-box p { 
+            color:rgba(255,255,255,0.2); 
+        }
 
-        .error-box { display:flex; flex-direction:column; align-items:center; justify-content:center; height:50vh; color:rgba(255,255,255,0.3); text-align:center; }
-        .error-box i { font-size:4rem; color:#ff4d4d; margin-bottom:20px; opacity:0.5; }
-        .error-box h3 { color:rgba(255,255,255,0.5); font-size:1.3rem; margin-bottom:10px; }
-        .error-box p { color:rgba(255,255,255,0.2); }
+        /* ===== ACTION BAR ===== */
+        .action-bar { 
+            display:flex; 
+            gap:12px; 
+            margin-top:20px; 
+            flex-wrap:wrap; 
+        }
+        .action-bar a { 
+            padding:10px 24px; 
+            border-radius:60px; 
+            font-weight:600; 
+            font-size:0.9rem; 
+            text-decoration:none; 
+            border:1px solid transparent; 
+            transition:all 0.25s; 
+            display:inline-flex; 
+            align-items:center; 
+            gap:8px; 
+            font-family:inherit; 
+        }
+        /* Back Button */
+        .btn-back { 
+            background:rgba(255,45,45,0.08); 
+            color:#ff4d4d; 
+            border-color:rgba(255,45,45,0.08); 
+        }
+        .btn-back:hover { 
+            background:rgba(255,45,45,0.15); 
+            transform:translateY(-2px); 
+        }
+        /* Download Button - Red Glowing */
+        .btn-download { 
+            background:rgba(255,0,0,0.08); 
+            color:#ff3333; 
+            border-color:rgba(255,0,0,0.3); 
+            animation:redGlow 1.5s ease-in-out infinite; 
+            font-weight:700; 
+        }
+        @keyframes redGlow {
+            0%, 100% { 
+                box-shadow:0 0 10px rgba(255,0,0,0.1); 
+                border-color:rgba(255,0,0,0.3); 
+            }
+            50% { 
+                box-shadow:0 0 30px rgba(255,0,0,0.25); 
+                border-color:rgba(255,0,0,0.7); 
+            }
+        }
+        .btn-download:hover { 
+            background:rgba(255,0,0,0.2); 
+            border-color:#ff0000; 
+            transform:translateY(-2px) scale(1.02); 
+            box-shadow:0 0 40px rgba(255,0,0,0.3); 
+            color:#fff; 
+        }
+        .btn-download i { 
+            color:#ff3333; 
+        }
+        .btn-download:hover i { 
+            color:#fff; 
+        }
 
-        .passcode-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); backdrop-filter:blur(16px); z-index:2000; justify-content:center; align-items:center; }
-        .passcode-overlay.active { display:flex; }
-        .passcode-box { background:rgba(15,15,26,0.95); border:1px solid rgba(255,255,255,0.08); border-radius:40px; padding:48px 40px 36px; max-width:420px; width:90%; text-align:center; box-shadow:0 0 80px rgba(255,26,26,0.12); }
-        .passcode-box .lock-icon { font-size:3rem; color:#ff9800; display:block; margin-bottom:12px; }
-        .passcode-box h3 { color:#fff; font-size:1.4rem; font-weight:600; margin-bottom:6px; }
-        .passcode-box p { color:rgba(255,255,255,0.35); font-size:0.9rem; margin-bottom:24px; }
-        .passcode-box input { width:100%; padding:16px; background:rgba(255,255,255,0.04); border:2px solid rgba(255,255,255,0.06); border-radius:60px; color:#fff; font-size:1.6rem; font-family:monospace; letter-spacing:12px; text-align:center; transition:0.3s; outline:none; }
-        .passcode-box input:focus { border-color:#ff2d2d; box-shadow:0 0 0 4px rgba(255,45,45,0.08); }
-        .passcode-box input::placeholder { letter-spacing:2px; font-size:1rem; color:rgba(255,255,255,0.15); }
-        .passcode-box .error-msg { color:#ff4444; font-size:0.85rem; margin-top:12px; display:none; }
-        .passcode-box .error-msg.show { display:block; }
-        .passcode-box .unlock-btn { width:100%; padding:14px; margin-top:18px; background:linear-gradient(135deg,#ff2d2d,#ff6b6b); border:none; border-radius:60px; color:#fff; font-weight:700; font-size:1.1rem; cursor:pointer; transition:0.3s; }
-        .passcode-box .unlock-btn:hover { transform:scale(1.02); box-shadow:0 10px 30px -10px rgba(255,45,45,0.4); }
-        .passcode-box .back-btn { background:none; border:none; color:rgba(255,255,255,0.25); margin-top:14px; cursor:pointer; font-size:0.85rem; transition:0.3s; }
-        .passcode-box .back-btn:hover { color:#fff; }
+        /* ===== PASSCODE MODAL ===== */
+        .passcode-overlay { 
+            display:none; 
+            position:fixed; 
+            top:0; 
+            left:0; 
+            width:100%; 
+            height:100%; 
+            background:rgba(0,0,0,0.65); 
+            backdrop-filter:blur(16px); 
+            z-index:2000; 
+            justify-content:center; 
+            align-items:center; 
+        }
+        .passcode-overlay.active { 
+            display:flex; 
+        }
+        .passcode-box { 
+            background:rgba(15,15,26,0.95); 
+            border:1px solid rgba(255,255,255,0.08); 
+            border-radius:40px; 
+            padding:48px 40px 36px; 
+            max-width:420px; 
+            width:90%; 
+            text-align:center; 
+            box-shadow:0 0 80px rgba(255,26,26,0.12); 
+        }
+        .passcode-box .lock-icon { 
+            font-size:3rem; 
+            color:#ff9800; 
+            display:block; 
+            margin-bottom:12px; 
+        }
+        .passcode-box h3 { 
+            color:#fff; 
+            font-size:1.4rem; 
+            font-weight:600; 
+            margin-bottom:6px; 
+        }
+        .passcode-box p { 
+            color:rgba(255,255,255,0.35); 
+            font-size:0.9rem; 
+            margin-bottom:24px; 
+        }
+        .passcode-box input { 
+            width:100%; 
+            padding:16px; 
+            background:rgba(255,255,255,0.04); 
+            border:2px solid rgba(255,255,255,0.06); 
+            border-radius:60px; 
+            color:#fff; 
+            font-size:1.6rem; 
+            font-family:monospace; 
+            letter-spacing:12px; 
+            text-align:center; 
+            transition:0.3s; 
+            outline:none; 
+        }
+        .passcode-box input:focus { 
+            border-color:#ff2d2d; 
+            box-shadow:0 0 0 4px rgba(255,45,45,0.08); 
+        }
+        .passcode-box input::placeholder { 
+            letter-spacing:2px; 
+            font-size:1rem; 
+            color:rgba(255,255,255,0.15); 
+        }
+        .passcode-box .error-msg { 
+            color:#ff4444; 
+            font-size:0.85rem; 
+            margin-top:12px; 
+            display:none; 
+        }
+        .passcode-box .error-msg.show { 
+            display:block; 
+        }
+        .passcode-box .unlock-btn { 
+            width:100%; 
+            padding:14px; 
+            margin-top:18px; 
+            background:linear-gradient(135deg,#ff2d2d,#ff6b6b); 
+            border:none; 
+            border-radius:60px; 
+            color:#fff; 
+            font-weight:700; 
+            font-size:1.1rem; 
+            cursor:pointer; 
+            transition:0.3s; 
+        }
+        .passcode-box .unlock-btn:hover { 
+            transform:scale(1.02); 
+            box-shadow:0 10px 30px -10px rgba(255,45,45,0.4); 
+        }
+        .passcode-box .back-btn { 
+            background:none; 
+            border:none; 
+            color:rgba(255,255,255,0.25); 
+            margin-top:14px; 
+            cursor:pointer; 
+            font-size:0.85rem; 
+            transition:0.3s; 
+        }
+        .passcode-box .back-btn:hover { 
+            color:#fff; 
+        }
 
+        /* ===== RESPONSIVE ===== */
         @media (max-width:640px) {
             .view-card { padding:18px; }
             .pdf-header h2 { font-size:1rem; }
@@ -75,12 +360,14 @@
             .action-bar { flex-direction:column; }
             .action-bar a { justify-content:center; }
             .passcode-box { padding:32px 24px; }
+            .passcode-box input { font-size:1.2rem; letter-spacing:8px; }
         }
     </style>
 </head>
 <body>
     <canvas id="rain-canvas"></canvas>
     <div class="glass-overlay">
+        <!-- ===== HEADER ===== -->
         <div class="header">
             <div class="header-content">
                 <span class="logo">⚡ TWARVIS</span>
@@ -92,6 +379,7 @@
             </div>
         </div>
 
+        <!-- ===== VIEWER ===== -->
         <div class="viewer-container">
             <div class="view-card">
                 <div class="pdf-header">
@@ -101,7 +389,13 @@
                         <span><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
                         <span><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
                         <span><i class="fas fa-university"></i> {{ note.university|default:"Not specified" }}</span>
-                        <span>{% if note.privacy == 'private' %}<i class="fas fa-lock" style="color:#ff9800;"></i> Private{% else %}<i class="fas fa-globe" style="color:#00ff41;"></i> Public{% endif %}</span>
+                        <span>
+                            {% if note.privacy == 'private' %}
+                                <i class="fas fa-lock lock-icon"></i> Private
+                            {% else %}
+                                <i class="fas fa-globe public-icon"></i> Public
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
 
@@ -127,13 +421,16 @@
 
                 <div class="action-bar">
                     <a href="/browse/" class="btn-back"><i class="fas fa-arrow-left"></i> Back</a>
-                    <a href="/download/{{ note.id }}/" class="btn-download" download><i class="fas fa-download"></i> Download</a>
+                    <!-- RED GLOWING DOWNLOAD BUTTON -->
+                    <a href="/download/{{ note.id }}/" class="btn-download" download>
+                        <i class="fas fa-download"></i> DOWNLOAD
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Passcode Modal -->
+    <!-- ===== PASSCODE MODAL (only for private files) ===== -->
     {% if note.privacy == 'private' %}
     <div class="passcode-overlay active" id="passcodeOverlay">
         <div class="passcode-box">
@@ -149,10 +446,13 @@
     {% endif %}
 
     <script>
-        // ===== RAIN =====
+        // ===== RAIN EFFECT =====
         const canvas = document.getElementById('rain-canvas');
         const ctx = canvas.getContext('2d');
-        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
@@ -165,14 +465,33 @@
                 this.opacity = Math.random() * 0.3 + 0.1;
                 this.width = Math.random() * 1.5 + 0.5;
             }
-            fall() { this.y += this.speed; if (this.y > canvas.height) { this.y = -this.len; this.x = Math.random() * canvas.width; } }
-            draw() { ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x, this.y + this.len); ctx.strokeStyle = `rgba(150, 200, 255, ${this.opacity})`; ctx.lineWidth = this.width; ctx.stroke(); }
+            fall() { 
+                this.y += this.speed; 
+                if (this.y > canvas.height) { 
+                    this.y = -this.len; 
+                    this.x = Math.random() * canvas.width; 
+                } 
+            }
+            draw() { 
+                ctx.beginPath(); 
+                ctx.moveTo(this.x, this.y); 
+                ctx.lineTo(this.x, this.y + this.len); 
+                ctx.strokeStyle = `rgba(150, 200, 255, ${this.opacity})`; 
+                ctx.lineWidth = this.width; 
+                ctx.stroke(); 
+            }
         }
-        const drops = []; for (let i = 0; i < 200; i++) drops.push(new Drop());
-        function drawRain() { ctx.fillStyle = 'rgba(10, 10, 20, 0.1)'; ctx.fillRect(0, 0, canvas.width, canvas.height); for (let d of drops) { d.draw(); d.fall(); } requestAnimationFrame(drawRain); }
+        const drops = []; 
+        for (let i = 0; i < 200; i++) drops.push(new Drop());
+        function drawRain() { 
+            ctx.fillStyle = 'rgba(10, 10, 20, 0.1)'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height); 
+            for (let d of drops) { d.draw(); d.fall(); } 
+            requestAnimationFrame(drawRain); 
+        }
         drawRain();
 
-        // ===== PASSCODE =====
+        // ===== PASSCODE LOGIC (only for private files) =====
         {% if note.privacy == 'private' %}
         document.addEventListener('DOMContentLoaded', function() {
             const overlay = document.getElementById('passcodeOverlay');
@@ -181,7 +500,18 @@
             const error = document.getElementById('passcodeError');
             const correct = '{{ note.passcode|default:"" }}'.trim();
 
+            // Hide the viewer initially
             document.getElementById('pdfViewer').style.display = 'none';
+
+            // Check if passcode was already provided in URL (from the redirect)
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlPasscode = urlParams.get('passcode');
+            
+            if (urlPasscode && urlPasscode === correct) {
+                // Passcode already verified in URL, show viewer
+                overlay.classList.remove('active');
+                document.getElementById('pdfViewer').style.display = 'block';
+            }
 
             btn.addEventListener('click', function() {
                 const entered = input.value.trim();
@@ -201,7 +531,9 @@
             });
 
             input.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') btn.click();
+                if (e.key === 'Enter') {
+                    btn.click();
+                }
             });
 
             input.focus();
