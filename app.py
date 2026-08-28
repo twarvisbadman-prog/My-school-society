@@ -2,6 +2,7 @@
 import os
 import uuid
 import json
+import re
 import requests
 from datetime import datetime
 from django.conf import settings
@@ -533,8 +534,16 @@ def browse_view(request):
         # Get file icon
         note["icon"] = get_file_icon(note.get("filename", ""))
         
-        # Display name - use module name instead of ugly filename
-        note["display_name"] = note.get("module", "Untitled")
+        # ========== FIX: Use module name as display name ==========
+        # If module exists, use it as the title
+        if note.get("module") and note.get("module") != "":
+            note["display_name"] = note.get("module")
+        else:
+            # Fallback to original filename without the timestamp prefix
+            original = note.get("original_filename", note.get("filename", ""))
+            # Remove timestamp prefix if present (e.g., "20260826_105312_")
+            cleaned = re.sub(r'^\d{8}_\d{6}_', '', original)
+            note["display_name"] = cleaned[:50] + "..." if len(cleaned) > 50 else cleaned
         
         note["can_view_inline"] = can_view_inline(note.get("filename", ""))
         note["is_private"] = note.get("privacy", "public") == "private"
