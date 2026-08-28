@@ -1,4 +1,4 @@
-# app.py - COMPLETE UPDATED VERSION with Admin Passcode Management
+# app.py - COMPLETE UPDATED VERSION with all routes
 import os
 import uuid
 import json
@@ -334,7 +334,7 @@ def delete_file(request, id):
 def favicon(request):
     return HttpResponse(status=204)
 
-# ========== ADMIN PASCODE MANAGEMENT ==========
+# ========== ADMIN PASSCODE MANAGEMENT ==========
 @csrf_exempt
 def update_passcode(request, id):
     """Update the passcode for a private file"""
@@ -345,11 +345,9 @@ def update_passcode(request, id):
         return JsonResponse({"success": False, "error": "Method not allowed"}, status=405)
     
     try:
-        # Parse JSON data
         data = json.loads(request.body)
         new_passcode = data.get("passcode", "").strip()
         
-        # Validate passcode
         if not new_passcode:
             return JsonResponse({"success": False, "error": "Passcode is required"})
         
@@ -359,7 +357,6 @@ def update_passcode(request, id):
         if len(new_passcode) != 4:
             return JsonResponse({"success": False, "error": "Passcode must be exactly 4 digits"})
         
-        # Check if the file exists and is private
         check_result = supabase.table("notes").select("*").eq("id", id).execute()
         if not check_result.data:
             return JsonResponse({"success": False, "error": "File not found"})
@@ -368,7 +365,6 @@ def update_passcode(request, id):
         if note.get("privacy") != "private":
             return JsonResponse({"success": False, "error": "File is not private"})
         
-        # Update the passcode in Supabase
         supabase.table("notes").update({"passcode": new_passcode}).eq("id", id).execute()
         
         print(f"🔑 Passcode updated for file ID {id}: {new_passcode}")
@@ -423,6 +419,19 @@ def admin_settings(request):
         return HttpResponse("Access Denied. Admin only.", status=403)
     return render(request, "admin_settings.html", {})
 
+# ========== NEW PAGE VIEWS ==========
+def calculator_view(request):
+    """GPA Calculator page"""
+    return render(request, "calculator.html")
+
+def hackathon_view(request):
+    """Hackathon page"""
+    return render(request, "hackathon.html")
+
+def free_courses_view(request):
+    """Free Courses page"""
+    return render(request, "free_courses.html")
+
 # ========== URLS ==========
 urlpatterns = [
     path("", index),
@@ -434,6 +443,9 @@ urlpatterns = [
     path("download/<int:id>/", download_file),
     path("delete/<int:id>/", delete_file),
     path("update-passcode/<int:id>/", update_passcode, name="update_passcode"),
+    path("calculator/", calculator_view, name="calculator"),
+    path("hackathon/", hackathon_view, name="hackathon"),
+    path("free-courses/", free_courses_view, name="free_courses"),
     path("favicon.ico", favicon),
 ]
 
