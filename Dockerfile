@@ -3,26 +3,21 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y gcc && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for better caching
+# Copy requirements and install
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install gunicorn whitenoise
 
-# Copy all application files
+# Copy project
 COPY . .
 
-# Create a favicon.ico if it doesn't exist
-RUN if [ ! -f favicon.ico ]; then touch favicon.ico; fi
+# Collect static files
+RUN python app.py collectstatic --noinput || true
 
-# Set environment variables
-ENV PYTHONUNBUFFERED=1
-ENV PORT=10000
+# Expose port
+EXPOSE 8000
 
-# Expose the port
-EXPOSE 10000
-
-# Run the application
-CMD gunicorn app:application --bind 0.0.0.0:$PORT --workers=1 --threads=2 --timeout=120
+# Run with gunicorn
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8000"]
