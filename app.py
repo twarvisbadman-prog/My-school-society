@@ -723,14 +723,45 @@ def admin_settings(request):
         return HttpResponse("Access Denied. Admin only.", status=403)
     return render(request, "admin_settings.html", {})
 
+# ========== NEW PAGE VIEWS ==========
 def calculator_view(request):
     return render(request, "calculator.html")
 
 def hackathon_view(request):
-    return render(request, "hackathon.html")
+    # Your file is hackerthon.html (with an R)
+    try:
+        return render(request, "hackerthon.html")
+    except Exception as e:
+        return HttpResponse(f"""
+            <!DOCTYPE html>
+            <html>
+            <head><title>Hackathon</title></head>
+            <body style="font-family:Arial;background:#0a0a1a;color:#fff;text-align:center;padding:50px;">
+                <h1 style="color:#ffd700;">🚀 Hackathon Coming Soon!</h1>
+                <p style="color:#888;">We're preparing an exciting event.</p>
+                <a href="/" style="color:#4a7cf7;">← Back to Home</a>
+                <p style="color:#666;font-size:12px;margin-top:20px;">Error: {e}</p>
+            </body>
+            </html>
+        """)
 
 def free_courses_view(request):
-    return render(request, "free_courses.html")
+    # Your file is free_course.html (singular)
+    try:
+        return render(request, "free_course.html")
+    except Exception as e:
+        return HttpResponse(f"""
+            <!DOCTYPE html>
+            <html>
+            <head><title>Free Courses</title></head>
+            <body style="font-family:Arial;background:#0a0a1a;color:#fff;text-align:center;padding:50px;">
+                <h1 style="color:#00ff64;">📚 Free Courses</h1>
+                <p style="color:#888;">Under Maintenance - Check back soon!</p>
+                <a href="/" style="color:#4a7cf7;">← Back to Home</a>
+                <p style="color:#666;font-size:12px;margin-top:20px;">Error: {e}</p>
+            </body>
+            </html>
+        """)
 
 # ========== URLS ==========
 urlpatterns = [
@@ -743,9 +774,25 @@ urlpatterns = [
     path("download/<int:id>/", download_file),
     path("delete/<int:id>/", delete_file),
     path("update-passcode/<int:id>/", update_passcode, name="update_passcode"),
+    
+    # Calculator
+    path("calculator.html", calculator_view),
     path("calculator/", calculator_view, name="calculator"),
+    
+    # HACKERTHON (your actual filename!)
+    path("hackerthon.html", hackathon_view),
+    path("hackerthon/", hackathon_view, name="hackerthon"),
+    # Also support misspelled version
+    path("hackathon.html", hackathon_view),
     path("hackathon/", hackathon_view, name="hackathon"),
+    
+    # FREE_COURSE (your actual filename!)
+    path("free_course.html", free_courses_view),
+    path("free_course/", free_courses_view, name="free_course"),
+    # Also support plural version
+    path("free_courses.html", free_courses_view),
     path("free-courses/", free_courses_view, name="free_courses"),
+    
     path("favicon.ico", favicon),
 ]
 
