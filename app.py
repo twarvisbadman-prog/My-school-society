@@ -1,5 +1,12 @@
-# app.py - SECURE VERSION (Data Safe)
+# ============================================
+# TWARVIS SCHOOL - COMPLETE SECURE VERSION
+# ============================================
+# All security fixes applied
+# Data-safe - preserves existing data
+# ============================================
+
 import os
+import sys
 import uuid
 import json
 import re
@@ -9,24 +16,18 @@ import hashlib
 import secrets
 from datetime import datetime
 from functools import wraps
-from django.conf import settings
-from django.core.wsgi import get_wsgi_application
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render, redirect
-from django import forms
-from django.urls import path
-from django.views.decorators.csrf import csrf_protect, csrf_exempt
-from supabase import create_client, Client
+from dotenv import load_dotenv
 
-# ========== ENVIRONMENT VARIABLES ==========
-# SECURE: No defaults that give admin access!
+# ========== LOAD ENVIRONMENT VARIABLES ==========
+load_dotenv()
+
+# ========== VALIDATE REQUIRED VARIABLES ==========
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY")  # Will use different keys later
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 SECRET_KEY = os.environ.get("SECRET_KEY")
-ADMIN = os.environ.get("ADMIN", "false") == "true"  # CHANGED: Default false!
-DEBUG = os.environ.get("DEBUG", "False") == "True"  # CHANGED: Default false!
+ADMIN = os.environ.get("ADMIN", "false") == "true"
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-# ========== VALIDATION ==========
 if not SUPABASE_URL:
     raise ValueError("❌ SUPABASE_URL environment variable is required!")
 if not SUPABASE_KEY:
@@ -34,18 +35,16 @@ if not SUPABASE_KEY:
 if not SECRET_KEY:
     raise ValueError("❌ SECRET_KEY environment variable is required!")
 
-# ========== LOGGING ==========
-logging.basicConfig(
-    level=logging.INFO if not DEBUG else logging.DEBUG,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('security.log'),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
-
 # ========== DJANGO SETTINGS ==========
+from django.conf import settings
+from django.core.wsgi import get_wsgi_application
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render, redirect
+from django import forms
+from django.urls import path
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.core.cache import cache
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Safe ALLOWED_HOSTS
@@ -56,12 +55,9 @@ else:
     if DEBUG:
         ALLOWED_HOSTS = ["*", "localhost", "127.0.0.1"]
     else:
-        # Production hosts - UPDATE THESE!
         ALLOWED_HOSTS = [
-            "your-domain.com",
-            "www.your-domain.com",
-            "your-app.onrender.com",
-            # Add your actual domains here
+            "twarvis-school.onrender.com",
+            "www.twarvis-school.onrender.com",
         ]
 
 if not settings.configured:
@@ -72,14 +68,15 @@ if not settings.configured:
         ALLOWED_HOSTS=ALLOWED_HOSTS,
         INSTALLED_APPS=[
             "django.contrib.staticfiles",
-            "django.contrib.sessions",  # Added for security
+            "django.contrib.sessions",
         ],
         MIDDLEWARE=[
             "django.middleware.security.SecurityMiddleware",
+            "whitenoise.middleware.WhiteNoiseMiddleware",
             "django.middleware.common.CommonMiddleware",
             "django.middleware.csrf.CsrfViewMiddleware",
             "django.middleware.clickjacking.XFrameOptionsMiddleware",
-            "django.contrib.sessions.middleware.SessionMiddleware",  # Added
+            "django.contrib.sessions.middleware.SessionMiddleware",
         ],
         TEMPLATES=[{
             "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -94,6 +91,7 @@ if not settings.configured:
         }],
         STATIC_URL="/static/",
         STATICFILES_DIRS=[BASE_DIR],
+        STATIC_ROOT=os.path.join(BASE_DIR, "staticfiles"),
         CSRF_TRUSTED_ORIGINS=[
             "https://*.onrender.com",
             "http://localhost:8000",
@@ -107,13 +105,15 @@ if not settings.configured:
         SECURE_HSTS_PRELOAD=not DEBUG,
         SESSION_COOKIE_SECURE=not DEBUG,
         CSRF_COOKIE_SECURE=not DEBUG,
+        SESSION_COOKIE_HTTPONLY=True,
+        CSRF_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE='Lax',
+        CSRF_COOKIE_SAMESITE='Lax',
     )
 
-from django import forms
+from supabase import create_client, Client
 
-# ========== SUPABASE (Using different keys for security) ==========
-# NOTE: Keep using the same key for now to maintain compatibility
-# Will implement separate keys in future update
+# ========== SUPABASE ==========
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ========== CONSTANTS ==========
@@ -176,6 +176,17 @@ UNIVERSITIES = [
     "Manyara Technical College",
 ]
 
+# ========== LOGGING ==========
+logging.basicConfig(
+    level=logging.INFO if not DEBUG else logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('security.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
 # ========== SECURITY HELPERS ==========
 def sanitize_input(value):
     """Sanitize user input to prevent XSS"""
@@ -186,12 +197,11 @@ def sanitize_input(value):
 def log_security_event(event_type, details, request=None):
     """Log security events for monitoring"""
     ip = request.META.get('REMOTE_ADDR', 'unknown') if request else 'unknown'
-    logger.warning(f"[{event_type}] IP: {ip} - {details}")
+    user_agent = request.META.get('HTTP_USER_AGENT', 'unknown') if request else 'unknown'
+    logger.warning(f"[{event_type}] IP: {ip} - UA: {user_agent} - {details}")
 
 def rate_limit(request, action, limit=10, period=60):
-    """Simple rate limiting using in-memory (replaces with Redis in production)"""
-    # Simple in-memory rate limiting for single instance
-    from django.core.cache import cache
+    """Rate limiting using Django cache"""
     ip = request.META.get('REMOTE_ADDR', 'unknown')
     key = f"ratelimit_{action}_{ip}"
     count = cache.get(key, 0)
@@ -212,6 +222,16 @@ def validate_file_security(file):
         return False, f"File type '{ext}' not allowed"
     
     return True, "Valid"
+
+def admin_required(view_func):
+    """Decorator to require admin access"""
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not ADMIN:
+            log_security_event('ADMIN_BLOCKED', 'Unauthorized admin access attempt', request)
+            return HttpResponse("Access Denied. Admin only.", status=403)
+        return view_func(request, *args, **kwargs)
+    return wrapper
 
 # ========== FORMS ==========
 class UploadForm(forms.Form):
@@ -314,7 +334,6 @@ def get_all_notes():
 
 def search_notes(query):
     try:
-        # Sanitize query
         query = sanitize_input(query)
         response = supabase.table("notes").select("*").or_(
             f"module.ilike.%{query}%,course.ilike.%{query}%,description.ilike.%{query}%"
@@ -646,7 +665,6 @@ def upload_view(request):
                     "file_size": len(file_content)
                 }).execute()
                 
-                # Log the upload
                 log_security_event('UPLOAD', f'File: {safe_filename}, Module: {module}', request)
                 
                 message = f"✅ {file.name} uploaded successfully!"
@@ -670,7 +688,6 @@ def browse_view(request):
     else:
         notes = get_all_notes()
     
-    # Process each note for display
     for note in notes:
         ext = os.path.splitext(note.get("filename", ""))[1].upper().replace(".", "")
         note["file_ext"] = ext if ext else "FILE"
@@ -700,7 +717,6 @@ def browse_view(request):
 
 def view_file(request, id):
     try:
-        # Rate limiting for passcode attempts
         if not rate_limit(request, f'view_{id}', limit=5, period=300):
             return HttpResponse("Too many attempts. Please wait 5 minutes.", status=429)
         
@@ -711,7 +727,6 @@ def view_file(request, id):
         
         note = result.data[0]
         
-        # Check if private
         if note.get("privacy") == "private":
             correct_passcode = note.get("passcode", "")
             get_passcode = request.GET.get("passcode", "")
@@ -725,7 +740,6 @@ def view_file(request, id):
                 html = get_passcode_html(id, note.get("original_filename", note.get("filename", "")), "❌ Incorrect passcode. Please try again.")
                 return HttpResponse(html)
             
-            # Log successful access
             log_security_event('PASSCODE_SUCCESS', f'Successful access to file {id}', request)
         
         file_url = supabase.storage.from_("notes").get_public_url(note["filename"])
@@ -783,7 +797,6 @@ def download_file(request, id):
         response = HttpResponse(file_data, content_type=content_type)
         response["Content-Disposition"] = f"attachment; filename=\"{note.get('original_filename', note['filename'])}\""
         
-        # Log download
         log_security_event('DOWNLOAD', f'File: {note["filename"]}', request)
         
         return response
@@ -791,11 +804,8 @@ def download_file(request, id):
         logger.error(f"Download error: {e}")
         return HttpResponse(f"Download failed: {str(e)}", status=500)
 
+@admin_required
 def delete_file(request, id):
-    if not ADMIN:
-        log_security_event('DELETE_BLOCKED', f'Unauthorized delete attempt on {id}', request)
-        return HttpResponse("Not authorized.", status=403)
-    
     try:
         note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
         supabase.storage.from_("notes").remove([note["filename"]])
@@ -810,12 +820,9 @@ def delete_file(request, id):
 def favicon(request):
     return HttpResponse(status=204)
 
-# ========== ADMIN PASSCODE MANAGEMENT ==========
+@admin_required
 @csrf_exempt
 def update_passcode(request, id):
-    if not ADMIN:
-        return JsonResponse({"success": False, "error": "Not authorized"}, status=403)
-    
     if request.method != "POST":
         return JsonResponse({"success": False, "error": "Method not allowed"}, status=405)
     
@@ -852,12 +859,8 @@ def update_passcode(request, id):
         logger.error(f"Passcode update error: {e}")
         return JsonResponse({"success": False, "error": str(e)}, status=500)
 
-# ========== ADMIN DASHBOARD ==========
+@admin_required
 def admin_dashboard(request):
-    if not ADMIN:
-        log_security_event('ADMIN_BLOCKED', 'Unauthorized admin access attempt', request)
-        return HttpResponse("Access Denied. Admin only.", status=403)
-    
     all_notes = get_all_notes()
     total_files = len(all_notes)
     file_types = {}
@@ -890,12 +893,10 @@ def admin_dashboard(request):
     
     return render(request, "admin.html", {"notes": all_notes, "stats": stats, "admin": ADMIN})
 
+@admin_required
 def admin_settings(request):
-    if not ADMIN:
-        return HttpResponse("Access Denied. Admin only.", status=403)
     return render(request, "admin_settings.html", {})
 
-# ========== NEW PAGE VIEWS ==========
 def calculator_view(request):
     return render(request, "calculator.html")
 
@@ -922,9 +923,11 @@ urlpatterns = [
     path("favicon.ico", favicon),
 ]
 
+# ========== FOR RENDER ==========
 application = get_wsgi_application()
 app = application
 
 if __name__ == "__main__":
     from django.core.management import execute_from_command_line
-    execute_from_command_line([__name__, "runserver"])
+    port = os.environ.get("PORT", 8000)
+    execute_from_command_line([__name__, "runserver", f"0.0.0.0:{port}"])
