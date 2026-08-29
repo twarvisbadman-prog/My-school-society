@@ -420,6 +420,18 @@
             border: 1px solid rgba(255, 26, 26, 0.05);
         }
 
+        .sidebar-item .badge.soon {
+            background: rgba(0, 204, 51, 0.1);
+            color: #00cc33;
+            border-color: rgba(0, 204, 51, 0.05);
+        }
+
+        .sidebar-item .badge.maintenance {
+            background: rgba(255, 152, 0, 0.1);
+            color: #ff9800;
+            border-color: rgba(255, 152, 0, 0.05);
+        }
+
         .sidebar-divider {
             height: 1px;
             background: rgba(255, 26, 26, 0.04);
@@ -1074,7 +1086,7 @@
         </div>
     </div>
 
-    <!-- ========== SIDEBAR ========== -->
+    <!-- ========== SIDEBAR - ALL CLEAN URLs ========== -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <div class="sidebar" id="sidebar">
         <button class="sidebar-close" id="sidebarClose">&times;</button>
@@ -1083,39 +1095,47 @@
             <p>Navigation</p>
         </div>
 
+        <!-- HOME -->
         <a class="sidebar-item" href="/" id="sideHome">
             <i class="fas fa-home"></i> Home
             <span class="badge">Active</span>
         </a>
+
+        <!-- BROWSE -->
         <a class="sidebar-item" href="/browse/" id="sideBrowse">
             <i class="fas fa-book-open"></i> Browse Notes
         </a>
+
+        <!-- UPLOAD -->
         <a class="sidebar-item" href="/upload/" id="sideUpload">
             <i class="fas fa-cloud-upload-alt"></i> Upload Files
         </a>
 
         <div class="sidebar-divider"></div>
 
-        <!-- CALCULATOR - LINKS TO calculator.html -->
-        <a class="sidebar-item" href="/calculator.html" id="sideGpa">
+        <!-- ✅ CALCULATOR - Clean URL -->
+        <a class="sidebar-item" href="/calculator/" id="sideGpa">
             <i class="fas fa-calculator"></i> GPA Calculator
             <span class="badge soon">New</span>
         </a>
 
         <div class="sidebar-divider"></div>
 
-        <div class="sidebar-item" id="sideHackathon">
+        <!-- ✅ HACKATHON - Clean URL -->
+        <a class="sidebar-item" href="/hackathon/" id="sideHackathon">
             <i class="fas fa-code"></i> Hackathon
             <span class="badge soon">Soon</span>
-        </div>
-        <div class="sidebar-item" id="sideCourses">
+        </a>
+
+        <!-- ✅ FREE COURSES - Clean URL -->
+        <a class="sidebar-item" href="/free-courses/" id="sideCourses">
             <i class="fas fa-graduation-cap"></i> Free Courses
             <span class="badge maintenance">Maint</span>
-        </div>
+        </a>
 
         <div class="sidebar-divider"></div>
 
-        <!-- SETTINGS - MINIMAL FLOATING POPUP -->
+        <!-- SETTINGS -->
         <div class="sidebar-item" id="sideSettings">
             <i class="fas fa-cog"></i> Settings
             <span class="badge">⚡</span>
@@ -1350,44 +1370,16 @@
             overlay.addEventListener('click', closeSidebar);
 
             // ========== SIDEBAR NAVIGATION ==========
-            const sidebarItems = {
-                'sideHome': '/',
-                'sideBrowse': '/browse/',
-                'sideUpload': '/upload/',
-                'sideGpa': '/calculator.html',
-                'sideHackathon': 'hackathon',
-                'sideCourses': 'courses',
-                'sideSettings': 'settings'
-            };
-
-            Object.keys(sidebarItems).forEach(id => {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.addEventListener('click', function(e) {
-                        const target = sidebarItems[id];
-                        if (target === 'hackathon') {
-                            closeSidebar();
-                            setTimeout(() => openModal('comingSoonModal'), 300);
-                        } else if (target === 'courses') {
-                            closeSidebar();
-                            setTimeout(() => openModal('maintenanceModal'), 300);
-                        } else if (target === 'settings') {
-                            closeSidebar();
-                            setTimeout(() => openModal('settingsModal'), 300);
-                        } else if (target.startsWith('/')) {
-                            instantNavigate(target);
-                        } else {
-                            instantNavigate(target);
-                        }
-                    });
-                }
+            // All sidebar items are now <a> tags with proper hrefs
+            // Settings still uses popup
+            document.getElementById('sideSettings').addEventListener('click', function(e) {
+                closeSidebar();
+                setTimeout(() => {
+                    document.getElementById('settingsModal').classList.add('active');
+                }, 300);
             });
 
             // ========== SETTINGS MODAL ==========
-            function openModal(modalId) {
-                document.getElementById(modalId).classList.add('active');
-            }
-
             function closeModal(modalId) {
                 document.getElementById(modalId).classList.remove('active');
             }
@@ -1438,7 +1430,7 @@
             });
 
             console.log('⚡ TWARVIS — Premium Students Hub Loaded');
-            console.log('📊 Calculator linked to calculator.html');
+            console.log('✅ Clean URLs: /calculator/, /hackathon/, /free-courses/');
         });
     </script>
 </body>
