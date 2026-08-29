@@ -1,39 +1,85 @@
-# app.py - COMPLETE UPDATED VERSION with fixed browse_view
+# app.py - SECURE VERSION (Data Safe)
 import os
 import uuid
 import json
 import re
-import requests
+import html
+import logging
+import hashlib
+import secrets
 from datetime import datetime
+from functools import wraps
 from django.conf import settings
 from django.core.wsgi import get_wsgi_application
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django import forms
 from django.urls import path
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from supabase import create_client, Client
 
 # ========== ENVIRONMENT VARIABLES ==========
+# SECURE: No defaults that give admin access!
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
-SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-key")
-ADMIN = os.environ.get("ADMIN", "true") == "true"
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")  # Will use different keys later
+SECRET_KEY = os.environ.get("SECRET_KEY")
+ADMIN = os.environ.get("ADMIN", "false") == "true"  # CHANGED: Default false!
+DEBUG = os.environ.get("DEBUG", "False") == "True"  # CHANGED: Default false!
+
+# ========== VALIDATION ==========
+if not SUPABASE_URL:
+    raise ValueError("❌ SUPABASE_URL environment variable is required!")
+if not SUPABASE_KEY:
+    raise ValueError("❌ SUPABASE_KEY environment variable is required!")
+if not SECRET_KEY:
+    raise ValueError("❌ SECRET_KEY environment variable is required!")
+
+# ========== LOGGING ==========
+logging.basicConfig(
+    level=logging.INFO if not DEBUG else logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('security.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # ========== DJANGO SETTINGS ==========
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# Safe ALLOWED_HOSTS
+ALLOWED_HOSTS_ENV = os.environ.get("ALLOWED_HOSTS", "")
+if ALLOWED_HOSTS_ENV:
+    ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS_ENV.split(",")]
+else:
+    if DEBUG:
+        ALLOWED_HOSTS = ["*", "localhost", "127.0.0.1"]
+    else:
+        # Production hosts - UPDATE THESE!
+        ALLOWED_HOSTS = [
+            "your-domain.com",
+            "www.your-domain.com",
+            "your-app.onrender.com",
+            # Add your actual domains here
+        ]
+
 if not settings.configured:
     settings.configure(
-        DEBUG=True,
+        DEBUG=DEBUG,
         SECRET_KEY=SECRET_KEY,
         ROOT_URLCONF=__name__,
-        ALLOWED_HOSTS=["*", ".onrender.com", "localhost", "127.0.0.1", ".pages.dev", ".workers.dev"],
-        INSTALLED_APPS=["django.contrib.staticfiles"],
+        ALLOWED_HOSTS=ALLOWED_HOSTS,
+        INSTALLED_APPS=[
+            "django.contrib.staticfiles",
+            "django.contrib.sessions",  # Added for security
+        ],
         MIDDLEWARE=[
+            "django.middleware.security.SecurityMiddleware",
             "django.middleware.common.CommonMiddleware",
             "django.middleware.csrf.CsrfViewMiddleware",
             "django.middleware.clickjacking.XFrameOptionsMiddleware",
+            "django.contrib.sessions.middleware.SessionMiddleware",  # Added
         ],
         TEMPLATES=[{
             "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -49,17 +95,25 @@ if not settings.configured:
         STATIC_URL="/static/",
         STATICFILES_DIRS=[BASE_DIR],
         CSRF_TRUSTED_ORIGINS=[
-            "https://*.onrender.com", 
+            "https://*.onrender.com",
             "http://localhost:8000",
             "https://*.pages.dev",
             "https://*.workers.dev"
         ],
         X_FRAME_OPTIONS="SAMEORIGIN",
+        SECURE_SSL_REDIRECT=not DEBUG,
+        SECURE_HSTS_SECONDS=31536000 if not DEBUG else 0,
+        SECURE_HSTS_INCLUDE_SUBDOMAINS=not DEBUG,
+        SECURE_HSTS_PRELOAD=not DEBUG,
+        SESSION_COOKIE_SECURE=not DEBUG,
+        CSRF_COOKIE_SECURE=not DEBUG,
     )
 
 from django import forms
 
-# ========== SUPABASE ==========
+# ========== SUPABASE (Using different keys for security) ==========
+# NOTE: Keep using the same key for now to maintain compatibility
+# Will implement separate keys in future update
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ========== CONSTANTS ==========
@@ -122,17 +176,89 @@ UNIVERSITIES = [
     "Manyara Technical College",
 ]
 
+# ========== SECURITY HELPERS ==========
+def sanitize_input(value):
+    """Sanitize user input to prevent XSS"""
+    if value:
+        return html.escape(str(value).strip())
+    return ""
+
+def log_security_event(event_type, details, request=None):
+    """Log security events for monitoring"""
+    ip = request.META.get('REMOTE_ADDR', 'unknown') if request else 'unknown'
+    logger.warning(f"[{event_type}] IP: {ip} - {details}")
+
+def rate_limit(request, action, limit=10, period=60):
+    """Simple rate limiting using in-memory (replaces with Redis in production)"""
+    # Simple in-memory rate limiting for single instance
+    from django.core.cache import cache
+    ip = request.META.get('REMOTE_ADDR', 'unknown')
+    key = f"ratelimit_{action}_{ip}"
+    count = cache.get(key, 0)
+    if count >= limit:
+        return False
+    cache.set(key, count + 1, period)
+    return True
+
+def validate_file_security(file):
+    """Validate uploaded file for security"""
+    # Size limit: 50MB
+    if file.size > 50 * 1024 * 1024:
+        return False, "File too large (max 50MB)"
+    
+    # Check file extension
+    ext = os.path.splitext(file.name)[1].lower()
+    if ext not in ALLOWED_EXTENSIONS:
+        return False, f"File type '{ext}' not allowed"
+    
+    return True, "Valid"
+
 # ========== FORMS ==========
 class UploadForm(forms.Form):
-    file = forms.FileField(label="File", widget=forms.FileInput(attrs={"class": "form-file", "required": True}))
-    file_type = forms.ChoiceField(choices=[('notes', 'Notes'), ('pastpaper', 'Past Paper')], widget=forms.RadioSelect, initial='notes')
-    module = forms.CharField(max_length=200, label="Module Name", widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., Computer Networks..."}))
-    course = forms.CharField(max_length=200, label="Course Code", widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., CIT 3102..."}))
-    description = forms.CharField(widget=forms.Textarea(attrs={"class": "form-textarea", "rows": 3, "placeholder": "Brief description..."}), label="Description", required=False)
-    privacy = forms.ChoiceField(choices=[('public', 'Public'), ('private', 'Private')], widget=forms.RadioSelect, initial='public')
-    passcode = forms.CharField(max_length=4, required=False, widget=forms.PasswordInput(attrs={"class": "passcode-input", "placeholder": "••••", "maxlength": "4"}))
-    university = forms.ChoiceField(choices=[('', '-- Select your university --')] + [(u, u) for u in UNIVERSITIES] + [('Other', 'Other')], required=False, widget=forms.Select(attrs={"class": "form-select"}))
-    custom_university = forms.CharField(max_length=200, required=False, widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "Type your university name..."}))
+    file = forms.FileField(
+        label="File", 
+        widget=forms.FileInput(attrs={"class": "form-file", "required": True})
+    )
+    file_type = forms.ChoiceField(
+        choices=[('notes', 'Notes'), ('pastpaper', 'Past Paper')],
+        widget=forms.RadioSelect,
+        initial='notes'
+    )
+    module = forms.CharField(
+        max_length=200,
+        label="Module Name",
+        widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., Computer Networks..."})
+    )
+    course = forms.CharField(
+        max_length=200,
+        label="Course Code",
+        widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., CIT 3102..."})
+    )
+    description = forms.CharField(
+        widget=forms.Textarea(attrs={"class": "form-textarea", "rows": 3, "placeholder": "Brief description..."}),
+        label="Description",
+        required=False
+    )
+    privacy = forms.ChoiceField(
+        choices=[('public', 'Public'), ('private', 'Private')],
+        widget=forms.RadioSelect,
+        initial='public'
+    )
+    passcode = forms.CharField(
+        max_length=4,
+        required=False,
+        widget=forms.PasswordInput(attrs={"class": "passcode-input", "placeholder": "••••", "maxlength": "4"})
+    )
+    university = forms.ChoiceField(
+        choices=[('', '-- Select your university --')] + [(u, u) for u in UNIVERSITIES] + [('Other', 'Other')],
+        required=False,
+        widget=forms.Select(attrs={"class": "form-select"})
+    )
+    custom_university = forms.CharField(
+        max_length=200,
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "Type your university name..."})
+    )
 
 # ========== HELPER FUNCTIONS ==========
 def get_content_type(filename):
@@ -183,17 +309,22 @@ def get_all_notes():
             note["can_view_inline"] = can_view_inline(note.get("filename", ""))
         return notes
     except Exception as e:
-        print(f"Error: {e}")
+        logger.error(f"Error fetching notes: {e}")
         return []
 
 def search_notes(query):
     try:
-        response = supabase.table("notes").select("*").or_(f"module.ilike.%{query}%,course.ilike.%{query}%,description.ilike.%{query}%").order("uploaded_at", desc=True).execute()
+        # Sanitize query
+        query = sanitize_input(query)
+        response = supabase.table("notes").select("*").or_(
+            f"module.ilike.%{query}%,course.ilike.%{query}%,description.ilike.%{query}%"
+        ).order("uploaded_at", desc=True).execute()
         return response.data if response.data else []
     except Exception as e:
+        logger.error(f"Search error: {e}")
         return get_all_notes()
 
-# ========== PASSCODE HTML TEMPLATE (built-in) ==========
+# ========== PASSCODE HTML TEMPLATE ==========
 def get_passcode_html(file_id, filename, error=None):
     error_html = f'<div class="error-msg" style="color:#ff4444;font-size:0.85rem;margin-top:12px;background:rgba(255,68,68,0.05);padding:10px;border-radius:10px;border:1px solid rgba(255,68,68,0.1);">{error}</div>' if error else '<div class="error-msg" id="passcodeError" style="color:#ff4444;font-size:0.85rem;margin-top:12px;display:none;background:rgba(255,68,68,0.05);padding:10px;border-radius:10px;border:1px solid rgba(255,68,68,0.1);">❌ Incorrect passcode. Please try again.</div>'
     
@@ -456,63 +587,74 @@ def upload_view(request):
     error = None
     
     if request.method == "POST":
+        # Rate limiting
+        if not rate_limit(request, 'upload', limit=5, period=300):
+            error = "Too many uploads. Please wait 5 minutes."
+            return render(request, "upload.html", {"form": UploadForm(), "error": error})
+        
         form = UploadForm(request.POST, request.FILES)
         if form.is_valid():
             try:
                 file = request.FILES["file"]
-                ext = os.path.splitext(file.name)[1].lower()
                 
-                if ext not in ALLOWED_EXTENSIONS:
-                    error = f"File type not allowed."
-                else:
-                    file_type = form.cleaned_data.get("file_type", "notes")
-                    module = form.cleaned_data.get("module", "")
-                    course = form.cleaned_data.get("course", "")
-                    description = form.cleaned_data.get("description", "")
-                    privacy = form.cleaned_data.get("privacy", "public")
-                    passcode = form.cleaned_data.get("passcode", "")
+                # Security validation
+                valid, msg = validate_file_security(file)
+                if not valid:
+                    error = msg
+                    return render(request, "upload.html", {"form": form, "error": error})
+                
+                ext = os.path.splitext(file.name)[1].lower()
+                file_type = sanitize_input(form.cleaned_data.get("file_type", "notes"))
+                module = sanitize_input(form.cleaned_data.get("module", ""))
+                course = sanitize_input(form.cleaned_data.get("course", ""))
+                description = sanitize_input(form.cleaned_data.get("description", ""))
+                privacy = sanitize_input(form.cleaned_data.get("privacy", "public"))
+                passcode = sanitize_input(form.cleaned_data.get("passcode", ""))
+                
+                university = sanitize_input(form.cleaned_data.get("university", ""))
+                if university == "Other":
+                    university = sanitize_input(form.cleaned_data.get("custom_university", ""))
+                if not university:
+                    university = "Not specified"
+                
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                unique_id = str(uuid.uuid4())[:8]
+                safe_filename = f"{timestamp}_{unique_id}_{file.name.replace(' ', '_')}"
+                
+                file_content = file.read()
+                
+                # Upload to storage
+                supabase.storage.from_("notes").upload(
+                    safe_filename, 
+                    file_content,
+                    {"content-type": file.content_type or "application/octet-stream"}
+                )
+                
+                # Save metadata
+                supabase.table("notes").insert({
+                    "filename": safe_filename,
+                    "original_filename": file.name,
+                    "module": module,
+                    "course": course,
+                    "description": description,
+                    "file_type": file_type,
+                    "privacy": privacy,
+                    "passcode": passcode if privacy == "private" else "",
+                    "university": university,
+                    "uploader": "user",
+                    "uploaded_at": datetime.now().isoformat(),
+                    "file_size": len(file_content)
+                }).execute()
+                
+                # Log the upload
+                log_security_event('UPLOAD', f'File: {safe_filename}, Module: {module}', request)
+                
+                message = f"✅ {file.name} uploaded successfully!"
+                form = UploadForm()
                     
-                    university = form.cleaned_data.get("university", "")
-                    if university == "Other":
-                        university = form.cleaned_data.get("custom_university", "")
-                    if not university:
-                        university = "Not specified"
-                    
-                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                    unique_id = str(uuid.uuid4())[:8]
-                    safe_filename = f"{timestamp}_{unique_id}_{file.name.replace(' ', '_')}"
-                    
-                    file_content = file.read()
-                    
-                    # Upload to storage
-                    supabase.storage.from_("notes").upload(
-                        safe_filename, 
-                        file_content,
-                        {"content-type": file.content_type or "application/octet-stream"}
-                    )
-                    
-                    # Save metadata
-                    supabase.table("notes").insert({
-                        "filename": safe_filename,
-                        "original_filename": file.name,
-                        "module": module,
-                        "course": course,
-                        "description": description,
-                        "file_type": file_type,
-                        "privacy": privacy,
-                        "passcode": passcode if privacy == "private" else "",
-                        "university": university,
-                        "uploader": "user",
-                        "uploaded_at": datetime.now().isoformat(),
-                        "file_size": len(file_content)
-                    }).execute()
-                    
-                    message = f"✅ {file.name} uploaded successfully!"
-                    form = UploadForm()
-                        
             except Exception as e:
                 error = f"Upload failed: {str(e)}"
-                print(f"❌ ERROR: {error}")
+                logger.error(f"Upload error: {error}")
         else:
             error = "Please fill all required fields."
     else:
@@ -520,28 +662,24 @@ def upload_view(request):
     
     return render(request, "upload.html", {"form": form, "message": message, "error": error})
 
-# ========== FIXED BROWSE VIEW ==========
 def browse_view(request):
     query = request.GET.get("q", "").strip()
-    notes = search_notes(query) if query else get_all_notes()
+    if query:
+        query = sanitize_input(query)
+        notes = search_notes(query)
+    else:
+        notes = get_all_notes()
     
     # Process each note for display
     for note in notes:
-        # Get file extension for icon
         ext = os.path.splitext(note.get("filename", ""))[1].upper().replace(".", "")
         note["file_ext"] = ext if ext else "FILE"
-        
-        # Get file icon
         note["icon"] = get_file_icon(note.get("filename", ""))
         
-        # ========== FIX: Use module name as display name ==========
-        # If module exists, use it as the title
         if note.get("module") and note.get("module") != "":
             note["display_name"] = note.get("module")
         else:
-            # Fallback to original filename without the timestamp prefix
             original = note.get("original_filename", note.get("filename", ""))
-            # Remove timestamp prefix if present (e.g., "20260826_105312_")
             cleaned = re.sub(r'^\d{8}_\d{6}_', '', original)
             note["display_name"] = cleaned[:50] + "..." if len(cleaned) > 50 else cleaned
         
@@ -562,6 +700,10 @@ def browse_view(request):
 
 def view_file(request, id):
     try:
+        # Rate limiting for passcode attempts
+        if not rate_limit(request, f'view_{id}', limit=5, period=300):
+            return HttpResponse("Too many attempts. Please wait 5 minutes.", status=429)
+        
         result = supabase.table("notes").select("*").eq("id", id).execute()
         
         if not result.data:
@@ -569,31 +711,30 @@ def view_file(request, id):
         
         note = result.data[0]
         
-        # ========== CHECK IF PRIVATE ==========
+        # Check if private
         if note.get("privacy") == "private":
             correct_passcode = note.get("passcode", "")
             get_passcode = request.GET.get("passcode", "")
             
-            # If no passcode entered yet, show the passcode page
             if not get_passcode:
                 html = get_passcode_html(id, note.get("original_filename", note.get("filename", "")))
                 return HttpResponse(html)
             
-            # Verify passcode
             if get_passcode != correct_passcode:
+                log_security_event('PASSCODE_FAILURE', f'Failed attempt for file {id}', request)
                 html = get_passcode_html(id, note.get("original_filename", note.get("filename", "")), "❌ Incorrect passcode. Please try again.")
                 return HttpResponse(html)
+            
+            # Log successful access
+            log_security_event('PASSCODE_SUCCESS', f'Successful access to file {id}', request)
         
-        # ========== PREPARE DATA FOR view.html ==========
         file_url = supabase.storage.from_("notes").get_public_url(note["filename"])
         
-        # Set flags for view.html
         note["can_view_inline"] = can_view_inline(note.get("filename", ""))
         note["is_pdf"] = os.path.splitext(note.get("filename", ""))[1].lower() == '.pdf'
         note["is_image"] = os.path.splitext(note.get("filename", ""))[1].lower() in ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg']
         note["is_text"] = os.path.splitext(note.get("filename", ""))[1].lower() in ['.txt', '.md', '.csv', '.json', '.xml']
         
-        # For text files, fetch content
         note["text_content"] = ""
         if note["is_text"] and file_url:
             try:
@@ -613,6 +754,7 @@ def view_file(request, id):
         return render(request, "view.html", context)
         
     except Exception as e:
+        logger.error(f"View error: {e}")
         return HttpResponse(f"Error: {str(e)}", status=500)
 
 def download_file(request, id):
@@ -624,34 +766,45 @@ def download_file(request, id):
         
         note = result.data[0]
         
-        # ========== CHECK IF PRIVATE ==========
         if note.get("privacy") == "private":
             correct_passcode = note.get("passcode", "")
             get_passcode = request.GET.get("passcode", "")
             
             if not get_passcode:
+                log_security_event('DOWNLOAD_BLOCKED', f'Private file {id} - no passcode', request)
                 return HttpResponse("Access Denied. This file is private. Please view it first to unlock.", status=403)
             
             if get_passcode != correct_passcode:
+                log_security_event('DOWNLOAD_BLOCKED', f'Private file {id} - wrong passcode', request)
                 return HttpResponse("Access Denied. Incorrect passcode.", status=403)
         
         file_data = supabase.storage.from_("notes").download(note["filename"])
         content_type = get_content_type(note["filename"])
         response = HttpResponse(file_data, content_type=content_type)
         response["Content-Disposition"] = f"attachment; filename=\"{note.get('original_filename', note['filename'])}\""
+        
+        # Log download
+        log_security_event('DOWNLOAD', f'File: {note["filename"]}', request)
+        
         return response
     except Exception as e:
+        logger.error(f"Download error: {e}")
         return HttpResponse(f"Download failed: {str(e)}", status=500)
 
 def delete_file(request, id):
     if not ADMIN:
+        log_security_event('DELETE_BLOCKED', f'Unauthorized delete attempt on {id}', request)
         return HttpResponse("Not authorized.", status=403)
+    
     try:
         note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
         supabase.storage.from_("notes").remove([note["filename"]])
         supabase.table("notes").delete().eq("id", id).execute()
+        
+        log_security_event('DELETE', f'File: {note["filename"]}', request)
         return redirect("/admin/")
     except Exception as e:
+        logger.error(f"Delete error: {e}")
         return HttpResponse(f"Delete failed: {str(e)}", status=500)
 
 def favicon(request):
@@ -660,7 +813,6 @@ def favicon(request):
 # ========== ADMIN PASSCODE MANAGEMENT ==========
 @csrf_exempt
 def update_passcode(request, id):
-    """Update the passcode for a private file"""
     if not ADMIN:
         return JsonResponse({"success": False, "error": "Not authorized"}, status=403)
     
@@ -690,19 +842,20 @@ def update_passcode(request, id):
         
         supabase.table("notes").update({"passcode": new_passcode}).eq("id", id).execute()
         
-        print(f"🔑 Passcode updated for file ID {id}: {new_passcode}")
+        log_security_event('PASSCODE_UPDATE', f'Updated passcode for file {id}', request)
         
         return JsonResponse({"success": True, "message": "Passcode updated successfully"})
         
     except json.JSONDecodeError:
         return JsonResponse({"success": False, "error": "Invalid JSON data"}, status=400)
     except Exception as e:
-        print(f"❌ Error updating passcode: {e}")
+        logger.error(f"Passcode update error: {e}")
         return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 # ========== ADMIN DASHBOARD ==========
 def admin_dashboard(request):
     if not ADMIN:
+        log_security_event('ADMIN_BLOCKED', 'Unauthorized admin access attempt', request)
         return HttpResponse("Access Denied. Admin only.", status=403)
     
     all_notes = get_all_notes()
@@ -744,15 +897,12 @@ def admin_settings(request):
 
 # ========== NEW PAGE VIEWS ==========
 def calculator_view(request):
-    """GPA Calculator page"""
     return render(request, "calculator.html")
 
 def hackathon_view(request):
-    """Hackathon page"""
     return render(request, "hackathon.html")
 
 def free_courses_view(request):
-    """Free Courses page"""
     return render(request, "free_courses.html")
 
 # ========== URLS ==========
@@ -777,3 +927,4 @@ app = application
 
 if __name__ == "__main__":
     from django.core.management import execute_from_command_line
+    execute_from_command_line([__name__, "runserver"])
