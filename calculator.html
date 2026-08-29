@@ -3,164 +3,671 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GPA Calculator | Twarvis School</title>
+    <title>Weighted GPA Calculator | Twarvis School</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family:'Inter',sans-serif;
-            background:#0a0a1a;
-            min-height:100vh;
-            display:flex;
-            align-items:center;
-            justify-content:center;
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
+
+        /* ========== GOLDEN MATRIX RAIN ========== */
         #matrix-canvas {
-            position:fixed;
-            top:0;
-            left:0;
-            width:100%;
-            height:100%;
-            z-index:0;
-            background:linear-gradient(180deg,#0a0a2e 0%,#0a0a20 50%,#0a0a1a 100%);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(180deg, #0a0a0a 0%, #1a1200 30%, #0a0a0a 70%, #1a0a00 100%);
         }
+
         .calculator-container {
-            position:relative;
-            z-index:2;
-            max-width:500px;
-            width:90%;
-            padding:20px;
+            position: relative;
+            z-index: 2;
+            max-width: 750px;
+            width: 100%;
+            padding: 10px;
         }
+
         .calculator-card {
-            background:rgba(0,0,0,0.7);
-            border:2px solid rgba(0,255,65,0.15);
-            border-radius:28px;
-            padding:35px;
-            backdrop-filter:blur(10px);
-            box-shadow:0 0 60px rgba(0,255,65,0.03);
-            animation:float 3s ease-in-out infinite;
+            background: rgba(0, 0, 0, 0.85);
+            border: 2px solid rgba(255, 215, 0, 0.25);
+            border-radius: 28px;
+            padding: 40px 35px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.03);
+            animation: float 3s ease-in-out infinite;
+            position: relative;
         }
+
         @keyframes float {
-            0%,100%{transform:translateY(0px)}
-            50%{transform:translateY(-6px)}
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
         }
+
+        .calculator-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(255, 193, 7, 0.03), rgba(255, 215, 0, 0.08));
+            background-size: 200% 200%;
+            animation: cardGlow 4s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes cardGlow {
+            0%, 100% { background-position: 0% 50%; opacity: 0.3; }
+            50% { background-position: 100% 50%; opacity: 0.6; }
+        }
+
+        .calculator-card .icon {
+            font-size: 3rem;
+            color: #ffd700;
+            display: block;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
         .calculator-card h1 {
-            font-size:1.8rem;
-            font-weight:800;
-            text-align:center;
-            margin-bottom:20px;
-            background:linear-gradient(135deg,#4a7cf7,#6c9aff);
-            -webkit-background-clip:text;
-            background-clip:text;
-            color:transparent;
+            font-size: 2rem;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 4px;
+            background: linear-gradient(135deg, #ffd700, #ff6b00, #ffd700);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shimmerText 3s ease-in-out infinite;
         }
+
+        @keyframes shimmerText {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .calculator-card .sub-title {
+            text-align: center;
+            color: rgba(255, 215, 0, 0.25);
+            font-size: 0.85rem;
+            margin-bottom: 25px;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .calculator-card .info-badge {
+            text-align: center;
+            color: rgba(255, 215, 0, 0.3);
+            font-size: 0.7rem;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            background: rgba(255, 215, 0, 0.03);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 215, 0, 0.05);
+            display: inline-block;
+            width: 100%;
+        }
+
+        .calculator-card .info-badge i {
+            color: #ffd700;
+            margin-right: 6px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
         .calculator-card label {
-            color:rgba(255,255,255,0.5);
-            font-size:0.85rem;
-            font-weight:600;
-            display:block;
-            margin-top:12px;
+            color: rgba(255, 215, 0, 0.5);
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
         }
-        .calculator-card input,
-        .calculator-card select {
-            width:100%;
-            padding:12px 16px;
-            margin-top:4px;
-            background:rgba(255,255,255,0.03);
-            border:1px solid rgba(0,255,65,0.08);
-            border-radius:12px;
-            color:#fff;
-            font-size:1rem;
-            font-family:inherit;
-            transition:0.3s;
+
+        .calculator-card label i {
+            color: #ffd700;
+            margin-right: 6px;
+            font-size: 0.8rem;
         }
-        .calculator-card input:focus,
-        .calculator-card select:focus {
-            outline:none;
-            border-color:rgba(0,255,65,0.3);
-            box-shadow:0 0 20px rgba(0,255,65,0.03);
+
+        .calculator-card select,
+        .calculator-card input[type="number"] {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1.5px solid rgba(255, 215, 0, 0.12);
+            border-radius: 14px;
+            color: #fff;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s;
+            outline: none;
         }
-        .calculator-card button {
-            width:100%;
-            padding:14px;
-            margin-top:16px;
-            background:linear-gradient(135deg,#4a7cf7,#6c9aff);
-            border:none;
-            border-radius:50px;
-            color:#fff;
-            font-weight:700;
-            font-size:1.05rem;
-            cursor:pointer;
-            transition:0.3s;
+
+        .calculator-card select:focus,
+        .calculator-card input[type="number"]:focus {
+            border-color: rgba(255, 215, 0, 0.4);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.05);
+            background: rgba(255, 255, 255, 0.05);
         }
-        .calculator-card button:hover {
-            transform:scale(1.02);
-            box-shadow:0 0 30px rgba(74,124,247,0.2);
+
+        .calculator-card select option {
+            background: #1a1a0a;
+            color: #ffd700;
         }
-        .result-box {
-            margin-top:16px;
-            padding:16px;
-            background:rgba(0,255,65,0.03);
-            border:1px solid rgba(0,255,65,0.08);
-            border-radius:12px;
-            text-align:center;
-            color:#fff;
-            font-weight:700;
-            font-size:1.1rem;
-            min-height:60px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
+
+        .course-inputs {
+            margin-top: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px;
         }
-        .back-link {
-            display:inline-block;
-            margin-top:16px;
-            color:rgba(100,180,255,0.3);
-            text-decoration:none;
-            font-size:0.85rem;
-            transition:0.3s;
+
+        .course-inputs::-webkit-scrollbar {
+            width: 4px;
         }
-        .back-link:hover {
-            color:#4a7cf7;
+
+        .course-inputs::-webkit-scrollbar-track {
+            background: rgba(255, 215, 0, 0.02);
+            border-radius: 10px;
         }
-        @media(max-width:480px){
-            .calculator-card{padding:24px 18px}
-            .calculator-card h1{font-size:1.4rem}
+
+        .course-inputs::-webkit-scrollbar-thumb {
+            background: rgba(255, 215, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .course-row {
+            display: grid;
+            grid-template-columns: 30px 1fr 0.8fr 0.8fr;
+            gap: 10px;
+            margin-bottom: 8px;
+            background: rgba(255, 215, 0, 0.02);
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 215, 0, 0.04);
+            align-items: center;
+        }
+
+        .course-row .course-num {
+            color: rgba(255, 215, 0, 0.2);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-align: center;
+            min-width: 20px;
+        }
+
+        .course-row input {
+            padding: 8px 10px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 215, 0, 0.08);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 0.85rem;
+            font-family: inherit;
+            transition: 0.3s;
+            outline: none;
+            width: 100%;
+        }
+
+        .course-row input:focus {
+            border-color: rgba(255, 215, 0, 0.3);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .course-row input::placeholder {
+            color: rgba(255, 255, 255, 0.08);
+            font-size: 0.65rem;
+        }
+
+        .course-row .weight-input {
+            border-color: rgba(255, 165, 0, 0.15);
+        }
+
+        .course-row .weight-input:focus {
+            border-color: rgba(255, 165, 0, 0.4);
+        }
+
+        .course-row .marks-input {
+            border-color: rgba(74, 124, 247, 0.12);
+        }
+
+        .course-row .marks-input:focus {
+            border-color: rgba(74, 124, 247, 0.3);
+        }
+
+        .btn-calculate {
+            width: 100%;
+            padding: 16px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            border: none;
+            border-radius: 50px;
+            color: #0a0a0a;
+            font-weight: 800;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-calculate::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 52px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 50%);
+            pointer-events: none;
+        }
+
+        .btn-calculate:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.2);
+        }
+
+        .btn-calculate:active {
+            transform: scale(0.98);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .btn-row .btn-home {
+            flex: 1;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1.5px solid rgba(255, 215, 0, 0.05);
+            border-radius: 50px;
+            color: rgba(255, 215, 0, 0.3);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-row .btn-home:hover {
+            background: rgba(255, 215, 0, 0.05);
+            border-color: rgba(255, 215, 0, 0.15);
+            color: #ffd700;
+            transform: translateY(-2px);
+        }
+
+        .btn-row .btn-reset {
+            flex: 0.5;
+            padding: 14px;
+            background: rgba(255, 68, 68, 0.03);
+            border: 1.5px solid rgba(255, 68, 68, 0.05);
+            border-radius: 50px;
+            color: rgba(255, 68, 68, 0.3);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-row .btn-reset:hover {
+            background: rgba(255, 68, 68, 0.08);
+            border-color: rgba(255, 68, 68, 0.15);
+            color: #ff4444;
+            transform: translateY(-2px);
+        }
+
+        .quick-presets {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .quick-presets button {
+            padding: 6px 16px;
+            background: rgba(255, 215, 0, 0.03);
+            border: 1px solid rgba(255, 215, 0, 0.06);
+            border-radius: 50px;
+            color: rgba(255, 215, 0, 0.2);
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: inherit;
+        }
+
+        .quick-presets button:hover {
+            background: rgba(255, 215, 0, 0.08);
+            border-color: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+        }
+
+        .total-weight-display {
+            text-align: center;
+            color: rgba(255, 215, 0, 0.3);
+            font-size: 0.7rem;
+            margin-top: 8px;
+            padding: 6px 12px;
+            background: rgba(255, 215, 0, 0.02);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 215, 0, 0.03);
+        }
+
+        .total-weight-display span {
+            color: #ffd700;
+            font-weight: 700;
+        }
+
+        .grading-scale-info {
+            background: rgba(255, 215, 0, 0.03);
+            border: 1px solid rgba(255, 215, 0, 0.06);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 12px 0 8px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .grading-scale-info .scale-item {
+            color: rgba(255, 215, 0, 0.2);
+            font-size: 0.65rem;
+            font-weight: 500;
+        }
+
+        .grading-scale-info .scale-item .grade-label {
+            color: #ffd700;
+            font-weight: 700;
+        }
+
+        /* ========== RESULT OVERLAY ========== */
+        .result-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeInOverlay 0.5s ease;
+            padding: 20px;
+        }
+
+        .result-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeInOverlay {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .result-overlay .overlay-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .result-overlay .overlay-card {
+            position: relative;
+            z-index: 2;
+            background: rgba(10, 10, 5, 0.95);
+            border: 2px solid rgba(255, 215, 0, 0.25);
+            border-radius: 32px;
+            padding: 50px 45px;
+            max-width: 550px;
+            width: 100%;
+            text-align: center;
+            animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 0 80px rgba(255, 215, 0, 0.03);
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.8) translateY(30px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .result-overlay .overlay-card .emoji {
+            font-size: 5rem;
+            display: block;
+            margin-bottom: 10px;
+            animation: bounceEmoji 1.5s ease-in-out infinite;
+        }
+
+        @keyframes bounceEmoji {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1) rotate(-3deg); }
+        }
+
+        .result-overlay .overlay-card .gpa-big {
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+
+        .result-overlay .overlay-card .message {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .result-overlay .overlay-card .sub-message {
+            font-size: 1rem;
+            color: rgba(255, 215, 0, 0.4);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .result-overlay .overlay-card .close-btn {
+            padding: 14px 40px;
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            border: none;
+            border-radius: 50px;
+            color: #0a0a0a;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: inherit;
+        }
+
+        .result-overlay .overlay-card .close-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
+        }
+
+        .result-overlay .overlay-card .close-btn i {
+            margin-right: 8px;
+        }
+
+        .result-overlay .overlay-card.excellent {
+            border-color: rgba(255, 215, 0, 0.5);
+        }
+        .result-overlay .overlay-card.good {
+            border-color: rgba(255, 193, 7, 0.4);
+        }
+        .result-overlay .overlay-card.average {
+            border-color: rgba(255, 165, 0, 0.4);
+        }
+        .result-overlay .overlay-card.poor {
+            border-color: rgba(255, 68, 68, 0.4);
+        }
+
+        @media (max-width: 600px) {
+            .calculator-card { padding: 28px 16px; }
+            .calculator-card h1 { font-size: 1.6rem; }
+            .form-row { grid-template-columns: 1fr; gap: 5px; }
+            .course-row {
+                grid-template-columns: 20px 1fr 0.7fr 0.7fr;
+                gap: 6px;
+                padding: 10px;
+            }
+            .course-row .course-num { display: none; }
+            .btn-row { flex-direction: column; }
+            .btn-row .btn-reset { flex: 1; }
+            .result-overlay .overlay-card { padding: 30px 20px; }
+            .result-overlay .overlay-card .gpa-big { font-size: 3rem; }
+            .result-overlay .overlay-card .message { font-size: 1.2rem; }
+            .result-overlay .overlay-card .emoji { font-size: 3.5rem; }
+            .grading-scale-info { flex-direction: column; align-items: center; }
+        }
+
+        @media (max-width: 400px) {
+            .calculator-card { padding: 18px 12px; }
+            .calculator-card h1 { font-size: 1.2rem; }
+            .course-row { grid-template-columns: 1fr 1fr; }
+            .quick-presets { justify-content: center; }
         }
     </style>
 </head>
 <body>
+
+    <!-- ========== GOLDEN MATRIX RAIN CANVAS ========== -->
     <canvas id="matrix-canvas"></canvas>
+
     <div class="calculator-container">
         <div class="calculator-card">
-            <h1><i class="fas fa-calculator"></i> GPA Calculator</h1>
+            <span class="icon"><i class="fas fa-calculator"></i></span>
+            <h1>📊 Weighted GPA Calculator</h1>
+            <p class="sub-title">Calculate your GPA using marks & subject weights</p>
 
-            <label>Select Program:</label>
-            <select id="programType">
-                <option value="diploma">Diploma (4.0 GPA)</option>
-                <option value="bachelor">Bachelor (5.0 GPA)</option>
-            </select>
+            <div class="info-badge">
+                <i class="fas fa-info-circle"></i> Enter your marks (0-100) and the weight for each subject
+            </div>
 
-            <label>Number of Courses:</label>
-            <input type="number" id="numCourses" min="1" value="4">
+            <!-- Grading System & Subjects -->
+            <div class="form-row">
+                <div>
+                    <label><i class="fas fa-graduation-cap"></i> Grading System</label>
+                    <select id="gradingSystem">
+                        <option value="diploma">📜 Diploma (A=80%)</option>
+                        <option value="degree">🎓 Degree (A=70%)</option>
+                        <option value="technical">🔧 Technical College (A=70%)</option>
+                    </select>
+                </div>
+                <div>
+                    <label><i class="fas fa-book"></i> Number of Subjects</label>
+                    <input type="number" id="numSubjects" min="1" max="20" value="4">
+                </div>
+            </div>
 
-            <div id="courseInputs"></div>
+            <!-- Grading Scale Info -->
+            <div class="grading-scale-info" id="gradingScaleInfo">
+                <span class="scale-item"><span class="grade-label">A</span> = 80-100</span>
+                <span class="scale-item"><span class="grade-label">B</span> = 70-79</span>
+                <span class="scale-item"><span class="grade-label">C</span> = 60-69</span>
+                <span class="scale-item"><span class="grade-label">D</span> = 50-59</span>
+                <span class="scale-item"><span class="grade-label">E</span> = 40-49</span>
+                <span class="scale-item"><span class="grade-label">F</span> = 0-39</span>
+            </div>
 
-            <button id="calculateGpa">Calculate GPA</button>
-            <div class="result-box" id="gpaResult">Enter your grades to calculate GPA</div>
+            <!-- Quick Presets -->
+            <div class="quick-presets">
+                <button onclick="setSubjects(3)">3 Subjects</button>
+                <button onclick="setSubjects(4)">4 Subjects</button>
+                <button onclick="setSubjects(5)">5 Subjects</button>
+                <button onclick="setSubjects(6)">6 Subjects</button>
+                <button onclick="setSubjects(8)">8 Subjects</button>
+                <button onclick="setSubjects(9)">9 Subjects</button>
+                <button onclick="setSubjects(10)">10 Subjects</button>
+            </div>
 
-            <div style="text-align:center;margin-top:12px;">
-                <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+            <!-- Course Inputs -->
+            <div id="courseInputs" class="course-inputs"></div>
+
+            <!-- Total Weight Display -->
+            <div class="total-weight-display">
+                <i class="fas fa-weight"></i> Total Weight: <span id="totalWeightValue">0</span>
+            </div>
+
+            <!-- Calculate Button -->
+            <button class="btn-calculate" id="calculateGpa">
+                <i class="fas fa-chart-line"></i> Calculate GPA
+            </button>
+
+            <!-- Action Buttons -->
+            <div class="btn-row">
+                <a href="/" class="btn-home">
+                    <i class="fas fa-home"></i> Return Home
+                </a>
+                <button class="btn-reset" onclick="resetCalculator()">
+                    <i class="fas fa-redo-alt"></i> Reset
+                </button>
             </div>
         </div>
     </div>
 
+    <!-- ========== RESULT OVERLAY ========== -->
+    <div class="result-overlay" id="resultOverlay">
+        <div class="overlay-bg" onclick="closeOverlay()"></div>
+        <div class="overlay-card" id="overlayCard">
+            <span class="emoji" id="resultEmoji">🎉</span>
+            <div class="gpa-big" id="resultGpa">0.00</div>
+            <div class="message" id="resultMessage">Excellent!</div>
+            <div class="sub-message" id="resultSubMessage">Outstanding performance! Keep it up!</div>
+            <button class="close-btn" onclick="closeOverlay()">
+                <i class="fas fa-check-circle"></i> Continue
+            </button>
+        </div>
+    </div>
+
     <script>
-        // Matrix rain (simplified)
+        // ========== GOLDEN MATRIX RAIN ==========
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
+
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -168,79 +675,418 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ★✨🔥⚡";
+        const goldShades = ['#ffd700', '#ffcc00', '#ffb800', '#ffaa00', '#ff8c00', '#ffd700'];
+
         const drops = [];
         const columns = Math.ceil(canvas.width / 20);
         for (let i = 0; i < columns; i++) drops[i] = Math.random() * -200;
 
+        let particles = [];
+        for (let i = 0; i < 50; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 2 + 1,
+                speed: Math.random() * 0.3 + 0.1,
+                opacity: Math.random() * 0.3 + 0.1
+            });
+        }
+
+        const fontSize = 18;
+
         function drawRain() {
-            ctx.fillStyle = 'rgba(10, 10, 30, 0.05)';
+            ctx.fillStyle = 'rgba(10, 10, 5, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let p of particles) {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 215, 0, ${p.opacity})`;
+                ctx.fill();
+                p.y -= p.speed;
+                if (p.y < 0) {
+                    p.y = canvas.height;
+                    p.x = Math.random() * canvas.width;
+                }
+            }
+
             for (let i = 0; i < drops.length; i++) {
                 const char = chars[Math.floor(Math.random() * chars.length)];
                 const x = i * 20;
                 const y = drops[i] * 20;
-                ctx.fillStyle = '#4a7cf7';
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = '#4a7cf766';
-                ctx.font = 'bold 18px monospace';
-                if (y > 0 && y < canvas.height + 50) ctx.fillText(char, x, y);
+
+                const colorIdx = Math.floor(Math.random() * goldShades.length);
+                ctx.fillStyle = goldShades[colorIdx];
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = goldShades[colorIdx] + '66';
+                ctx.font = `bold ${fontSize}px 'Courier New', monospace`;
+
+                if (y > 0 && y < canvas.height + 50) {
+                    ctx.fillText(char, x, y);
+                }
                 ctx.shadowBlur = 0;
-                if (drops[i] * 20 > canvas.height + 50 && Math.random() > 0.98) drops[i] = 0;
-                drops[i] += 0.4 + Math.random() * 0.3;
+
+                if (drops[i] * fontSize > canvas.height + 50 && Math.random() > 0.98) {
+                    drops[i] = 0;
+                }
+                drops[i] += 0.5 + Math.random() * 0.5;
             }
+
             requestAnimationFrame(drawRain);
         }
+
         drawRain();
 
-        // GPA Calculator
-        function generateCourseInputs() {
-            const num = parseInt(document.getElementById('numCourses').value) || 4;
-            const container = document.getElementById('courseInputs');
-            container.innerHTML = '';
-            for (let i = 0; i < num; i++) {
-                const div = document.createElement('div');
-                div.style.margin = '8px 0';
-                div.innerHTML = `
-                    <label>Course ${i+1}</label>
-                    <input type="number" class="course-grade" placeholder="Grade (0-100)" min="0" max="100" step="0.01">
-                `;
-                container.appendChild(div);
+        // ========== BURST EFFECT ==========
+        canvas.addEventListener('click', function(e) {
+            let clientX = e.clientX;
+            let clientY = e.clientY;
+            let col = Math.floor(clientX / fontSize);
+            if (col >= 0 && col < drops.length) {
+                for (let i = -15; i <= 15; i++) {
+                    let target = col + i;
+                    if (target >= 0 && target < drops.length) {
+                        drops[target] = (clientY / fontSize) - 10;
+                    }
+                }
+            }
+        });
+
+        // ========== WEIGHTED GPA CALCULATOR ==========
+
+        function getGradeFromMarks(marks, system) {
+            // Returns: { grade: 'A', gradePoint: 5.0, gradeValue: 'A' }
+            const scales = {
+                diploma: {
+                    'A': { min: 80, max: 100, gpa: 5.0 },
+                    'B+': { min: 75, max: 79, gpa: 4.5 },
+                    'B': { min: 70, max: 74, gpa: 4.0 },
+                    'C+': { min: 65, max: 69, gpa: 3.5 },
+                    'C': { min: 60, max: 64, gpa: 3.0 },
+                    'D+': { min: 55, max: 59, gpa: 2.5 },
+                    'D': { min: 50, max: 54, gpa: 2.0 },
+                    'E': { min: 40, max: 49, gpa: 1.0 },
+                    'F': { min: 0, max: 39, gpa: 0.0 }
+                },
+                degree: {
+                    'A': { min: 70, max: 100, gpa: 4.0 },
+                    'B+': { min: 65, max: 69, gpa: 3.5 },
+                    'B': { min: 60, max: 64, gpa: 3.0 },
+                    'C+': { min: 55, max: 59, gpa: 2.5 },
+                    'C': { min: 50, max: 54, gpa: 2.0 },
+                    'D+': { min: 45, max: 49, gpa: 1.5 },
+                    'D': { min: 40, max: 44, gpa: 1.0 },
+                    'F': { min: 0, max: 39, gpa: 0.0 }
+                },
+                technical: {
+                    'A': { min: 70, max: 100, gpa: 5.0 },
+                    'B+': { min: 65, max: 69, gpa: 4.5 },
+                    'B': { min: 60, max: 64, gpa: 4.0 },
+                    'C+': { min: 55, max: 59, gpa: 3.5 },
+                    'C': { min: 50, max: 54, gpa: 3.0 },
+                    'D+': { min: 45, max: 49, gpa: 2.5 },
+                    'D': { min: 40, max: 44, gpa: 2.0 },
+                    'E': { min: 35, max: 39, gpa: 1.0 },
+                    'F': { min: 0, max: 34, gpa: 0.0 }
+                }
+            };
+
+            const scale = scales[system] || scales.diploma;
+
+            // Check if marks is a number
+            const numMarks = parseFloat(marks);
+            if (isNaN(numMarks) || numMarks < 0 || numMarks > 100) {
+                return null;
+            }
+
+            for (const [grade, range] of Object.entries(scale)) {
+                if (numMarks >= range.min && numMarks <= range.max) {
+                    return { grade: grade, gradePoint: range.gpa };
+                }
+            }
+
+            return { grade: 'F', gradePoint: 0.0 };
+        }
+
+        function updateGradingScaleInfo() {
+            const system = document.getElementById('gradingSystem').value;
+            const info = document.getElementById('gradingScaleInfo');
+
+            const scales = {
+                diploma: {
+                    'A': '80-100', 'B': '70-79', 'C': '60-69',
+                    'D': '50-59', 'E': '40-49', 'F': '0-39'
+                },
+                degree: {
+                    'A': '70-100', 'B': '60-69', 'C': '50-59',
+                    'D': '40-49', 'E': '35-39', 'F': '0-34'
+                },
+                technical: {
+                    'A': '70-100', 'B': '60-69', 'C': '50-59',
+                    'D': '40-49', 'E': '35-39', 'F': '0-34'
+                }
+            };
+
+            const scale = scales[system] || scales.diploma;
+            info.innerHTML = '';
+            const labels = ['A', 'B', 'C', 'D', 'E', 'F'];
+            for (const label of labels) {
+                const span = document.createElement('span');
+                span.className = 'scale-item';
+                span.innerHTML = `<span class="grade-label">${label}</span> = ${scale[label] || 'N/A'}`;
+                info.appendChild(span);
             }
         }
 
-        document.getElementById('numCourses').addEventListener('change', generateCourseInputs);
-        document.getElementById('numCourses').addEventListener('input', generateCourseInputs);
-        generateCourseInputs();
-
-        document.getElementById('calculateGpa').addEventListener('click', function() {
-            const program = document.getElementById('programType').value;
-            const maxGpa = program === 'diploma' ? 4.0 : 5.0;
-            const grades = document.querySelectorAll('.course-grade');
-            let total = 0, count = 0;
-            grades.forEach(input => {
-                const val = parseFloat(input.value);
-                if (!isNaN(val) && val >= 0 && val <= 100) { total += val; count++; }
+        function updateTotalWeight() {
+            const weights = document.querySelectorAll('.course-weight');
+            let total = 0;
+            weights.forEach(w => {
+                const val = parseFloat(w.value);
+                if (!isNaN(val) && val > 0) total += val;
             });
-            if (count === 0) {
-                document.getElementById('gpaResult').innerHTML = '❌ Please enter valid grades!';
-                document.getElementById('gpaResult').style.color = '#ff4444';
+            document.getElementById('totalWeightValue').textContent = total.toFixed(1);
+            return total;
+        }
+
+        function generateCourseInputs() {
+            const num = parseInt(document.getElementById('numSubjects').value) || 4;
+            const container = document.getElementById('courseInputs');
+            container.innerHTML = '';
+
+            for (let i = 0; i < num; i++) {
+                const div = document.createElement('div');
+                div.className = 'course-row';
+                div.innerHTML = `
+                    <span class="course-num">#${i+1}</span>
+                    <input type="number" class="course-marks marks-input" placeholder="Marks (0-100)" min="0" max="100" step="0.01">
+                    <input type="number" class="course-weight weight-input" placeholder="Weight" min="0.5" max="30" step="0.5" value="3">
+                    <input type="text" class="course-grade-display" placeholder="Grade" readonly style="background:rgba(255,255,255,0.02);color:rgba(255,215,0,0.2);border-color:rgba(255,215,0,0.03);">
+                `;
+                container.appendChild(div);
+
+                // Auto-update grade display when marks change
+                const marksInput = div.querySelector('.course-marks');
+                const gradeDisplay = div.querySelector('.course-grade-display');
+                const system = document.getElementById('gradingSystem').value;
+
+                marksInput.addEventListener('input', function() {
+                    const marks = this.value;
+                    if (marks) {
+                        const result = getGradeFromMarks(marks, system);
+                        if (result) {
+                            gradeDisplay.value = result.grade;
+                            gradeDisplay.style.color = '#ffd700';
+                            gradeDisplay.style.borderColor = 'rgba(255,215,0,0.1)';
+                            gradeDisplay.style.background = 'rgba(255,215,0,0.03)';
+                        } else {
+                            gradeDisplay.value = 'Invalid';
+                            gradeDisplay.style.color = '#ff4444';
+                            gradeDisplay.style.borderColor = 'rgba(255,68,68,0.1)';
+                            gradeDisplay.style.background = 'rgba(255,68,68,0.03)';
+                        }
+                    } else {
+                        gradeDisplay.value = '';
+                        gradeDisplay.style.color = 'rgba(255,215,0,0.2)';
+                        gradeDisplay.style.borderColor = 'rgba(255,215,0,0.03)';
+                        gradeDisplay.style.background = 'rgba(255,255,255,0.02)';
+                    }
+                });
+            }
+
+            // Auto-focus first input
+            const firstInput = container.querySelector('.course-marks');
+            if (firstInput) firstInput.focus();
+
+            // Update total weight
+            document.querySelectorAll('.course-weight').forEach(w => {
+                w.addEventListener('input', updateTotalWeight);
+            });
+
+            updateTotalWeight();
+        }
+
+        function setSubjects(num) {
+            document.getElementById('numSubjects').value = num;
+            generateCourseInputs();
+        }
+
+        function resetCalculator() {
+            document.getElementById('numSubjects').value = 4;
+            document.getElementById('gradingSystem').value = 'diploma';
+            generateCourseInputs();
+            updateGradingScaleInfo();
+        }
+
+        function closeOverlay() {
+            document.getElementById('resultOverlay').classList.remove('active');
+        }
+
+        function showResultOverlay(gpa, maxGpa, status, emoji, message, subMessage, statusClass) {
+            const overlay = document.getElementById('resultOverlay');
+            const card = document.getElementById('overlayCard');
+
+            card.className = 'overlay-card';
+            if (statusClass) {
+                card.classList.add(statusClass);
+            }
+
+            document.getElementById('resultGpa').textContent = gpa.toFixed(3);
+            document.getElementById('resultEmoji').textContent = emoji;
+            document.getElementById('resultMessage').textContent = message;
+            document.getElementById('resultSubMessage').textContent = subMessage;
+
+            overlay.classList.add('active');
+        }
+
+        function calculateGPA() {
+            const system = document.getElementById('gradingSystem').value;
+            const marksInputs = document.querySelectorAll('.course-marks');
+            const weights = document.querySelectorAll('.course-weight');
+
+            let totalWeightedPoints = 0;
+            let totalWeight = 0;
+            let hasError = false;
+            let subjectResults = [];
+
+            const maxGpa = (system === 'diploma' || system === 'technical') ? 5.0 : 4.0;
+
+            marksInputs.forEach((input, index) => {
+                const marks = input.value.trim();
+                const weightValue = parseFloat(weights[index]?.value) || 0;
+
+                if (!marks) {
+                    hasError = true;
+                    return;
+                }
+
+                if (weightValue <= 0) {
+                    hasError = true;
+                    return;
+                }
+
+                const result = getGradeFromMarks(marks, system);
+                if (!result) {
+                    hasError = true;
+                    return;
+                }
+
+                const gradePoint = result.gradePoint;
+                totalWeightedPoints += gradePoint * weightValue;
+                totalWeight += weightValue;
+
+                subjectResults.push({
+                    subject: index + 1,
+                    marks: parseFloat(marks),
+                    grade: result.grade,
+                    gradePoint: gradePoint,
+                    weight: weightValue,
+                    weightedPoint: gradePoint * weightValue
+                });
+            });
+
+            if (hasError || totalWeight === 0) {
+                showResultOverlay(
+                    0, maxGpa,
+                    'error',
+                    '😅',
+                    'Oops! Something went wrong',
+                    'Please enter valid marks (0-100) and weights (>0) for all subjects.',
+                    'poor'
+                );
                 return;
             }
-            const avg = total / count;
-            const gpa = (avg / 100) * maxGpa;
-            document.getElementById('gpaResult').innerHTML = `
-                <div>Program: ${program.charAt(0).toUpperCase() + program.slice(1)}</div>
-                <div>Average: ${avg.toFixed(1)}%</div>
-                <div style="font-size:1.4rem;margin-top:4px;color:${gpa >= maxGpa * 0.7 ? '#4a7cf7' : '#ff4444'}">
-                    GPA: ${gpa.toFixed(2)} / ${maxGpa.toFixed(1)}
-                </div>
-                <div style="font-size:0.85rem;margin-top:4px;color:${gpa >= maxGpa * 0.7 ? '#00ff41' : '#ff4444'}">
-                    ${gpa >= maxGpa * 0.7 ? '✅ Good Standing' : '⚠️ Needs Improvement'}
-                </div>
-            `;
-            document.getElementById('gpaResult').style.color = '#fff';
+
+            const gpa = totalWeightedPoints / totalWeight;
+            const ratio = gpa / maxGpa;
+
+            // ========== SMART MESSAGES ==========
+            let emoji, message, subMessage, statusClass;
+
+            if (ratio >= 0.9) {
+                emoji = '🏆';
+                message = '🎉 CONGRATULATIONS! EXCELLENT!';
+                subMessage = `You're a star! Outstanding performance with GPA ${gpa.toFixed(3)}/${maxGpa.toFixed(1)}. Keep shining! 🌟`;
+                statusClass = 'excellent';
+            } else if (ratio >= 0.75) {
+                emoji = '🌟';
+                message = '💪 ALMOST THERE!';
+                subMessage = `You're doing great! GPA ${gpa.toFixed(3)}/${maxGpa.toFixed(1)}. Push a little harder and you'll reach excellence! 🚀`;
+                statusClass = 'good';
+            } else if (ratio >= 0.6) {
+                emoji = '📈';
+                message = '📚 MEDIUM - DON\'T GIVE UP!';
+                subMessage = `GPA ${gpa.toFixed(3)}/${maxGpa.toFixed(1)}. You're in the middle - this is where champions are made! Keep pushing! 💪`;
+                statusClass = 'average';
+            } else if (ratio >= 0.4) {
+                emoji = '💪';
+                message = '🔴 ALMOST FAILING - DON\'T GIVE UP!';
+                subMessage = `GPA ${gpa.toFixed(3)}/${maxGpa.toFixed(1)}. You're still in the game! Use this as motivation to come back stronger. 💪`;
+                statusClass = 'average';
+            } else {
+                emoji = '🔥';
+                message = '💀 FAIL! BUT FAILURE IS NOT THE END!';
+                subMessage = `GPA ${gpa.toFixed(3)}/${maxGpa.toFixed(1)}. Every failure is a lesson. Get back up, study harder, and show them what you're made of! 🚀💪`;
+                statusClass = 'poor';
+            }
+
+            showResultOverlay(gpa, maxGpa, ratio, emoji, message, subMessage, statusClass);
+
+            console.log('📊 Weighted GPA Calculation:');
+            console.log(`System: ${system}`);
+            console.log(`GPA: ${gpa.toFixed(3)} / ${maxGpa.toFixed(1)}`);
+            console.log(`Total Weight: ${totalWeight}`);
+            console.log(`Total Weighted Points: ${totalWeightedPoints.toFixed(2)}`);
+            console.log('Subject Details:', subjectResults);
+        }
+
+        // ========== EVENT LISTENERS ==========
+        document.getElementById('calculateGpa').addEventListener('click', calculateGPA);
+
+        document.getElementById('numSubjects').addEventListener('change', function() {
+            const val = parseInt(this.value) || 4;
+            if (val < 1) this.value = 1;
+            if (val > 20) this.value = 20;
+            generateCourseInputs();
         });
+
+        document.getElementById('gradingSystem').addEventListener('change', function() {
+            updateGradingScaleInfo();
+            // Update existing grade displays
+            const marksInputs = document.querySelectorAll('.course-marks');
+            const gradeDisplays = document.querySelectorAll('.course-grade-display');
+            const system = this.value;
+            marksInputs.forEach((input, index) => {
+                const marks = input.value;
+                if (marks) {
+                    const result = getGradeFromMarks(marks, system);
+                    if (result && gradeDisplays[index]) {
+                        gradeDisplays[index].value = result.grade;
+                    }
+                }
+            });
+        });
+
+        // ========== KEYBOARD SHORTCUTS ==========
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const target = e.target;
+                if (target.classList.contains('course-marks') ||
+                    target.classList.contains('course-weight')) {
+                    e.preventDefault();
+                    calculateGPA();
+                }
+            }
+        });
+
+        // ========== INITIALIZE ==========
+        generateCourseInputs();
+        updateGradingScaleInfo();
+
+        console.log('📊 Weighted GPA Calculator loaded!');
+        console.log('💡 Enter marks (0-100) and subject weights');
+        console.log('📐 GPA = Σ(grade_point × weight) / Σ(weight)');
     </script>
 </body>
 </html>
