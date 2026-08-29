@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: twarvis-school
+    runtime: python
+    plan: starter
+    buildCommand: |
+      pip install -r requirements.txt
+      python app.py collectstatic --noinput || true
+    startCommand: gunicorn app:app
+    healthCheckPath: /
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: ADMIN
+        value: false
+      - key: DEBUG
+        value: false
+      - key: ALLOWED_HOSTS
+        value: twarvis-school.onrender.com
+      - key: PYTHON_VERSION
+        value: 3.11.8
