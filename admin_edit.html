@@ -1,92 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Note | Admin</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            min-height: 100vh;
-            padding: 40px 20px;
-        }
-        .container { max-width: 600px; margin: 0 auto; }
-        .card {
-            background: rgba(255,255,255,0.95);
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-        h1 { margin-bottom: 10px; color: #333; }
-        .file-name { color: #666; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
-        .form-input, .form-textarea {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-family: inherit;
-        }
-        .form-input:focus, .form-textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        .form-textarea { resize: vertical; min-height: 100px; }
-        .btn-save {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 40px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-        }
-        .btn-cancel {
-            background: #ccc;
-            color: #333;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            padding: 12px 24px;
-            border-radius: 40px;
-            margin-top: 15px;
-            width: 100%;
-        }
-        .btn-cancel:hover { background: #bbb; }
-        .btn-save:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(102,126,234,0.3); }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Note · Admin</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <style>
+    /* ----- reset & base ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(145deg, #0b0e1a 0%, #1a1f35 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 640px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* ----- card ----- */
+    .card {
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(2px);
+      border-radius: 2.5rem;
+      padding: 2.5rem 2.8rem;
+      box-shadow: 0 30px 50px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      transition: transform 0.2s ease;
+    }
+
+    /* ----- typography ----- */
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #0d1224;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .file-name {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #4a5278;
+      background: #f0f3fd;
+      padding: 0.5rem 1rem;
+      border-radius: 100px;
+      display: inline-block;
+      margin-top: 0.1rem;
+      margin-bottom: 1.8rem;
+      border: 1px solid #d9e0f0;
+      letter-spacing: -0.01em;
+    }
+
+    .file-name::before {
+      content: "📄 ";
+      opacity: 0.7;
+    }
+
+    /* ----- form ----- */
+    .form-group {
+      margin-bottom: 1.6rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #2c345a;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      border: 2px solid #dfe5f5;
+      border-radius: 1.2rem;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      background: #fbfdff;
+      transition: border 0.2s, box-shadow 0.15s;
+      color: #12182b;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: #6b7eea;
+      box-shadow: 0 0 0 4px rgba(107, 126, 234, 0.15);
+      background: #ffffff;
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    /* ----- button row ----- */
+    .action-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
+    .btn-save {
+      background: linear-gradient(135deg, #5b6fdf, #7b4ea8);
+      color: white;
+      border: none;
+      padding: 1rem 1.5rem;
+      border-radius: 60px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s ease;
+      box-shadow: 0 8px 18px -6px rgba(91, 111, 223, 0.3);
+      letter-spacing: 0.01em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+    }
+
+    .btn-save:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 28px -8px rgba(91, 111, 223, 0.5);
+      background: linear-gradient(135deg, #4f63d4, #6f429b);
+    }
+
+    .btn-save:active {
+      transform: translateY(0px);
+      box-shadow: 0 4px 12px -4px rgba(91, 111, 223, 0.4);
+    }
+
+    .btn-cancel {
+      background: #eef2fa;
+      color: #1f274a;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.9rem 1.2rem;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 1rem;
+      width: 100%;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    .btn-cancel:hover {
+      background: #e2e8f5;
+      border-color: #c5cee6;
+      transform: scale(0.98);
+    }
+
+    /* ----- tiny extras ----- */
+    .note-hint {
+      font-size: 0.8rem;
+      color: #6f7aa0;
+      margin-top: 0.3rem;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+    }
+
+    .divider-light {
+      height: 1px;
+      background: linear-gradient(to right, #d9e0f0, transparent);
+      margin: 1.8rem 0 1.4rem 0;
+      opacity: 0.5;
+    }
+
+    /* ----- responsive touch ----- */
+    @media (max-width: 480px) {
+      .card {
+        padding: 1.8rem 1.2rem;
+        border-radius: 2rem;
+      }
+
+      h1 {
+        font-size: 1.7rem;
+      }
+
+      .file-name {
+        font-size: 0.9rem;
+        padding: 0.3rem 0.8rem;
+      }
+
+      .btn-save {
+        font-size: 1rem;
+        padding: 0.9rem 1.2rem;
+      }
+
+      .btn-cancel {
+        font-size: 0.95rem;
+        padding: 0.8rem 1.2rem;
+      }
+    }
+
+    /* small decoration: emoji alignment */
+    .emoji-icon {
+      display: inline-block;
+      line-height: 1;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <h1>✏️ Edit Note</h1>
-            <div class="file-name">File: {{ note.filename }}</div>
-            <form method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label>Module Name</label>
-                    {{ form.module }}
-                </div>
-                <div class="form-group">
-                    <label>Course Name</label>
-                    {{ form.course }}
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    {{ form.description }}
-                </div>
-                <button type="submit" class="btn-save">💾 Save Changes</button>
-                <a href="/admin/" class="btn-cancel">← Cancel</a>
-            </form>
+  <div class="container">
+    <div class="card">
+      <h1>
+        <span class="emoji-icon">✏️</span> Edit Note
+      </h1>
+      <div class="file-name">
+        {{ note.filename }}
+      </div>
+
+      <form method="post">
+        <!-- CSRF token (Django style) -->
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="id_module">📘 Module Name</label>
+          {{ form.module }}
+          <div class="note-hint">e.g. "Advanced Python" or "Module 4"</div>
         </div>
+
+        <div class="form-group">
+          <label for="id_course">📚 Course Name</label>
+          {{ form.course }}
+          <div class="note-hint">e.g. "Data Science Bootcamp"</div>
+        </div>
+
+        <div class="form-group">
+          <label for="id_description">📝 Description</label>
+          {{ form.description }}
+          <div class="note-hint">Brief summary or key points</div>
+        </div>
+
+        <!-- subtle divider -->
+        <div class="divider-light"></div>
+
+        <div class="action-row">
+          <button type="submit" class="btn-save">
+            <span>💾</span> Save Changes
+          </button>
+          <a href="/admin/" class="btn-cancel">
+            <span>←</span> Cancel
+          </a>
+        </div>
+      </form>
     </div>
+  </div>
 </body>
 </html>
