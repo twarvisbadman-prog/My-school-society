@@ -119,7 +119,21 @@
 | Render.com | Hosting & Deployment |
 | GitHub | Version Control |
 
----
+---<!-- Badges -->
+<div align="center">
+
+![Version](https://img.shields.io/badge/version-2.0.0-blue?style=for-the-badge)
+![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python)
+![Django](https://img.shields.io/badge/Django-4.2-green?style=for-the-badge&logo=django)
+![Supabase](https://img.shields.io/badge/Supabase-2.5-orange?style=for-the-badge&logo=supabase)
+![Render](https://img.shields.io/badge/Render-Deployed-purple?style=for-the-badge&logo=render)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
+![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=for-the-badge)
+![Stars](https://img.shields.io/github/stars/twarvisbadman-prog/My-school-society?style=for-the-badge)
+![Forks](https://img.shields.io/github/forks/twarvisbadman-prog/My-school-society?style=for-the-badge)
+![Issues](https://img.shields.io/github/issues/twarvisbadman-prog/My-school-society?style=for-the-badge)
+
+</div>
 
 ## 📦 Installation
 
