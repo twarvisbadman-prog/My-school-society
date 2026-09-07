@@ -1,4 +1,4 @@
-# app.py - YOUR WORKING VERSION (FIXED)
+# app.py - YOUR WORKING VERSION (FIXED) with SCANNER ROUTE ADDED
 import os
 import uuid
 import json
@@ -763,6 +763,115 @@ def free_courses_view(request):
             </html>
         """)
 
+# ========== SCANNER VIEW - NEW ADDITION ==========
+def scanner_view(request):
+    """Render the scanner.html page for document scanning (like CamScanner)"""
+    try:
+        return render(request, "scanner.html")
+    except Exception as e:
+        # Fallback if scanner.html doesn't exist yet
+        return HttpResponse(f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Scanner | Twarvis School</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+                <style>
+                    * {{ margin:0; padding:0; box-sizing:border-box; }}
+                    body {{
+                        font-family:'Inter',sans-serif;
+                        background:#0a0a1a;
+                        min-height:100vh;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        color:#fff;
+                        padding:20px;
+                    }}
+                    .scanner-container {{
+                        max-width:500px;
+                        width:100%;
+                        background:rgba(0,0,0,0.6);
+                        border:2px solid rgba(0,255,65,0.15);
+                        border-radius:32px;
+                        padding:40px 30px;
+                        text-align:center;
+                        backdrop-filter:blur(10px);
+                    }}
+                    .scanner-icon {{
+                        font-size:5rem;
+                        color:#4a7cf7;
+                        margin-bottom:16px;
+                        animation:pulse 2s ease-in-out infinite;
+                    }}
+                    @keyframes pulse {{
+                        0%,100%{{transform:scale(1);opacity:0.8}}
+                        50%{{transform:scale(1.05);opacity:1}}
+                    }}
+                    h1 {{ font-size:2rem; font-weight:800; margin-bottom:8px; }}
+                    p {{ color:rgba(100,180,255,0.4); font-size:1rem; line-height:1.6; margin-bottom:24px; }}
+                    .scan-btn {{
+                        display:inline-flex;
+                        align-items:center;
+                        gap:12px;
+                        padding:16px 40px;
+                        background:linear-gradient(135deg,#4a7cf7,#6c9aff);
+                        border:none;
+                        border-radius:60px;
+                        color:#fff;
+                        font-weight:700;
+                        font-size:1.1rem;
+                        cursor:pointer;
+                        transition:0.3s;
+                        text-decoration:none;
+                    }}
+                    .scan-btn:hover {{ transform:scale(1.04); box-shadow:0 0 40px rgba(74,124,247,0.3); }}
+                    .back-link {{
+                        display:inline-block;
+                        margin-top:16px;
+                        color:rgba(100,180,255,0.2);
+                        text-decoration:none;
+                        font-size:0.85rem;
+                        transition:0.3s;
+                    }}
+                    .back-link:hover {{ color:#4a7cf7; }}
+                    .placeholder-box {{
+                        background:rgba(255,255,255,0.02);
+                        border:2px dashed rgba(100,180,255,0.05);
+                        border-radius:20px;
+                        padding:40px 20px;
+                        margin-bottom:20px;
+                    }}
+                    .placeholder-box i {{ font-size:3rem; color:rgba(100,180,255,0.1); }}
+                    .placeholder-box p {{ color:rgba(100,180,255,0.1); font-size:0.9rem; margin-top:8px; }}
+                    @media(max-width:480px){{
+                        .scanner-container{{padding:30px 20px}}
+                        h1{{font-size:1.6rem}}
+                    }}
+                </style>
+            </head>
+            <body>
+                <div class="scanner-container">
+                    <div class="scanner-icon"><i class="fas fa-camera-retro"></i></div>
+                    <h1>📄 Document Scanner</h1>
+                    <p>Capture, crop, and enhance documents like a pro.</p>
+                    <div class="placeholder-box">
+                        <i class="fas fa-qrcode"></i>
+                        <p>Scanner interface — <strong style="color:rgba(100,180,255,0.3);">scanner.html</strong> will load here</p>
+                    </div>
+                    <a href="#" class="scan-btn" onclick="alert('📸 Scanner would open here.\\n\\nTo fully integrate, create scanner.html in your project root.');">
+                        <i class="fas fa-camera"></i> Start Scanning
+                    </a>
+                    <br>
+                    <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+                    <p style="font-size:0.65rem;color:rgba(100,180,255,0.06);margin-top:16px;">Error: {e}</p>
+                </div>
+            </body>
+            </html>
+        """)
+
 # ========== URLS ==========
 urlpatterns = [
     path("", index),
@@ -792,6 +901,11 @@ urlpatterns = [
     # Also support plural version
     path("free_courses.html", free_courses_view),
     path("free-courses/", free_courses_view, name="free_courses"),
+    
+    # ========== SCANNER ROUTE - NEW ADDITION ==========
+    # This makes scanner.html accessible at /scanner.html
+    path("scanner.html", scanner_view, name="scanner"),
+    path("scanner/", scanner_view, name="scanner_alt"),
     
     path("favicon.ico", favicon),
 ]
