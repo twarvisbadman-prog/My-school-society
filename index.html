@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Twarvis School | Students Hub</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Student Hub | Twarvis</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <style>
+        /* ============================================================
+           RESET & BASE — DARK PURPLE-BLUE with RED GLOW borders
+           ============================================================ */
         * {
             margin: 0;
             padding: 0;
@@ -15,365 +18,325 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: #000;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #080c1a;
+            color: #e8ecf5;
             min-height: 100vh;
             overflow-x: hidden;
-            transition: background 0.5s, color 0.5s;
+            position: relative;
         }
 
-        /* ========== THEMES ========== */
-        body.theme-matrix {
-            background: #000;
-            color: #fff;
-        }
-
-        body.theme-dark {
-            background: #0a0a0f;
-            color: #e0e0e0;
-        }
-
-        body.theme-dark .glass-card,
-        body.theme-dark .link-card,
-        body.theme-dark .contact-owner {
-            background: rgba(10, 10, 15, 0.9);
-            border-color: rgba(50, 100, 255, 0.3);
-        }
-
-        body.theme-light {
-            background: #f0f0f5;
-            color: #1a1a2e;
-        }
-
-        body.theme-light .glass-card,
-        body.theme-light .link-card,
-        body.theme-light .contact-owner {
-            background: rgba(255, 255, 255, 0.9);
-            border-color: rgba(50, 100, 255, 0.2);
-        }
-
-        /* ========== CANVAS - BLUE MATRIX RAIN + WATER ========== */
-        #matrix-canvas {
+        /* ===== BACKGROUND LIGHTNING EFFECT ===== */
+        body::before {
+            content: '';
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 0;
-            background: linear-gradient(180deg, #0a0a2e 0%, #0a0a20 50%, #0a0a1a 100%);
-            transition: opacity 0.8s ease;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(100, 50, 200, 0.04) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(50, 80, 255, 0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 40% 80%, rgba(150, 50, 255, 0.02) 0%, transparent 40%);
+            pointer-events: none;
+            animation: lightningPulse 8s ease-in-out infinite;
         }
 
-        body.theme-matrix #matrix-canvas { opacity: 1; }
-        body.theme-dark #matrix-canvas,
-        body.theme-light #matrix-canvas {
-            opacity: 0;
+        @keyframes lightningPulse {
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* ===== CANVAS — TRIPLE RAIN: BLUE + CREAM + GOLD ===== */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
             pointer-events: none;
+            opacity: 0.5;
+            background: transparent;
+        }
+
+        #cream-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.2;
+            background: transparent;
+        }
+
+        #gold-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.35;
+            background: transparent;
         }
 
         .glass-overlay {
             position: relative;
             z-index: 2;
-            background: transparent;
             min-height: 100vh;
             width: 100%;
         }
 
-        /* ========== HEADER ========== */
+        /* ============================================================
+           GLOBAL RED GLOW BORDER ANIMATION
+           ============================================================ */
+        @keyframes redGlowBorder {
+            0%,
+            100% {
+                border-color: rgba(255, 30, 30, 0.15);
+                box-shadow: 0 0 15px rgba(255, 30, 30, 0.02), inset 0 0 15px rgba(255, 30, 30, 0.01);
+            }
+            50% {
+                border-color: rgba(255, 30, 30, 0.4);
+                box-shadow: 0 0 30px rgba(255, 30, 30, 0.06), inset 0 0 30px rgba(255, 30, 30, 0.02);
+            }
+        }
+
+        .glass-card,
+        .scan-card,
+        .link-card,
+        .contact-owner,
+        .sidebar,
+        .modal-content,
+        .nav-pill,
+        .menu-btn,
+        .scan-btn-primary,
+        .setting-btn,
+        .whatsapp-link,
+        .social-icon,
+        .back-to-top {
+            animation: redGlowBorder 4s ease-in-out infinite;
+            border: 1px solid rgba(255, 30, 30, 0.08);
+        }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
         .header {
-            background: rgba(0, 0, 0, 0.5);
-            border-bottom: 1px solid rgba(50, 150, 255, 0.1);
+            background: rgba(8, 12, 26, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 30, 30, 0.06);
             position: sticky;
             top: 0;
             z-index: 100;
-            padding: 10px 0;
-            transition: all 0.3s;
-            backdrop-filter: blur(10px);
+            padding: 8px 0;
+            animation: redGlowBorder 5s ease-in-out infinite;
         }
 
         .header-content {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 8px 24px;
+            padding: 4px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
 
         .header-left {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
         }
 
-        /* ===== MENU BUTTON - FLOATING & SHAKING ===== */
         .menu-btn {
-            background: rgba(0, 0, 0, 0.6);
-            border: 2px solid rgba(255, 26, 26, 0.3);
+            background: rgba(255, 255, 255, 0.02);
             border-radius: 50%;
-            width: 48px;
-            height: 48px;
+            width: 42px;
+            height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.4rem;
-            color: #ff1a1a;
+            font-size: 1.3rem;
+            color: #7a8bb5;
             cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            animation: floatShake 3s ease-in-out infinite;
+            transition: 0.3s;
+            animation: redGlowBorder 3s ease-in-out infinite;
         }
-
-        @keyframes floatShake {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            25% { transform: translateY(-3px) rotate(-2deg); }
-            50% { transform: translateY(-6px) rotate(2deg); }
-            75% { transform: translateY(-3px) rotate(-1deg); }
-        }
-
-        .menu-btn::before {
-            content: '';
-            position: absolute;
-            top: -4px;
-            left: -4px;
-            right: -4px;
-            bottom: -4px;
-            border-radius: 50%;
-            background: radial-gradient(circle at center, rgba(255, 26, 26, 0.15), transparent 70%);
-            animation: menuPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes menuPulse {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.1); }
-        }
-
-        .menu-btn:hover {
-            transform: scale(1.08) translateY(-3px);
-            background: rgba(255, 26, 26, 0.15);
-            box-shadow: 0 0 60px rgba(255, 26, 26, 0.5);
-            color: #fff;
-        }
-
         .menu-btn i {
-            position: relative;
-            z-index: 1;
-            text-shadow: 0 0 20px rgba(255, 26, 26, 0.3);
+            animation: iconColorShift 3s ease-in-out infinite;
+        }
+        .menu-btn:hover {
+            background: rgba(100, 50, 200, 0.06);
+            color: #a8c8ff;
+            transform: scale(1.04);
         }
 
+        /* ---- logo with cream-gold-silver shift ---- */
         .logo {
+            font-family: 'Playfair Display', serif;
             font-size: 1.6rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #4a7cf7, #6c9aff, #4a7cf7);
-            background-size: 200% 200%;
+            font-weight: 700;
+            font-style: italic;
+            background: linear-gradient(135deg, #f5e6d3, #ffd700, #c0c0c0, #f5e6d3);
+            background-size: 300% 300%;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: -0.5px;
-            animation: logoShimmer 4s ease-in-out infinite;
+            animation: creamGoldSilver 4s ease-in-out infinite;
+            text-shadow: 0 0 40px rgba(255, 215, 0, 0.04);
         }
-
-        @keyframes logoShimmer {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+        @keyframes creamGoldSilver {
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
         }
 
         .logo-sub {
             display: block;
-            font-size: 0.55rem;
-            font-weight: 400;
-            letter-spacing: 3px;
-            color: rgba(100, 180, 255, 0.15);
-            margin-top: -2px;
+            font-family: 'Playfair Display', serif;
+            font-size: 0.5rem;
+            font-style: italic;
+            letter-spacing: 2px;
+            color: rgba(100, 50, 200, 0.08);
+            margin-top: -3px;
         }
 
-        /* ===== BROWSE TAB - FLOATING & SHAKING ===== */
-        .browse-tab {
+        /* ---- nav pills ---- */
+        .nav-pill {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 20px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 2px solid rgba(156, 39, 176, 0.4);
-            border-radius: 60px;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.85rem;
+            gap: 6px;
+            padding: 6px 18px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 40px;
+            color: #7a8bb5;
+            font-size: 0.8rem;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.3s ease;
-            position: relative;
-            animation: floatShake 3.5s ease-in-out infinite;
+            transition: 0.3s;
+            animation: redGlowBorder 3.5s ease-in-out infinite;
         }
-
-        .browse-tab:nth-child(1) { animation-delay: 0s; }
-        .browse-tab:nth-child(2) { animation-delay: 0.5s; }
-
-        .browse-tab:hover {
-            transform: translateY(-3px) scale(1.03);
-            background: rgba(156, 39, 176, 0.1);
-            border-color: rgba(156, 39, 176, 0.8);
-            box-shadow: 0 0 50px rgba(156, 39, 176, 0.2);
-            color: #fff;
-        }
-
-        .browse-tab i {
-            color: #9c27b0;
-        }
-
-        .browse-tab:hover i {
-            color: #ce93d8;
-        }
-
-        /* ===== UPLOAD BUTTON - YELLOW GLOW ===== */
-        .upload-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 18px;
-            background: rgba(255, 193, 7, 0.1);
-            border: 2px solid rgba(255, 193, 7, 0.3);
-            border-radius: 60px;
-            color: #ffd700;
+        .nav-pill i {
             font-size: 0.85rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            position: relative;
-            animation: floatShake 3.2s ease-in-out infinite;
-            text-shadow: 0 0 20px rgba(255, 193, 7, 0.1);
+            animation: iconColorShift 2.5s ease-in-out infinite;
+        }
+        .nav-pill:hover {
+            background: rgba(100, 50, 200, 0.04);
+            color: #c8dcff;
+            transform: translateY(-1px);
         }
 
-        .upload-btn::before {
-            content: '';
-            position: absolute;
-            top: -4px;
-            left: -4px;
-            right: -4px;
-            bottom: -4px;
-            border-radius: 60px;
-            background: radial-gradient(circle at center, rgba(255, 193, 7, 0.1), transparent 70%);
-            animation: yellowPulse 2s ease-in-out infinite;
+        /* UPLOAD BUTTON — RED ICON */
+        .nav-pill.primary i {
+            color: #ff1a1a !important;
+            animation: none !important;
+        }
+        .nav-pill.primary {
+            background: linear-gradient(135deg, #f5e6d3, #ffd700);
+            border: none;
+            color: #080c1a;
+            box-shadow: 0 4px 30px rgba(255, 215, 0, 0.06);
+            animation: redGlowBorder 3s ease-in-out infinite;
+        }
+        .nav-pill.primary:hover {
+            box-shadow: 0 6px 40px rgba(255, 215, 0, 0.12);
+            transform: translateY(-2px);
         }
 
-        @keyframes yellowPulse {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.05); }
+        /* ============================================================
+           SIDEBAR — ICONS LIGHT GREEN
+           ============================================================ */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 999;
+            display: none;
+        }
+        .sidebar-overlay.active {
+            display: block;
         }
 
-        .upload-btn:hover {
-            transform: translateY(-3px) scale(1.03);
-            background: rgba(255, 193, 7, 0.15);
-            border-color: rgba(255, 193, 7, 0.8);
-            box-shadow: 0 0 60px rgba(255, 193, 7, 0.2);
-            color: #fff;
-            text-shadow: 0 0 30px rgba(255, 193, 7, 0.3);
-        }
-
-        .upload-btn i {
-            color: #ffd700;
-        }
-
-        .upload-btn:hover i {
-            color: #fff;
-        }
-
-        /* ===== NAV ICONS ===== */
-        .nav-links {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .nav-icon {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(50, 150, 255, 0.08);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            text-decoration: none;
-            color: rgba(100, 180, 255, 0.3);
-            font-size: 1rem;
-        }
-
-        .nav-icon:hover {
-            transform: translateY(-2px) scale(1.05);
-            background: rgba(50, 150, 255, 0.08);
-            border-color: rgba(50, 150, 255, 0.3);
-            color: #6c9aff;
-        }
-
-        .nav-icon a {
-            text-decoration: none;
-            color: inherit;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        /* ========== SIDEBAR ========== */
         .sidebar {
             position: fixed;
             top: 0;
-            left: -320px;
-            width: 280px;
+            left: -340px;
+            width: 300px;
+            max-width: 80vw;
             height: 100%;
-            background: rgba(0, 0, 0, 0.92);
-            border-right: 1.5px solid rgba(255, 26, 26, 0.15);
-            box-shadow: 8px 0 50px rgba(0, 0, 0, 0.3);
+            background: rgba(8, 12, 30, 0.97);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-right: 1px solid rgba(255, 30, 30, 0.06);
+            box-shadow: 8px 0 60px rgba(0, 0, 0, 0.5);
             z-index: 1000;
-            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             overflow-y: auto;
-            padding: 20px 0;
-            backdrop-filter: blur(12px);
+            padding: 24px 0 32px;
+            animation: redGlowBorder 4s ease-in-out infinite;
         }
-
         .sidebar.open {
             left: 0;
         }
 
         .sidebar-header {
-            padding: 30px 28px 20px;
-            border-bottom: 1px solid rgba(255, 26, 26, 0.06);
-            margin-bottom: 12px;
-            text-align: center;
+            padding: 8px 24px 20px;
+            border-bottom: 1px solid rgba(255, 30, 30, 0.04);
+            margin-bottom: 8px;
         }
-
         .sidebar-header h2 {
-            font-size: 1.6rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #ff1a1a, #ff4444);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-style: italic;
+            background: linear-gradient(135deg, #f5e6d3, #ffd700, #c0c0c0);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            animation: creamGoldSilver 3s ease-in-out infinite;
         }
-
         .sidebar-header p {
-            color: rgba(255, 255, 255, 0.15);
-            font-size: 0.65rem;
+            font-size: 0.6rem;
+            color: rgba(100, 50, 200, 0.06);
+            letter-spacing: 1px;
+            font-style: italic;
         }
 
         .sidebar-close {
             position: absolute;
-            top: 12px;
+            top: 14px;
             right: 16px;
-            color: rgba(255, 255, 255, 0.1);
-            font-size: 1.6rem;
+            font-size: 1.4rem;
+            color: rgba(255, 30, 30, 0.06);
             cursor: pointer;
-            transition: all 0.3s;
             background: none;
             border: none;
+            transition: 0.3s;
         }
-
         .sidebar-close:hover {
-            color: #ff1a1a;
+            color: #ff4d6d;
             transform: rotate(90deg);
         }
 
@@ -381,323 +344,505 @@
             display: flex;
             align-items: center;
             gap: 14px;
-            padding: 12px 28px;
-            color: rgba(255, 255, 255, 0.4);
+            padding: 10px 24px;
+            color: rgba(120, 160, 220, 0.3);
             text-decoration: none;
-            transition: all 0.25s;
-            cursor: pointer;
-            border-left: 2px solid transparent;
-            font-size: 0.92rem;
+            font-size: 0.9rem;
             font-weight: 500;
+            transition: 0.3s;
+            border-left: 2px solid transparent;
         }
-
-        .sidebar-item:hover {
-            background: rgba(255, 26, 26, 0.04);
-            border-left-color: #ff1a1a;
-            color: #ff4d4d;
-            transform: translateX(4px);
-        }
-
+        /* SIDEBAR ICONS — LIGHT GREEN */
         .sidebar-item i {
-            width: 28px;
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.1);
-            transition: all 0.3s;
+            width: 24px;
+            font-size: 1.1rem;
+            color: #66ff99 !important;
+            transition: 0.3s;
+            text-shadow: 0 0 20px rgba(102, 255, 153, 0.1);
         }
-
+        .sidebar-item:hover {
+            background: rgba(100, 50, 200, 0.03);
+            border-left-color: #ffd700;
+            color: #c8dcff;
+        }
         .sidebar-item:hover i {
-            color: #ff1a1a;
+            color: #00ff88 !important;
+            text-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
         }
-
         .sidebar-item .badge {
             margin-left: auto;
-            background: rgba(255, 26, 26, 0.1);
-            color: #ff4d4d;
-            padding: 1px 12px;
-            border-radius: 50px;
-            font-size: 0.55rem;
+            background: rgba(255, 30, 30, 0.04);
+            color: #ff4d6d;
+            padding: 0 12px;
+            border-radius: 40px;
+            font-size: 0.5rem;
             font-weight: 600;
-            border: 1px solid rgba(255, 26, 26, 0.05);
+            border: 1px solid rgba(255, 30, 30, 0.04);
+            animation: redGlowBorder 2s ease-in-out infinite;
         }
-
         .sidebar-item .badge.soon {
-            background: rgba(0, 204, 51, 0.1);
-            color: #00cc33;
-            border-color: rgba(0, 204, 51, 0.05);
+            background: rgba(255, 215, 0, 0.04);
+            color: #ffd700;
+            border-color: rgba(255, 215, 0, 0.04);
         }
-
-        .sidebar-item .badge.maintenance {
-            background: rgba(255, 152, 0, 0.1);
-            color: #ff9800;
-            border-color: rgba(255, 152, 0, 0.05);
+        .sidebar-item .badge.maint {
+            background: rgba(255, 152, 0, 0.04);
+            color: #ffb74d;
+            border-color: rgba(255, 152, 0, 0.04);
         }
 
         .sidebar-divider {
             height: 1px;
-            background: rgba(255, 26, 26, 0.04);
-            margin: 8px 28px;
+            background: rgba(255, 30, 30, 0.03);
+            margin: 6px 24px;
         }
 
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: 999;
-            display: none;
-            backdrop-filter: blur(2px);
-        }
-
-        .sidebar-overlay.active {
-            display: block;
-        }
-
-        /* ========== HERO - COLOR CHANGING TITLE ========== */
+        /* ============================================================
+           HERO — GREEN → ORANGE text with TYPING EFFECT
+           ============================================================ */
         .hero {
             text-align: center;
-            padding: 60px 20px 40px;
-            animation: fadeInUp 0.6s ease;
+            padding: 48px 20px 28px;
         }
 
         .hero h1 {
-            font-size: 2.8rem;
-            font-weight: 900;
-            margin-bottom: 12px;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.6rem;
+            font-weight: 700;
+            font-style: italic;
             line-height: 1.2;
-            animation: colorChange 1.5s ease-in-out infinite;
+            min-height: 4.5rem;
+            color: #00ff64;
+            text-shadow: 0 0 40px rgba(0, 255, 100, 0.04);
         }
-
-        @keyframes colorChange {
-            0% { color: #4a7cf7; text-shadow: 0 0 30px rgba(74, 124, 247, 0.3); }
-            25% { color: #ff1a1a; text-shadow: 0 0 30px rgba(255, 26, 26, 0.3); }
-            50% { color: #00ff41; text-shadow: 0 0 30px rgba(0, 255, 65, 0.3); }
-            75% { color: #ffffff; text-shadow: 0 0 30px rgba(255, 255, 255, 0.3); }
-            100% { color: #4a7cf7; text-shadow: 0 0 30px rgba(74, 124, 247, 0.3); }
+        .hero h1 .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 2.6rem;
+            background: #00ff64;
+            margin-left: 4px;
+            vertical-align: text-bottom;
+            animation: blink 1s step-end infinite;
         }
-
-        .hero .highlight {
-            background: none;
-            color: inherit;
-            -webkit-text-fill-color: inherit;
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
         }
 
         .hero p {
-            color: rgba(100, 180, 255, 0.4);
-            font-size: 1.05rem;
-            max-width: 600px;
-            margin: 0 auto;
+            color: rgba(120, 160, 220, 0.12);
+            font-size: 1rem;
+            max-width: 500px;
+            margin: 8px auto 0;
             font-weight: 400;
-            line-height: 1.6;
+            font-style: italic;
+            font-family: 'Playfair Display', serif;
+            animation: greenOrangeShift 5s ease-in-out infinite;
+        }
+        @keyframes greenOrangeShift {
+            0% {
+                color: #00ff64;
+            }
+            50% {
+                color: #ff8c00;
+            }
+            100% {
+                color: #00ff64;
+            }
         }
 
         .hero .sub-tag {
             display: inline-block;
-            margin-top: 12px;
+            margin-top: 10px;
             padding: 4px 20px;
-            background: rgba(50, 150, 255, 0.04);
-            border: 1px solid rgba(50, 150, 255, 0.06);
-            border-radius: 50px;
-            color: rgba(100, 180, 255, 0.15);
-            font-size: 0.65rem;
+            background: rgba(255, 30, 30, 0.02);
+            border: 1px solid rgba(255, 30, 30, 0.04);
+            border-radius: 40px;
+            color: rgba(120, 160, 220, 0.06);
+            font-size: 0.6rem;
             font-weight: 600;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
             text-transform: uppercase;
+            animation: redGlowBorder 3s ease-in-out infinite;
         }
 
-        /* ========== FEATURES - FLOATING & SHAKING WITH GREEN BORDER ========== */
+        /* ===== POWERED BY — MOVING SILVER SHINE ===== */
+        .powered-by {
+            margin-top: 14px;
+            font-family: 'Playfair Display', serif;
+            font-size: 0.85rem;
+            font-style: italic;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #c0c0c0, #ffffff, #c0c0c0, #e8e8e8);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: silverMove 3s ease-in-out infinite;
+            display: inline-block;
+            font-weight: 700;
+            text-shadow: 0 0 40px rgba(192, 192, 192, 0.1);
+        }
+        @keyframes silverMove {
+            0% {
+                background-position: 0% 50%;
+                transform: scale(1) translateX(0);
+            }
+            25% {
+                transform: scale(1.02) translateX(5px);
+            }
+            50% {
+                background-position: 100% 50%;
+                transform: scale(1) translateX(0);
+            }
+            75% {
+                transform: scale(1.02) translateX(-5px);
+            }
+            100% {
+                background-position: 0% 50%;
+                transform: scale(1) translateX(0);
+            }
+        }
+
+        .powered-wrapper {
+            display: inline-block;
+            animation: floatPower 4s ease-in-out infinite;
+        }
+        @keyframes floatPower {
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-3px);
+            }
+        }
+
+        /* ============================================================
+           CARDS
+           ============================================================ */
         .features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 24px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            max-width: 1100px;
+            margin: 28px auto;
+            padding: 0 20px;
         }
 
         .glass-card {
+            background: rgba(255, 255, 255, 0.015);
             border-radius: 28px;
-            padding: 32px 20px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 28px 18px;
             text-align: center;
             text-decoration: none;
             display: block;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            background: rgba(0, 0, 0, 0.5);
-            border: 2px solid rgba(0, 255, 65, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            animation: floatShakeGreen 3.5s ease-in-out infinite;
+            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            animation: redGlowBorder 4s ease-in-out infinite;
         }
-
-        .glass-card:nth-child(1) { animation-delay: 0s; }
-        .glass-card:nth-child(2) { animation-delay: 0.5s; }
-        .glass-card:nth-child(3) { animation-delay: 1s; }
-
-        @keyframes floatShakeGreen {
-            0%, 100% { transform: translateY(0px) rotate(0deg); border-color: rgba(0, 255, 65, 0.2); }
-            25% { transform: translateY(-4px) rotate(-0.5deg); border-color: rgba(0, 255, 65, 0.4); }
-            50% { transform: translateY(-8px) rotate(0.5deg); border-color: rgba(0, 255, 65, 0.6); }
-            75% { transform: translateY(-4px) rotate(-0.3deg); border-color: rgba(0, 255, 65, 0.4); }
-        }
-
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 30px;
-            background: linear-gradient(135deg, rgba(0, 255, 65, 0.1), rgba(74, 124, 247, 0.05), rgba(0, 255, 65, 0.1));
-            background-size: 200% 200%;
-            animation: greenCardGlow 4s ease-in-out infinite;
-            z-index: -1;
-        }
-
-        @keyframes greenCardGlow {
-            0%, 100% { background-position: 0% 50%; opacity: 0.3; }
-            50% { background-position: 100% 50%; opacity: 0.6; }
-        }
-
-        .glass-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: 28px;
-            background: radial-gradient(circle at center, rgba(0, 255, 65, 0.03), transparent 70%);
-            pointer-events: none;
-        }
-
         .glass-card:hover {
-            transform: translateY(-6px) scale(1.02);
-            border-color: rgba(0, 255, 65, 0.6);
-            box-shadow: 0 0 60px rgba(0, 255, 65, 0.08);
+            background: rgba(255, 255, 255, 0.025);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
         }
 
         .glass-card i {
-            font-size: 3.2rem;
-            background: linear-gradient(135deg, #4a7cf7, #6c9aff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 16px;
-            transition: transform 0.3s;
+            font-size: 2.8rem;
+            margin-bottom: 12px;
             display: inline-block;
+            transition: 0.4s;
+            animation: iconColorShift 3s ease-in-out infinite;
         }
-
         .glass-card:hover i {
-            transform: scale(1.08);
+            transform: scale(1.05) rotate(-2deg);
         }
 
         .glass-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
             font-weight: 700;
-            color: #fff;
+            font-style: italic;
+            color: #e8ecf5;
+            margin-bottom: 6px;
+            animation: greenOrangeShift 5s ease-in-out infinite;
         }
 
         .glass-card p {
-            color: rgba(100, 180, 255, 0.4);
-            font-size: 0.9rem;
+            color: rgba(120, 160, 220, 0.1);
+            font-size: 0.85rem;
             line-height: 1.5;
+            font-style: italic;
+            animation: greenOrangeShift 6s ease-in-out infinite;
         }
 
-        /* ========== SCAN SECTION ========== */
+        /* ============================================================
+           SCAN CARD
+           ============================================================ */
         .scan-section {
-            max-width: 1200px;
-            margin: 30px auto 20px;
-            padding: 0 24px;
+            max-width: 1100px;
+            margin: 16px auto 0;
+            padding: 0 20px;
         }
-
         .scan-card {
-            background: rgba(0, 0, 0, 0.5);
-            border: 2px solid rgba(0, 255, 65, 0.25);
-            border-radius: 28px;
-            padding: 32px 28px;
+            background: rgba(255, 255, 255, 0.015);
+            border-radius: 32px;
+            padding: 32px 24px;
             text-align: center;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            animation: floatShakeGreen 4s ease-in-out infinite;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: redGlowBorder 4.5s ease-in-out infinite;
         }
-
-        .scan-card::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 30px;
-            background: linear-gradient(135deg, rgba(0, 255, 65, 0.08), rgba(74, 124, 247, 0.05), rgba(0, 255, 65, 0.08));
-            background-size: 200% 200%;
-            animation: greenCardGlow 4s ease-in-out infinite;
-            z-index: -1;
-        }
-
         .scan-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(0, 255, 65, 0.6);
-            box-shadow: 0 0 50px rgba(0, 255, 65, 0.06);
+            background: rgba(255, 255, 255, 0.02);
+            transform: translateY(-2px);
         }
 
-        .scan-card .scan-icon {
-            font-size: 3.5rem;
-            background: linear-gradient(135deg, #4a7cf7, #6c9aff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 12px;
+        .scan-card .scan-icon i {
+            font-size: 3.2rem;
+            margin-bottom: 8px;
             display: inline-block;
+            animation: iconColorShift 3s ease-in-out infinite;
         }
 
         .scan-card h2 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #fff;
-            margin-bottom: 8px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            font-style: italic;
+            color: #e8ecf5;
+            margin-bottom: 4px;
+            animation: greenOrangeShift 4s ease-in-out infinite;
         }
 
         .scan-card p {
-            color: rgba(100, 180, 255, 0.5);
-            font-size: 1rem;
-            max-width: 500px;
-            margin: 0 auto 20px;
+            color: rgba(120, 160, 220, 0.1);
+            font-size: 0.95rem;
+            max-width: 480px;
+            margin: 0 auto 18px;
             line-height: 1.5;
+            font-style: italic;
+            animation: greenOrangeShift 5s ease-in-out infinite;
         }
 
         .scan-btn-primary {
             display: inline-flex;
             align-items: center;
-            gap: 12px;
-            padding: 14px 40px;
-            background: linear-gradient(135deg, #4a7cf7, #6c9aff);
+            gap: 10px;
+            padding: 12px 34px;
+            background: linear-gradient(135deg, #f5e6d3, #ffd700);
             border: none;
             border-radius: 60px;
-            color: #fff;
+            color: #080c1a;
             font-weight: 700;
-            font-size: 1.05rem;
+            font-size: 0.95rem;
             text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 30px rgba(74, 124, 247, 0.2);
+            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 30px rgba(255, 215, 0, 0.04);
+            animation: redGlowBorder 3s ease-in-out infinite;
         }
-
-        .scan-btn-primary:hover {
-            transform: scale(1.04);
-            box-shadow: 0 8px 40px rgba(74, 124, 247, 0.35);
-        }
-
         .scan-btn-primary i {
-            font-size: 1.3rem;
+            animation: iconColorShift 2.5s ease-in-out infinite;
+        }
+        .scan-btn-primary:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 40px rgba(255, 215, 0, 0.10);
         }
 
-        /* ========== SETTINGS MODAL - MINIMAL, FLOATING, SMALL ========== */
+        /* ============================================================
+           RESOURCE LINKS
+           ============================================================ */
+        .resource-links {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 28px;
+            background: linear-gradient(135deg, #f5e6d3, #ffd700, #c0c0c0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: creamGoldSilver 4s ease-in-out infinite;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+        }
+        .link-card {
+            background: rgba(255, 255, 255, 0.015);
+            border-radius: 20px;
+            padding: 14px 16px;
+            transition: 0.3s;
+            cursor: pointer;
+            animation: redGlowBorder 4s ease-in-out infinite;
+        }
+        .link-card:hover {
+            background: rgba(255, 255, 255, 0.025);
+            transform: translateY(-2px);
+        }
+        .link-card a {
+            text-decoration: none;
+            color: #e8ecf5;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .link-card i {
+            font-size: 1.3rem;
+            width: 28px;
+            animation: iconColorShift 3s ease-in-out infinite;
+        }
+        .link-card span {
+            font-size: 0.6rem;
+            color: rgba(120, 160, 220, 0.06);
+            display: block;
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        /* ============================================================
+           BOTTOM — SOCIAL ICONS with shifting colors
+           ============================================================ */
+        .bottom-section {
+            max-width: 1100px;
+            margin: 20px auto 40px;
+            padding: 0 20px 20px;
+            text-align: center;
+        }
+
+        .contact-owner {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.015);
+            border-radius: 60px;
+            padding: 10px 24px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            animation: redGlowBorder 4s ease-in-out infinite;
+        }
+        .contact-owner span {
+            color: rgba(120, 160, 220, 0.06);
+            font-size: 0.8rem;
+            font-style: italic;
+            animation: greenOrangeShift 5s ease-in-out infinite;
+        }
+
+        .whatsapp-link {
+            background: rgba(37, 211, 102, 0.03);
+            padding: 4px 20px;
+            border-radius: 40px;
+            text-decoration: none;
+            color: #2aff66;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(37, 211, 102, 0.04);
+            transition: 0.3s;
+            animation: redGlowBorder 3s ease-in-out infinite;
+        }
+        .whatsapp-link i {
+            animation: iconColorShift 2.5s ease-in-out infinite;
+        }
+        .whatsapp-link:hover {
+            background: #25D366;
+            color: #080c1a;
+            border-color: #25D366;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            margin-top: 14px;
+        }
+        .social-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.015);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 30, 30, 0.06);
+            transition: 0.3s;
+            animation: redGlowBorder 3s ease-in-out infinite;
+        }
+        .social-icon a {
+            font-size: 1.3rem;
+            transition: 0.3s;
+            animation: iconColorShift 2.5s ease-in-out infinite;
+        }
+        .social-icon:hover {
+            background: rgba(100, 50, 200, 0.04);
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        .footer-text {
+            margin-top: 24px;
+            color: rgba(120, 160, 220, 0.02);
+            font-size: 0.7rem;
+            font-style: italic;
+        }
+
+        /* ============================================================
+           BACK TO TOP
+           ============================================================ */
+        .back-to-top {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 30, 30, 0.06);
+            color: #7a8bb5;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 50;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            animation: redGlowBorder 3s ease-in-out infinite;
+        }
+        .back-to-top i {
+            animation: iconColorShift 2.5s ease-in-out infinite;
+        }
+        .back-to-top:hover {
+            background: rgba(100, 50, 200, 0.04);
+            color: #c8dcff;
+        }
+        .back-to-top.visible {
+            display: flex;
+        }
+
+        /* ============================================================
+           SETTINGS MODAL
+           ============================================================ */
         .modal {
             display: none;
             position: fixed;
@@ -705,830 +850,672 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             z-index: 1100;
             justify-content: center;
             align-items: center;
-            animation: fadeIn 0.3s;
-            backdrop-filter: blur(4px);
         }
-
         .modal.active {
             display: flex;
         }
-
         .modal-content {
-            background: rgba(10, 10, 30, 0.92);
-            border: 2px solid rgba(0, 255, 65, 0.3);
-            border-radius: 20px;
-            padding: 28px 30px;
+            background: rgba(8, 12, 30, 0.96);
+            border: 1px solid rgba(255, 30, 30, 0.06);
+            border-radius: 32px;
+            padding: 28px 28px 32px;
             max-width: 380px;
             width: 90%;
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             position: relative;
-            box-shadow: 0 0 60px rgba(0, 255, 65, 0.05);
-            animation: modalFloat 3s ease-in-out infinite;
+            animation: redGlowBorder 4s ease-in-out infinite;
         }
-
-        @keyframes modalFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-6px); }
-        }
-
-        .modal-content::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 22px;
-            border: 1px solid rgba(0, 255, 65, 0.1);
-            pointer-events: none;
-        }
-
         .modal-close {
             position: absolute;
-            top: 10px;
-            right: 14px;
-            font-size: 1.4rem;
-            color: rgba(100, 180, 255, 0.2);
-            cursor: pointer;
-            transition: 0.3s;
+            top: 12px;
+            right: 16px;
+            font-size: 1.3rem;
+            color: rgba(255, 30, 30, 0.06);
             background: none;
             border: none;
+            cursor: pointer;
+            transition: 0.3s;
         }
-
         .modal-close:hover {
-            color: #4a7cf7;
+            color: #ff4d6d;
             transform: rotate(90deg);
         }
-
         .modal h2 {
-            color: #fff;
-            margin-bottom: 16px;
-            text-align: center;
+            font-family: 'Playfair Display', serif;
             font-size: 1.3rem;
-            background: linear-gradient(135deg, #4a7cf7, #6c9aff);
+            font-weight: 700;
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 18px;
+            background: linear-gradient(135deg, #f5e6d3, #ffd700, #c0c0c0);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            animation: creamGoldSilver 3s ease-in-out infinite;
         }
-
-        .modal .gpa-calc {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .modal .gpa-calc input,
-        .modal .gpa-calc select {
-            width: 100%;
-            padding: 10px 12px;
-            margin: 6px 0;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(0, 255, 65, 0.1);
-            border-radius: 10px;
-            color: #fff;
-            font-size: 0.9rem;
-        }
-
-        .modal .gpa-calc button {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #4a7cf7, #6c9aff);
-            border: none;
-            border-radius: 50px;
-            color: #fff;
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 8px;
-        }
-
-        .modal .gpa-calc button:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 30px rgba(74, 124, 247, 0.2);
-        }
-
-        .modal .gpa-result {
-            margin-top: 12px;
-            padding: 12px;
-            background: rgba(0, 255, 65, 0.03);
-            border: 1px solid rgba(0, 255, 65, 0.08);
-            border-radius: 10px;
-            text-align: center;
-            font-size: 1rem;
-            font-weight: 700;
-            color: #fff;
-        }
-
-        /* ========== RESOURCE LINKS ========== */
-        .resource-links {
-            max-width: 1200px;
-            margin: 50px auto;
-            padding: 0 24px;
-        }
-
-        .section-title {
-            font-size: 1.8rem;
-            font-weight: 800;
-            text-align: center;
-            margin-bottom: 35px;
-            background: linear-gradient(135deg, #4a7cf7, #6c9aff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .links-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-        }
-
-        .link-card {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(50, 150, 255, 0.06);
-            border-radius: 24px;
-            padding: 16px 20px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .link-card:hover {
-            background: rgba(0, 0, 0, 0.6);
-            border-color: rgba(50, 150, 255, 0.2);
-            transform: translateY(-3px);
-            box-shadow: 0 0 20px rgba(50, 150, 255, 0.05);
-        }
-
-        .link-card a {
-            text-decoration: none;
-            color: #eee;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        .link-card i {
-            font-size: 1.6rem;
-            color: #4a7cf7;
-            transition: transform 0.3s;
-            width: 30px;
-        }
-
-        .link-card:hover i {
-            transform: scale(1.05);
-        }
-
-        .link-card span {
-            font-size: 0.7rem;
-            color: rgba(100, 180, 255, 0.2);
+        .modal label {
             display: block;
-            font-weight: 400;
-        }
-
-        /* ========== BOTTOM ========== */
-        .bottom-section {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 24px 50px;
-            text-align: center;
-        }
-
-        .contact-owner {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(50, 150, 255, 0.08);
-            border-radius: 80px;
-            padding: 14px 26px;
-            display: inline-flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-bottom: 30px;
-            transition: all 0.3s;
-        }
-
-        .contact-owner:hover {
-            border-color: rgba(50, 150, 255, 0.2);
-            box-shadow: 0 0 20px rgba(50, 150, 255, 0.03);
-        }
-
-        .whatsapp-link {
-            background: rgba(37, 211, 102, 0.08);
-            padding: 6px 24px;
-            border-radius: 60px;
-            text-decoration: none;
-            color: #2aff66;
-            font-weight: 700;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-        }
-
-        .whatsapp-link:hover {
-            background: #25D366;
-            color: #000;
-            box-shadow: 0 0 20px #25D366;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 18px;
-            justify-content: center;
-            margin-top: 15px;
-        }
-
-        .social-icon {
-            width: 44px;
-            height: 44px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-            border: 1px solid rgba(50, 150, 255, 0.06);
-        }
-
-        .social-icon a {
-            color: rgba(100, 180, 255, 0.3);
-            font-size: 1.3rem;
-            transition: 0.3s;
-        }
-
-        .social-icon:hover {
-            background: rgba(50, 150, 255, 0.1);
-            transform: translateY(-3px);
-            box-shadow: 0 0 20px rgba(50, 150, 255, 0.05);
-        }
-        .social-icon:hover a { color: #4a7cf7; }
-
-        .footer-text {
-            margin-top: 30px;
-            color: rgba(100, 180, 255, 0.1);
+            margin-bottom: 6px;
+            color: rgba(120, 160, 220, 0.06);
             font-size: 0.75rem;
-            font-weight: 400;
+            font-weight: 600;
+            font-style: italic;
         }
-
-        /* ========== BACK TO TOP ========== */
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: rgba(50, 150, 255, 0.2);
-            color: #6c9aff;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            border: 1px solid rgba(50, 150, 255, 0.1);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            z-index: 999;
-            font-size: 1.1rem;
-        }
-
-        .back-to-top:hover {
-            background: rgba(50, 150, 255, 0.3);
-            transform: translateY(-3px);
-            box-shadow: 0 0 25px rgba(50, 150, 255, 0.1);
-        }
-
-        .back-to-top.visible { display: flex; }
-
-        /* ========== THEME SELECTOR ========== */
         .theme-selector {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
-            margin: 10px 0;
+            margin-bottom: 16px;
         }
-
         .theme-selector button {
             flex: 1;
-            padding: 10px;
-            border: 1px solid rgba(50, 150, 255, 0.08);
-            border-radius: 12px;
-            background: rgba(0, 0, 0, 0.2);
-            color: rgba(100, 180, 255, 0.3);
+            padding: 10px 0;
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 30, 30, 0.04);
+            border-radius: 16px;
+            color: rgba(120, 160, 220, 0.06);
+            font-weight: 600;
+            font-size: 0.8rem;
             cursor: pointer;
             transition: 0.3s;
-            font-weight: 600;
-            font-size: 0.85rem;
+            animation: redGlowBorder 3s ease-in-out infinite;
         }
-
         .theme-selector button:hover {
-            border-color: #4a7cf7;
-            color: #6c9aff;
+            border-color: rgba(100, 50, 200, 0.08);
+            color: #7a8bb5;
         }
-
         .theme-selector button.active {
-            border-color: #4a7cf7;
-            background: rgba(50, 150, 255, 0.05);
-            color: #6c9aff;
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.03);
+            color: #ffd700;
         }
-
         .setting-btn {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #4a7cf7, #6c9aff);
+            background: linear-gradient(135deg, #f5e6d3, #ffd700);
             border: none;
-            border-radius: 50px;
-            color: #fff;
+            border-radius: 60px;
+            color: #080c1a;
             font-weight: 700;
-            cursor: pointer;
             font-size: 0.9rem;
+            cursor: pointer;
             transition: 0.3s;
+            animation: redGlowBorder 3s ease-in-out infinite;
         }
-
+        .setting-btn i {
+            animation: iconColorShift 2.5s ease-in-out infinite;
+        }
         .setting-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 30px rgba(74, 124, 247, 0.2);
+            box-shadow: 0 4px 30px rgba(255, 215, 0, 0.06);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* ============================================================
+           ICON COLOR SHIFT ANIMATION (all icons except upload red)
+           ============================================================ */
+        @keyframes iconColorShift {
+            0% {
+                color: #f5e6d3;
+            }
+            33% {
+                color: #ffd700;
+            }
+            66% {
+                color: #c0c0c0;
+            }
+            100% {
+                color: #f5e6d3;
+            }
         }
 
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
         @media (max-width: 780px) {
-            .hero h1 { font-size: 2rem; }
-            .header-content { flex-direction: column; text-align: center; }
-            .sidebar { width: 260px; left: -280px; }
-            .menu-btn { width: 42px; height: 42px; font-size: 1.2rem; }
-            .nav-icon { width: 36px; height: 36px; font-size: 0.9rem; }
-            .logo { font-size: 1.4rem; }
-            .features { grid-template-columns: 1fr; }
-            .contact-owner { flex-direction: column; }
-            .modal-content { padding: 20px; max-width: 320px; }
-            .browse-tab { padding: 6px 14px; font-size: 0.75rem; }
-            .upload-btn { padding: 6px 14px; font-size: 0.75rem; }
-            .scan-card h2 { font-size: 1.4rem; }
+            .hero h1 {
+                font-size: 2rem;
+                min-height: 3.5rem;
+            }
+            .hero h1 .cursor {
+                height: 2rem;
+            }
+            .header-content {
+                flex-direction: row;
+                padding: 4px 16px;
+            }
+            .nav-links .nav-pill span {
+                display: none;
+            }
+            .nav-pill {
+                padding: 8px 12px;
+            }
+            .nav-pill i {
+                font-size: 1rem;
+            }
+            .logo {
+                font-size: 1.3rem;
+            }
+            .features {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .links-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .contact-owner {
+                flex-direction: column;
+                gap: 10px;
+                padding: 16px 20px;
+                border-radius: 32px;
+            }
+            .sidebar {
+                width: 280px;
+                max-width: 80vw;
+                left: -320px;
+            }
+            .scan-card h2 {
+                font-size: 1.3rem;
+            }
         }
 
         @media (max-width: 480px) {
-            .sidebar { width: 100%; left: -100%; }
-            .hero h1 { font-size: 1.6rem; }
-            .menu-btn { width: 38px; height: 38px; font-size: 1rem; }
-            .nav-icon { width: 32px; height: 32px; font-size: 0.8rem; }
-            .header-left { gap: 10px; }
-            .scan-card { padding: 24px 16px; }
-            .scan-btn-primary { padding: 12px 28px; font-size: 0.95rem; }
+            .hero h1 {
+                font-size: 1.6rem;
+                min-height: 3rem;
+            }
+            .hero h1 .cursor {
+                height: 1.6rem;
+            }
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+            .menu-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 1.1rem;
+            }
+            .logo {
+                font-size: 1.1rem;
+            }
+            .nav-pill {
+                padding: 6px 10px;
+                font-size: 0.7rem;
+            }
+            .scan-btn-primary {
+                padding: 10px 24px;
+                font-size: 0.85rem;
+            }
+            .sidebar {
+                width: 260px;
+                max-width: 75vw;
+            }
+            .powered-by {
+                font-size: 0.7rem;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 3px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 215, 0, 0.04);
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
 
+    <!-- TRIPLE CANVAS: BLUE + CREAM + GOLD RAIN -->
     <canvas id="matrix-canvas"></canvas>
+    <canvas id="cream-canvas"></canvas>
+    <canvas id="gold-canvas"></canvas>
 
     <div class="glass-overlay">
-        <!-- ========== HEADER ========== -->
-        <div class="header">
+
+        <!-- ===== HEADER ===== -->
+        <header class="header">
             <div class="header-content">
                 <div class="header-left">
-                    <button class="menu-btn" id="menuToggle">
+                    <button class="menu-btn" id="menuToggle" aria-label="Open menu">
                         <i class="fas fa-bars"></i>
                     </button>
                     <div>
-                        <div class="logo">⚡ TWARVIS</div>
-                        <span class="logo-sub">STUDENT HUB</span>
+                        <div class="logo">✦ Student Hub</div>
+                        <span class="logo-sub">powered by Twarvis</span>
                     </div>
                 </div>
                 <div class="nav-links">
-                    <!-- CHANGED: "Browse" → "See Uploaded Notes" with a more inviting style -->
-                    <a href="/browse/" class="browse-tab" style="background:rgba(0, 200, 100, 0.08); border-color:rgba(0, 255, 65, 0.3); color:rgba(0, 255, 150, 0.7);">
-                        <i class="fas fa-eye"></i> See Uploaded Notes
+                    <a href="/browse/" class="nav-pill">
+                        <i class="fas fa-eye"></i> <span>Browse</span>
                     </a>
-                    <a href="/upload/" class="upload-btn">
-                        <i class="fas fa-cloud-upload-alt"></i> Upload
+                    <a href="/upload/" class="nav-pill primary">
+                        <i class="fas fa-cloud-upload-alt"></i> <span>Upload</span>
                     </a>
                 </div>
             </div>
-        </div>
+        </header>
 
-        <!-- ========== HERO ========== -->
-        <div class="hero">
-            <h1>WELCOME TO TWARVIS STUDENTS HUB</h1>
-            <p>Upload, browse, and dominate your studies — powered by the matrix.</p>
+        <!-- ===== HERO with TYPING EFFECT ===== -->
+        <section class="hero">
+            <h1 id="typing-title"><span id="typed-text"></span><span class="cursor"></span></h1>
+            <p>Upload, browse, and dominate your studies.</p>
             <span class="sub-tag"><i class="fas fa-bolt"></i> Learn. Share. Grow.</span>
-        </div>
+            <div class="powered-wrapper">
+                <div class="powered-by">⚡ powered by Twarvis ⚡</div>
+            </div>
+        </section>
 
-        <!-- ========== SCAN YOUR FILES - NEW SECTION ========== -->
+        <!-- ===== SCAN CARD ===== -->
         <div class="scan-section">
             <div class="scan-card">
-                <div class="scan-icon">
-                    <i class="fas fa-camera-retro"></i>
-                </div>
+                <div class="scan-icon"><i class="fas fa-camera-retro"></i></div>
                 <h2>📄 Scan Your Files</h2>
-                <p>Capture, crop, and enhance documents like a pro. Use your camera or gallery — just like CamScanner.</p>
-                <a href="scanner.html" class="scan-btn-primary">
+                <p>Capture, crop, and enhance documents like a pro.</p>
+                <a href="/scanner/" class="scan-btn-primary">
                     <i class="fas fa-qrcode"></i> Open Scanner
                 </a>
-                <!-- "linked to scanner.html" text REMOVED -->
             </div>
         </div>
 
-        <!-- ========== FEATURES ========== -->
+        <!-- ===== FEATURES ===== -->
         <div class="features">
-            <a href="/upload/" class="glass-card" id="uploadCard">
+            <a href="/upload/" class="glass-card">
                 <i class="fas fa-cloud-upload-alt"></i>
-                <h3>⚡ INSTANT UPLOAD</h3>
-                <p>Upload your notes & files instantly → go to upload page</p>
+                <h3>Instant Upload</h3>
+                <p>Upload notes &amp; files instantly.</p>
             </a>
-
-            <!-- CHANGED: "BROWSE NOTES" → "SEE UPLOADED NOTES" with bigger, more enticing text -->
-            <a href="/browse/" class="glass-card" id="browseCard" style="border-color: rgba(0, 255, 100, 0.4);">
-                <i class="fas fa-eye" style="background: linear-gradient(135deg, #00ff88, #4a7cf7); -webkit-background-clip: text; background-clip: text;"></i>
-                <h3 style="color: #00ff88;">👀 SEE UPLOADED NOTES</h3>
-                <p style="color: rgba(100, 255, 180, 0.5);">Browse all notes uploaded by students — click to explore</p>
+            <a href="/browse/" class="glass-card">
+                <i class="fas fa-eye"></i>
+                <h3>See Uploaded Notes</h3>
+                <p>Browse all student notes.</p>
             </a>
-
-            <a href="/browse/" class="glass-card" id="searchCard">
+            <a href="/browse/" class="glass-card">
                 <i class="fas fa-search"></i>
-                <h3>🔍 SMART SEARCH</h3>
-                <p>Find by module, course or keyword → start searching</p>
+                <h3>Smart Search</h3>
+                <p>Find by module or keyword.</p>
             </a>
         </div>
 
-        <!-- ========== RESOURCE LINKS ========== -->
+        <!-- ===== RESOURCE LINKS ===== -->
         <div class="resource-links">
-            <div class="section-title">⚡ EXPLORE THE ECOSYSTEM ⚡</div>
+            <div class="section-title">✦ Explore the Ecosystem ✦</div>
             <div class="links-grid">
-                <div class="link-card"><a href="https://twarvis-pdf-50le.onrender.com" target="_blank"><i class="fas fa-file-pdf"></i> PDF MAKER <span>create & edit pdfs</span></a></div>
-                <div class="link-card"><a href="https://indext.oneapp.dev" target="_blank"><i class="fas fa-code"></i> CODE CONVERT <span>file extension tools</span></a></div>
-                <div class="link-card"><a href="https://lovecalculator.site/love/11128150" target="_blank"><i class="fas fa-heart"></i> LOVE GAME <span>fun calculator 😂</span></a></div>
-                <div class="link-card"><a href="https://soma.dit.ac.tz/auth/login" target="_blank"><i class="fas fa-university"></i> SOMA PORTAL <span>official DIT soma</span></a></div>
-                <div class="link-card"><a href="https://movieboxapp.in" target="_blank"><i class="fas fa-film"></i> MOVIEBOX <span>movies & entertainment</span></a></div>
+                <div class="link-card"><a href="https://twarvis-pdf-50le.onrender.com" target="_blank"><i class="fas fa-file-pdf"></i> PDF Maker <span>create &amp; edit PDFs</span></a></div>
+                <div class="link-card"><a href="https://indext.oneapp.dev" target="_blank"><i class="fas fa-code"></i> Code Convert <span>file extension tools</span></a></div>
+                <div class="link-card"><a href="https://lovecalculator.site/love/11128150" target="_blank"><i class="fas fa-heart"></i> Love Game <span>fun calculator 😂</span></a></div>
+                <div class="link-card"><a href="https://soma.dit.ac.tz/auth/login" target="_blank"><i class="fas fa-university"></i> Soma Portal <span>official DIT soma</span></a></div>
+                <div class="link-card"><a href="https://movieboxapp.in" target="_blank"><i class="fas fa-film"></i> MovieBox <span>movies &amp; entertainment</span></a></div>
             </div>
         </div>
 
-        <!-- ========== BOTTOM ========== -->
+        <!-- ===== BOTTOM ===== -->
         <div class="bottom-section">
             <div class="contact-owner">
-                <span style="color:rgba(100,180,255,0.3); font-weight:500; font-size:0.85rem;">📢 For content changes / issues :</span>
+                <span>📢 For content changes / issues :</span>
                 <a href="https://wa.me/255740706007?text=Hello%20Twarvis%2C%20I%20need%20help%20on%20the%20school%20portal" class="whatsapp-link" target="_blank">
                     <i class="fab fa-whatsapp"></i> Contact Web Owner
                 </a>
             </div>
-
             <div class="social-links">
-                <div class="social-icon"><a href="https://www.tiktok.com/@twarvis" target="_blank"><i class="fab fa-tiktok"></i></a></div>
                 <div class="social-icon"><a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i></a></div>
+                <div class="social-icon"><a href="https://www.tiktok.com/@twarvis" target="_blank"><i class="fab fa-tiktok"></i></a></div>
             </div>
-            <div class="footer-text">
-                <p>© 2026 Twarvis School — students hub</p>
-            </div>
+            <div class="footer-text"><p>© 2026 Student Hub — powered by Twarvis</p></div>
         </div>
     </div>
 
-    <!-- ========== SIDEBAR ========== -->
+    <!-- ===== SIDEBAR ===== -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    <div class="sidebar" id="sidebar">
+    <aside class="sidebar" id="sidebar">
         <button class="sidebar-close" id="sidebarClose">&times;</button>
         <div class="sidebar-header">
-            <h2>⚡ TWARVIS</h2>
-            <p>Navigation</p>
+            <h2>✦ Student Hub</h2>
+            <p>powered by Twarvis</p>
         </div>
 
-        <a class="sidebar-item" href="/" id="sideHome">
-            <i class="fas fa-home"></i> Home
-            <span class="badge">Active</span>
-        </a>
-
-        <!-- CHANGED: sidebar "Browse Notes" → "See Uploaded Notes" -->
-        <a class="sidebar-item" href="/browse/" id="sideBrowse">
-            <i class="fas fa-eye"></i> See Uploaded Notes
-        </a>
-
-        <a class="sidebar-item" href="/upload/" id="sideUpload">
-            <i class="fas fa-cloud-upload-alt"></i> Upload Files
-        </a>
+        <a class="sidebar-item" href="/"><i class="fas fa-home"></i> Home <span class="badge">Active</span></a>
+        <a class="sidebar-item" href="/browse/"><i class="fas fa-eye"></i> See Uploaded Notes</a>
+        <a class="sidebar-item" href="/upload/"><i class="fas fa-cloud-upload-alt"></i> Upload Files</a>
 
         <div class="sidebar-divider"></div>
 
-        <a class="sidebar-item" href="/calculator/" id="sideGpa">
-            <i class="fas fa-calculator"></i> GPA Calculator
-            <span class="badge soon">New</span>
-        </a>
+        <a class="sidebar-item" href="/calculator/"><i class="fas fa-calculator"></i> GPA Calculator <span class="badge soon">New</span></a>
 
         <div class="sidebar-divider"></div>
 
-        <a class="sidebar-item" href="/hackerthon/" id="sideHackathon">
-            <i class="fas fa-code"></i> Hackathon
-            <span class="badge soon">Soon</span>
-        </a>
-
-        <a class="sidebar-item" href="/free_course/" id="sideCourses">
-            <i class="fas fa-graduation-cap"></i> Free Courses
-            <span class="badge maintenance">Maint</span>
-        </a>
+        <a class="sidebar-item" href="/hackerthon/"><i class="fas fa-code"></i> Hackathon <span class="badge soon">Soon</span></a>
+        <a class="sidebar-item" href="/free_course/"><i class="fas fa-graduation-cap"></i> Free Courses <span class="badge maint">Maint</span></a>
 
         <div class="sidebar-divider"></div>
 
-        <div class="sidebar-item" id="sideSettings">
-            <i class="fas fa-cog"></i> Settings
-            <span class="badge">⚡</span>
-        </div>
-    </div>
+        <div class="sidebar-item" id="sideSettings"><i class="fas fa-cog"></i> Settings <span class="badge">⚡</span></div>
+    </aside>
 
-    <!-- ========== SETTINGS MODAL ========== -->
+    <!-- ===== SETTINGS MODAL ===== -->
     <div class="modal" id="settingsModal">
         <div class="modal-content">
             <button class="modal-close" id="closeSettings">&times;</button>
-            <h2><i class="fas fa-cog"></i> Settings</h2>
+            <h2>✦ Settings</h2>
             <div>
-                <div style="margin-bottom:16px;">
-                    <label style="display:block; margin-bottom:8px; font-weight:600; color:rgba(100,180,255,0.4); font-size:0.8rem;"><i class="fas fa-palette"></i> Theme Mode</label>
-                    <div class="theme-selector">
-                        <button id="themeMatrix" class="active">🌿 Matrix</button>
-                        <button id="themeDark">🌙 Dark</button>
-                        <button id="themeLight">☀️ Light</button>
-                    </div>
+                <label><i class="fas fa-palette"></i> Theme Mode</label>
+                <div class="theme-selector">
+                    <button id="themeMatrix">🌿 Matrix</button>
+                    <button id="themeDark">🌙 Dark</button>
+                    <button id="themeIGBlue" class="active">🔵 IG Blue</button>
                 </div>
-                <div>
-                    <label style="display:block; margin-bottom:5px; color:rgba(100,180,255,0.3); font-size:0.8rem;"><i class="fas fa-sync"></i> Refresh Page</label>
-                    <button class="setting-btn" id="refreshBtn">Refresh Now</button>
-                </div>
+                <button class="setting-btn" id="refreshBtn"><i class="fas fa-sync"></i> Refresh Now</button>
             </div>
         </div>
     </div>
 
-    <!-- ========== BACK TO TOP ========== -->
-    <button class="back-to-top" id="backToTop">
-        <i class="fas fa-arrow-up"></i>
-    </button>
+    <!-- ===== BACK TO TOP ===== -->
+    <button class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></button>
 
+    <!-- ============================================================
+    JAVASCRIPT — TRIPLE RAIN + TYPING EFFECT
+    ============================================================ -->
     <script>
-        // ========== BLUE MATRIX RAIN + WATER ==========
-        const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
+        // ===== TYPING EFFECT =====
+        (function typingEffect() {
+            const text = "Welcome to Student Hub";
+            const typedElement = document.getElementById('typed-text');
+            let index = 0;
+            let isDeleting = false;
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        const matrixChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
-        const blueShades = ['#4a7cf7', '#5a8cf7', '#6a9cf7', '#7aacf7', '#8abcf7', '#4a7cf7'];
-
-        let fontSize = 18;
-        let columns = Math.ceil(canvas.width / fontSize);
-        let drops = [];
-        let rainDrops = [];
-        let splashes = [];
-
-        function initRain() {
-            columns = Math.ceil(canvas.width / fontSize);
-            drops = [];
-            rainDrops = [];
-            splashes = [];
-
-            for (let i = 0; i < columns; i++) {
-                drops[i] = Math.random() * -200;
-            }
-
-            for (let i = 0; i < 150; i++) {
-                rainDrops.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height - canvas.height,
-                    length: Math.random() * 15 + 5,
-                    speed: Math.random() * 8 + 4,
-                    opacity: Math.random() * 0.2 + 0.05,
-                    width: Math.random() * 1.5 + 0.5
-                });
-            }
-        }
-
-        initRain();
-        window.addEventListener('resize', initRain);
-
-        function drawMatrixRain() {
-            ctx.fillStyle = 'rgba(10, 10, 30, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            for (let drop of rainDrops) {
-                ctx.beginPath();
-                ctx.moveTo(drop.x, drop.y);
-                ctx.lineTo(drop.x, drop.y + drop.length);
-                ctx.strokeStyle = `rgba(50, 150, 255, ${drop.opacity * 0.5})`;
-                ctx.lineWidth = drop.width;
-                ctx.stroke();
-
-                drop.y += drop.speed;
-                if (drop.y > canvas.height) {
-                    drop.y = -drop.length;
-                    drop.x = Math.random() * canvas.width;
-                    for (let j = 0; j < 4; j++) {
-                        splashes.push({
-                            x: drop.x + (Math.random() - 0.5) * 15,
-                            y: canvas.height - 3,
-                            vx: (Math.random() - 0.5) * 3,
-                            vy: Math.random() * -3 - 1,
-                            life: 1,
-                            size: Math.random() * 2 + 1
-                        });
+            function type() {
+                if (!isDeleting) {
+                    typedElement.textContent = text.substring(0, index + 1);
+                    index++;
+                    if (index === text.length) {
+                        isDeleting = true;
+                        setTimeout(type, 3000);
+                        return;
                     }
-                }
-            }
-
-            for (let i = splashes.length - 1; i >= 0; i--) {
-                const s = splashes[i];
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(50, 150, 255, ${s.life * 0.3})`;
-                ctx.fill();
-                s.x += s.vx;
-                s.y += s.vy;
-                s.vy += 0.15;
-                s.life -= 0.02;
-                if (s.life <= 0) {
-                    splashes.splice(i, 1);
-                }
-            }
-
-            for (let i = 0; i < drops.length; i++) {
-                const char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
-                const x = i * fontSize;
-                const y = drops[i] * fontSize;
-
-                const colorIdx = Math.floor(Math.random() * blueShades.length);
-                ctx.fillStyle = blueShades[colorIdx];
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = blueShades[colorIdx] + '66';
-                ctx.font = `bold ${fontSize}px 'Courier New', monospace`;
-
-                if (y > 0 && y < canvas.height + 50) {
-                    ctx.fillText(char, x, y);
-                }
-                ctx.shadowBlur = 0;
-
-                if (drops[i] * fontSize > canvas.height + 50 && Math.random() > 0.98) {
-                    drops[i] = 0;
-                }
-                drops[i] += 0.5 + Math.random() * 0.5;
-            }
-
-            if (splashes.length > 200) {
-                splashes.splice(0, 50);
-            }
-
-            requestAnimationFrame(drawMatrixRain);
-        }
-
-        drawMatrixRain();
-
-        // ========== BURST EFFECT ==========
-        function burstEffect(e) {
-            let clientX = e.clientX ?? (e.touches ? e.touches[0].clientX : 0);
-            let clientY = e.clientY ?? (e.touches ? e.touches[0].clientY : 0);
-            if (!clientX && !clientY) return;
-            let col = Math.floor(clientX / fontSize);
-            if (col >= 0 && col < drops.length) {
-                for (let i = -15; i <= 15; i++) {
-                    let target = col + i;
-                    if (target >= 0 && target < drops.length) {
-                        drops[target] = (clientY / fontSize) - 10;
-                    }
-                }
-                for (let j = 0; j < 20; j++) {
-                    splashes.push({
-                        x: clientX + (Math.random() - 0.5) * 40,
-                        y: clientY + (Math.random() - 0.5) * 20,
-                        vx: (Math.random() - 0.5) * 6,
-                        vy: Math.random() * -5 - 2,
-                        life: 1,
-                        size: Math.random() * 3 + 1
-                    });
-                }
-            }
-        }
-
-        canvas.addEventListener('click', burstEffect);
-        canvas.addEventListener('touchstart', burstEffect);
-
-        // ========== INSTANT NAVIGATION ==========
-        function instantNavigate(url) {
-            window.location.href = url;
-        }
-
-        const internalLinks = document.querySelectorAll('a:not([target="_blank"])');
-        internalLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            if (href && !href.startsWith('http') && !href.startsWith('https') && href !== '#' && !href.startsWith('javascript:')) {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    instantNavigate(href);
-                });
-            }
-        });
-
-        const cards = document.querySelectorAll('.glass-card');
-        cards.forEach(card => {
-            card.addEventListener('click', function(e) {
-                const href = card.getAttribute('href');
-                if (href && !href.startsWith('http')) {
-                    e.preventDefault();
-                    instantNavigate(href);
-                }
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // ========== SIDEBAR ==========
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const menuBtn = document.getElementById('menuToggle');
-            const closeBtn = document.getElementById('sidebarClose');
-
-            function openSidebar() {
-                sidebar.classList.add('open');
-                overlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-
-            function closeSidebar() {
-                sidebar.classList.remove('open');
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-
-            menuBtn.addEventListener('click', openSidebar);
-            closeBtn.addEventListener('click', closeSidebar);
-            overlay.addEventListener('click', closeSidebar);
-
-            document.getElementById('sideSettings').addEventListener('click', function(e) {
-                closeSidebar();
-                setTimeout(() => {
-                    document.getElementById('settingsModal').classList.add('active');
-                }, 300);
-            });
-
-            // ========== SETTINGS MODAL ==========
-            function closeModal(modalId) {
-                document.getElementById(modalId).classList.remove('active');
-            }
-
-            document.getElementById('closeSettings').addEventListener('click', () => closeModal('settingsModal'));
-            document.getElementById('settingsModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.remove('active');
-                }
-            });
-
-            // ========== THEME ==========
-            function setTheme(theme) {
-                document.body.classList.remove('theme-matrix', 'theme-dark', 'theme-light');
-                document.body.classList.add('theme-' + theme);
-
-                document.querySelectorAll('.theme-selector button').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                const btn = document.getElementById('theme' + theme.charAt(0).toUpperCase() + theme.slice(1));
-                if (btn) btn.classList.add('active');
-
-                localStorage.setItem('twarvis-theme', theme);
-            }
-
-            const savedTheme = localStorage.getItem('twarvis-theme') || 'matrix';
-            setTheme(savedTheme);
-
-            document.getElementById('themeMatrix').addEventListener('click', () => setTheme('matrix'));
-            document.getElementById('themeDark').addEventListener('click', () => setTheme('dark'));
-            document.getElementById('themeLight').addEventListener('click', () => setTheme('light'));
-
-            document.getElementById('refreshBtn').addEventListener('click', () => location.reload());
-
-            // ========== BACK TO TOP ==========
-            const backToTopBtn = document.getElementById('backToTop');
-
-            window.addEventListener('scroll', function() {
-                if (window.pageYOffset > 300) {
-                    backToTopBtn.classList.add('visible');
+                    setTimeout(type, 80 + Math.random() * 40);
                 } else {
-                    backToTopBtn.classList.remove('visible');
+                    typedElement.textContent = text.substring(0, index - 1);
+                    index--;
+                    if (index === 0) {
+                        isDeleting = false;
+                        setTimeout(type, 500);
+                        return;
+                    }
+                    setTimeout(type, 40 + Math.random() * 30);
                 }
-            });
+            }
 
-            backToTopBtn.addEventListener('click', function() {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
+            // Start typing after a small delay
+            setTimeout(type, 300);
+        })();
 
-            console.log('⚡ TWARVIS — Premium Students Hub Loaded');
-            console.log('✅ Clean URLs: /calculator/, /hackerthon/, /free_course/');
+        // ===== BLUE RAIN (background layer) =====
+        (function initBlueRain() {
+            const canvas = document.getElementById('matrix-canvas');
+            const ctx = canvas.getContext('2d');
+            let w, h, cols, drops = [];
+            const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const colors = ['#4f9fff', '#7b6cf6', '#4f9fff', '#6a8cff', '#3a7bd5', '#8b6cf6'];
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+                cols = Math.ceil(w / 24);
+                drops = [];
+                for (let i = 0; i < cols; i++) drops[i] = Math.random() * -200;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            let running = true;
+            let animId;
+
+            function draw() {
+                if (!running) return;
+                ctx.fillStyle = 'rgba(8, 12, 26, 0.03)';
+                ctx.fillRect(0, 0, w, h);
+                for (let i = 0; i < drops.length; i++) {
+                    const ch = chars[Math.floor(Math.random() * chars.length)];
+                    const x = i * 24;
+                    const y = drops[i] * 24;
+                    const col = colors[Math.floor(Math.random() * colors.length)];
+                    ctx.fillStyle = col;
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = col + '15';
+                    ctx.font = 'bold 20px monospace';
+                    if (y > 0 && y < h + 50) ctx.fillText(ch, x, y);
+                    ctx.shadowBlur = 0;
+                    if (drops[i] * 24 > h + 50 && Math.random() > 0.98) drops[i] = 0;
+                    drops[i] += 0.4 + Math.random() * 0.3;
+                }
+                animId = requestAnimationFrame(draw);
+            }
+            draw();
+
+            window.__blueRain = {
+                stop: () => { running = false; if (animId) cancelAnimationFrame(animId);
+                    animId = null; },
+                start: () => { if (!running) { running = true;
+                        draw(); } }
+            };
+        })();
+
+        // ===== CREAM RAIN (front layer, lighter) =====
+        (function initCreamRain() {
+            const canvas = document.getElementById('cream-canvas');
+            const ctx = canvas.getContext('2d');
+            let w, h, cols, drops = [];
+            const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const colors = ['#fff5e6', '#ffe8d0', '#fff0e0', '#ffe0c0'];
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+                cols = Math.ceil(w / 28);
+                drops = [];
+                for (let i = 0; i < cols; i++) drops[i] = Math.random() * -300;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            let running = true;
+            let animId;
+
+            function draw() {
+                if (!running) return;
+                ctx.fillStyle = 'rgba(8, 12, 26, 0.02)';
+                ctx.fillRect(0, 0, w, h);
+                for (let i = 0; i < drops.length; i++) {
+                    const ch = chars[Math.floor(Math.random() * chars.length)];
+                    const x = i * 28;
+                    const y = drops[i] * 28;
+                    const col = colors[Math.floor(Math.random() * colors.length)];
+                    ctx.fillStyle = col;
+                    ctx.shadowBlur = 20;
+                    ctx.shadowColor = col + '08';
+                    ctx.font = 'bold 16px monospace';
+                    if (y > 0 && y < h + 50) ctx.fillText(ch, x, y);
+                    ctx.shadowBlur = 0;
+                    if (drops[i] * 28 > h + 50 && Math.random() > 0.99) drops[i] = 0;
+                    drops[i] += 0.3 + Math.random() * 0.2;
+                }
+                animId = requestAnimationFrame(draw);
+            }
+            draw();
+
+            window.__creamRain = {
+                stop: () => { running = false; if (animId) cancelAnimationFrame(animId);
+                    animId = null; },
+                start: () => { if (!running) { running = true;
+                        draw(); } }
+            };
+        })();
+
+        // ===== GOLD RAIN (new layer) =====
+        (function initGoldRain() {
+            const canvas = document.getElementById('gold-canvas');
+            const ctx = canvas.getContext('2d');
+            let w, h, cols, drops = [];
+            const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const colors = ['#ffd700', '#ffec8b', '#ffd700', '#f0c000', '#ffe44d'];
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+                cols = Math.ceil(w / 32);
+                drops = [];
+                for (let i = 0; i < cols; i++) drops[i] = Math.random() * -250;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            let running = true;
+            let animId;
+
+            function draw() {
+                if (!running) return;
+                ctx.fillStyle = 'rgba(8, 12, 26, 0.015)';
+                ctx.fillRect(0, 0, w, h);
+                for (let i = 0; i < drops.length; i++) {
+                    const ch = chars[Math.floor(Math.random() * chars.length)];
+                    const x = i * 32;
+                    const y = drops[i] * 32;
+                    const col = colors[Math.floor(Math.random() * colors.length)];
+                    ctx.fillStyle = col;
+                    ctx.shadowBlur = 25;
+                    ctx.shadowColor = col + '30';
+                    ctx.font = 'bold 22px monospace';
+                    if (y > 0 && y < h + 50) ctx.fillText(ch, x, y);
+                    ctx.shadowBlur = 0;
+                    if (drops[i] * 32 > h + 50 && Math.random() > 0.985) drops[i] = 0;
+                    drops[i] += 0.35 + Math.random() * 0.25;
+                }
+                animId = requestAnimationFrame(draw);
+            }
+            draw();
+
+            window.__goldRain = {
+                stop: () => { running = false; if (animId) cancelAnimationFrame(animId);
+                    animId = null; },
+                start: () => { if (!running) { running = true;
+                        draw(); } }
+            };
+        })();
+
+        // ===== SIDEBAR =====
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const menuBtn = document.getElementById('menuToggle');
+        const closeBtn = document.getElementById('sidebarClose');
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        menuBtn.addEventListener('click', openSidebar);
+        closeBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        // ===== SETTINGS MODAL =====
+        const modal = document.getElementById('settingsModal');
+        const closeModalBtn = document.getElementById('closeSettings');
+
+        document.getElementById('sideSettings').addEventListener('click', function(e) {
+            closeSidebar();
+            setTimeout(() => modal.classList.add('active'), 200);
         });
+
+        closeModalBtn.addEventListener('click', () => modal.classList.remove('active'));
+        modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+
+        // ===== THEME =====
+        function setTheme(theme) {
+            document.body.className = '';
+            document.body.classList.add('theme-' + theme);
+
+            document.querySelectorAll('.theme-selector button').forEach(btn => btn.classList.remove('active'));
+            let btnId = 'theme' + theme.charAt(0).toUpperCase() + theme.slice(1);
+            if (theme === 'igblue') btnId = 'themeIGBlue';
+            const btn = document.getElementById(btnId);
+            if (btn) btn.classList.add('active');
+
+            localStorage.setItem('twarvis-theme', theme);
+
+            const blueCanvas = document.getElementById('matrix-canvas');
+            const creamCanvas = document.getElementById('cream-canvas');
+            const goldCanvas = document.getElementById('gold-canvas');
+
+            if (theme === 'matrix' || theme === 'igblue') {
+                blueCanvas.style.display = 'block';
+                creamCanvas.style.display = 'block';
+                goldCanvas.style.display = 'block';
+                window.__blueRain.start();
+                window.__creamRain.start();
+                window.__goldRain.start();
+                if (theme === 'igblue') {
+                    blueCanvas.style.opacity = '0.4';
+                    creamCanvas.style.opacity = '0.15';
+                    goldCanvas.style.opacity = '0.3';
+                } else {
+                    blueCanvas.style.opacity = '0.5';
+                    creamCanvas.style.opacity = '0.2';
+                    goldCanvas.style.opacity = '0.35';
+                }
+            } else {
+                blueCanvas.style.display = 'none';
+                creamCanvas.style.display = 'none';
+                goldCanvas.style.display = 'none';
+                window.__blueRain.stop();
+                window.__creamRain.stop();
+                window.__goldRain.stop();
+            }
+        }
+
+        const savedTheme = localStorage.getItem('twarvis-theme') || 'igblue';
+        setTheme(savedTheme);
+
+        document.getElementById('themeMatrix').addEventListener('click', () => setTheme('matrix'));
+        document.getElementById('themeDark').addEventListener('click', () => setTheme('dark'));
+        document.getElementById('themeIGBlue').addEventListener('click', () => setTheme('igblue'));
+
+        document.getElementById('refreshBtn').addEventListener('click', () => location.reload());
+
+        // ===== BACK TO TOP =====
+        const topBtn = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            topBtn.classList.toggle('visible', window.pageYOffset > 300);
+        });
+        topBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+        // ===== INSTANT NAV =====
+        document.querySelectorAll('a:not([target="_blank"])').forEach(link => {
+            const href = link.getAttribute('href');
+            if (href && !href.startsWith('http') && !href.startsWith('https') && href !== '#' && !href.startsWith(
+                    'javascript:')) {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.location.href = href;
+                });
+            }
+        });
+
+        console.log('✦ Student Hub — Typing effect, Red upload icon, Light green sidebar icons ✦');
     </script>
 </body>
 </html>
