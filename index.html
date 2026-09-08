@@ -1,21 +1,15 @@
+<!-- upload.html - Matching Homepage Dark Blue Instagram Theme with Proper Django Forms -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Student Hub | Twarvis</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Upload | Student Hub</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* ============================================================
-           RESET & BASE — DARK PURPLE-BLUE with RED GLOW borders
-           ============================================================ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin:0; padding:0; box-sizing:border-box; }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -23,7 +17,6 @@
             color: #e8ecf5;
             min-height: 100vh;
             overflow-x: hidden;
-            position: relative;
         }
 
         /* ===== BACKGROUND LIGHTNING EFFECT ===== */
@@ -44,17 +37,12 @@
         }
 
         @keyframes lightningPulse {
-            0%,
-            100% {
-                opacity: 0.5;
-            }
-            50% {
-                opacity: 1;
-            }
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
         }
 
-        /* ===== CANVAS — TRIPLE RAIN: BLUE + CREAM + GOLD ===== */
-        #matrix-canvas {
+        /* ===== CANVAS — BLUE RAIN ===== */
+        #rain-canvas {
             position: fixed;
             top: 0;
             left: 0;
@@ -66,28 +54,10 @@
             background: transparent;
         }
 
-        #cream-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-            opacity: 0.2;
-            background: transparent;
-        }
-
-        #gold-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-            opacity: 0.35;
-            background: transparent;
+        /* ===== GLOBAL RED GLOW BORDER ===== */
+        @keyframes redGlowBorder {
+            0%, 100% { border-color: rgba(255, 30, 30, 0.15); box-shadow: 0 0 15px rgba(255, 30, 30, 0.02), inset 0 0 15px rgba(255, 30, 30, 0.01); }
+            50% { border-color: rgba(255, 30, 30, 0.4); box-shadow: 0 0 30px rgba(255, 30, 30, 0.06), inset 0 0 30px rgba(255, 30, 30, 0.02); }
         }
 
         .glass-overlay {
@@ -97,41 +67,7 @@
             width: 100%;
         }
 
-        /* ============================================================
-           GLOBAL RED GLOW BORDER ANIMATION
-           ============================================================ */
-        @keyframes redGlowBorder {
-            0%,
-            100% {
-                border-color: rgba(255, 30, 30, 0.15);
-                box-shadow: 0 0 15px rgba(255, 30, 30, 0.02), inset 0 0 15px rgba(255, 30, 30, 0.01);
-            }
-            50% {
-                border-color: rgba(255, 30, 30, 0.4);
-                box-shadow: 0 0 30px rgba(255, 30, 30, 0.06), inset 0 0 30px rgba(255, 30, 30, 0.02);
-            }
-        }
-
-        .glass-card,
-        .scan-card,
-        .link-card,
-        .contact-owner,
-        .sidebar,
-        .modal-content,
-        .nav-pill,
-        .menu-btn,
-        .scan-btn-primary,
-        .setting-btn,
-        .whatsapp-link,
-        .social-icon,
-        .back-to-top {
-            animation: redGlowBorder 4s ease-in-out infinite;
-            border: 1px solid rgba(255, 30, 30, 0.08);
-        }
-
-        /* ============================================================
-           HEADER
-           ============================================================ */
+        /* ========== HEADER - Instagram Style ========== */
         .header {
             background: rgba(8, 12, 26, 0.85);
             backdrop-filter: blur(20px);
@@ -163,6 +99,7 @@
 
         .menu-btn {
             background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 30, 30, 0.06);
             border-radius: 50%;
             width: 42px;
             height: 42px;
@@ -175,37 +112,28 @@
             transition: 0.3s;
             animation: redGlowBorder 3s ease-in-out infinite;
         }
-        .menu-btn i {
-            animation: iconColorShift 3s ease-in-out infinite;
-        }
         .menu-btn:hover {
             background: rgba(100, 50, 200, 0.06);
             color: #a8c8ff;
             transform: scale(1.04);
         }
 
-        /* ---- logo with cream-gold-silver shift ---- */
         .logo {
             font-family: 'Playfair Display', serif;
             font-size: 1.6rem;
             font-weight: 700;
             font-style: italic;
-            background: linear-gradient(135deg, #f5e6d3, #ffd700, #c0c0c0, #f5e6d3);
-            background-size: 300% 300%;
+            background: linear-gradient(135deg, #4f9fff, #7b6cf6, #4f9fff);
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: creamGoldSilver 4s ease-in-out infinite;
-            text-shadow: 0 0 40px rgba(255, 215, 0, 0.04);
+            animation: logoShimmer 5s ease-in-out infinite;
+            letter-spacing: -0.3px;
         }
-        @keyframes creamGoldSilver {
-            0%,
-            100% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
+        @keyframes logoShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .logo-sub {
@@ -214,17 +142,24 @@
             font-size: 0.5rem;
             font-style: italic;
             letter-spacing: 2px;
-            color: rgba(100, 50, 200, 0.08);
+            color: rgba(100, 150, 255, 0.08);
             margin-top: -3px;
         }
 
-        /* ---- nav pills ---- */
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
         .nav-pill {
             display: inline-flex;
             align-items: center;
             gap: 6px;
             padding: 6px 18px;
             background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 30, 30, 0.04);
             border-radius: 40px;
             color: #7a8bb5;
             font-size: 0.8rem;
@@ -235,829 +170,616 @@
         }
         .nav-pill i {
             font-size: 0.85rem;
-            animation: iconColorShift 2.5s ease-in-out infinite;
+            color: #4f9fff;
         }
         .nav-pill:hover {
-            background: rgba(100, 50, 200, 0.04);
+            background: rgba(100, 150, 255, 0.04);
+            border-color: rgba(100, 150, 255, 0.08);
             color: #c8dcff;
             transform: translateY(-1px);
         }
 
-        /* UPLOAD BUTTON — RED ICON */
-        .nav-pill.primary i {
-            color: #ff1a1a !important;
-            animation: none !important;
-        }
         .nav-pill.primary {
-            background: linear-gradient(135deg, #f5e6d3, #ffd700);
+            background: linear-gradient(135deg, #4f9fff, #7b6cf6);
             border: none;
-            color: #080c1a;
-            box-shadow: 0 4px 30px rgba(255, 215, 0, 0.06);
-            animation: redGlowBorder 3s ease-in-out infinite;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(79, 159, 255, 0.06);
+        }
+        .nav-pill.primary i {
+            color: #fff;
         }
         .nav-pill.primary:hover {
-            box-shadow: 0 6px 40px rgba(255, 215, 0, 0.12);
+            box-shadow: 0 6px 30px rgba(79, 159, 255, 0.12);
             transform: translateY(-2px);
         }
 
-        /* ============================================================
-           SIDEBAR — ICONS LIGHT GREEN
-           ============================================================ */
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 999;
-            display: none;
-        }
-        .sidebar-overlay.active {
-            display: block;
-        }
-
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -340px;
-            width: 300px;
-            max-width: 80vw;
-            height: 100%;
-            background: rgba(8, 12, 30, 0.97);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border-right: 1px solid rgba(255, 30, 30, 0.06);
-            box-shadow: 8px 0 60px rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow-y: auto;
-            padding: 24px 0 32px;
-            animation: redGlowBorder 4s ease-in-out infinite;
-        }
-        .sidebar.open {
-            left: 0;
-        }
-
-        .sidebar-header {
-            padding: 8px 24px 20px;
-            border-bottom: 1px solid rgba(255, 30, 30, 0.04);
-            margin-bottom: 8px;
-        }
-        .sidebar-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            font-style: italic;
-            background: linear-gradient(135deg, #f5e6d3, #ffd700, #c0c0c0);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: creamGoldSilver 3s ease-in-out infinite;
-        }
-        .sidebar-header p {
-            font-size: 0.6rem;
-            color: rgba(100, 50, 200, 0.06);
-            letter-spacing: 1px;
-            font-style: italic;
-        }
-
-        .sidebar-close {
-            position: absolute;
-            top: 14px;
-            right: 16px;
-            font-size: 1.4rem;
-            color: rgba(255, 30, 30, 0.06);
-            cursor: pointer;
-            background: none;
-            border: none;
-            transition: 0.3s;
-        }
-        .sidebar-close:hover {
-            color: #ff4d6d;
-            transform: rotate(90deg);
-        }
-
-        .sidebar-item {
-            display: flex;
+        /* ===== SCANNER BUTTON ===== */
+        .scanner-btn {
+            display: inline-flex;
             align-items: center;
-            gap: 14px;
-            padding: 10px 24px;
-            color: rgba(120, 160, 220, 0.3);
+            gap: 8px;
+            padding: 6px 18px;
+            background: linear-gradient(135deg, #4f9fff, #7b6cf6);
+            border: none;
+            border-radius: 40px;
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 600;
             text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
             transition: 0.3s;
-            border-left: 2px solid transparent;
-        }
-        /* SIDEBAR ICONS — LIGHT GREEN */
-        .sidebar-item i {
-            width: 24px;
-            font-size: 1.1rem;
-            color: #66ff99 !important;
-            transition: 0.3s;
-            text-shadow: 0 0 20px rgba(102, 255, 153, 0.1);
-        }
-        .sidebar-item:hover {
-            background: rgba(100, 50, 200, 0.03);
-            border-left-color: #ffd700;
-            color: #c8dcff;
-        }
-        .sidebar-item:hover i {
-            color: #00ff88 !important;
-            text-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
-        }
-        .sidebar-item .badge {
-            margin-left: auto;
-            background: rgba(255, 30, 30, 0.04);
-            color: #ff4d6d;
-            padding: 0 12px;
-            border-radius: 40px;
-            font-size: 0.5rem;
-            font-weight: 600;
-            border: 1px solid rgba(255, 30, 30, 0.04);
-            animation: redGlowBorder 2s ease-in-out infinite;
-        }
-        .sidebar-item .badge.soon {
-            background: rgba(255, 215, 0, 0.04);
-            color: #ffd700;
-            border-color: rgba(255, 215, 0, 0.04);
-        }
-        .sidebar-item .badge.maint {
-            background: rgba(255, 152, 0, 0.04);
-            color: #ffb74d;
-            border-color: rgba(255, 152, 0, 0.04);
-        }
-
-        .sidebar-divider {
-            height: 1px;
-            background: rgba(255, 30, 30, 0.03);
-            margin: 6px 24px;
-        }
-
-        /* ============================================================
-           HERO — GREEN → ORANGE text with TYPING EFFECT
-           ============================================================ */
-        .hero {
-            text-align: center;
-            padding: 48px 20px 28px;
-        }
-
-        .hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.6rem;
-            font-weight: 700;
-            font-style: italic;
-            line-height: 1.2;
-            min-height: 4.5rem;
-            color: #00ff64;
-            text-shadow: 0 0 40px rgba(0, 255, 100, 0.04);
-        }
-        .hero h1 .cursor {
-            display: inline-block;
-            width: 3px;
-            height: 2.6rem;
-            background: #00ff64;
-            margin-left: 4px;
-            vertical-align: text-bottom;
-            animation: blink 1s step-end infinite;
-        }
-        @keyframes blink {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0;
-            }
-        }
-
-        .hero p {
-            color: rgba(120, 160, 220, 0.12);
-            font-size: 1rem;
-            max-width: 500px;
-            margin: 8px auto 0;
-            font-weight: 400;
-            font-style: italic;
-            font-family: 'Playfair Display', serif;
-            animation: greenOrangeShift 5s ease-in-out infinite;
-        }
-        @keyframes greenOrangeShift {
-            0% {
-                color: #00ff64;
-            }
-            50% {
-                color: #ff8c00;
-            }
-            100% {
-                color: #00ff64;
-            }
-        }
-
-        .hero .sub-tag {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 4px 20px;
-            background: rgba(255, 30, 30, 0.02);
-            border: 1px solid rgba(255, 30, 30, 0.04);
-            border-radius: 40px;
-            color: rgba(120, 160, 220, 0.06);
-            font-size: 0.6rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            box-shadow: 0 4px 20px rgba(79, 159, 255, 0.06);
             animation: redGlowBorder 3s ease-in-out infinite;
         }
-
-        /* ===== POWERED BY — MOVING SILVER SHINE ===== */
-        .powered-by {
-            margin-top: 14px;
-            font-family: 'Playfair Display', serif;
+        .scanner-btn i {
             font-size: 0.85rem;
-            font-style: italic;
-            letter-spacing: 2px;
-            background: linear-gradient(135deg, #c0c0c0, #ffffff, #c0c0c0, #e8e8e8);
-            background-size: 400% 400%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: silverMove 3s ease-in-out infinite;
-            display: inline-block;
-            font-weight: 700;
-            text-shadow: 0 0 40px rgba(192, 192, 192, 0.1);
+            color: #fff;
         }
-        @keyframes silverMove {
-            0% {
-                background-position: 0% 50%;
-                transform: scale(1) translateX(0);
-            }
-            25% {
-                transform: scale(1.02) translateX(5px);
-            }
-            50% {
-                background-position: 100% 50%;
-                transform: scale(1) translateX(0);
-            }
-            75% {
-                transform: scale(1.02) translateX(-5px);
-            }
-            100% {
-                background-position: 0% 50%;
-                transform: scale(1) translateX(0);
-            }
+        .scanner-btn:hover {
+            box-shadow: 0 6px 30px rgba(79, 159, 255, 0.15);
+            transform: translateY(-2px) scale(1.02);
         }
 
-        .powered-wrapper {
-            display: inline-block;
-            animation: floatPower 4s ease-in-out infinite;
-        }
-        @keyframes floatPower {
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-3px);
-            }
+        /* ========== UPLOAD ========== */
+        .upload-container {
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 0 20px 100px;
+            position: relative;
+            z-index: 3;
         }
 
-        /* ============================================================
-           CARDS
-           ============================================================ */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 24px;
-            max-width: 1100px;
-            margin: 28px auto;
-            padding: 0 20px;
-        }
-
-        .glass-card {
+        .upload-card {
             background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 30, 30, 0.06);
             border-radius: 28px;
-            padding: 28px 18px;
-            text-align: center;
-            text-decoration: none;
-            display: block;
-            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 40px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             animation: redGlowBorder 4s ease-in-out infinite;
         }
-        .glass-card:hover {
-            background: rgba(255, 255, 255, 0.025);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
-        }
 
-        .glass-card i {
-            font-size: 2.8rem;
-            margin-bottom: 12px;
-            display: inline-block;
-            transition: 0.4s;
-            animation: iconColorShift 3s ease-in-out infinite;
-        }
-        .glass-card:hover i {
-            transform: scale(1.05) rotate(-2deg);
-        }
-
-        .glass-card h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.15rem;
-            font-weight: 700;
-            font-style: italic;
-            color: #e8ecf5;
-            margin-bottom: 6px;
-            animation: greenOrangeShift 5s ease-in-out infinite;
-        }
-
-        .glass-card p {
-            color: rgba(120, 160, 220, 0.1);
-            font-size: 0.85rem;
-            line-height: 1.5;
-            font-style: italic;
-            animation: greenOrangeShift 6s ease-in-out infinite;
-        }
-
-        /* ============================================================
-           SCAN CARD
-           ============================================================ */
-        .scan-section {
-            max-width: 1100px;
-            margin: 16px auto 0;
-            padding: 0 20px;
-        }
-        .scan-card {
-            background: rgba(255, 255, 255, 0.015);
-            border-radius: 32px;
-            padding: 32px 24px;
-            text-align: center;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            animation: redGlowBorder 4.5s ease-in-out infinite;
-        }
-        .scan-card:hover {
+        .upload-card:hover {
             background: rgba(255, 255, 255, 0.02);
-            transform: translateY(-2px);
+            border-color: rgba(255, 30, 30, 0.08);
         }
 
-        .scan-card .scan-icon i {
-            font-size: 3.2rem;
-            margin-bottom: 8px;
+        .upload-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .upload-header .icon {
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, #4f9fff, #7b6cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             display: inline-block;
-            animation: iconColorShift 3s ease-in-out infinite;
+            animation: float 3s ease-in-out infinite;
+            text-shadow: 0 0 40px rgba(79, 159, 255, 0.04);
         }
 
-        .scan-card h2 {
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+        .upload-header h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             font-weight: 700;
             font-style: italic;
             color: #e8ecf5;
-            margin-bottom: 4px;
+            margin-top: 8px;
             animation: greenOrangeShift 4s ease-in-out infinite;
         }
 
-        .scan-card p {
-            color: rgba(120, 160, 220, 0.1);
+        @keyframes greenOrangeShift {
+            0% { color: #00ff64; }
+            50% { color: #ff8c00; }
+            100% { color: #00ff64; }
+        }
+
+        .upload-header p {
+            color: rgba(120, 160, 220, 0.12);
             font-size: 0.95rem;
-            max-width: 480px;
-            margin: 0 auto 18px;
-            line-height: 1.5;
+            margin-top: 4px;
             font-style: italic;
-            animation: greenOrangeShift 5s ease-in-out infinite;
-        }
-
-        .scan-btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 34px;
-            background: linear-gradient(135deg, #f5e6d3, #ffd700);
-            border: none;
-            border-radius: 60px;
-            color: #080c1a;
-            font-weight: 700;
-            font-size: 0.95rem;
-            text-decoration: none;
-            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 4px 30px rgba(255, 215, 0, 0.04);
-            animation: redGlowBorder 3s ease-in-out infinite;
-        }
-        .scan-btn-primary i {
-            animation: iconColorShift 2.5s ease-in-out infinite;
-        }
-        .scan-btn-primary:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 40px rgba(255, 215, 0, 0.10);
-        }
-
-        /* ============================================================
-           RESOURCE LINKS
-           ============================================================ */
-        .resource-links {
-            max-width: 1100px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-        .section-title {
             font-family: 'Playfair Display', serif;
-            font-size: 1.3rem;
-            font-weight: 700;
-            font-style: italic;
+        }
+
+        /* ===== FORM ===== */
+        .form-group { margin-bottom: 22px; }
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: rgba(120, 160, 220, 0.3);
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            letter-spacing: 0.3px;
+        }
+        .form-label .required { color: #ff4d6d; margin-left: 4px; }
+        .form-label .optional { color: rgba(120, 160, 220, 0.06); font-weight: 400; font-size: 0.8rem; margin-left: 5px; }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid rgba(255, 30, 30, 0.04);
+            border-radius: 16px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+            background: rgba(255, 255, 255, 0.015);
+            color: #e8ecf5;
+        }
+
+        .form-input:hover, .form-textarea:hover, .form-select:hover {
+            border-color: rgba(255, 30, 30, 0.08);
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: #4f9fff;
+            box-shadow: 0 0 0 4px rgba(79, 159, 255, 0.04);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .form-textarea { resize: vertical; min-height: 100px; }
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234f9fff' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+            padding-right: 45px;
+            cursor: pointer;
+        }
+        .form-select option { background: #080c1a; color: #e8ecf5; }
+
+        /* ===== RADIO GROUPS ===== */
+        .radio-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .radio-option {
+            flex: 1;
+            min-width: 100px;
+            position: relative;
+        }
+
+        .radio-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .radio-option label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.015);
+            border: 2px solid rgba(255, 30, 30, 0.04);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: rgba(120, 160, 220, 0.2);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            border-color: #4f9fff;
+            background: rgba(79, 159, 255, 0.04);
+            color: #e8ecf5;
+            box-shadow: 0 0 30px rgba(79, 159, 255, 0.03);
+        }
+
+        .radio-option label i { font-size: 1.1rem; color: #4f9fff; }
+        .radio-option input[type="radio"]:checked + label i { color: #4f9fff; }
+        .radio-option label:hover { border-color: rgba(79, 159, 255, 0.15); background: rgba(79, 159, 255, 0.02); }
+
+        /* ===== DROP ZONE ===== */
+        .drop-zone {
+            border: 2px dashed rgba(255, 30, 30, 0.06);
+            border-radius: 20px;
+            padding: 40px 20px;
             text-align: center;
-            margin-bottom: 28px;
-            background: linear-gradient(135deg, #f5e6d3, #ffd700, #c0c0c0);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .drop-zone:hover {
+            border-color: rgba(79, 159, 255, 0.15);
+            background: rgba(79, 159, 255, 0.02);
+        }
+
+        .drop-zone.dragover {
+            border-color: #4f9fff;
+            background: rgba(79, 159, 255, 0.04);
+            transform: scale(1.01);
+            box-shadow: 0 0 50px rgba(79, 159, 255, 0.03);
+        }
+
+        .drop-zone i {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #4f9fff, #7b6cf6);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: creamGoldSilver 4s ease-in-out infinite;
+            margin-bottom: 10px;
+            display: block;
         }
 
-        .links-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 14px;
-        }
-        .link-card {
-            background: rgba(255, 255, 255, 0.015);
-            border-radius: 20px;
-            padding: 14px 16px;
+        .drop-zone h4 { color: #e8ecf5; font-size: 1.1rem; margin-bottom: 4px; }
+        .drop-zone p { color: rgba(120, 160, 220, 0.08); font-size: 0.85rem; }
+
+        .drop-zone .browse-btn {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 8px 24px;
+            background: rgba(79, 159, 255, 0.04);
+            border: 1px solid rgba(79, 159, 255, 0.06);
+            border-radius: 60px;
+            color: #4f9fff;
+            font-weight: 600;
+            font-size: 0.85rem;
             transition: 0.3s;
-            cursor: pointer;
-            animation: redGlowBorder 4s ease-in-out infinite;
         }
-        .link-card:hover {
-            background: rgba(255, 255, 255, 0.025);
-            transform: translateY(-2px);
+
+        .drop-zone:hover .browse-btn {
+            background: rgba(79, 159, 255, 0.08);
+            border-color: #4f9fff;
         }
-        .link-card a {
-            text-decoration: none;
-            color: #e8ecf5;
+
+        /* ===== FILE LIST ===== */
+        .file-list { margin-top: 12px; }
+        .file-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-        .link-card i {
-            font-size: 1.3rem;
-            width: 28px;
-            animation: iconColorShift 3s ease-in-out infinite;
-        }
-        .link-card span {
-            font-size: 0.6rem;
-            color: rgba(120, 160, 220, 0.06);
-            display: block;
-            font-weight: 400;
-            font-style: italic;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 30, 30, 0.03);
+            border-radius: 12px;
+            margin-bottom: 6px;
+            animation: slideIn 0.3s ease;
         }
 
-        /* ============================================================
-           BOTTOM — SOCIAL ICONS with shifting colors
-           ============================================================ */
-        .bottom-section {
-            max-width: 1100px;
-            margin: 20px auto 40px;
-            padding: 0 20px 20px;
-            text-align: center;
-        }
-
-        .contact-owner {
-            display: inline-flex;
+        .file-item .file-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
             align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
             justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+            background: rgba(79, 159, 255, 0.04);
+            color: #4f9fff;
+        }
+
+        .file-item .file-info { flex: 1; min-width: 0; }
+        .file-item .file-name { color: #e8ecf5; font-weight: 500; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .file-item .file-size { color: rgba(120, 160, 220, 0.08); font-size: 0.7rem; }
+
+        .file-item .file-remove {
+            background: none;
+            border: none;
+            color: rgba(120, 160, 220, 0.06);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 4px;
+        }
+        .file-item .file-remove:hover { color: #ff4d6d; }
+
+        @keyframes slideIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+
+        /* ===== PASSCODE ===== */
+        .passcode-section {
+            display: none;
+            animation: slideDown 0.3s ease;
+            background: rgba(79, 159, 255, 0.02);
+            border: 1px solid rgba(79, 159, 255, 0.04);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-top: 10px;
+        }
+        .passcode-section.show { display: block; }
+
+        @keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+
+        .passcode-section .warning {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #4f9fff;
+            font-size: 0.85rem;
+            padding: 10px 0;
+        }
+        .passcode-section .warning i { font-size: 1.2rem; }
+
+        .passcode-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .passcode-input input {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 30, 30, 0.04);
+            border-radius: 12px;
+            color: #e8ecf5;
+            font-size: 1.2rem;
+            font-family: monospace;
+            letter-spacing: 8px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .passcode-input input:focus {
+            outline: none;
+            border-color: #4f9fff;
+            box-shadow: 0 0 0 4px rgba(79, 159, 255, 0.04);
+        }
+        .passcode-input input::placeholder {
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            color: rgba(120, 160, 220, 0.04);
+        }
+
+        /* ===== BUTTON ===== */
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #4f9fff, #7b6cf6);
+            border: none;
+            border-radius: 60px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 8px;
+            position: relative;
+            overflow: hidden;
+            animation: redGlowBorder 3s ease-in-out infinite;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: rotate(45deg) translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .btn-submit:hover::before {
+            transform: rotate(45deg) translateX(100%);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px -10px rgba(79, 159, 255, 0.15);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ===== CUSTOM UNIVERSITY ===== */
+        .custom-uni-input { display: none; margin-top: 10px; }
+        .custom-uni-input.show { display: block; }
+
+        /* ===== ALLOWED TYPES ===== */
+        .allowed-types {
+            text-align: center;
+            margin-top: 20px;
+            padding: 12px;
             background: rgba(255, 255, 255, 0.015);
             border-radius: 60px;
-            padding: 10px 24px;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            animation: redGlowBorder 4s ease-in-out infinite;
-        }
-        .contact-owner span {
             color: rgba(120, 160, 220, 0.06);
-            font-size: 0.8rem;
-            font-style: italic;
-            animation: greenOrangeShift 5s ease-in-out infinite;
+            font-size: 0.75rem;
+            border: 1px solid rgba(255, 30, 30, 0.02);
         }
+        .allowed-types i { margin-right: 6px; color: #4f9fff; }
+        .allowed-types span { color: #4f9fff; font-weight: 600; }
 
-        .whatsapp-link {
-            background: rgba(37, 211, 102, 0.03);
-            padding: 4px 20px;
-            border-radius: 40px;
-            text-decoration: none;
-            color: #2aff66;
-            font-weight: 700;
-            font-size: 0.85rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid rgba(37, 211, 102, 0.04);
-            transition: 0.3s;
-            animation: redGlowBorder 3s ease-in-out infinite;
-        }
-        .whatsapp-link i {
-            animation: iconColorShift 2.5s ease-in-out infinite;
-        }
-        .whatsapp-link:hover {
-            background: #25D366;
-            color: #080c1a;
-            border-color: #25D366;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 14px;
-            justify-content: center;
-            margin-top: 14px;
-        }
-        .social-icon {
-            width: 44px;
-            height: 44px;
-            background: rgba(255, 255, 255, 0.015);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(255, 30, 30, 0.06);
-            transition: 0.3s;
-            animation: redGlowBorder 3s ease-in-out infinite;
-        }
-        .social-icon a {
-            font-size: 1.3rem;
-            transition: 0.3s;
-            animation: iconColorShift 2.5s ease-in-out infinite;
-        }
-        .social-icon:hover {
-            background: rgba(100, 50, 200, 0.04);
-            transform: translateY(-3px) scale(1.05);
-        }
-
-        .footer-text {
-            margin-top: 24px;
-            color: rgba(120, 160, 220, 0.02);
-            font-size: 0.7rem;
-            font-style: italic;
-        }
-
-        /* ============================================================
-           BACK TO TOP
-           ============================================================ */
-        .back-to-top {
-            position: fixed;
-            bottom: 28px;
-            right: 28px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 30, 30, 0.06);
-            color: #7a8bb5;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.3s;
-            z-index: 50;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            animation: redGlowBorder 3s ease-in-out infinite;
-        }
-        .back-to-top i {
-            animation: iconColorShift 2.5s ease-in-out infinite;
-        }
-        .back-to-top:hover {
-            background: rgba(100, 50, 200, 0.04);
-            color: #c8dcff;
-        }
-        .back-to-top.visible {
-            display: flex;
-        }
-
-        /* ============================================================
-           SETTINGS MODAL
-           ============================================================ */
-        .modal {
+        /* ===== LED SUCCESS SCREEN ===== */
+        .success-overlay {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 1100;
+            z-index: 2000;
+            background: rgba(8, 12, 26, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             justify-content: center;
             align-items: center;
+            animation: fadeIn 0.5s ease;
         }
-        .modal.active {
-            display: flex;
-        }
-        .modal-content {
-            background: rgba(8, 12, 30, 0.96);
-            border: 1px solid rgba(255, 30, 30, 0.06);
-            border-radius: 32px;
-            padding: 28px 28px 32px;
-            max-width: 380px;
+
+        .success-overlay.active { display: flex; }
+
+        .success-content {
+            text-align: center;
+            max-width: 600px;
             width: 90%;
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            position: relative;
-            animation: redGlowBorder 4s ease-in-out infinite;
+            padding: 40px;
+            animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .modal-close {
-            position: absolute;
-            top: 12px;
-            right: 16px;
-            font-size: 1.3rem;
-            color: rgba(255, 30, 30, 0.06);
-            background: none;
-            border: none;
-            cursor: pointer;
-            transition: 0.3s;
+
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
-        .modal-close:hover {
-            color: #ff4d6d;
-            transform: rotate(90deg);
+
+        .success-content .trophy {
+            font-size: 6rem;
+            display: block;
+            margin-bottom: 20px;
+            animation: celebrate 1.5s ease-in-out infinite;
         }
-        .modal h2 {
+
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(-5deg); }
+            75% { transform: scale(1.1) rotate(5deg); }
+        }
+
+        .success-content h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.3rem;
+            font-size: 2.8rem;
             font-weight: 700;
             font-style: italic;
-            text-align: center;
-            margin-bottom: 18px;
-            background: linear-gradient(135deg, #f5e6d3, #ffd700, #c0c0c0);
+            background: linear-gradient(135deg, #ffd700, #ff6b00, #ffd700);
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: creamGoldSilver 3s ease-in-out infinite;
+            animation: shimmerGold 2s ease-in-out infinite;
+            margin-bottom: 10px;
         }
-        .modal label {
-            display: block;
-            margin-bottom: 6px;
-            color: rgba(120, 160, 220, 0.06);
-            font-size: 0.75rem;
-            font-weight: 600;
+
+        @keyframes shimmerGold {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .success-content .sub-message {
+            color: rgba(120, 160, 220, 0.15);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
             font-style: italic;
+            font-family: 'Playfair Display', serif;
         }
-        .theme-selector {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
+
+        .success-content .led-text {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #00ff41;
+            text-shadow: 0 0 20px rgba(0, 255, 65, 0.15);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 255, 65, 0.04);
+            display: inline-block;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 4px;
+            animation: ledPulse 1.5s ease-in-out infinite;
+            margin: 10px 0 20px;
         }
-        .theme-selector button {
-            flex: 1;
-            padding: 10px 0;
-            background: rgba(255, 255, 255, 0.015);
-            border: 1px solid rgba(255, 30, 30, 0.04);
-            border-radius: 16px;
-            color: rgba(120, 160, 220, 0.06);
-            font-weight: 600;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: 0.3s;
-            animation: redGlowBorder 3s ease-in-out infinite;
+
+        @keyframes ledPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 65, 0.04); border-color: rgba(0, 255, 65, 0.04); }
+            50% { box-shadow: 0 0 50px rgba(0, 255, 65, 0.08); border-color: rgba(0, 255, 65, 0.08); }
         }
-        .theme-selector button:hover {
-            border-color: rgba(100, 50, 200, 0.08);
-            color: #7a8bb5;
+
+        .success-content .led-text .cursor {
+            animation: blink 0.8s step-end infinite;
         }
-        .theme-selector button.active {
-            border-color: #ffd700;
-            background: rgba(255, 215, 0, 0.03);
-            color: #ffd700;
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
-        .setting-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #f5e6d3, #ffd700);
+
+        .success-content .sparkles {
+            font-size: 2rem;
+            display: block;
+            margin-top: 10px;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .success-content .close-success {
+            margin-top: 30px;
+            padding: 14px 40px;
+            background: linear-gradient(135deg, #4f9fff, #7b6cf6);
             border: none;
             border-radius: 60px;
-            color: #080c1a;
+            color: #fff;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 1rem;
             cursor: pointer;
             transition: 0.3s;
             animation: redGlowBorder 3s ease-in-out infinite;
         }
-        .setting-btn i {
-            animation: iconColorShift 2.5s ease-in-out infinite;
-        }
-        .setting-btn:hover {
-            box-shadow: 0 4px 30px rgba(255, 215, 0, 0.06);
+
+        .success-content .close-success:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px -10px rgba(79, 159, 255, 0.15);
         }
 
-        /* ============================================================
-           ICON COLOR SHIFT ANIMATION (all icons except upload red)
-           ============================================================ */
-        @keyframes iconColorShift {
-            0% {
-                color: #f5e6d3;
-            }
-            33% {
-                color: #ffd700;
-            }
-            66% {
-                color: #c0c0c0;
-            }
-            100% {
-                color: #f5e6d3;
-            }
+        /* ===== MESSAGES ===== */
+        .message {
+            padding: 14px 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 30, 30, 0.03);
         }
+        .message.success { border-color: rgba(0, 255, 65, 0.06); color: #00ff64; }
+        .message.error { border-color: rgba(255, 45, 45, 0.06); color: #ff6b6b; }
+        .message i { font-size: 1.2rem; }
 
-        /* ============================================================
-           RESPONSIVE
-           ============================================================ */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 780px) {
-            .hero h1 {
-                font-size: 2rem;
-                min-height: 3.5rem;
-            }
-            .hero h1 .cursor {
-                height: 2rem;
-            }
-            .header-content {
-                flex-direction: row;
-                padding: 4px 16px;
-            }
-            .nav-links .nav-pill span {
-                display: none;
-            }
-            .nav-pill {
-                padding: 8px 12px;
-            }
-            .nav-pill i {
-                font-size: 1rem;
-            }
-            .logo {
-                font-size: 1.3rem;
-            }
-            .features {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-            .links-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .contact-owner {
-                flex-direction: column;
-                gap: 10px;
-                padding: 16px 20px;
-                border-radius: 32px;
-            }
-            .sidebar {
-                width: 280px;
-                max-width: 80vw;
-                left: -320px;
-            }
-            .scan-card h2 {
-                font-size: 1.3rem;
-            }
+            .upload-card { padding: 24px 18px; }
+            .upload-header h2 { font-size: 1.4rem; }
+            .radio-group { flex-direction: column; }
+            .radio-option { min-width: auto; }
+            .drop-zone { padding: 30px 15px; }
+            .passcode-input { flex-direction: column; }
+            .passcode-input input { width: 100%; min-width: unset; }
+            .success-content h1 { font-size: 2rem; }
+            .success-content .led-text { font-size: 1.2rem; padding: 12px 20px; }
+            .header-content { flex-direction: row; padding: 4px 16px; }
+            .nav-links .nav-pill span { display: none; }
+            .nav-pill { padding: 8px 12px; }
+            .nav-pill i { font-size: 1rem; }
+            .scanner-btn span { display: none; }
+            .scanner-btn { padding: 8px 12px; }
+            .logo { font-size: 1.3rem; }
         }
 
         @media (max-width: 480px) {
-            .hero h1 {
-                font-size: 1.6rem;
-                min-height: 3rem;
-            }
-            .hero h1 .cursor {
-                height: 1.6rem;
-            }
-            .links-grid {
-                grid-template-columns: 1fr;
-            }
-            .menu-btn {
-                width: 36px;
-                height: 36px;
-                font-size: 1.1rem;
-            }
-            .logo {
-                font-size: 1.1rem;
-            }
-            .nav-pill {
-                padding: 6px 10px;
-                font-size: 0.7rem;
-            }
-            .scan-btn-primary {
-                padding: 10px 24px;
-                font-size: 0.85rem;
-            }
-            .sidebar {
-                width: 260px;
-                max-width: 75vw;
-            }
-            .powered-by {
-                font-size: 0.7rem;
-            }
+            .upload-card { padding: 18px 14px; }
+            .upload-header h2 { font-size: 1.2rem; }
+            .menu-btn { width: 36px; height: 36px; font-size: 1.1rem; }
+            .logo { font-size: 1.1rem; }
+            .nav-pill { padding: 6px 10px; font-size: 0.7rem; }
+            .scanner-btn { padding: 6px 10px; font-size: 0.7rem; }
+            .btn-submit { font-size: 0.95rem; padding: 14px; }
         }
 
         ::-webkit-scrollbar {
@@ -1067,22 +789,19 @@
             background: transparent;
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(255, 215, 0, 0.04);
+            background: rgba(79, 159, 255, 0.04);
             border-radius: 10px;
         }
     </style>
 </head>
 <body>
 
-    <!-- TRIPLE CANVAS: BLUE + CREAM + GOLD RAIN -->
-    <canvas id="matrix-canvas"></canvas>
-    <canvas id="cream-canvas"></canvas>
-    <canvas id="gold-canvas"></canvas>
+    <!-- Rain Canvas -->
+    <canvas id="rain-canvas"></canvas>
 
     <div class="glass-overlay">
-
-        <!-- ===== HEADER ===== -->
-        <header class="header">
+        <!-- Header with Scanner Button -->
+        <div class="header">
             <div class="header-content">
                 <div class="header-left">
                     <button class="menu-btn" id="menuToggle" aria-label="Open menu">
@@ -1094,428 +813,427 @@
                     </div>
                 </div>
                 <div class="nav-links">
+                    <a href="/" class="nav-pill">
+                        <i class="fas fa-home"></i> <span>Home</span>
+                    </a>
                     <a href="/browse/" class="nav-pill">
                         <i class="fas fa-eye"></i> <span>Browse</span>
+                    </a>
+                    <a href="/scanner/" class="scanner-btn">
+                        <i class="fas fa-qrcode"></i> <span>Scan</span>
                     </a>
                     <a href="/upload/" class="nav-pill primary">
                         <i class="fas fa-cloud-upload-alt"></i> <span>Upload</span>
                     </a>
                 </div>
             </div>
-        </header>
-
-        <!-- ===== HERO with TYPING EFFECT ===== -->
-        <section class="hero">
-            <h1 id="typing-title"><span id="typed-text"></span><span class="cursor"></span></h1>
-            <p>Upload, browse, and dominate your studies.</p>
-            <span class="sub-tag"><i class="fas fa-bolt"></i> Learn. Share. Grow.</span>
-            <div class="powered-wrapper">
-                <div class="powered-by">⚡ powered by Twarvis ⚡</div>
-            </div>
-        </section>
-
-        <!-- ===== SCAN CARD ===== -->
-        <div class="scan-section">
-            <div class="scan-card">
-                <div class="scan-icon"><i class="fas fa-camera-retro"></i></div>
-                <h2>📄 Scan Your Files</h2>
-                <p>Capture, crop, and enhance documents like a pro.</p>
-                <a href="/scanner/" class="scan-btn-primary">
-                    <i class="fas fa-qrcode"></i> Open Scanner
-                </a>
-            </div>
         </div>
 
-        <!-- ===== FEATURES ===== -->
-        <div class="features">
-            <a href="/upload/" class="glass-card">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <h3>Instant Upload</h3>
-                <p>Upload notes &amp; files instantly.</p>
-            </a>
-            <a href="/browse/" class="glass-card">
-                <i class="fas fa-eye"></i>
-                <h3>See Uploaded Notes</h3>
-                <p>Browse all student notes.</p>
-            </a>
-            <a href="/browse/" class="glass-card">
-                <i class="fas fa-search"></i>
-                <h3>Smart Search</h3>
-                <p>Find by module or keyword.</p>
-            </a>
-        </div>
-
-        <!-- ===== RESOURCE LINKS ===== -->
-        <div class="resource-links">
-            <div class="section-title">✦ Explore the Ecosystem ✦</div>
-            <div class="links-grid">
-                <div class="link-card"><a href="https://twarvis-pdf-50le.onrender.com" target="_blank"><i class="fas fa-file-pdf"></i> PDF Maker <span>create &amp; edit PDFs</span></a></div>
-                <div class="link-card"><a href="https://indext.oneapp.dev" target="_blank"><i class="fas fa-code"></i> Code Convert <span>file extension tools</span></a></div>
-                <div class="link-card"><a href="https://lovecalculator.site/love/11128150" target="_blank"><i class="fas fa-heart"></i> Love Game <span>fun calculator 😂</span></a></div>
-                <div class="link-card"><a href="https://soma.dit.ac.tz/auth/login" target="_blank"><i class="fas fa-university"></i> Soma Portal <span>official DIT soma</span></a></div>
-                <div class="link-card"><a href="https://movieboxapp.in" target="_blank"><i class="fas fa-film"></i> MovieBox <span>movies &amp; entertainment</span></a></div>
-            </div>
-        </div>
-
-        <!-- ===== BOTTOM ===== -->
-        <div class="bottom-section">
-            <div class="contact-owner">
-                <span>📢 For content changes / issues :</span>
-                <a href="https://wa.me/255740706007?text=Hello%20Twarvis%2C%20I%20need%20help%20on%20the%20school%20portal" class="whatsapp-link" target="_blank">
-                    <i class="fab fa-whatsapp"></i> Contact Web Owner
-                </a>
-            </div>
-            <div class="social-links">
-                <div class="social-icon"><a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i></a></div>
-                <div class="social-icon"><a href="https://www.tiktok.com/@twarvis" target="_blank"><i class="fab fa-tiktok"></i></a></div>
-            </div>
-            <div class="footer-text"><p>© 2026 Student Hub — powered by Twarvis</p></div>
-        </div>
-    </div>
-
-    <!-- ===== SIDEBAR ===== -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    <aside class="sidebar" id="sidebar">
-        <button class="sidebar-close" id="sidebarClose">&times;</button>
-        <div class="sidebar-header">
-            <h2>✦ Student Hub</h2>
-            <p>powered by Twarvis</p>
-        </div>
-
-        <a class="sidebar-item" href="/"><i class="fas fa-home"></i> Home <span class="badge">Active</span></a>
-        <a class="sidebar-item" href="/browse/"><i class="fas fa-eye"></i> See Uploaded Notes</a>
-        <a class="sidebar-item" href="/upload/"><i class="fas fa-cloud-upload-alt"></i> Upload Files</a>
-
-        <div class="sidebar-divider"></div>
-
-        <a class="sidebar-item" href="/calculator/"><i class="fas fa-calculator"></i> GPA Calculator <span class="badge soon">New</span></a>
-
-        <div class="sidebar-divider"></div>
-
-        <a class="sidebar-item" href="/hackerthon/"><i class="fas fa-code"></i> Hackathon <span class="badge soon">Soon</span></a>
-        <a class="sidebar-item" href="/free_course/"><i class="fas fa-graduation-cap"></i> Free Courses <span class="badge maint">Maint</span></a>
-
-        <div class="sidebar-divider"></div>
-
-        <div class="sidebar-item" id="sideSettings"><i class="fas fa-cog"></i> Settings <span class="badge">⚡</span></div>
-    </aside>
-
-    <!-- ===== SETTINGS MODAL ===== -->
-    <div class="modal" id="settingsModal">
-        <div class="modal-content">
-            <button class="modal-close" id="closeSettings">&times;</button>
-            <h2>✦ Settings</h2>
-            <div>
-                <label><i class="fas fa-palette"></i> Theme Mode</label>
-                <div class="theme-selector">
-                    <button id="themeMatrix">🌿 Matrix</button>
-                    <button id="themeDark">🌙 Dark</button>
-                    <button id="themeIGBlue" class="active">🔵 IG Blue</button>
+        <!-- Upload -->
+        <div class="upload-container">
+            <div class="upload-card">
+                <div class="upload-header">
+                    <div class="icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <h2>📤 Upload Notes & Papers</h2>
+                    <p>Share your study materials with fellow students</p>
                 </div>
-                <button class="setting-btn" id="refreshBtn"><i class="fas fa-sync"></i> Refresh Now</button>
+
+                <!-- Messages -->
+                {% if message %}
+                    <div class="message success"><i class="fas fa-check-circle"></i> {{ message }}</div>
+                {% endif %}
+                {% if error %}
+                    <div class="message error"><i class="fas fa-exclamation-triangle"></i> {{ error }}</div>
+                {% endif %}
+                <div id="messageContainer"></div>
+
+                <form method="post" enctype="multipart/form-data" id="uploadForm" action="/upload/">
+                    {% csrf_token %}
+
+                    <!-- 1. File Upload -->
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-paperclip"></i> Upload Your File <span class="required">*</span></label>
+                        <div class="drop-zone" id="dropZone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <h4>Drag & Drop Files Here</h4>
+                            <p>or click to browse</p>
+                            <span class="browse-btn"><i class="fas fa-folder-open"></i> Browse Files</span>
+                            {{ form.file }}
+                        </div>
+                        <div class="file-list" id="fileList"></div>
+                        <small style="display:block;margin-top:6px;color:rgba(120,160,220,0.06);font-size:0.7rem;">
+                            <i class="fas fa-info-circle"></i> Max: 100MB | PDF, PPT, DOC, XLS, TXT, JPG, PNG, ZIP
+                        </small>
+                    </div>
+
+                    <!-- 2. File Type -->
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-tag"></i> File Type <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                {{ form.file_type }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Module -->
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-tag"></i> Module Name <span class="required">*</span></label>
+                        {{ form.module }}
+                    </div>
+
+                    <!-- 4. Course -->
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-book"></i> Course Code <span class="required">*</span></label>
+                        {{ form.course }}
+                    </div>
+
+                    <!-- 5. Description -->
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-align-left"></i> Description</label>
+                        {{ form.description }}
+                    </div>
+
+                    <!-- 6. Privacy -->
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-lock"></i> Privacy Setting <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                {{ form.privacy }}
+                            </div>
+                        </div>
+                        <small style="display:block;margin-top:4px;color:rgba(120,160,220,0.06);font-size:0.7rem;">
+                            <i class="fas fa-info-circle"></i> Private files require a 4-digit passcode to access
+                        </small>
+                    </div>
+
+                    <!-- 7. Passcode (Private) -->
+                    <div class="passcode-section" id="passcodeSection">
+                        <div class="warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span><strong>⚠️ IMPORTANT:</strong> No backup for passcode. Remember it!</span>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="form-label"><i class="fas fa-key"></i> Set 4-Digit Passcode <span class="required">*</span></label>
+                            <div class="passcode-input">
+                                {{ form.passcode }}
+                                <span style="color:rgba(120,160,220,0.06);font-size:0.8rem;">(4 numbers only)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 8. University -->
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-university"></i> Your University <span class="optional">(optional)</span></label>
+                        <div class="uni-select-wrapper">
+                            {{ form.university }}
+                            <div class="custom-uni-input" id="customUniInput">
+                                {{ form.custom_university }}
+                            </div>
+                        </div>
+                        <small style="display:block;margin-top:4px;color:rgba(120,160,220,0.06);font-size:0.7rem;">
+                            <i class="fas fa-info-circle"></i> Select from list or choose "Other" to type custom name
+                        </small>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i class="fas fa-upload"></i> Upload File
+                    </button>
+
+                    <div class="allowed-types">
+                        <i class="fas fa-shield-alt"></i> <span>Secure & Fast</span> — Your files are stored safely
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- ===== BACK TO TOP ===== -->
-    <button class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></button>
+    <!-- ===== LED SUCCESS OVERLAY ===== -->
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-content">
+            <span class="trophy">🏆</span>
+            <h1>CONGRATULATIONS!</h1>
+            <p class="sub-message">You have just shared great material</p>
+            <div class="led-text">
+                <span id="ledMessage">✦ UPLOAD SUCCESSFUL ✦</span>
+                <span class="cursor">█</span>
+            </div>
+            <p style="color:rgba(120,160,220,0.06); font-size:0.9rem; margin-top:5px;">
+                <i class="fas fa-check-circle" style="color:#00ff41;"></i> File uploaded successfully
+            </p>
+            <span class="sparkles">✦ ✧ ✦ ✧ ✦</span>
+            <p style="color:rgba(120,160,220,0.02); font-size:0.7rem; letter-spacing:4px; margin-top:10px;">
+                WELCOME TO THE FUTURE OF LEARNING
+            </p>
+            <button class="close-success" id="closeSuccess">
+                <i class="fas fa-arrow-right"></i> Continue Browsing
+            </button>
+        </div>
+    </div>
 
-    <!-- ============================================================
-    JAVASCRIPT — TRIPLE RAIN + TYPING EFFECT
-    ============================================================ -->
     <script>
-        // ===== TYPING EFFECT =====
-        (function typingEffect() {
-            const text = "Welcome to Student Hub";
-            const typedElement = document.getElementById('typed-text');
-            let index = 0;
-            let isDeleting = false;
+        // ============================================
+        // ===== BLUE MATRIX RAIN =====
+        // ============================================
+        const canvas = document.getElementById('rain-canvas');
+        const ctx = canvas.getContext('2d');
 
-            function type() {
-                if (!isDeleting) {
-                    typedElement.textContent = text.substring(0, index + 1);
-                    index++;
-                    if (index === text.length) {
-                        isDeleting = true;
-                        setTimeout(type, 3000);
-                        return;
-                    }
-                    setTimeout(type, 80 + Math.random() * 40);
-                } else {
-                    typedElement.textContent = text.substring(0, index - 1);
-                    index--;
-                    if (index === 0) {
-                        isDeleting = false;
-                        setTimeout(type, 500);
-                        return;
-                    }
-                    setTimeout(type, 40 + Math.random() * 30);
-                }
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const matrixColors = ['#4f9fff', '#7b6cf6', '#4f9fff', '#6a8cff', '#3a7bd5', '#8b6cf6'];
+        const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        let fontSize = 20;
+        let columns = Math.ceil(canvas.width / fontSize);
+        let drops = [];
+
+        function initRain() {
+            columns = Math.ceil(canvas.width / fontSize);
+            drops = [];
+            for (let i = 0; i < columns; i++) {
+                drops[i] = {
+                    y: Math.random() * -200,
+                    speed: 0.4 + Math.random() * 0.4,
+                    color: matrixColors[Math.floor(Math.random() * matrixColors.length)]
+                };
             }
-
-            // Start typing after a small delay
-            setTimeout(type, 300);
-        })();
-
-        // ===== BLUE RAIN (background layer) =====
-        (function initBlueRain() {
-            const canvas = document.getElementById('matrix-canvas');
-            const ctx = canvas.getContext('2d');
-            let w, h, cols, drops = [];
-            const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            const colors = ['#4f9fff', '#7b6cf6', '#4f9fff', '#6a8cff', '#3a7bd5', '#8b6cf6'];
-
-            function resize() {
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-                cols = Math.ceil(w / 24);
-                drops = [];
-                for (let i = 0; i < cols; i++) drops[i] = Math.random() * -200;
-            }
-            resize();
-            window.addEventListener('resize', resize);
-
-            let running = true;
-            let animId;
-
-            function draw() {
-                if (!running) return;
-                ctx.fillStyle = 'rgba(8, 12, 26, 0.03)';
-                ctx.fillRect(0, 0, w, h);
-                for (let i = 0; i < drops.length; i++) {
-                    const ch = chars[Math.floor(Math.random() * chars.length)];
-                    const x = i * 24;
-                    const y = drops[i] * 24;
-                    const col = colors[Math.floor(Math.random() * colors.length)];
-                    ctx.fillStyle = col;
-                    ctx.shadowBlur = 15;
-                    ctx.shadowColor = col + '15';
-                    ctx.font = 'bold 20px monospace';
-                    if (y > 0 && y < h + 50) ctx.fillText(ch, x, y);
-                    ctx.shadowBlur = 0;
-                    if (drops[i] * 24 > h + 50 && Math.random() > 0.98) drops[i] = 0;
-                    drops[i] += 0.4 + Math.random() * 0.3;
-                }
-                animId = requestAnimationFrame(draw);
-            }
-            draw();
-
-            window.__blueRain = {
-                stop: () => { running = false; if (animId) cancelAnimationFrame(animId);
-                    animId = null; },
-                start: () => { if (!running) { running = true;
-                        draw(); } }
-            };
-        })();
-
-        // ===== CREAM RAIN (front layer, lighter) =====
-        (function initCreamRain() {
-            const canvas = document.getElementById('cream-canvas');
-            const ctx = canvas.getContext('2d');
-            let w, h, cols, drops = [];
-            const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            const colors = ['#fff5e6', '#ffe8d0', '#fff0e0', '#ffe0c0'];
-
-            function resize() {
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-                cols = Math.ceil(w / 28);
-                drops = [];
-                for (let i = 0; i < cols; i++) drops[i] = Math.random() * -300;
-            }
-            resize();
-            window.addEventListener('resize', resize);
-
-            let running = true;
-            let animId;
-
-            function draw() {
-                if (!running) return;
-                ctx.fillStyle = 'rgba(8, 12, 26, 0.02)';
-                ctx.fillRect(0, 0, w, h);
-                for (let i = 0; i < drops.length; i++) {
-                    const ch = chars[Math.floor(Math.random() * chars.length)];
-                    const x = i * 28;
-                    const y = drops[i] * 28;
-                    const col = colors[Math.floor(Math.random() * colors.length)];
-                    ctx.fillStyle = col;
-                    ctx.shadowBlur = 20;
-                    ctx.shadowColor = col + '08';
-                    ctx.font = 'bold 16px monospace';
-                    if (y > 0 && y < h + 50) ctx.fillText(ch, x, y);
-                    ctx.shadowBlur = 0;
-                    if (drops[i] * 28 > h + 50 && Math.random() > 0.99) drops[i] = 0;
-                    drops[i] += 0.3 + Math.random() * 0.2;
-                }
-                animId = requestAnimationFrame(draw);
-            }
-            draw();
-
-            window.__creamRain = {
-                stop: () => { running = false; if (animId) cancelAnimationFrame(animId);
-                    animId = null; },
-                start: () => { if (!running) { running = true;
-                        draw(); } }
-            };
-        })();
-
-        // ===== GOLD RAIN (new layer) =====
-        (function initGoldRain() {
-            const canvas = document.getElementById('gold-canvas');
-            const ctx = canvas.getContext('2d');
-            let w, h, cols, drops = [];
-            const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            const colors = ['#ffd700', '#ffec8b', '#ffd700', '#f0c000', '#ffe44d'];
-
-            function resize() {
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-                cols = Math.ceil(w / 32);
-                drops = [];
-                for (let i = 0; i < cols; i++) drops[i] = Math.random() * -250;
-            }
-            resize();
-            window.addEventListener('resize', resize);
-
-            let running = true;
-            let animId;
-
-            function draw() {
-                if (!running) return;
-                ctx.fillStyle = 'rgba(8, 12, 26, 0.015)';
-                ctx.fillRect(0, 0, w, h);
-                for (let i = 0; i < drops.length; i++) {
-                    const ch = chars[Math.floor(Math.random() * chars.length)];
-                    const x = i * 32;
-                    const y = drops[i] * 32;
-                    const col = colors[Math.floor(Math.random() * colors.length)];
-                    ctx.fillStyle = col;
-                    ctx.shadowBlur = 25;
-                    ctx.shadowColor = col + '30';
-                    ctx.font = 'bold 22px monospace';
-                    if (y > 0 && y < h + 50) ctx.fillText(ch, x, y);
-                    ctx.shadowBlur = 0;
-                    if (drops[i] * 32 > h + 50 && Math.random() > 0.985) drops[i] = 0;
-                    drops[i] += 0.35 + Math.random() * 0.25;
-                }
-                animId = requestAnimationFrame(draw);
-            }
-            draw();
-
-            window.__goldRain = {
-                stop: () => { running = false; if (animId) cancelAnimationFrame(animId);
-                    animId = null; },
-                start: () => { if (!running) { running = true;
-                        draw(); } }
-            };
-        })();
-
-        // ===== SIDEBAR =====
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        const menuBtn = document.getElementById('menuToggle');
-        const closeBtn = document.getElementById('sidebarClose');
-
-        function openSidebar() {
-            sidebar.classList.add('open');
-            overlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
         }
 
-        function closeSidebar() {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
-            document.body.style.overflow = '';
+        initRain();
+        window.addEventListener('resize', initRain);
+
+        function drawMatrixRain() {
+            ctx.fillStyle = 'rgba(8, 12, 26, 0.04)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < drops.length; i++) {
+                const char = chars[Math.floor(Math.random() * chars.length)];
+                const x = i * fontSize;
+                const y = drops[i].y * fontSize;
+
+                ctx.fillStyle = drops[i].color;
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = drops[i].color + '22';
+                ctx.font = `bold ${fontSize}px 'Courier New', monospace`;
+
+                if (y > 0 && y < canvas.height + 50) {
+                    ctx.fillText(char, x, y);
+                }
+                ctx.shadowBlur = 0;
+
+                if (drops[i].y * fontSize > canvas.height + 50 && Math.random() > 0.98) {
+                    drops[i].y = 0;
+                    drops[i].color = matrixColors[Math.floor(Math.random() * matrixColors.length)];
+                }
+                drops[i].y += drops[i].speed + 0.2;
+            }
+
+            requestAnimationFrame(drawMatrixRain);
         }
 
-        menuBtn.addEventListener('click', openSidebar);
-        closeBtn.addEventListener('click', closeSidebar);
-        overlay.addEventListener('click', closeSidebar);
+        drawMatrixRain();
 
-        // ===== SETTINGS MODAL =====
-        const modal = document.getElementById('settingsModal');
-        const closeModalBtn = document.getElementById('closeSettings');
-
-        document.getElementById('sideSettings').addEventListener('click', function(e) {
-            closeSidebar();
-            setTimeout(() => modal.classList.add('active'), 200);
-        });
-
-        closeModalBtn.addEventListener('click', () => modal.classList.remove('active'));
-        modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
-
+        // ============================================
         // ===== THEME =====
+        // ============================================
         function setTheme(theme) {
-            document.body.className = '';
-            document.body.classList.add('theme-' + theme);
-
-            document.querySelectorAll('.theme-selector button').forEach(btn => btn.classList.remove('active'));
-            let btnId = 'theme' + theme.charAt(0).toUpperCase() + theme.slice(1);
-            if (theme === 'igblue') btnId = 'themeIGBlue';
-            const btn = document.getElementById(btnId);
-            if (btn) btn.classList.add('active');
-
             localStorage.setItem('twarvis-theme', theme);
+        }
+        const saved = localStorage.getItem('twarvis-theme') || 'igblue';
+        setTheme(saved);
 
-            const blueCanvas = document.getElementById('matrix-canvas');
-            const creamCanvas = document.getElementById('cream-canvas');
-            const goldCanvas = document.getElementById('gold-canvas');
+        // ============================================
+        // ===== PRIVACY TOGGLE =====
+        // ============================================
+        const privacyRadios = document.querySelectorAll('input[name="privacy"]');
+        const passcodeSection = document.getElementById('passcodeSection');
+        const passcodeInput = document.querySelector('#passcodeSection input');
 
-            if (theme === 'matrix' || theme === 'igblue') {
-                blueCanvas.style.display = 'block';
-                creamCanvas.style.display = 'block';
-                goldCanvas.style.display = 'block';
-                window.__blueRain.start();
-                window.__creamRain.start();
-                window.__goldRain.start();
-                if (theme === 'igblue') {
-                    blueCanvas.style.opacity = '0.4';
-                    creamCanvas.style.opacity = '0.15';
-                    goldCanvas.style.opacity = '0.3';
+        privacyRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'private') {
+                    passcodeSection.classList.add('show');
+                    if (passcodeInput) passcodeInput.required = true;
                 } else {
-                    blueCanvas.style.opacity = '0.5';
-                    creamCanvas.style.opacity = '0.2';
-                    goldCanvas.style.opacity = '0.35';
+                    passcodeSection.classList.remove('show');
+                    if (passcodeInput) { passcodeInput.required = false; passcodeInput.value = ''; }
                 }
-            } else {
-                blueCanvas.style.display = 'none';
-                creamCanvas.style.display = 'none';
-                goldCanvas.style.display = 'none';
-                window.__blueRain.stop();
-                window.__creamRain.stop();
-                window.__goldRain.stop();
-            }
+            });
+        });
+
+        if (passcodeInput) {
+            passcodeInput.addEventListener('input', function() { 
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4); 
+            });
         }
 
-        const savedTheme = localStorage.getItem('twarvis-theme') || 'igblue';
-        setTheme(savedTheme);
+        // ============================================
+        // ===== UNIVERSITY "OTHER" =====
+        // ============================================
+        const uniSelect = document.querySelector('#id_university');
+        const customUniInput = document.getElementById('customUniInput');
+        const customUniText = document.querySelector('#customUniInput input');
+        if (uniSelect) {
+            uniSelect.addEventListener('change', function() {
+                if (this.value === 'Other') {
+                    customUniInput.classList.add('show');
+                    if (customUniText) customUniText.required = true;
+                    if (customUniText) customUniText.focus();
+                } else {
+                    customUniInput.classList.remove('show');
+                    if (customUniText) { customUniText.required = false; customUniText.value = ''; }
+                }
+            });
+        }
 
-        document.getElementById('themeMatrix').addEventListener('click', () => setTheme('matrix'));
-        document.getElementById('themeDark').addEventListener('click', () => setTheme('dark'));
-        document.getElementById('themeIGBlue').addEventListener('click', () => setTheme('igblue'));
+        // ============================================
+        // ===== DRAG & DROP =====
+        // ============================================
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.querySelector('#id_file');
+        const fileList = document.getElementById('fileList');
+        let selectedFile = null;
 
-        document.getElementById('refreshBtn').addEventListener('click', () => location.reload());
+        if (dropZone && fileInput) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+            });
 
-        // ===== BACK TO TOP =====
-        const topBtn = document.getElementById('backToTop');
-        window.addEventListener('scroll', () => {
-            topBtn.classList.toggle('visible', window.pageYOffset > 300);
-        });
-        topBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+            function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
 
-        // ===== INSTANT NAV =====
-        document.querySelectorAll('a:not([target="_blank"])').forEach(link => {
-            const href = link.getAttribute('href');
-            if (href && !href.startsWith('http') && !href.startsWith('https') && href !== '#' && !href.startsWith(
-                    'javascript:')) {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.location.href = href;
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => { dropZone.classList.add('dragover'); });
+            });
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => { dropZone.classList.remove('dragover'); });
+            });
+
+            dropZone.addEventListener('drop', function(e) {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) handleFile(files[0]);
+            });
+            fileInput.addEventListener('change', function() {
+                if (this.files.length > 0) handleFile(this.files[0]);
+            });
+
+            function handleFile(file) {
+                const allowed = ['.pdf','.ppt','.pptx','.doc','.docx','.xls','.xlsx','.txt','.md','.jpg','.jpeg','.png','.gif','.zip','.rar','.csv','.json','.xml'];
+                const ext = '.' + file.name.split('.').pop().toLowerCase();
+                if (!allowed.includes(ext)) { showMessage('File type not allowed: ' + file.name, 'error'); return; }
+                if (file.size > 100 * 1024 * 1024) { showMessage('File too large: ' + file.name + ' (Max 100MB)', 'error'); return; }
+                selectedFile = file;
+                renderFileList();
+            }
+
+            function renderFileList() {
+                fileList.innerHTML = '';
+                if (!selectedFile) return;
+                const file = selectedFile;
+                const div = document.createElement('div');
+                div.className = 'file-item';
+                const ext = file.name.split('.').pop().toLowerCase();
+                const iconMap = { 'pdf':'file-pdf','doc':'file-word','docx':'file-word','ppt':'file-powerpoint','pptx':'file-powerpoint','xls':'file-excel','xlsx':'file-excel','jpg':'file-image','jpeg':'file-image','png':'file-image','gif':'file-image','zip':'file-archive','rar':'file-archive' };
+                const icon = iconMap[ext] || 'file';
+                div.innerHTML = `
+                    <div class="file-icon"><i class="fas fa-${icon}"></i></div>
+                    <div class="file-info"><div class="file-name">${file.name}</div><div class="file-size">${(file.size/1024/1024).toFixed(2)} MB</div></div>
+                    <button class="file-remove"><i class="fas fa-times"></i></button>
+                `;
+                fileList.appendChild(div);
+                div.querySelector('.file-remove').addEventListener('click', function() {
+                    selectedFile = null;
+                    fileInput.value = '';
+                    renderFileList();
                 });
             }
+        }
+
+        // ============================================
+        // ===== MESSAGES =====
+        // ============================================
+        function showMessage(text, type) {
+            const container = document.getElementById('messageContainer');
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+            msg.innerHTML = `<i class="fas ${icon}"></i> ${text}`;
+            container.appendChild(msg);
+            setTimeout(() => { msg.remove(); }, 5000);
+        }
+
+        // ============================================
+        // ===== FORM SUBMIT =====
+        // ============================================
+        const form = document.getElementById('uploadForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const successOverlay = document.getElementById('successOverlay');
+        const closeSuccess = document.getElementById('closeSuccess');
+
+        form.addEventListener('submit', function(e) {
+            // Check if file is selected
+            if (!selectedFile && fileInput && !fileInput.files.length) {
+                e.preventDefault();
+                showMessage('Please select a file to upload', 'error');
+                return;
+            }
+
+            // Check passcode for private files
+            const privateRadio = document.querySelector('input[name="privacy"][value="private"]');
+            if (privateRadio && privateRadio.checked) {
+                const passcode = document.querySelector('#passcodeSection input');
+                if (passcode) {
+                    const val = passcode.value;
+                    if (val.length !== 4 || !/^\d{4}$/.test(val)) {
+                        e.preventDefault();
+                        showMessage('Please enter a valid 4-digit passcode for private file', 'error');
+                        return;
+                    }
+                }
+            }
+
+            // Show uploading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+            submitBtn.disabled = true;
+
+            // The form will submit normally - the success overlay is just for UX
+            // The actual upload happens on the server side
+            // This is just visual feedback
+            setTimeout(() => {
+                // Only show success if form submission was successful
+                // This will be overridden by server response
+            }, 1000);
         });
 
-        console.log('✦ Student Hub — Typing effect, Red upload icon, Light green sidebar icons ✦');
+        // ============================================
+        // ===== KEYBOARD SHORTCUTS =====
+        // ============================================
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (successOverlay.classList.contains('active')) {
+                    successOverlay.classList.remove('active');
+                    submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
+                    submitBtn.disabled = false;
+                }
+            }
+        });
+
+        // ============================================
+        // ===== MENU BUTTON =====
+        // ============================================
+        const menuBtn = document.getElementById('menuToggle');
+        if (menuBtn) {
+            menuBtn.addEventListener('click', function() {
+                // This would open the sidebar if implemented
+                console.log('Menu button clicked - sidebar would open');
+            });
+        }
+
+        console.log('✦ Student Hub — Upload Page (Matching Homepage Theme) ✦');
+        console.log('📸 Scanner button added to header!');
     </script>
 </body>
 </html>
