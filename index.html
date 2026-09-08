@@ -243,6 +243,11 @@
             transform: translateY(-1px);
         }
 
+        /* UPLOAD BUTTON — RED ICON */
+        .nav-pill.primary i {
+            color: #ff1a1a !important;
+            animation: none !important;
+        }
         .nav-pill.primary {
             background: linear-gradient(135deg, #f5e6d3, #ffd700);
             border: none;
@@ -250,17 +255,13 @@
             box-shadow: 0 4px 30px rgba(255, 215, 0, 0.06);
             animation: redGlowBorder 3s ease-in-out infinite;
         }
-        .nav-pill.primary i {
-            color: #080c1a;
-            animation: iconColorShift 2.5s ease-in-out infinite;
-        }
         .nav-pill.primary:hover {
             box-shadow: 0 6px 40px rgba(255, 215, 0, 0.12);
             transform: translateY(-2px);
         }
 
         /* ============================================================
-           SIDEBAR
+           SIDEBAR — ICONS LIGHT GREEN
            ============================================================ */
         .sidebar-overlay {
             position: fixed;
@@ -351,12 +352,13 @@
             transition: 0.3s;
             border-left: 2px solid transparent;
         }
+        /* SIDEBAR ICONS — LIGHT GREEN */
         .sidebar-item i {
             width: 24px;
             font-size: 1.1rem;
-            color: rgba(100, 50, 200, 0.08);
+            color: #66ff99 !important;
             transition: 0.3s;
-            animation: iconColorShift 2.5s ease-in-out infinite;
+            text-shadow: 0 0 20px rgba(102, 255, 153, 0.1);
         }
         .sidebar-item:hover {
             background: rgba(100, 50, 200, 0.03);
@@ -364,7 +366,8 @@
             color: #c8dcff;
         }
         .sidebar-item:hover i {
-            color: #ffd700;
+            color: #00ff88 !important;
+            text-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
         }
         .sidebar-item .badge {
             margin-left: auto;
@@ -395,7 +398,7 @@
         }
 
         /* ============================================================
-           HERO — GREEN → ORANGE text
+           HERO — GREEN → ORANGE text with TYPING EFFECT
            ============================================================ */
         .hero {
             text-align: center;
@@ -408,21 +411,26 @@
             font-weight: 700;
             font-style: italic;
             line-height: 1.2;
-            animation: greenOrangeShift 4s ease-in-out infinite;
+            min-height: 4.5rem;
+            color: #00ff64;
             text-shadow: 0 0 40px rgba(0, 255, 100, 0.04);
         }
-        @keyframes greenOrangeShift {
-            0% {
-                color: #00ff64;
-                text-shadow: 0 0 30px rgba(0, 255, 100, 0.08);
+        .hero h1 .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 2.6rem;
+            background: #00ff64;
+            margin-left: 4px;
+            vertical-align: text-bottom;
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1;
             }
             50% {
-                color: #ff8c00;
-                text-shadow: 0 0 30px rgba(255, 140, 0, 0.08);
-            }
-            100% {
-                color: #00ff64;
-                text-shadow: 0 0 30px rgba(0, 255, 100, 0.08);
+                opacity: 0;
             }
         }
 
@@ -435,6 +443,17 @@
             font-style: italic;
             font-family: 'Playfair Display', serif;
             animation: greenOrangeShift 5s ease-in-out infinite;
+        }
+        @keyframes greenOrangeShift {
+            0% {
+                color: #00ff64;
+            }
+            50% {
+                color: #ff8c00;
+            }
+            100% {
+                color: #00ff64;
+            }
         }
 
         .hero .sub-tag {
@@ -938,7 +957,7 @@
         }
 
         /* ============================================================
-           ICON COLOR SHIFT ANIMATION (all icons)
+           ICON COLOR SHIFT ANIMATION (all icons except upload red)
            ============================================================ */
         @keyframes iconColorShift {
             0% {
@@ -961,6 +980,10 @@
         @media (max-width: 780px) {
             .hero h1 {
                 font-size: 2rem;
+                min-height: 3.5rem;
+            }
+            .hero h1 .cursor {
+                height: 2rem;
             }
             .header-content {
                 flex-direction: row;
@@ -1004,6 +1027,10 @@
         @media (max-width: 480px) {
             .hero h1 {
                 font-size: 1.6rem;
+                min-height: 3rem;
+            }
+            .hero h1 .cursor {
+                height: 1.6rem;
             }
             .links-grid {
                 grid-template-columns: 1fr;
@@ -1077,9 +1104,9 @@
             </div>
         </header>
 
-        <!-- ===== HERO ===== -->
+        <!-- ===== HERO with TYPING EFFECT ===== -->
         <section class="hero">
-            <h1>Welcome to Student Hub</h1>
+            <h1 id="typing-title"><span id="typed-text"></span><span class="cursor"></span></h1>
             <p>Upload, browse, and dominate your studies.</p>
             <span class="sub-tag"><i class="fas fa-bolt"></i> Learn. Share. Grow.</span>
             <div class="powered-wrapper">
@@ -1194,9 +1221,42 @@
     <button class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></button>
 
     <!-- ============================================================
-    JAVASCRIPT — TRIPLE RAIN: BLUE + CREAM + GOLD
+    JAVASCRIPT — TRIPLE RAIN + TYPING EFFECT
     ============================================================ -->
     <script>
+        // ===== TYPING EFFECT =====
+        (function typingEffect() {
+            const text = "Welcome to Student Hub";
+            const typedElement = document.getElementById('typed-text');
+            let index = 0;
+            let isDeleting = false;
+
+            function type() {
+                if (!isDeleting) {
+                    typedElement.textContent = text.substring(0, index + 1);
+                    index++;
+                    if (index === text.length) {
+                        isDeleting = true;
+                        setTimeout(type, 3000);
+                        return;
+                    }
+                    setTimeout(type, 80 + Math.random() * 40);
+                } else {
+                    typedElement.textContent = text.substring(0, index - 1);
+                    index--;
+                    if (index === 0) {
+                        isDeleting = false;
+                        setTimeout(type, 500);
+                        return;
+                    }
+                    setTimeout(type, 40 + Math.random() * 30);
+                }
+            }
+
+            // Start typing after a small delay
+            setTimeout(type, 300);
+        })();
+
         // ===== BLUE RAIN (background layer) =====
         (function initBlueRain() {
             const canvas = document.getElementById('matrix-canvas');
@@ -1455,7 +1515,7 @@
             }
         });
 
-        console.log('✦ Student Hub — Green/Orange text, Gold rain, Silver moving text ✦');
+        console.log('✦ Student Hub — Typing effect, Red upload icon, Light green sidebar icons ✦');
     </script>
 </body>
 </html>
