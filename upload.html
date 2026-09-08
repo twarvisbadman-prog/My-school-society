@@ -1,4 +1,4 @@
-<!-- upload.html - Matching Homepage Dark Blue Instagram Theme with Proper Django Forms -->
+<!-- upload.html - Enhanced with Golden/Silver Success Popup -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -67,7 +67,7 @@
             width: 100%;
         }
 
-        /* ========== HEADER - Instagram Style ========== */
+        /* ========== HEADER ========== */
         .header {
             background: rgba(8, 12, 26, 0.85);
             backdrop-filter: blur(20px);
@@ -193,7 +193,6 @@
             transform: translateY(-2px);
         }
 
-        /* ===== SCANNER BUTTON ===== */
         .scanner-btn {
             display: inline-flex;
             align-items: center;
@@ -293,13 +292,13 @@
         .form-label {
             display: block;
             font-weight: 600;
-            color: rgba(120, 160, 220, 0.3);
+            color: rgba(255, 255, 255, 0.6);
             font-size: 0.9rem;
             margin-bottom: 6px;
             letter-spacing: 0.3px;
         }
         .form-label .required { color: #ff4d6d; margin-left: 4px; }
-        .form-label .optional { color: rgba(120, 160, 220, 0.06); font-weight: 400; font-size: 0.8rem; margin-left: 5px; }
+        .form-label .optional { color: rgba(255, 255, 255, 0.15); font-weight: 400; font-size: 0.8rem; margin-left: 5px; }
 
         .form-input, .form-textarea, .form-select {
             width: 100%;
@@ -309,7 +308,7 @@
             font-size: 1rem;
             transition: all 0.3s;
             font-family: 'Inter', sans-serif;
-            background: rgba(255, 255, 255, 0.015);
+            background: rgba(255, 255, 255, 0.02);
             color: #e8ecf5;
         }
 
@@ -321,7 +320,11 @@
             outline: none;
             border-color: #4f9fff;
             box-shadow: 0 0 0 4px rgba(79, 159, 255, 0.04);
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .form-input::placeholder, .form-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.1);
         }
 
         .form-textarea { resize: vertical; min-height: 100px; }
@@ -335,7 +338,7 @@
         }
         .form-select option { background: #080c1a; color: #e8ecf5; }
 
-        /* ===== RADIO GROUPS ===== */
+        /* ===== RADIO GROUPS - RED & GREEN for File Type ===== */
         .radio-group {
             display: flex;
             gap: 12px;
@@ -345,7 +348,7 @@
 
         .radio-option {
             flex: 1;
-            min-width: 100px;
+            min-width: 120px;
             position: relative;
         }
 
@@ -355,6 +358,7 @@
             width: 100%;
             height: 100%;
             cursor: pointer;
+            z-index: 2;
         }
 
         .radio-option label {
@@ -363,27 +367,84 @@
             justify-content: center;
             gap: 8px;
             padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.015);
-            border: 2px solid rgba(255, 30, 30, 0.04);
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid rgba(255, 255, 255, 0.04);
             border-radius: 16px;
             cursor: pointer;
             transition: all 0.3s;
             font-weight: 600;
-            color: rgba(120, 160, 220, 0.2);
             font-size: 0.9rem;
             margin: 0;
+            color: rgba(255, 255, 255, 0.3);
+            position: relative;
+            z-index: 1;
         }
 
-        .radio-option input[type="radio"]:checked + label {
-            border-color: #4f9fff;
-            background: rgba(79, 159, 255, 0.04);
-            color: #e8ecf5;
-            box-shadow: 0 0 30px rgba(79, 159, 255, 0.03);
+        /* Notes button - RED */
+        .radio-option:first-child label {
+            border-color: rgba(255, 30, 30, 0.15);
+            color: rgba(255, 100, 100, 0.4);
+        }
+        .radio-option:first-child label i {
+            color: #ff4d4d;
+        }
+        .radio-option:first-child input[type="radio"]:checked + label {
+            border-color: #ff1a1a;
+            background: rgba(255, 30, 30, 0.08);
+            color: #ff6b6b;
+            box-shadow: 0 0 30px rgba(255, 30, 30, 0.05);
+        }
+        .radio-option:first-child input[type="radio"]:checked + label i {
+            color: #ff1a1a;
+        }
+        .radio-option:first-child label:hover {
+            border-color: rgba(255, 30, 30, 0.3);
+            background: rgba(255, 30, 30, 0.03);
         }
 
-        .radio-option label i { font-size: 1.1rem; color: #4f9fff; }
-        .radio-option input[type="radio"]:checked + label i { color: #4f9fff; }
-        .radio-option label:hover { border-color: rgba(79, 159, 255, 0.15); background: rgba(79, 159, 255, 0.02); }
+        /* Past Paper button - GREEN */
+        .radio-option:last-child label {
+            border-color: rgba(0, 255, 65, 0.10);
+            color: rgba(0, 255, 100, 0.3);
+        }
+        .radio-option:last-child label i {
+            color: #00cc44;
+        }
+        .radio-option:last-child input[type="radio"]:checked + label {
+            border-color: #00ff41;
+            background: rgba(0, 255, 65, 0.06);
+            color: #00ff64;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.05);
+        }
+        .radio-option:last-child input[type="radio"]:checked + label i {
+            color: #00ff41;
+        }
+        .radio-option:last-child label:hover {
+            border-color: rgba(0, 255, 65, 0.2);
+            background: rgba(0, 255, 65, 0.02);
+        }
+
+        /* Privacy Radio - GOLD */
+        .privacy-group .radio-option label {
+            border-color: rgba(255, 215, 0, 0.08);
+            color: rgba(255, 215, 0, 0.2);
+        }
+        .privacy-group .radio-option label i {
+            color: #ffd700;
+        }
+        .privacy-group .radio-option input[type="radio"]:checked + label {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.04);
+            color: #ffd700;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.03);
+        }
+        .privacy-group .radio-option input[type="radio"]:checked + label i {
+            color: #ffd700;
+        }
+        .privacy-group .radio-option label:hover {
+            border-color: rgba(255, 215, 0, 0.15);
+            background: rgba(255, 215, 0, 0.02);
+        }
 
         /* ===== DROP ZONE ===== */
         .drop-zone {
@@ -419,7 +480,7 @@
         }
 
         .drop-zone h4 { color: #e8ecf5; font-size: 1.1rem; margin-bottom: 4px; }
-        .drop-zone p { color: rgba(120, 160, 220, 0.08); font-size: 0.85rem; }
+        .drop-zone p { color: rgba(255, 255, 255, 0.1); font-size: 0.85rem; }
 
         .drop-zone .browse-btn {
             display: inline-block;
@@ -468,12 +529,12 @@
 
         .file-item .file-info { flex: 1; min-width: 0; }
         .file-item .file-name { color: #e8ecf5; font-weight: 500; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .file-item .file-size { color: rgba(120, 160, 220, 0.08); font-size: 0.7rem; }
+        .file-item .file-size { color: rgba(255, 255, 255, 0.1); font-size: 0.7rem; }
 
         .file-item .file-remove {
             background: none;
             border: none;
-            color: rgba(120, 160, 220, 0.06);
+            color: rgba(255, 255, 255, 0.06);
             font-size: 1rem;
             cursor: pointer;
             transition: 0.2s;
@@ -487,8 +548,8 @@
         .passcode-section {
             display: none;
             animation: slideDown 0.3s ease;
-            background: rgba(79, 159, 255, 0.02);
-            border: 1px solid rgba(79, 159, 255, 0.04);
+            background: rgba(255, 215, 0, 0.02);
+            border: 1px solid rgba(255, 215, 0, 0.04);
             border-radius: 16px;
             padding: 16px 20px;
             margin-top: 10px;
@@ -501,7 +562,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            color: #4f9fff;
+            color: #ffd700;
             font-size: 0.85rem;
             padding: 10px 0;
         }
@@ -519,7 +580,7 @@
             min-width: 150px;
             padding: 12px 16px;
             background: rgba(255, 255, 255, 0.015);
-            border: 1px solid rgba(255, 30, 30, 0.04);
+            border: 1px solid rgba(255, 215, 0, 0.04);
             border-radius: 12px;
             color: #e8ecf5;
             font-size: 1.2rem;
@@ -531,13 +592,13 @@
 
         .passcode-input input:focus {
             outline: none;
-            border-color: #4f9fff;
-            box-shadow: 0 0 0 4px rgba(79, 159, 255, 0.04);
+            border-color: #ffd700;
+            box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.04);
         }
         .passcode-input input::placeholder {
             letter-spacing: 2px;
             font-size: 0.9rem;
-            color: rgba(120, 160, 220, 0.04);
+            color: rgba(255, 255, 255, 0.04);
         }
 
         /* ===== BUTTON ===== */
@@ -596,14 +657,16 @@
             padding: 12px;
             background: rgba(255, 255, 255, 0.015);
             border-radius: 60px;
-            color: rgba(120, 160, 220, 0.06);
+            color: rgba(255, 255, 255, 0.06);
             font-size: 0.75rem;
             border: 1px solid rgba(255, 30, 30, 0.02);
         }
         .allowed-types i { margin-right: 6px; color: #4f9fff; }
         .allowed-types span { color: #4f9fff; font-weight: 600; }
 
-        /* ===== LED SUCCESS SCREEN ===== */
+        /* ============================================================
+           GOLDEN/SILVER SUCCESS POPUP
+           ============================================================ */
         .success-overlay {
             display: none;
             position: fixed;
@@ -624,10 +687,33 @@
 
         .success-content {
             text-align: center;
-            max-width: 600px;
+            max-width: 550px;
             width: 90%;
-            padding: 40px;
+            padding: 50px 40px;
+            background: rgba(255, 215, 0, 0.02);
+            border: 2px solid rgba(255, 215, 0, 0.08);
+            border-radius: 32px;
             animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 0 80px rgba(255, 215, 0, 0.02), inset 0 0 60px rgba(255, 215, 0, 0.01);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .success-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(255, 215, 0, 0.02), transparent 70%);
+            animation: shimmerBg 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmerBg {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
         }
 
         @keyframes scaleIn {
@@ -635,11 +721,13 @@
             to { transform: scale(1); opacity: 1; }
         }
 
+        /* Golden/Silver Trophy */
         .success-content .trophy {
-            font-size: 6rem;
+            font-size: 5.5rem;
             display: block;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             animation: celebrate 1.5s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.1));
         }
 
         @keyframes celebrate {
@@ -648,93 +736,121 @@
             75% { transform: scale(1.1) rotate(5deg); }
         }
 
-        .success-content h1 {
+        /* Golden/Silver Main Message */
+        .success-content .main-message {
             font-family: 'Playfair Display', serif;
-            font-size: 2.8rem;
+            font-size: 2.2rem;
             font-weight: 700;
             font-style: italic;
-            background: linear-gradient(135deg, #ffd700, #ff6b00, #ffd700);
-            background-size: 200% 200%;
+            background: linear-gradient(135deg, #ffd700, #ffec8b, #c0c0c0, #ffd700);
+            background-size: 300% 300%;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: shimmerGold 2s ease-in-out infinite;
-            margin-bottom: 10px;
+            animation: goldSilverMove 3s ease-in-out infinite;
+            margin-bottom: 8px;
+            line-height: 1.3;
         }
 
-        @keyframes shimmerGold {
+        @keyframes goldSilverMove {
             0%, 100% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
         }
 
+        /* Sub message - golden glow */
         .success-content .sub-message {
-            color: rgba(120, 160, 220, 0.15);
+            color: rgba(255, 215, 0, 0.2);
             font-size: 1.1rem;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
             font-style: italic;
             font-family: 'Playfair Display', serif;
+            animation: goldenPulse 2s ease-in-out infinite;
         }
 
+        @keyframes goldenPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Silver sparkle divider */
+        .success-content .sparkle-divider {
+            color: rgba(192, 192, 192, 0.06);
+            font-size: 1.2rem;
+            letter-spacing: 8px;
+            margin: 10px 0;
+        }
+
+        /* Golden/Silver LED text */
         .success-content .led-text {
-            font-size: 1.6rem;
+            font-size: 1.1rem;
             font-weight: 700;
-            color: #00ff41;
-            text-shadow: 0 0 20px rgba(0, 255, 65, 0.15);
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px 30px;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.08);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px 28px;
             border-radius: 12px;
-            border: 1px solid rgba(0, 255, 65, 0.04);
+            border: 1px solid rgba(255, 215, 0, 0.04);
             display: inline-block;
             font-family: 'Courier New', monospace;
-            letter-spacing: 4px;
-            animation: ledPulse 1.5s ease-in-out infinite;
-            margin: 10px 0 20px;
+            letter-spacing: 3px;
+            animation: goldenPulse 2s ease-in-out infinite;
+            margin: 8px 0 16px;
         }
 
-        @keyframes ledPulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 65, 0.04); border-color: rgba(0, 255, 65, 0.04); }
-            50% { box-shadow: 0 0 50px rgba(0, 255, 65, 0.08); border-color: rgba(0, 255, 65, 0.08); }
+        /* Two buttons row */
+        .success-content .btn-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
         }
 
-        .success-content .led-text .cursor {
-            animation: blink 0.8s step-end infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        .success-content .sparkles {
-            font-size: 2rem;
-            display: block;
-            margin-top: 10px;
-            animation: sparkle 2s ease-in-out infinite;
-        }
-
-        @keyframes sparkle {
-            0%, 100% { opacity: 0.3; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.1); }
-        }
-
-        .success-content .close-success {
-            margin-top: 30px;
-            padding: 14px 40px;
-            background: linear-gradient(135deg, #4f9fff, #7b6cf6);
+        .success-content .btn-golden {
+            padding: 14px 34px;
+            background: linear-gradient(135deg, #ffd700, #f0c000);
             border: none;
             border-radius: 60px;
-            color: #fff;
+            color: #080c1a;
             font-weight: 700;
             font-size: 1rem;
             cursor: pointer;
             transition: 0.3s;
             animation: redGlowBorder 3s ease-in-out infinite;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Inter', sans-serif;
         }
 
-        .success-content .close-success:hover {
+        .success-content .btn-golden:hover {
             transform: scale(1.05);
-            box-shadow: 0 10px 30px -10px rgba(79, 159, 255, 0.15);
+            box-shadow: 0 8px 30px -10px rgba(255, 215, 0, 0.3);
+        }
+
+        .success-content .btn-silver {
+            padding: 14px 34px;
+            background: rgba(192, 192, 192, 0.04);
+            border: 1px solid rgba(192, 192, 192, 0.08);
+            border-radius: 60px;
+            color: #c0c0c0;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .success-content .btn-silver:hover {
+            background: rgba(192, 192, 192, 0.04);
+            border-color: rgba(192, 192, 192, 0.15);
+            transform: scale(1.05);
         }
 
         /* ===== MESSAGES ===== */
@@ -747,6 +863,7 @@
             gap: 12px;
             background: rgba(255, 255, 255, 0.015);
             border: 1px solid rgba(255, 30, 30, 0.03);
+            color: #e8ecf5;
         }
         .message.success { border-color: rgba(0, 255, 65, 0.06); color: #00ff64; }
         .message.error { border-color: rgba(255, 45, 45, 0.06); color: #ff6b6b; }
@@ -761,8 +878,10 @@
             .drop-zone { padding: 30px 15px; }
             .passcode-input { flex-direction: column; }
             .passcode-input input { width: 100%; min-width: unset; }
-            .success-content h1 { font-size: 2rem; }
-            .success-content .led-text { font-size: 1.2rem; padding: 12px 20px; }
+            .success-content { padding: 30px 20px; }
+            .success-content .main-message { font-size: 1.6rem; }
+            .success-content .btn-row { flex-direction: column; align-items: center; }
+            .success-content .btn-golden, .success-content .btn-silver { width: 100%; justify-content: center; }
             .header-content { flex-direction: row; padding: 4px 16px; }
             .nav-links .nav-pill span { display: none; }
             .nav-pill { padding: 8px 12px; }
@@ -780,6 +899,8 @@
             .nav-pill { padding: 6px 10px; font-size: 0.7rem; }
             .scanner-btn { padding: 6px 10px; font-size: 0.7rem; }
             .btn-submit { font-size: 0.95rem; padding: 14px; }
+            .success-content .main-message { font-size: 1.3rem; }
+            .success-content .led-text { font-size: 0.9rem; padding: 10px 16px; }
         }
 
         ::-webkit-scrollbar {
@@ -861,18 +982,24 @@
                             {{ form.file }}
                         </div>
                         <div class="file-list" id="fileList"></div>
-                        <small style="display:block;margin-top:6px;color:rgba(120,160,220,0.06);font-size:0.7rem;">
+                        <small style="display:block;margin-top:6px;color:rgba(255,255,255,0.06);font-size:0.7rem;">
                             <i class="fas fa-info-circle"></i> Max: 100MB | PDF, PPT, DOC, XLS, TXT, JPG, PNG, ZIP
                         </small>
                     </div>
 
-                    <!-- 2. File Type -->
+                    <!-- 2. File Type - RED & GREEN -->
                     <div class="form-group">
                         <label class="form-label"><i class="fas fa-tag"></i> File Type <span class="required">*</span></label>
                         <div class="radio-group">
-                            <div class="radio-option">
-                                {{ form.file_type }}
-                            </div>
+                            {% for radio in form.file_type %}
+                                <div class="radio-option">
+                                    {{ radio.tag }}
+                                    <label for="{{ radio.id_for_label }}">
+                                        <i class="fas {% if radio.choice_label == 'Notes' %}fa-sticky-note{% else %}fa-file-alt{% endif %}"></i>
+                                        {{ radio.choice_label }}
+                                    </label>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -894,15 +1021,21 @@
                         {{ form.description }}
                     </div>
 
-                    <!-- 6. Privacy -->
+                    <!-- 6. Privacy - GOLD -->
                     <div class="form-group">
                         <label class="form-label"><i class="fas fa-lock"></i> Privacy Setting <span class="required">*</span></label>
-                        <div class="radio-group">
-                            <div class="radio-option">
-                                {{ form.privacy }}
-                            </div>
+                        <div class="radio-group privacy-group">
+                            {% for radio in form.privacy %}
+                                <div class="radio-option">
+                                    {{ radio.tag }}
+                                    <label for="{{ radio.id_for_label }}">
+                                        <i class="fas {% if radio.choice_label == 'Public' %}fa-globe{% else %}fa-lock{% endif %}"></i>
+                                        {{ radio.choice_label }}
+                                    </label>
+                                </div>
+                            {% endfor %}
                         </div>
-                        <small style="display:block;margin-top:4px;color:rgba(120,160,220,0.06);font-size:0.7rem;">
+                        <small style="display:block;margin-top:4px;color:rgba(255,255,255,0.06);font-size:0.7rem;">
                             <i class="fas fa-info-circle"></i> Private files require a 4-digit passcode to access
                         </small>
                     </div>
@@ -917,7 +1050,7 @@
                             <label class="form-label"><i class="fas fa-key"></i> Set 4-Digit Passcode <span class="required">*</span></label>
                             <div class="passcode-input">
                                 {{ form.passcode }}
-                                <span style="color:rgba(120,160,220,0.06);font-size:0.8rem;">(4 numbers only)</span>
+                                <span style="color:rgba(255,255,255,0.06);font-size:0.8rem;">(4 numbers only)</span>
                             </div>
                         </div>
                     </div>
@@ -931,7 +1064,7 @@
                                 {{ form.custom_university }}
                             </div>
                         </div>
-                        <small style="display:block;margin-top:4px;color:rgba(120,160,220,0.06);font-size:0.7rem;">
+                        <small style="display:block;margin-top:4px;color:rgba(255,255,255,0.06);font-size:0.7rem;">
                             <i class="fas fa-info-circle"></i> Select from list or choose "Other" to type custom name
                         </small>
                     </div>
@@ -948,26 +1081,25 @@
         </div>
     </div>
 
-    <!-- ===== LED SUCCESS OVERLAY ===== -->
+    <!-- ===== GOLDEN/SILVER SUCCESS POPUP ===== -->
     <div class="success-overlay" id="successOverlay">
         <div class="success-content">
             <span class="trophy">🏆</span>
-            <h1>CONGRATULATIONS!</h1>
-            <p class="sub-message">You have just shared great material</p>
+            <div class="main-message">✨ Sharing is Caring! ✨</div>
+            <div class="sub-message">Keep it up! Welcome!</div>
+            <div class="sparkle-divider">✦ ✧ ✦ ✧ ✦</div>
             <div class="led-text">
                 <span id="ledMessage">✦ UPLOAD SUCCESSFUL ✦</span>
                 <span class="cursor">█</span>
             </div>
-            <p style="color:rgba(120,160,220,0.06); font-size:0.9rem; margin-top:5px;">
-                <i class="fas fa-check-circle" style="color:#00ff41;"></i> File uploaded successfully
-            </p>
-            <span class="sparkles">✦ ✧ ✦ ✧ ✦</span>
-            <p style="color:rgba(120,160,220,0.02); font-size:0.7rem; letter-spacing:4px; margin-top:10px;">
-                WELCOME TO THE FUTURE OF LEARNING
-            </p>
-            <button class="close-success" id="closeSuccess">
-                <i class="fas fa-arrow-right"></i> Continue Browsing
-            </button>
+            <div class="btn-row">
+                <a href="/browse/" class="btn-golden">
+                    <i class="fas fa-eye"></i> See Your Notes
+                </a>
+                <button class="btn-silver" id="closeSuccess">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
         </div>
     </div>
 
@@ -1166,7 +1298,7 @@
         }
 
         // ============================================
-        // ===== FORM SUBMIT =====
+        // ===== FORM SUBMIT - SHOW GOLDEN POPUP =====
         // ============================================
         const form = document.getElementById('uploadForm');
         const submitBtn = document.getElementById('submitBtn');
@@ -1199,13 +1331,42 @@
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
             submitBtn.disabled = true;
 
-            // The form will submit normally - the success overlay is just for UX
-            // The actual upload happens on the server side
-            // This is just visual feedback
+            // The form will submit normally - show success popup after a delay
+            // This simulates successful upload for UX
             setTimeout(() => {
-                // Only show success if form submission was successful
-                // This will be overridden by server response
-            }, 1000);
+                // Show golden/silver success popup
+                successOverlay.classList.add('active');
+                
+                // Animate LED message
+                const ledMsg = document.getElementById('ledMessage');
+                const messages = ['✦ UPLOAD SUCCESSFUL ✦', '✦ SHARING IS CARING ✦', '✦ KNOWLEDGE IS POWER ✦', '✦ YOU ROCK! ✦'];
+                let idx = 0;
+                const interval = setInterval(() => {
+                    idx = (idx + 1) % messages.length;
+                    ledMsg.textContent = messages[idx];
+                }, 1200);
+                
+                // Reset after close
+                closeSuccess.addEventListener('click', function() {
+                    clearInterval(interval);
+                    successOverlay.classList.remove('active');
+                    submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
+                    submitBtn.disabled = false;
+                    // Reset form
+                    form.reset();
+                    selectedFile = null;
+                    fileList.innerHTML = '';
+                });
+            }, 1500);
+        });
+
+        // Close on click outside
+        successOverlay.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+                submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
+                submitBtn.disabled = false;
+            }
         });
 
         // ============================================
@@ -1227,12 +1388,11 @@
         const menuBtn = document.getElementById('menuToggle');
         if (menuBtn) {
             menuBtn.addEventListener('click', function() {
-                // This would open the sidebar if implemented
                 console.log('Menu button clicked - sidebar would open');
             });
         }
 
-        console.log('✦ Student Hub — Upload Page (Matching Homepage Theme) ✦');
+        console.log('✦ Student Hub — Upload Page with Golden/Silver Success Popup ✦');
         console.log('📸 Scanner button added to header!');
     </script>
 </body>
