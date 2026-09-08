@@ -1,4 +1,4 @@
-<!-- upload.html - Matching Homepage Dark Blue Instagram Theme -->
+<!-- upload.html - Matching Homepage Dark Blue Instagram Theme with Proper Django Forms -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +18,7 @@
             min-height: 100vh;
             overflow-x: hidden;
         }
-<h3>Trust in God Always <\h3>
+
         /* ===== BACKGROUND LIGHTNING EFFECT ===== */
         body::before {
             content: '';
@@ -193,7 +193,7 @@
             transform: translateY(-2px);
         }
 
-        /* ===== SCANNER BUTTON - MATCHES HOMEPAGE ===== */
+        /* ===== SCANNER BUTTON ===== */
         .scanner-btn {
             display: inline-flex;
             align-items: center;
@@ -437,16 +437,6 @@
         .drop-zone:hover .browse-btn {
             background: rgba(79, 159, 255, 0.08);
             border-color: #4f9fff;
-        }
-
-        .drop-zone input[type="file"] {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
         }
 
         /* ===== FILE LIST ===== */
@@ -810,7 +800,7 @@
     <canvas id="rain-canvas"></canvas>
 
     <div class="glass-overlay">
-        <!-- Header with Scanner Button - Matches Homepage -->
+        <!-- Header with Scanner Button -->
         <div class="header">
             <div class="header-content">
                 <div class="header-left">
@@ -829,7 +819,6 @@
                     <a href="/browse/" class="nav-pill">
                         <i class="fas fa-eye"></i> <span>Browse</span>
                     </a>
-                    <!-- SCANNER BUTTON - MATCHES HOMEPAGE STYLE -->
                     <a href="/scanner/" class="scanner-btn">
                         <i class="fas fa-qrcode"></i> <span>Scan</span>
                     </a>
@@ -882,12 +871,7 @@
                         <label class="form-label"><i class="fas fa-tag"></i> File Type <span class="required">*</span></label>
                         <div class="radio-group">
                             <div class="radio-option">
-                                <input type="radio" name="file_type" value="notes" id="typeNotes" checked>
-                                <label for="typeNotes"><i class="fas fa-sticky-note"></i> Notes</label>
-                            </div>
-                            <div class="radio-option">
-                                <input type="radio" name="file_type" value="pastpaper" id="typePastPaper">
-                                <label for="typePastPaper"><i class="fas fa-file-alt"></i> Past Paper</label>
+                                {{ form.file_type }}
                             </div>
                         </div>
                     </div>
@@ -915,12 +899,7 @@
                         <label class="form-label"><i class="fas fa-lock"></i> Privacy Setting <span class="required">*</span></label>
                         <div class="radio-group">
                             <div class="radio-option">
-                                <input type="radio" name="privacy" value="public" id="privacyPublic" checked>
-                                <label for="privacyPublic"><i class="fas fa-globe"></i> Public</label>
-                            </div>
-                            <div class="radio-option">
-                                <input type="radio" name="privacy" value="private" id="privacyPrivate">
-                                <label for="privacyPrivate"><i class="fas fa-lock"></i> Private</label>
+                                {{ form.privacy }}
                             </div>
                         </div>
                         <small style="display:block;margin-top:4px;color:rgba(120,160,220,0.06);font-size:0.7rem;">
@@ -1070,19 +1049,26 @@
         // ============================================
         // ===== PRIVACY TOGGLE =====
         // ============================================
-        const privacyPublic = document.getElementById('privacyPublic');
-        const privacyPrivate = document.getElementById('privacyPrivate');
+        const privacyRadios = document.querySelectorAll('input[name="privacy"]');
         const passcodeSection = document.getElementById('passcodeSection');
         const passcodeInput = document.querySelector('#passcodeSection input');
 
-        privacyPrivate.addEventListener('change', function() {
-            if (this.checked) { passcodeSection.classList.add('show'); if (passcodeInput) passcodeInput.required = true; }
+        privacyRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'private') {
+                    passcodeSection.classList.add('show');
+                    if (passcodeInput) passcodeInput.required = true;
+                } else {
+                    passcodeSection.classList.remove('show');
+                    if (passcodeInput) { passcodeInput.required = false; passcodeInput.value = ''; }
+                }
+            });
         });
-        privacyPublic.addEventListener('change', function() {
-            if (this.checked) { passcodeSection.classList.remove('show'); if (passcodeInput) { passcodeInput.required = false; passcodeInput.value = ''; } }
-        });
+
         if (passcodeInput) {
-            passcodeInput.addEventListener('input', function() { this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4); });
+            passcodeInput.addEventListener('input', function() { 
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4); 
+            });
         }
 
         // ============================================
@@ -1180,7 +1166,7 @@
         }
 
         // ============================================
-        // ===== FORM SUBMIT WITH LED SUCCESS =====
+        // ===== FORM SUBMIT =====
         // ============================================
         const form = document.getElementById('uploadForm');
         const submitBtn = document.getElementById('submitBtn');
@@ -1188,12 +1174,16 @@
         const closeSuccess = document.getElementById('closeSuccess');
 
         form.addEventListener('submit', function(e) {
+            // Check if file is selected
             if (!selectedFile && fileInput && !fileInput.files.length) {
                 e.preventDefault();
                 showMessage('Please select a file to upload', 'error');
                 return;
             }
-            if (privacyPrivate && privacyPrivate.checked) {
+
+            // Check passcode for private files
+            const privateRadio = document.querySelector('input[name="privacy"][value="private"]');
+            if (privateRadio && privateRadio.checked) {
                 const passcode = document.querySelector('#passcodeSection input');
                 if (passcode) {
                     const val = passcode.value;
@@ -1204,39 +1194,18 @@
                     }
                 }
             }
-            
+
+            // Show uploading state
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
             submitBtn.disabled = true;
 
+            // The form will submit normally - the success overlay is just for UX
+            // The actual upload happens on the server side
+            // This is just visual feedback
             setTimeout(() => {
-                successOverlay.classList.add('active');
-                
-                const ledMsg = document.getElementById('ledMessage');
-                const messages = ['✦ UPLOAD SUCCESSFUL ✦', '✦ SHARING IS CARING ✦', '✦ KNOWLEDGE IS POWER ✦', '✦ YOU ROCK! ✦'];
-                let idx = 0;
-                const interval = setInterval(() => {
-                    idx = (idx + 1) % messages.length;
-                    ledMsg.textContent = messages[idx];
-                }, 1200);
-                
-                closeSuccess.addEventListener('click', function() {
-                    clearInterval(interval);
-                    successOverlay.classList.remove('active');
-                    submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
-                    submitBtn.disabled = false;
-                    form.reset();
-                    selectedFile = null;
-                    fileList.innerHTML = '';
-                });
-            }, 1500);
-        });
-
-        successOverlay.addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-                submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
-                submitBtn.disabled = false;
-            }
+                // Only show success if form submission was successful
+                // This will be overridden by server response
+            }, 1000);
         });
 
         // ============================================
@@ -1253,12 +1222,12 @@
         });
 
         // ============================================
-        // ===== MENU BUTTON (for sidebar) =====
+        // ===== MENU BUTTON =====
         // ============================================
         const menuBtn = document.getElementById('menuToggle');
         if (menuBtn) {
             menuBtn.addEventListener('click', function() {
-                // Simple alert - can be connected to sidebar if needed
+                // This would open the sidebar if implemented
                 console.log('Menu button clicked - sidebar would open');
             });
         }
