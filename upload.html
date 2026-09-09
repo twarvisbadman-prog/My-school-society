@@ -1,935 +1,1159 @@
-<!-- upload.html - Enhanced with Golden/Silver Success Popup -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Upload | Student Hub</title>
+    <title>Upload | Student Hub ✦</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #080c1a;
-            color: #e8ecf5;
-            min-height: 100vh;
-            overflow-x: hidden;
+        /* ============================================================
+           DARK CHOCOLATE GLASSY THEME — WITH BLUE NAV & GOLD ICONS
+           ============================================================ */
+        :root{
+            --board:#0a0f0d;
+            --board-deep:#060a08;
+            --dark-chocolate:#2c1810;
+            --dark-chocolate-glass:rgba(44,24,16,0.55);
+            --paper:#f5efdd;
+            --paper-line:#e3d6b3;
+            --ink:#241d13;
+            --ink-soft:#5b5238;
+            --chalk:#f2ede0;
+            --chalk-dim:rgba(242,237,224,.7);
+            --chalk-faint:rgba(242,237,224,.14);
+            
+            --orange:#f97316;
+            --orange-bright:#fb923c;
+            --orange-glow:rgba(249,115,22,.25);
+            --orange-dim:rgba(249,115,22,.10);
+            
+            /* BLUE for navigation */
+            --blue:#3b82f6;
+            --blue-bright:#60a5fa;
+            --blue-glow:rgba(59,130,246,.30);
+            --blue-dim:rgba(59,130,246,.15);
+            
+            /* GOLD for ALL icons */
+            --gold:#ffd700;
+            --gold-bright:#ffed4a;
+            --gold-glow:rgba(255,215,0,.30);
+            --gold-dim:rgba(255,215,0,.15);
+            
+            --red:#ef4444;
+            --red-bright:#f87171;
+            --red-glow:rgba(239,68,68,.30);
+            --red-dim:rgba(239,68,68,.15);
+            
+            --green:#22c55e;
+            --green-bright:#4ade80;
+            --green-glow:rgba(34,197,94,.25);
+            --green-dim:rgba(34,197,94,.10);
+            
+            --silver:#c0c0c0;
+            --cream:#f5efdd;
+            --thread:rgba(192,192,192,.15);
+            --radius-card:16px;
         }
 
-        /* ===== BACKGROUND LIGHTNING EFFECT ===== */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            background:
-                radial-gradient(ellipse at 20% 50%, rgba(100, 50, 200, 0.04) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 20%, rgba(50, 80, 255, 0.03) 0%, transparent 50%),
-                radial-gradient(ellipse at 40% 80%, rgba(150, 50, 255, 0.02) 0%, transparent 40%);
-            pointer-events: none;
-            animation: lightningPulse 8s ease-in-out infinite;
+        *{margin:0;padding:0;box-sizing:border-box;}
+
+        html{
+            font-size:16px;
+            scroll-behavior:smooth;
         }
 
-        @keyframes lightningPulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
+        body{
+            font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+            background:var(--board);
+            color:var(--chalk);
+            min-height:100vh;
+            position:relative;
+            overflow-x:hidden;
         }
-
-        /* ===== CANVAS — BLUE RAIN ===== */
-        #rain-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-            opacity: 0.5;
-            background: transparent;
-        }
-
-        /* ===== GLOBAL RED GLOW BORDER ===== */
-        @keyframes redGlowBorder {
-            0%, 100% { border-color: rgba(255, 30, 30, 0.15); box-shadow: 0 0 15px rgba(255, 30, 30, 0.02), inset 0 0 15px rgba(255, 30, 30, 0.01); }
-            50% { border-color: rgba(255, 30, 30, 0.4); box-shadow: 0 0 30px rgba(255, 30, 30, 0.06), inset 0 0 30px rgba(255, 30, 30, 0.02); }
-        }
-
-        .glass-overlay {
-            position: relative;
-            z-index: 2;
-            min-height: 100vh;
-            width: 100%;
-        }
-
-        /* ========== HEADER ========== */
-        .header {
-            background: rgba(8, 12, 26, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 30, 30, 0.06);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            padding: 8px 0;
-            animation: redGlowBorder 5s ease-in-out infinite;
-        }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 4px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .menu-btn {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 30, 30, 0.06);
-            border-radius: 50%;
-            width: 42px;
-            height: 42px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            color: #7a8bb5;
-            cursor: pointer;
-            transition: 0.3s;
-            animation: redGlowBorder 3s ease-in-out infinite;
-        }
-        .menu-btn:hover {
-            background: rgba(100, 50, 200, 0.06);
-            color: #a8c8ff;
-            transform: scale(1.04);
-        }
-
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.6rem;
-            font-weight: 700;
-            font-style: italic;
-            background: linear-gradient(135deg, #4f9fff, #7b6cf6, #4f9fff);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: logoShimmer 5s ease-in-out infinite;
-            letter-spacing: -0.3px;
-        }
-        @keyframes logoShimmer {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        .logo-sub {
-            display: block;
-            font-family: 'Playfair Display', serif;
-            font-size: 0.5rem;
-            font-style: italic;
-            letter-spacing: 2px;
-            color: rgba(100, 150, 255, 0.08);
-            margin-top: -3px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .nav-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 18px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 30, 30, 0.04);
-            border-radius: 40px;
-            color: #7a8bb5;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: 0.3s;
-            animation: redGlowBorder 3.5s ease-in-out infinite;
-        }
-        .nav-pill i {
-            font-size: 0.85rem;
-            color: #4f9fff;
-        }
-        .nav-pill:hover {
-            background: rgba(100, 150, 255, 0.04);
-            border-color: rgba(100, 150, 255, 0.08);
-            color: #c8dcff;
-            transform: translateY(-1px);
-        }
-
-        .nav-pill.primary {
-            background: linear-gradient(135deg, #4f9fff, #7b6cf6);
-            border: none;
-            color: #fff;
-            box-shadow: 0 4px 20px rgba(79, 159, 255, 0.06);
-        }
-        .nav-pill.primary i {
-            color: #fff;
-        }
-        .nav-pill.primary:hover {
-            box-shadow: 0 6px 30px rgba(79, 159, 255, 0.12);
-            transform: translateY(-2px);
-        }
-
-        .scanner-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 18px;
-            background: linear-gradient(135deg, #4f9fff, #7b6cf6);
-            border: none;
-            border-radius: 40px;
-            color: #fff;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: 0.3s;
-            box-shadow: 0 4px 20px rgba(79, 159, 255, 0.06);
-            animation: redGlowBorder 3s ease-in-out infinite;
-        }
-        .scanner-btn i {
-            font-size: 0.85rem;
-            color: #fff;
-        }
-        .scanner-btn:hover {
-            box-shadow: 0 6px 30px rgba(79, 159, 255, 0.15);
-            transform: translateY(-2px) scale(1.02);
-        }
-
-        /* ========== UPLOAD ========== */
-        .upload-container {
-            max-width: 700px;
-            margin: 30px auto;
-            padding: 0 20px 100px;
-            position: relative;
-            z-index: 3;
-        }
-
-        .upload-card {
-            background: rgba(255, 255, 255, 0.015);
-            border: 1px solid rgba(255, 30, 30, 0.06);
-            border-radius: 28px;
-            padding: 40px;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            animation: redGlowBorder 4s ease-in-out infinite;
-        }
-
-        .upload-card:hover {
-            background: rgba(255, 255, 255, 0.02);
-            border-color: rgba(255, 30, 30, 0.08);
-        }
-
-        .upload-header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
-        .upload-header .icon {
-            font-size: 3.5rem;
-            background: linear-gradient(135deg, #4f9fff, #7b6cf6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            display: inline-block;
-            animation: float 3s ease-in-out infinite;
-            text-shadow: 0 0 40px rgba(79, 159, 255, 0.04);
-        }
-
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-
-        .upload-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            font-style: italic;
-            color: #e8ecf5;
-            margin-top: 8px;
-            animation: greenOrangeShift 4s ease-in-out infinite;
-        }
-
-        @keyframes greenOrangeShift {
-            0% { color: #00ff64; }
-            50% { color: #ff8c00; }
-            100% { color: #00ff64; }
-        }
-
-        .upload-header p {
-            color: rgba(120, 160, 220, 0.12);
-            font-size: 0.95rem;
-            margin-top: 4px;
-            font-style: italic;
-            font-family: 'Playfair Display', serif;
-        }
-
-        /* ===== FORM ===== */
-        .form-group { margin-bottom: 22px; }
-        .form-label {
-            display: block;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
-            margin-bottom: 6px;
-            letter-spacing: 0.3px;
-        }
-        .form-label .required { color: #ff4d6d; margin-left: 4px; }
-        .form-label .optional { color: rgba(255, 255, 255, 0.15); font-weight: 400; font-size: 0.8rem; margin-left: 5px; }
-
-        .form-input, .form-textarea, .form-select {
-            width: 100%;
-            padding: 14px 18px;
-            border: 1px solid rgba(255, 30, 30, 0.04);
-            border-radius: 16px;
-            font-size: 1rem;
-            transition: all 0.3s;
-            font-family: 'Inter', sans-serif;
-            background: rgba(255, 255, 255, 0.02);
-            color: #e8ecf5;
-        }
-
-        .form-input:hover, .form-textarea:hover, .form-select:hover {
-            border-color: rgba(255, 30, 30, 0.08);
-        }
-
-        .form-input:focus, .form-textarea:focus, .form-select:focus {
-            outline: none;
-            border-color: #4f9fff;
-            box-shadow: 0 0 0 4px rgba(79, 159, 255, 0.04);
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .form-input::placeholder, .form-textarea::placeholder {
-            color: rgba(255, 255, 255, 0.1);
-        }
-
-        .form-textarea { resize: vertical; min-height: 100px; }
-        .form-select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234f9fff' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 18px center;
-            padding-right: 45px;
-            cursor: pointer;
-        }
-        .form-select option { background: #080c1a; color: #e8ecf5; }
-
-        /* ===== RADIO GROUPS - RED & GREEN for File Type ===== */
-        .radio-group {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 4px;
-        }
-
-        .radio-option {
-            flex: 1;
-            min-width: 120px;
-            position: relative;
-        }
-
-        .radio-option input[type="radio"] {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-            z-index: 2;
-        }
-
-        .radio-option label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 2px solid rgba(255, 255, 255, 0.04);
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin: 0;
-            color: rgba(255, 255, 255, 0.3);
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Notes button - RED */
-        .radio-option:first-child label {
-            border-color: rgba(255, 30, 30, 0.15);
-            color: rgba(255, 100, 100, 0.4);
-        }
-        .radio-option:first-child label i {
-            color: #ff4d4d;
-        }
-        .radio-option:first-child input[type="radio"]:checked + label {
-            border-color: #ff1a1a;
-            background: rgba(255, 30, 30, 0.08);
-            color: #ff6b6b;
-            box-shadow: 0 0 30px rgba(255, 30, 30, 0.05);
-        }
-        .radio-option:first-child input[type="radio"]:checked + label i {
-            color: #ff1a1a;
-        }
-        .radio-option:first-child label:hover {
-            border-color: rgba(255, 30, 30, 0.3);
-            background: rgba(255, 30, 30, 0.03);
-        }
-
-        /* Past Paper button - GREEN */
-        .radio-option:last-child label {
-            border-color: rgba(0, 255, 65, 0.10);
-            color: rgba(0, 255, 100, 0.3);
-        }
-        .radio-option:last-child label i {
-            color: #00cc44;
-        }
-        .radio-option:last-child input[type="radio"]:checked + label {
-            border-color: #00ff41;
-            background: rgba(0, 255, 65, 0.06);
-            color: #00ff64;
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.05);
-        }
-        .radio-option:last-child input[type="radio"]:checked + label i {
-            color: #00ff41;
-        }
-        .radio-option:last-child label:hover {
-            border-color: rgba(0, 255, 65, 0.2);
-            background: rgba(0, 255, 65, 0.02);
-        }
-
-        /* Privacy Radio - GOLD */
-        .privacy-group .radio-option label {
-            border-color: rgba(255, 215, 0, 0.08);
-            color: rgba(255, 215, 0, 0.2);
-        }
-        .privacy-group .radio-option label i {
-            color: #ffd700;
-        }
-        .privacy-group .radio-option input[type="radio"]:checked + label {
-            border-color: #ffd700;
-            background: rgba(255, 215, 0, 0.04);
-            color: #ffd700;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.03);
-        }
-        .privacy-group .radio-option input[type="radio"]:checked + label i {
-            color: #ffd700;
-        }
-        .privacy-group .radio-option label:hover {
-            border-color: rgba(255, 215, 0, 0.15);
-            background: rgba(255, 215, 0, 0.02);
-        }
-
-        /* ===== DROP ZONE ===== */
-        .drop-zone {
-            border: 2px dashed rgba(255, 30, 30, 0.06);
-            border-radius: 20px;
-            padding: 40px 20px;
-            text-align: center;
-            transition: all 0.3s;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .drop-zone:hover {
-            border-color: rgba(79, 159, 255, 0.15);
-            background: rgba(79, 159, 255, 0.02);
-        }
-
-        .drop-zone.dragover {
-            border-color: #4f9fff;
-            background: rgba(79, 159, 255, 0.04);
-            transform: scale(1.01);
-            box-shadow: 0 0 50px rgba(79, 159, 255, 0.03);
-        }
-
-        .drop-zone i {
-            font-size: 3rem;
-            background: linear-gradient(135deg, #4f9fff, #7b6cf6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .drop-zone h4 { color: #e8ecf5; font-size: 1.1rem; margin-bottom: 4px; }
-        .drop-zone p { color: rgba(255, 255, 255, 0.1); font-size: 0.85rem; }
-
-        .drop-zone .browse-btn {
-            display: inline-block;
-            margin-top: 12px;
-            padding: 8px 24px;
-            background: rgba(79, 159, 255, 0.04);
-            border: 1px solid rgba(79, 159, 255, 0.06);
-            border-radius: 60px;
-            color: #4f9fff;
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: 0.3s;
-        }
-
-        .drop-zone:hover .browse-btn {
-            background: rgba(79, 159, 255, 0.08);
-            border-color: #4f9fff;
-        }
-
-        /* ===== FILE LIST ===== */
-        .file-list { margin-top: 12px; }
-        .file-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            background: rgba(255, 255, 255, 0.015);
-            border: 1px solid rgba(255, 30, 30, 0.03);
-            border-radius: 12px;
-            margin-bottom: 6px;
-            animation: slideIn 0.3s ease;
-        }
-
-        .file-item .file-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            flex-shrink: 0;
-            background: rgba(79, 159, 255, 0.04);
-            color: #4f9fff;
-        }
-
-        .file-item .file-info { flex: 1; min-width: 0; }
-        .file-item .file-name { color: #e8ecf5; font-weight: 500; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .file-item .file-size { color: rgba(255, 255, 255, 0.1); font-size: 0.7rem; }
-
-        .file-item .file-remove {
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.06);
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.2s;
-            padding: 4px;
-        }
-        .file-item .file-remove:hover { color: #ff4d6d; }
-
-        @keyframes slideIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
-
-        /* ===== PASSCODE ===== */
-        .passcode-section {
-            display: none;
-            animation: slideDown 0.3s ease;
-            background: rgba(255, 215, 0, 0.02);
-            border: 1px solid rgba(255, 215, 0, 0.04);
-            border-radius: 16px;
-            padding: 16px 20px;
-            margin-top: 10px;
-        }
-        .passcode-section.show { display: block; }
-
-        @keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
-
-        .passcode-section .warning {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #ffd700;
-            font-size: 0.85rem;
-            padding: 10px 0;
-        }
-        .passcode-section .warning i { font-size: 1.2rem; }
-
-        .passcode-input {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .passcode-input input {
-            flex: 1;
-            min-width: 150px;
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.015);
-            border: 1px solid rgba(255, 215, 0, 0.04);
-            border-radius: 12px;
-            color: #e8ecf5;
-            font-size: 1.2rem;
-            font-family: monospace;
-            letter-spacing: 8px;
-            text-align: center;
-            transition: 0.3s;
-        }
-
-        .passcode-input input:focus {
-            outline: none;
-            border-color: #ffd700;
-            box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.04);
-        }
-        .passcode-input input::placeholder {
-            letter-spacing: 2px;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.04);
-        }
-
-        /* ===== BUTTON ===== */
-        .btn-submit {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #4f9fff, #7b6cf6);
-            border: none;
-            border-radius: 60px;
-            color: #fff;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 8px;
-            position: relative;
-            overflow: hidden;
-            animation: redGlowBorder 3s ease-in-out infinite;
-        }
-
-        .btn-submit::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
-            transform: rotate(45deg) translateX(-100%);
-            transition: transform 0.6s;
-        }
-
-        .btn-submit:hover::before {
-            transform: rotate(45deg) translateX(100%);
-        }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px -10px rgba(79, 159, 255, 0.15);
-        }
-
-        .btn-submit:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* ===== CUSTOM UNIVERSITY ===== */
-        .custom-uni-input { display: none; margin-top: 10px; }
-        .custom-uni-input.show { display: block; }
-
-        /* ===== ALLOWED TYPES ===== */
-        .allowed-types {
-            text-align: center;
-            margin-top: 20px;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.015);
-            border-radius: 60px;
-            color: rgba(255, 255, 255, 0.06);
-            font-size: 0.75rem;
-            border: 1px solid rgba(255, 30, 30, 0.02);
-        }
-        .allowed-types i { margin-right: 6px; color: #4f9fff; }
-        .allowed-types span { color: #4f9fff; font-weight: 600; }
 
         /* ============================================================
-           GOLDEN/SILVER SUCCESS POPUP
+           HEAVY RAIN + LIGHTNING CANVAS
            ============================================================ */
-        .success-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 2000;
-            background: rgba(8, 12, 26, 0.92);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 0.5s ease;
+        #rain-canvas{
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            z-index:0;
+            pointer-events:none;
+            opacity:0.85;
         }
 
-        .success-overlay.active { display: flex; }
-
-        .success-content {
-            text-align: center;
-            max-width: 550px;
-            width: 90%;
-            padding: 50px 40px;
-            background: rgba(255, 215, 0, 0.02);
-            border: 2px solid rgba(255, 215, 0, 0.08);
-            border-radius: 32px;
-            animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 0 80px rgba(255, 215, 0, 0.02), inset 0 0 60px rgba(255, 215, 0, 0.01);
-            position: relative;
-            overflow: hidden;
+        /* ===== AMBIENT BLUE GLOW ===== */
+        body::before{
+            content:'';
+            position:fixed;
+            inset:0;
+            z-index:0;
+            pointer-events:none;
+            background:
+                radial-gradient(ellipse at 30% 20%, rgba(59,130,246,.04) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(59,130,246,.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(59,130,246,.02) 0%, transparent 40%);
+            animation:bluePulse 6s ease-in-out infinite;
         }
 
-        .success-content::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at center, rgba(255, 215, 0, 0.02), transparent 70%);
-            animation: shimmerBg 4s ease-in-out infinite;
-            pointer-events: none;
+        @keyframes bluePulse{
+            0%,100%{opacity:.6;}
+            50%{opacity:1;}
         }
 
-        @keyframes shimmerBg {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(180deg); }
+        /* ============================================================
+           BLUE EDGE ANIMATION
+           ============================================================ */
+        @keyframes blueEdgePulse{
+            0%,100%{
+                border-color:rgba(59,130,246,.12);
+                box-shadow:0 0 20px rgba(59,130,246,.02), inset 0 0 20px rgba(59,130,246,.01);
+            }
+            50%{
+                border-color:rgba(59,130,246,.35);
+                box-shadow:0 0 40px rgba(59,130,246,.06), inset 0 0 40px rgba(59,130,246,.02);
+            }
         }
 
-        @keyframes scaleIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+        /* ============================================================
+           WET EFFECT — EXTRA GLASSY
+           ============================================================ */
+        @keyframes wetShimmer{
+            0%{background-position:-200% center;}
+            100%{background-position:200% center;}
         }
 
-        /* Golden/Silver Trophy */
-        .success-content .trophy {
-            font-size: 5.5rem;
-            display: block;
-            margin-bottom: 16px;
-            animation: celebrate 1.5s ease-in-out infinite;
-            filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.1));
+        @keyframes wetDrops{
+            0%,100%{opacity:0.5;}
+            50%{opacity:1;}
         }
 
-        @keyframes celebrate {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            25% { transform: scale(1.1) rotate(-5deg); }
-            75% { transform: scale(1.1) rotate(5deg); }
+        .wet-effect{
+            position:relative;
+            overflow:hidden;
         }
 
-        /* Golden/Silver Main Message */
-        .success-content .main-message {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.2rem;
-            font-weight: 700;
-            font-style: italic;
-            background: linear-gradient(135deg, #ffd700, #ffec8b, #c0c0c0, #ffd700);
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: goldSilverMove 3s ease-in-out infinite;
-            margin-bottom: 8px;
-            line-height: 1.3;
+        .wet-effect::before{
+            content:'';
+            position:absolute;
+            top:0;left:0;right:0;bottom:0;
+            background:linear-gradient(90deg,
+                transparent 0%,
+                rgba(255,255,255,0.04) 10%,
+                rgba(255,255,255,0.10) 20%,
+                rgba(255,255,255,0.04) 30%,
+                transparent 40%
+            );
+            background-size:200% 100%;
+            animation:wetShimmer 3s ease-in-out infinite;
+            pointer-events:none;
+            border-radius:30px;
         }
 
-        @keyframes goldSilverMove {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+        .wet-effect::after{
+            content:'';
+            position:absolute;
+            top:0;left:0;right:0;bottom:0;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.12) 1px, transparent 1px),
+                radial-gradient(circle at 60% 70%, rgba(255,255,255,0.10) 1.5px, transparent 1.5px),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.12) 1px, transparent 1px),
+                radial-gradient(circle at 40% 80%, rgba(255,255,255,0.08) 2px, transparent 2px);
+            background-size:100% 100%;
+            pointer-events:none;
+            border-radius:30px;
+            animation:wetDrops 4s ease-in-out infinite;
         }
 
-        /* Sub message - golden glow */
-        .success-content .sub-message {
-            color: rgba(255, 215, 0, 0.2);
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-            letter-spacing: 2px;
-            font-style: italic;
-            font-family: 'Playfair Display', serif;
-            animation: goldenPulse 2s ease-in-out infinite;
+        /* ============================================================
+           HEADER — BLUE NAVIGATION
+           ============================================================ */
+        .header{
+            border-bottom:2px solid var(--blue-dim);
+            position:sticky;
+            top:0;
+            z-index:100;
+            background:var(--dark-chocolate-glass);
+            backdrop-filter:blur(25px) saturate(180%);
+            -webkit-backdrop-filter:blur(25px) saturate(180%);
+            animation:blueEdgePulse 4s ease-in-out infinite;
+            border-bottom:2px solid rgba(59,130,246,0.15);
+        }
+        .header-content{
+            max-width:1200px;
+            margin:0 auto;
+            padding:10px 16px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:8px;
+        }
+        .header-left{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            flex-shrink:0;
         }
 
-        @keyframes goldenPulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.8; }
+        .menu-btn{
+            width:34px;height:34px;
+            border:2px solid var(--blue-dim);
+            border-radius:50%;
+            background:transparent;
+            color:var(--gold);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:.85rem;
+            cursor:pointer;
+            transition:.3s;
+            flex-shrink:0;
+        }
+        .menu-btn:hover{
+            border-color:var(--gold);
+            color:var(--gold-bright);
+            box-shadow:0 0 30px var(--gold-glow);
         }
 
-        /* Silver sparkle divider */
-        .success-content .sparkle-divider {
-            color: rgba(192, 192, 192, 0.06);
-            font-size: 1.2rem;
-            letter-spacing: 8px;
-            margin: 10px 0;
+        .logo{
+            font-family:'Space Grotesk',sans-serif;
+            font-size:clamp(0.9rem, 2vw, 1.1rem);
+            font-weight:700;
+            letter-spacing:-.01em;
+            color:var(--chalk);
+            white-space:nowrap;
+        }
+        .logo .mark{
+            display:inline-block;
+            color:var(--gold);
+            animation:goldShift 3s ease-in-out infinite;
+        }
+        .logo .char{
+            display:inline-block;
+            animation:wordShift 4s ease-in-out infinite;
+            animation-delay:calc(var(--i,0) * 0.08s);
+        }
+        .logo-sub{
+            display:block;
+            font-size:clamp(0.45rem, 1vw, 0.6rem);
+            color:var(--gold);
+            margin-top:1px;
+            opacity:.6;
         }
 
-        /* Golden/Silver LED text */
-        .success-content .led-text {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #ffd700;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.08);
-            background: rgba(0, 0, 0, 0.2);
-            padding: 12px 28px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 215, 0, 0.04);
-            display: inline-block;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 3px;
-            animation: goldenPulse 2s ease-in-out infinite;
-            margin: 8px 0 16px;
+        .nav-links{
+            display:flex;
+            gap:6px;
+            align-items:center;
+            flex-wrap:wrap;
+            justify-content:flex-end;
+        }
+        .nav-pill{
+            display:inline-flex;
+            align-items:center;
+            gap:5px;
+            padding:6px 12px;
+            border:2px solid var(--blue-dim);
+            border-radius:30px;
+            font-size:clamp(0.6rem, 1.2vw, 0.72rem);
+            font-weight:600;
+            text-decoration:none;
+            color:var(--chalk);
+            transition:.3s;
+            animation:blueEdgePulse 4s ease-in-out infinite;
+            white-space:nowrap;
+            position:relative;
+            overflow:hidden;
+        }
+        .nav-pill i{
+            font-size:clamp(0.6rem, 1vw, 0.8rem);
+            color:var(--gold) !important;
+            animation:goldShift 3s ease-in-out infinite;
         }
 
-        /* Two buttons row */
-        .success-content .btn-row {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 20px;
+        .nav-pill::before{
+            content:'';
+            position:absolute;
+            top:0;left:0;right:0;bottom:0;
+            background:linear-gradient(90deg,
+                transparent 0%,
+                rgba(255,255,255,0.04) 10%,
+                rgba(255,255,255,0.10) 20%,
+                rgba(255,255,255,0.04) 30%,
+                transparent 40%
+            );
+            background-size:200% 100%;
+            animation:wetShimmer 3s ease-in-out infinite;
+            pointer-events:none;
+            border-radius:30px;
+        }
+        .nav-pill::after{
+            content:'';
+            position:absolute;
+            top:0;left:0;right:0;bottom:0;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.10) 1px, transparent 1px),
+                radial-gradient(circle at 60% 70%, rgba(255,255,255,0.08) 1.5px, transparent 1.5px),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.10) 1px, transparent 1px);
+            background-size:100% 100%;
+            pointer-events:none;
+            border-radius:30px;
+            animation:wetDrops 4s ease-in-out infinite;
         }
 
-        .success-content .btn-golden {
-            padding: 14px 34px;
-            background: linear-gradient(135deg, #ffd700, #f0c000);
-            border: none;
-            border-radius: 60px;
-            color: #080c1a;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-            animation: redGlowBorder 3s ease-in-out infinite;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-family: 'Inter', sans-serif;
+        .nav-pill:hover{
+            border-color:var(--gold);
+            color:var(--chalk);
+            box-shadow:0 0 30px var(--gold-glow);
+            transform:translateY(-2px);
         }
 
-        .success-content .btn-golden:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 30px -10px rgba(255, 215, 0, 0.3);
+        /* === Blue "See uploaded notes" button === */
+        .nav-pill.blue-special{
+            background:linear-gradient(135deg, var(--blue), #2563eb);
+            border:2px solid var(--blue);
+            color:var(--chalk);
+            font-weight:700;
+            animation:blueEdgePulse 3s ease-in-out infinite;
+        }
+        .nav-pill.blue-special i{color:var(--gold) !important; animation:goldShift 3s ease-in-out infinite;}
+        .nav-pill.blue-special:hover{
+            background:linear-gradient(135deg, var(--blue-bright), var(--blue));
+            box-shadow:0 0 40px var(--blue-glow), 0 0 40px var(--gold-glow);
+            transform:translateY(-2px);
+            border-color:var(--gold);
         }
 
-        .success-content .btn-silver {
-            padding: 14px 34px;
-            background: rgba(192, 192, 192, 0.04);
-            border: 1px solid rgba(192, 192, 192, 0.08);
-            border-radius: 60px;
-            color: #c0c0c0;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-family: 'Inter', sans-serif;
+        /* === Upload button - BLUE === */
+        .nav-pill.blue-upload{
+            background:linear-gradient(135deg, var(--blue), #2563eb);
+            border:2px solid var(--blue);
+            color:var(--chalk);
+            font-weight:700;
+            animation:blueGlowPulse 3s ease-in-out infinite;
+        }
+        .nav-pill.blue-upload i{color:var(--gold) !important; animation:goldShift 3s ease-in-out infinite;}
+        @keyframes blueGlowPulse{
+            0%,100%{
+                border-color:var(--blue);
+                box-shadow:0 0 20px rgba(59,130,246,.1);
+            }
+            50%{
+                border-color:var(--gold);
+                box-shadow:0 0 40px rgba(255,215,0,.15);
+            }
+        }
+        .nav-pill.blue-upload:hover{
+            background:linear-gradient(135deg, var(--blue-bright), var(--blue));
+            box-shadow:0 0 40px var(--blue-glow), 0 0 40px var(--gold-glow);
+            transform:translateY(-2px);
+            border-color:var(--gold);
         }
 
-        .success-content .btn-silver:hover {
-            background: rgba(192, 192, 192, 0.04);
-            border-color: rgba(192, 192, 192, 0.15);
-            transform: scale(1.05);
+        /* ============================================================
+           UPLOAD CONTAINER — EXTRA GLASSY
+           ============================================================ */
+        .upload-container{
+            max-width:700px;
+            margin:20px auto 0;
+            padding:0 16px 80px;
+            position:relative;
+            z-index:2;
         }
 
-        /* ===== MESSAGES ===== */
-        .message {
-            padding: 14px 20px;
-            border-radius: 16px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(255, 255, 255, 0.015);
-            border: 1px solid rgba(255, 30, 30, 0.03);
-            color: #e8ecf5;
-        }
-        .message.success { border-color: rgba(0, 255, 65, 0.06); color: #00ff64; }
-        .message.error { border-color: rgba(255, 45, 45, 0.06); color: #ff6b6b; }
-        .message i { font-size: 1.2rem; }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 780px) {
-            .upload-card { padding: 24px 18px; }
-            .upload-header h2 { font-size: 1.4rem; }
-            .radio-group { flex-direction: column; }
-            .radio-option { min-width: auto; }
-            .drop-zone { padding: 30px 15px; }
-            .passcode-input { flex-direction: column; }
-            .passcode-input input { width: 100%; min-width: unset; }
-            .success-content { padding: 30px 20px; }
-            .success-content .main-message { font-size: 1.6rem; }
-            .success-content .btn-row { flex-direction: column; align-items: center; }
-            .success-content .btn-golden, .success-content .btn-silver { width: 100%; justify-content: center; }
-            .header-content { flex-direction: row; padding: 4px 16px; }
-            .nav-links .nav-pill span { display: none; }
-            .nav-pill { padding: 8px 12px; }
-            .nav-pill i { font-size: 1rem; }
-            .scanner-btn span { display: none; }
-            .scanner-btn { padding: 8px 12px; }
-            .logo { font-size: 1.3rem; }
+        .upload-card{
+            background:var(--dark-chocolate-glass);
+            backdrop-filter:blur(25px) saturate(180%);
+            -webkit-backdrop-filter:blur(25px) saturate(180%);
+            border:2px solid rgba(59,130,246,.10);
+            border-radius:var(--radius-card);
+            padding:clamp(18px, 3vw, 28px);
+            transition:all .35s cubic-bezier(.16,1,.3,1);
+            animation:blueEdgePulse 4s ease-in-out infinite;
+            position:relative;
+            overflow:hidden;
         }
 
-        @media (max-width: 480px) {
-            .upload-card { padding: 18px 14px; }
-            .upload-header h2 { font-size: 1.2rem; }
-            .menu-btn { width: 36px; height: 36px; font-size: 1.1rem; }
-            .logo { font-size: 1.1rem; }
-            .nav-pill { padding: 6px 10px; font-size: 0.7rem; }
-            .scanner-btn { padding: 6px 10px; font-size: 0.7rem; }
-            .btn-submit { font-size: 0.95rem; padding: 14px; }
-            .success-content .main-message { font-size: 1.3rem; }
-            .success-content .led-text { font-size: 0.9rem; padding: 10px 16px; }
+        .upload-card::before{
+            content:'';
+            position:absolute;
+            top:0;left:0;right:0;bottom:0;
+            background:linear-gradient(90deg,
+                transparent 0%,
+                rgba(255,215,0,.02) 10%,
+                rgba(255,215,0,.04) 20%,
+                rgba(255,215,0,.02) 30%,
+                transparent 40%
+            );
+            background-size:200% 100%;
+            animation:wetShimmer 4s ease-in-out infinite;
+            pointer-events:none;
+            border-radius:var(--radius-card);
         }
 
-        ::-webkit-scrollbar {
-            width: 3px;
+        .upload-card::after{
+            content:'';
+            position:absolute;
+            top:0;left:0;right:0;bottom:0;
+            background-image:
+                radial-gradient(circle at 15% 25%, rgba(255,215,0,.04) 2px, transparent 2px),
+                radial-gradient(circle at 55% 75%, rgba(255,215,0,.03) 3px, transparent 3px),
+                radial-gradient(circle at 75% 15%, rgba(255,215,0,.04) 2px, transparent 2px),
+                radial-gradient(circle at 35% 85%, rgba(255,215,0,.02) 2.5px, transparent 2.5px),
+                radial-gradient(circle at 90% 45%, rgba(255,215,0,.03) 2px, transparent 2px);
+            background-size:100% 100%;
+            pointer-events:none;
+            border-radius:var(--radius-card);
+            animation:wetDrops 5s ease-in-out infinite;
         }
-        ::-webkit-scrollbar-track {
-            background: transparent;
+
+        .upload-header{
+            text-align:center;
+            margin-bottom:clamp(16px, 2.5vw, 24px);
+            position:relative;
+            z-index:1;
         }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(79, 159, 255, 0.04);
-            border-radius: 10px;
+
+        .upload-header .icon{
+            font-size:clamp(2.2rem, 4vw, 3rem);
+            display:inline-block;
+            animation:float 3s ease-in-out infinite;
+            color:var(--gold) !important;
+            filter:drop-shadow(0 0 20px rgba(255,215,0,.1));
         }
+
+        @keyframes float{
+            0%,100%{transform:translateY(0);}
+            50%{transform:translateY(-6px);}
+        }
+
+        .upload-header h2{
+            font-family:'Space Grotesk',sans-serif;
+            font-size:clamp(1.2rem, 2.5vw, 1.6rem);
+            font-weight:700;
+            color:var(--chalk);
+            margin-top:4px;
+        }
+
+        .upload-header p{
+            font-size:clamp(0.7rem, 1.2vw, 0.85rem);
+            color:var(--chalk-dim);
+            margin-top:2px;
+            font-style:italic;
+        }
+
+        /* ============================================================
+           FORM — GOLD ICONS
+           ============================================================ */
+        .form-group{
+            margin-bottom:clamp(12px, 1.8vw, 16px);
+            position:relative;
+            z-index:1;
+        }
+
+        .form-label{
+            display:block;
+            font-weight:600;
+            color:var(--chalk-dim);
+            font-size:clamp(0.7rem, 1.1vw, 0.8rem);
+            margin-bottom:4px;
+            letter-spacing:0.3px;
+        }
+        .form-label i{color:var(--gold) !important; animation:goldShift 3s ease-in-out infinite; margin-right:4px;}
+        .form-label .required{ color:var(--gold); margin-left:4px; }
+        .form-label .optional{ color:rgba(255,255,255,.08); font-weight:400; font-size:0.7rem; margin-left:5px; }
+
+        .form-input, .form-textarea, .form-select{
+            width:100%;
+            padding:clamp(10px, 1.2vw, 12px) clamp(12px, 1.5vw, 14px);
+            border:2px solid rgba(59,130,246,.10);
+            border-radius:12px;
+            font-size:clamp(0.8rem, 1vw, 0.9rem);
+            transition:all .3s;
+            font-family:'Inter',sans-serif;
+            background:rgba(255,255,255,.03);
+            color:var(--chalk);
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus{
+            outline:none;
+            border-color:var(--gold);
+            box-shadow:0 0 0 4px rgba(255,215,0,.04);
+            background:rgba(255,255,255,.04);
+        }
+
+        .form-input::placeholder, .form-textarea::placeholder{
+            color:rgba(255,255,255,.08);
+        }
+
+        .form-textarea{
+            resize:vertical;
+            min-height:70px;
+        }
+
+        .form-select{
+            appearance:none;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffd700' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat:no-repeat;
+            background-position:right 14px center;
+            padding-right:40px;
+            cursor:pointer;
+        }
+        .form-select option{ background:#0a0f0d; color:var(--chalk); }
+
+        /* ============================================================
+           RADIO GROUPS — GOLD ICONS
+           ============================================================ */
+        .radio-group{
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+            margin-top:2px;
+        }
+
+        .radio-option{
+            flex:1;
+            min-width:80px;
+            position:relative;
+        }
+
+        .radio-option input[type="radio"]{
+            position:absolute;
+            opacity:0;
+            width:100%;
+            height:100%;
+            cursor:pointer;
+            z-index:2;
+        }
+
+        .radio-option label{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:6px;
+            padding:clamp(8px, 1vw, 10px) clamp(10px, 1.2vw, 12px);
+            background:rgba(255,255,255,.02);
+            border:2px solid rgba(255,255,255,.04);
+            border-radius:12px;
+            cursor:pointer;
+            transition:all .3s;
+            font-weight:600;
+            font-size:clamp(0.7rem, 1vw, 0.8rem);
+            color:rgba(255,255,255,.2);
+            position:relative;
+            z-index:1;
+        }
+
+        .radio-option label i{color:var(--gold) !important; animation:goldShift 3s ease-in-out infinite;}
+
+        .radio-option:first-child label{
+            border-color:rgba(59,130,246,.10);
+            color:rgba(255,255,255,.2);
+        }
+        .radio-option:first-child input[type="radio"]:checked + label{
+            border-color:var(--gold);
+            background:rgba(255,215,0,.06);
+            color:var(--gold-bright);
+            box-shadow:0 0 30px rgba(255,215,0,.05);
+        }
+
+        .radio-option:last-child label{
+            border-color:rgba(34,197,94,.08);
+            color:rgba(255,255,255,.2);
+        }
+        .radio-option:last-child input[type="radio"]:checked + label{
+            border-color:var(--gold);
+            background:rgba(255,215,0,.06);
+            color:var(--gold-bright);
+            box-shadow:0 0 30px rgba(255,215,0,.05);
+        }
+
+        .privacy-group .radio-option label{
+            border-color:rgba(255,215,0,.06);
+            color:rgba(255,255,255,.2);
+        }
+        .privacy-group .radio-option input[type="radio"]:checked + label{
+            border-color:var(--gold);
+            background:rgba(255,215,0,.06);
+            color:var(--gold-bright);
+            box-shadow:0 0 30px rgba(255,215,0,.05);
+        }
+
+        .radio-option label:hover{
+            border-color:rgba(255,215,0,.15);
+            background:rgba(255,215,0,.02);
+        }
+
+        /* ============================================================
+           DROP ZONE — GOLD ICONS
+           ============================================================ */
+        .drop-zone{
+            border:2px dashed rgba(59,130,246,.08);
+            border-radius:14px;
+            padding:clamp(20px, 3vw, 28px) clamp(12px, 2vw, 16px);
+            text-align:center;
+            transition:all .3s;
+            cursor:pointer;
+            position:relative;
+        }
+
+        .drop-zone:hover{
+            border-color:rgba(255,215,0,.15);
+            background:rgba(255,215,0,.02);
+        }
+
+        .drop-zone.dragover{
+            border-color:var(--gold);
+            background:rgba(255,215,0,.06);
+            transform:scale(1.01);
+            box-shadow:0 0 50px rgba(255,215,0,.05);
+        }
+
+        .drop-zone i{
+            font-size:clamp(2rem, 3.5vw, 2.5rem);
+            color:var(--gold) !important;
+            margin-bottom:6px;
+            display:block;
+            animation:goldShift 3s ease-in-out infinite;
+        }
+
+        .drop-zone h4{
+            color:var(--chalk);
+            font-size:clamp(0.85rem, 1.2vw, 0.95rem);
+            margin-bottom:2px;
+        }
+        .drop-zone p{
+            color:rgba(255,255,255,.06);
+            font-size:clamp(0.65rem, 0.9vw, 0.75rem);
+        }
+
+        .drop-zone .browse-btn{
+            display:inline-block;
+            margin-top:8px;
+            padding:6px 18px;
+            background:rgba(255,215,0,.04);
+            border:2px solid rgba(255,215,0,.06);
+            border-radius:60px;
+            color:var(--gold);
+            font-weight:600;
+            font-size:clamp(0.65rem, 0.9vw, 0.75rem);
+            transition:.3s;
+        }
+
+        .drop-zone:hover .browse-btn{
+            background:rgba(255,215,0,.08);
+            border-color:var(--gold);
+        }
+
+        /* ============================================================
+           FILE LIST — GOLD ICONS
+           ============================================================ */
+        .file-list{ margin-top:8px; }
+        .file-item{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:8px 12px;
+            background:rgba(255,255,255,.015);
+            border:2px solid rgba(59,130,246,.04);
+            border-radius:10px;
+            margin-bottom:4px;
+            animation:slideIn .3s ease;
+        }
+
+        .file-item .file-icon{
+            width:28px;
+            height:28px;
+            border-radius:6px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:.85rem;
+            flex-shrink:0;
+            background:rgba(255,215,0,.04);
+            color:var(--gold) !important;
+            animation:goldShift 3s ease-in-out infinite;
+        }
+
+        .file-item .file-info{ flex:1; min-width:0; }
+        .file-item .file-name{
+            color:var(--chalk);
+            font-weight:500;
+            font-size:clamp(0.75rem, 1vw, 0.85rem);
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+        }
+        .file-item .file-size{
+            color:rgba(255,255,255,.06);
+            font-size:0.6rem;
+        }
+
+        .file-item .file-remove{
+            background:none;
+            border:none;
+            color:rgba(255,255,255,.04);
+            font-size:.9rem;
+            cursor:pointer;
+            transition:.2s;
+            padding:4px;
+        }
+        .file-item .file-remove:hover{ color:var(--red); }
+
+        @keyframes slideIn{
+            from{opacity:0;transform:translateY(-6px);}
+            to{opacity:1;transform:translateY(0);}
+        }
+
+        /* ============================================================
+           PASSCODE — GOLD
+           ============================================================ */
+        .passcode-section{
+            display:none;
+            animation:slideDown .3s ease;
+            background:rgba(255,215,0,.02);
+            border:2px solid rgba(255,215,0,.06);
+            border-radius:12px;
+            padding:clamp(10px, 1.5vw, 14px) clamp(12px, 1.8vw, 16px);
+            margin-top:8px;
+        }
+        .passcode-section.show{ display:block; }
+
+        @keyframes slideDown{
+            from{opacity:0;transform:translateY(-6px);}
+            to{opacity:1;transform:translateY(0);}
+        }
+
+        .passcode-section .warning{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            color:var(--gold);
+            font-size:clamp(0.65rem, 0.9vw, 0.75rem);
+            padding:6px 0;
+        }
+        .passcode-section .warning i{ 
+            color:var(--gold) !important;
+            animation:goldShift 3s ease-in-out infinite;
+            font-size:1rem;
+        }
+
+        .passcode-input{
+            display:flex;
+            gap:8px;
+            align-items:center;
+            flex-wrap:wrap;
+        }
+
+        .passcode-input input{
+            flex:1;
+            min-width:120px;
+            padding:clamp(8px, 1vw, 10px) clamp(10px, 1.2vw, 12px);
+            background:rgba(255,255,255,.015);
+            border:2px solid rgba(255,215,0,.06);
+            border-radius:10px;
+            color:var(--chalk);
+            font-size:1.1rem;
+            font-family:monospace;
+            letter-spacing:6px;
+            text-align:center;
+            transition:.3s;
+        }
+
+        .passcode-input input:focus{
+            outline:none;
+            border-color:var(--gold);
+            box-shadow:0 0 0 4px rgba(255,215,0,.04);
+        }
+        .passcode-input input::placeholder{
+            letter-spacing:2px;
+            font-size:0.7rem;
+            color:rgba(255,255,255,.04);
+        }
+
+        /* ============================================================
+           SUBMIT BUTTON — BLUE WITH GOLD ICON
+           ============================================================ */
+        .btn-submit{
+            width:100%;
+            padding:clamp(12px, 1.5vw, 14px);
+            background:linear-gradient(135deg, var(--blue), #2563eb);
+            border:2px solid var(--blue);
+            border-radius:30px;
+            color:var(--chalk);
+            font-weight:700;
+            font-size:clamp(0.85rem, 1.2vw, 0.95rem);
+            cursor:pointer;
+            transition:all .3s;
+            margin-top:4px;
+            position:relative;
+            overflow:hidden;
+            animation:blueEdgePulse 3s ease-in-out infinite;
+        }
+
+        .btn-submit i{
+            color:var(--gold) !important;
+            animation:goldShift 3s ease-in-out infinite;
+            margin-right:6px;
+        }
+
+        .btn-submit::before{
+            content:'';
+            position:absolute;
+            top:-50%;
+            left:-50%;
+            width:200%;
+            height:200%;
+            background:linear-gradient(45deg, transparent, rgba(255,215,0,.05), transparent);
+            transform:rotate(45deg) translateX(-100%);
+            transition:transform .6s;
+        }
+
+        .btn-submit:hover::before{
+            transform:rotate(45deg) translateX(100%);
+        }
+
+        .btn-submit:hover{
+            transform:translateY(-2px);
+            box-shadow:0 8px 30px rgba(59,130,246,.15), 0 0 40px rgba(255,215,0,.05);
+            border-color:var(--gold);
+        }
+
+        .btn-submit:disabled{
+            opacity:0.6;
+            cursor:not-allowed;
+            transform:none;
+        }
+
+        /* ============================================================
+           ALLOWED TYPES — GOLD
+           ============================================================ */
+        .allowed-types{
+            text-align:center;
+            margin-top:14px;
+            padding:clamp(8px, 1vw, 10px);
+            background:rgba(255,255,255,.015);
+            border-radius:40px;
+            color:rgba(255,255,255,.04);
+            font-size:clamp(0.6rem, 0.8vw, 0.7rem);
+            border:2px solid rgba(59,130,246,.03);
+        }
+        .allowed-types i{ 
+            margin-right:4px; 
+            color:var(--gold) !important;
+            animation:goldShift 3s ease-in-out infinite;
+        }
+        .allowed-types span{ color:var(--gold); font-weight:600; }
+
+        /* ============================================================
+           MESSAGES
+           ============================================================ */
+        .message{
+            padding:clamp(10px, 1.2vw, 12px) clamp(14px, 1.8vw, 16px);
+            border-radius:12px;
+            margin-bottom:14px;
+            display:flex;
+            align-items:center;
+            gap:10px;
+            background:rgba(255,255,255,.015);
+            border:2px solid rgba(59,130,246,.03);
+            color:var(--chalk);
+            position:relative;
+            z-index:1;
+        }
+        .message i{color:var(--gold) !important; animation:goldShift 3s ease-in-out infinite;}
+        .message.success{ border-color:rgba(34,197,94,.06); color:var(--green-bright); }
+        .message.error{ border-color:rgba(239,68,68,.06); color:var(--red-bright); }
+
+        /* ============================================================
+           SUCCESS POPUP — GOLDEN/SILVER
+           ============================================================ */
+        .success-overlay{
+            display:none;
+            position:fixed;
+            top:0;left:0;
+            width:100%;height:100%;
+            z-index:2000;
+            background:rgba(8,12,26,.95);
+            backdrop-filter:blur(25px);
+            -webkit-backdrop-filter:blur(25px);
+            justify-content:center;
+            align-items:center;
+            animation:fadeIn .5s ease;
+        }
+        .success-overlay.active{ display:flex; }
+
+        @keyframes fadeIn{
+            from{opacity:0;}
+            to{opacity:1;}
+        }
+
+        .success-content{
+            text-align:center;
+            max-width:480px;
+            width:90%;
+            padding:clamp(30px, 5vw, 40px) clamp(20px, 3vw, 30px);
+            background:var(--dark-chocolate-glass);
+            backdrop-filter:blur(30px);
+            border:2px solid rgba(255,215,0,.08);
+            border-radius:24px;
+            animation:scaleIn .6s cubic-bezier(.34,1.56,.64,1);
+            box-shadow:0 0 80px rgba(255,215,0,.02), inset 0 0 60px rgba(255,215,0,.01);
+            position:relative;
+            overflow:hidden;
+        }
+
+        .success-content::before{
+            content:'';
+            position:absolute;
+            top:-50%;left:-50%;
+            width:200%;height:200%;
+            background:radial-gradient(circle at center, rgba(255,215,0,.02), transparent 70%);
+            animation:shimmerBg 4s ease-in-out infinite;
+            pointer-events:none;
+        }
+
+        @keyframes shimmerBg{
+            0%,100%{transform:rotate(0deg);}
+            50%{transform:rotate(180deg);}
+        }
+
+        @keyframes scaleIn{
+            from{transform:scale(.8);opacity:0;}
+            to{transform:scale(1);opacity:1;}
+        }
+
+        .success-content .trophy{
+            font-size:clamp(3.5rem, 7vw, 4.5rem);
+            display:block;
+            margin-bottom:10px;
+            animation:celebrate 1.5s ease-in-out infinite;
+            filter:drop-shadow(0 0 30px rgba(255,215,0,.1));
+        }
+
+        @keyframes celebrate{
+            0%,100%{transform:scale(1) rotate(0deg);}
+            25%{transform:scale(1.1) rotate(-5deg);}
+            75%{transform:scale(1.1) rotate(5deg);}
+        }
+
+        .success-content .main-message{
+            font-family:'Space Grotesk',sans-serif;
+            font-size:clamp(1.4rem, 3vw, 1.8rem);
+            font-weight:700;
+            background:linear-gradient(135deg, var(--gold), var(--gold-bright), var(--silver), var(--gold));
+            background-size:300% 300%;
+            -webkit-background-clip:text;
+            background-clip:text;
+            color:transparent;
+            animation:goldSilverMove 3s ease-in-out infinite;
+            margin-bottom:4px;
+            line-height:1.3;
+        }
+
+        @keyframes goldSilverMove{
+            0%,100%{background-position:0% 50%;}
+            50%{background-position:100% 50%;}
+        }
+
+        .success-content .sub-message{
+            color:rgba(255,215,0,.15);
+            font-size:clamp(0.8rem, 1.2vw, 0.95rem);
+            margin-bottom:12px;
+            letter-spacing:2px;
+            font-style:italic;
+            font-family:'Playfair Display',serif;
+            animation:goldenPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes goldenPulse{
+            0%,100%{opacity:.3;}
+            50%{opacity:.8;}
+        }
+
+        .success-content .sparkle-divider{
+            color:rgba(192,192,192,.04);
+            font-size:1rem;
+            letter-spacing:6px;
+            margin:6px 0;
+        }
+
+        .success-content .led-text{
+            font-size:clamp(0.85rem, 1.2vw, 1rem);
+            font-weight:700;
+            color:var(--gold);
+            text-shadow:0 0 20px rgba(255,215,0,.08);
+            background:rgba(0,0,0,.2);
+            padding:clamp(8px, 1vw, 10px) clamp(16px, 2vw, 22px);
+            border-radius:10px;
+            border:2px solid rgba(255,215,0,.04);
+            display:inline-block;
+            font-family:'Courier New',monospace;
+            letter-spacing:2px;
+            animation:goldenPulse 2s ease-in-out infinite;
+            margin:4px 0 12px;
+        }
+
+        .success-content .btn-row{
+            display:flex;
+            gap:10px;
+            justify-content:center;
+            flex-wrap:wrap;
+            margin-top:14px;
+        }
+
+        .success-content .btn-golden{
+            padding:clamp(10px, 1.2vw, 12px) clamp(20px, 3vw, 28px);
+            background:linear-gradient(135deg, var(--gold), #e6b800);
+            border:2px solid var(--gold);
+            border-radius:30px;
+            color:var(--board);
+            font-weight:700;
+            font-size:clamp(0.8rem, 1vw, 0.9rem);
+            cursor:pointer;
+            transition:.3s;
+            text-decoration:none;
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            font-family:'Inter',sans-serif;
+        }
+
+        .success-content .btn-golden:hover{
+            transform:scale(1.05);
+            box-shadow:0 8px 30px -10px rgba(255,215,0,.3);
+        }
+
+        .success-content .btn-silver{
+            padding:clamp(10px, 1.2vw, 12px) clamp(20px, 3vw, 28px);
+            background:rgba(192,192,192,.04);
+            border:2px solid rgba(192,192,192,.08);
+            border-radius:30px;
+            color:var(--silver);
+            font-weight:600;
+            font-size:clamp(0.8rem, 1vw, 0.9rem);
+            cursor:pointer;
+            transition:.3s;
+            text-decoration:none;
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            font-family:'Inter',sans-serif;
+        }
+
+        .success-content .btn-silver:hover{
+            background:rgba(192,192,192,.04);
+            border-color:rgba(192,192,192,.15);
+            transform:scale(1.05);
+        }
+
+        .custom-uni-input{ display:none; margin-top:8px; }
+        .custom-uni-input.show{ display:block; }
+
+        /* ============================================================
+           ANIMATIONS
+           ============================================================ */
+        @keyframes wordShift{
+            0%{color:#c0c0c0;text-shadow:0 0 12px rgba(192,192,192,.08);}
+            50%{color:#f5efdd;text-shadow:0 0 20px rgba(245,239,221,.12);}
+            100%{color:#c0c0c0;text-shadow:0 0 12px rgba(192,192,192,.08);}
+        }
+
+        @keyframes goldShift{
+            0%{color:#ffd700;filter:drop-shadow(0 0 6px rgba(255,215,0,.2));}
+            50%{color:#ffed4a;filter:drop-shadow(0 0 16px rgba(255,215,0,.4));}
+            100%{color:#ffd700;filter:drop-shadow(0 0 6px rgba(255,215,0,.2));}
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 860px){
+            .nav-pill span{display:none;}
+            .nav-pill{padding:6px 10px;font-size:0.65rem;}
+            .nav-pill i{font-size:0.7rem;}
+            .nav-pill.blue-special span{display:inline;}
+            .nav-pill.blue-special{padding:6px 14px;}
+        }
+
+        @media (max-width: 560px){
+            .upload-container{padding:0 12px 60px;}
+            .upload-card{padding:14px 12px;}
+            .radio-group{flex-direction:column;}
+            .radio-option{min-width:auto;}
+            .drop-zone{padding:16px 12px;}
+            .passcode-input{flex-direction:column;}
+            .passcode-input input{width:100%;min-width:unset;}
+            .success-content{padding:20px 14px;}
+            .success-content .btn-row{flex-direction:column;align-items:center;}
+            .success-content .btn-golden,.success-content .btn-silver{width:100%;justify-content:center;}
+            .header-content{padding:8px 12px;flex-wrap:nowrap;}
+            .logo{font-size:0.8rem;}
+            .logo-sub{font-size:0.4rem;}
+            .menu-btn{width:30px;height:30px;font-size:.75rem;}
+            .nav-links{gap:4px;}
+            .nav-pill{padding:4px 8px;font-size:0.55rem;}
+            .nav-pill i{font-size:0.6rem;}
+            .nav-pill.blue-special{padding:4px 8px;}
+            .nav-pill.blue-special span{font-size:0.55rem;}
+            .nav-pill.blue-upload span{display:none;}
+            .nav-pill.blue-upload{padding:4px 8px;}
+            .nav-pill.blue-upload i{font-size:0.7rem;}
+        }
+
+        @media (max-width: 380px){
+            .upload-card{padding:10px 8px;}
+            .drop-zone{padding:12px 8px;}
+            .drop-zone i{font-size:1.6rem;}
+            .form-input,.form-textarea,.form-select{padding:8px 10px;font-size:0.75rem;}
+            .btn-submit{font-size:0.75rem;padding:10px;}
+            .success-content .main-message{font-size:1.1rem;}
+            .success-content .led-text{font-size:0.7rem;padding:6px 12px;}
+        }
+
+        @media (prefers-reduced-motion: reduce){
+            *{animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important;}
+        }
+
+        ::-webkit-scrollbar{width:3px;}
+        ::-webkit-scrollbar-track{background:transparent;}
+        ::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:10px;}
     </style>
 </head>
 <body>
 
-    <!-- Rain Canvas -->
+    <!-- ===== HEAVY RAIN + LIGHTNING CANVAS ===== -->
     <canvas id="rain-canvas"></canvas>
 
     <div class="glass-overlay">
-        <!-- Header with Scanner Button -->
-        <div class="header">
+
+        <!-- ===== HEADER — BLUE NAVIGATION WITH GOLD ICONS ===== -->
+        <header class="header">
             <div class="header-content">
                 <div class="header-left">
                     <button class="menu-btn" id="menuToggle" aria-label="Open menu">
                         <i class="fas fa-bars"></i>
                     </button>
                     <div>
-                        <div class="logo">✦ Student Hub</div>
+                        <div class="logo">
+                            <span class="mark">✦</span>
+                            <span class="char" style="--i:0">S</span>
+                            <span class="char" style="--i:1">t</span>
+                            <span class="char" style="--i:2">u</span>
+                            <span class="char" style="--i:3">d</span>
+                            <span class="char" style="--i:4">e</span>
+                            <span class="char" style="--i:5">n</span>
+                            <span class="char" style="--i:6">t</span>
+                            <span class="char" style="--i:7"> </span>
+                            <span class="char" style="--i:8">H</span>
+                            <span class="char" style="--i:9">u</span>
+                            <span class="char" style="--i:10">b</span>
+                        </div>
                         <span class="logo-sub">powered by Twarvis</span>
                     </div>
                 </div>
@@ -937,22 +1161,20 @@
                     <a href="/" class="nav-pill">
                         <i class="fas fa-home"></i> <span>Home</span>
                     </a>
-                    <a href="/browse/" class="nav-pill">
-                        <i class="fas fa-eye"></i> <span>Browse</span>
+                    <a href="/browse/" class="nav-pill blue-special">
+                        <i class="fas fa-eye"></i> <span>See uploaded notes</span>
                     </a>
-                    <a href="/scanner/" class="scanner-btn">
-                        <i class="fas fa-qrcode"></i> <span>Scan</span>
-                    </a>
-                    <a href="/upload/" class="nav-pill primary">
+                    <a href="/upload/" class="nav-pill blue-upload">
                         <i class="fas fa-cloud-upload-alt"></i> <span>Upload</span>
                     </a>
                 </div>
             </div>
-        </div>
+        </header>
 
-        <!-- Upload -->
+        <!-- ===== UPLOAD — EXTRA GLASSY WITH GOLD ICONS ===== -->
         <div class="upload-container">
             <div class="upload-card">
+
                 <div class="upload-header">
                     <div class="icon"><i class="fas fa-cloud-upload-alt"></i></div>
                     <h2>📤 Upload Notes & Papers</h2>
@@ -960,12 +1182,6 @@
                 </div>
 
                 <!-- Messages -->
-                {% if message %}
-                    <div class="message success"><i class="fas fa-check-circle"></i> {{ message }}</div>
-                {% endif %}
-                {% if error %}
-                    <div class="message error"><i class="fas fa-exclamation-triangle"></i> {{ error }}</div>
-                {% endif %}
                 <div id="messageContainer"></div>
 
                 <form method="post" enctype="multipart/form-data" id="uploadForm" action="/upload/">
@@ -982,12 +1198,12 @@
                             {{ form.file }}
                         </div>
                         <div class="file-list" id="fileList"></div>
-                        <small style="display:block;margin-top:6px;color:rgba(255,255,255,0.06);font-size:0.7rem;">
+                        <small style="display:block;margin-top:4px;color:rgba(255,255,255,.04);font-size:clamp(0.55rem, 0.7vw, 0.6rem);">
                             <i class="fas fa-info-circle"></i> Max: 100MB | PDF, PPT, DOC, XLS, TXT, JPG, PNG, ZIP
                         </small>
                     </div>
 
-                    <!-- 2. File Type - RED & GREEN -->
+                    <!-- 2. File Type -->
                     <div class="form-group">
                         <label class="form-label"><i class="fas fa-tag"></i> File Type <span class="required">*</span></label>
                         <div class="radio-group">
@@ -1021,7 +1237,7 @@
                         {{ form.description }}
                     </div>
 
-                    <!-- 6. Privacy - GOLD -->
+                    <!-- 6. Privacy -->
                     <div class="form-group">
                         <label class="form-label"><i class="fas fa-lock"></i> Privacy Setting <span class="required">*</span></label>
                         <div class="radio-group privacy-group">
@@ -1035,22 +1251,22 @@
                                 </div>
                             {% endfor %}
                         </div>
-                        <small style="display:block;margin-top:4px;color:rgba(255,255,255,0.06);font-size:0.7rem;">
-                            <i class="fas fa-info-circle"></i> Private files require a 4-digit passcode to access
+                        <small style="display:block;margin-top:2px;color:rgba(255,255,255,.04);font-size:clamp(0.55rem, 0.7vw, 0.6rem);">
+                            <i class="fas fa-info-circle"></i> Private files require a 4-digit passcode
                         </small>
                     </div>
 
-                    <!-- 7. Passcode (Private) -->
+                    <!-- 7. Passcode -->
                     <div class="passcode-section" id="passcodeSection">
                         <div class="warning">
                             <i class="fas fa-exclamation-triangle"></i>
-                            <span><strong>⚠️ IMPORTANT:</strong> No backup for passcode. Remember it!</span>
+                            <span><strong>⚠️ IMPORTANT:</strong> No backup. Remember your passcode!</span>
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
                             <label class="form-label"><i class="fas fa-key"></i> Set 4-Digit Passcode <span class="required">*</span></label>
                             <div class="passcode-input">
                                 {{ form.passcode }}
-                                <span style="color:rgba(255,255,255,0.06);font-size:0.8rem;">(4 numbers only)</span>
+                                <span style="color:rgba(255,255,255,.04);font-size:0.7rem;">(4 numbers)</span>
                             </div>
                         </div>
                     </div>
@@ -1064,8 +1280,8 @@
                                 {{ form.custom_university }}
                             </div>
                         </div>
-                        <small style="display:block;margin-top:4px;color:rgba(255,255,255,0.06);font-size:0.7rem;">
-                            <i class="fas fa-info-circle"></i> Select from list or choose "Other" to type custom name
+                        <small style="display:block;margin-top:2px;color:rgba(255,255,255,.04);font-size:clamp(0.55rem, 0.7vw, 0.6rem);">
+                            <i class="fas fa-info-circle"></i> Select or choose "Other" to type custom name
                         </small>
                     </div>
 
@@ -1104,83 +1320,196 @@
     </div>
 
     <script>
-        // ============================================
-        // ===== BLUE MATRIX RAIN =====
-        // ============================================
-        const canvas = document.getElementById('rain-canvas');
-        const ctx = canvas.getContext('2d');
+        // ============================================================
+        // HEAVY RAIN + LIGHTNING
+        // ============================================================
+        (function initHeavyRainWithLightning() {
+            const canvas = document.getElementById('rain-canvas');
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            const drops = [];
+            const dropCount = 400;
+            const splashDrops = [];
+            let lightningFlash = 0;
+            let lightningTimer = 0;
+            let lightningBolt = [];
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        const matrixColors = ['#4f9fff', '#7b6cf6', '#4f9fff', '#6a8cff', '#3a7bd5', '#8b6cf6'];
-        const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        let fontSize = 20;
-        let columns = Math.ceil(canvas.width / fontSize);
-        let drops = [];
-
-        function initRain() {
-            columns = Math.ceil(canvas.width / fontSize);
-            drops = [];
-            for (let i = 0; i < columns; i++) {
-                drops[i] = {
-                    y: Math.random() * -200,
-                    speed: 0.4 + Math.random() * 0.4,
-                    color: matrixColors[Math.floor(Math.random() * matrixColors.length)]
-                };
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
             }
-        }
+            resize();
+            window.addEventListener('resize', resize);
 
-        initRain();
-        window.addEventListener('resize', initRain);
+            class Drop {
+                constructor() { this.reset(); }
+                reset() {
+                    this.x = Math.random() * w;
+                    this.y = Math.random() * h - h;
+                    this.length = Math.random() * 28 + 14;
+                    this.speed = Math.random() * 14 + 6;
+                    this.opacity = Math.random() * 0.3 + 0.15;
+                    this.width = Math.random() * 1.5 + 0.5;
+                    this.angle = (Math.random() - 0.5) * 0.08;
+                }
+                update() {
+                    this.y += this.speed;
+                    this.x += this.angle;
+                    if (this.y > h + 50) {
+                        if (Math.random() > 0.65) createSplash(this.x, h);
+                        this.reset();
+                        this.y = -this.length;
+                    }
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.x - 1.5, this.y + this.length);
+                    ctx.strokeStyle = `rgba(180, 200, 255, ${this.opacity})`;
+                    ctx.lineWidth = this.width;
+                    ctx.shadowBlur = 4;
+                    ctx.shadowColor = `rgba(180, 200, 255, ${this.opacity * 0.3})`;
+                    ctx.stroke();
+                    ctx.shadowBlur = 0;
+                }
+            }
 
-        function drawMatrixRain() {
-            ctx.fillStyle = 'rgba(8, 12, 26, 0.04)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            class SplashDrop {
+                constructor(x, y) {
+                    this.x = x; this.y = y;
+                    this.vx = (Math.random() - 0.5) * 7;
+                    this.vy = Math.random() * -5 - 2;
+                    this.size = Math.random() * 3 + 1;
+                    this.life = 1;
+                    this.opacity = 0.6;
+                }
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    this.vy += 0.1;
+                    this.life -= 0.015;
+                    this.opacity = this.life * 0.6;
+                    this.size *= 0.99;
+                }
+                draw() {
+                    if (this.life <= 0) return;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(180, 200, 255, ${this.opacity * 0.5})`;
+                    ctx.fill();
+                }
+            }
 
-            for (let i = 0; i < drops.length; i++) {
-                const char = chars[Math.floor(Math.random() * chars.length)];
-                const x = i * fontSize;
-                const y = drops[i].y * fontSize;
+            function createSplash(x, y) {
+                for (let i = 0; i < 8; i++) splashDrops.push(new SplashDrop(x, y));
+            }
 
-                ctx.fillStyle = drops[i].color;
-                ctx.shadowBlur = 12;
-                ctx.shadowColor = drops[i].color + '22';
-                ctx.font = `bold ${fontSize}px 'Courier New', monospace`;
+            function generateLightning() {
+                const bolt = [];
+                let x = Math.random() * w;
+                let y = 0;
+                bolt.push({x, y});
+                const segments = 12 + Math.floor(Math.random() * 8);
+                for (let i = 0; i < segments; i++) {
+                    x += (Math.random() - 0.5) * 60;
+                    y += (h / segments) * (0.6 + Math.random() * 0.8);
+                    bolt.push({x, y});
+                }
+                return bolt;
+            }
 
-                if (y > 0 && y < canvas.height + 50) {
-                    ctx.fillText(char, x, y);
+            function drawLightning(bolt) {
+                if (!bolt.length) return;
+                ctx.beginPath();
+                ctx.moveTo(bolt[0].x, bolt[0].y);
+                for (let i = 1; i < bolt.length; i++) {
+                    ctx.lineTo(bolt[i].x, bolt[i].y);
+                }
+                ctx.strokeStyle = `rgba(255, 255, 255, ${0.4 + Math.random() * 0.6})`;
+                ctx.lineWidth = 2 + Math.random() * 2;
+                ctx.shadowBlur = 40;
+                ctx.shadowColor = 'rgba(200, 220, 255, 0.8)';
+                ctx.stroke();
+
+                ctx.strokeStyle = `rgba(150, 180, 255, 0.15)`;
+                ctx.lineWidth = 12 + Math.random() * 8;
+                ctx.shadowBlur = 80;
+                ctx.shadowColor = 'rgba(150, 180, 255, 0.3)';
+                ctx.stroke();
+
+                if (Math.random() > 0.5) {
+                    const mid = Math.floor(bolt.length / 2);
+                    const forkX = bolt[mid].x + (Math.random() - 0.5) * 80;
+                    const forkY = bolt[mid].y + (h / 10) * (0.5 + Math.random() * 0.5);
+                    ctx.beginPath();
+                    ctx.moveTo(bolt[mid].x, bolt[mid].y);
+                    ctx.lineTo(forkX, forkY);
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${0.2 + Math.random() * 0.3})`;
+                    ctx.lineWidth = 1 + Math.random();
+                    ctx.shadowBlur = 20;
+                    ctx.shadowColor = 'rgba(200, 220, 255, 0.5)';
+                    ctx.stroke();
                 }
                 ctx.shadowBlur = 0;
-
-                if (drops[i].y * fontSize > canvas.height + 50 && Math.random() > 0.98) {
-                    drops[i].y = 0;
-                    drops[i].color = matrixColors[Math.floor(Math.random() * matrixColors.length)];
-                }
-                drops[i].y += drops[i].speed + 0.2;
             }
 
-            requestAnimationFrame(drawMatrixRain);
-        }
+            for (let i = 0; i < dropCount; i++) drops.push(new Drop());
 
-        drawMatrixRain();
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
 
-        // ============================================
-        // ===== THEME =====
-        // ============================================
-        function setTheme(theme) {
-            localStorage.setItem('twarvis-theme', theme);
-        }
-        const saved = localStorage.getItem('twarvis-theme') || 'igblue';
-        setTheme(saved);
+                ctx.fillStyle = `rgba(100, 120, 180, ${0.02 + Math.sin(Date.now() / 8000) * 0.01})`;
+                ctx.fillRect(0, 0, w, h);
 
-        // ============================================
-        // ===== PRIVACY TOGGLE =====
-        // ============================================
+                if (lightningFlash > 0) {
+                    ctx.fillStyle = `rgba(200, 220, 255, ${lightningFlash * 0.15})`;
+                    ctx.fillRect(0, 0, w, h);
+                    lightningFlash *= 0.92;
+                    if (lightningFlash < 0.01) lightningFlash = 0;
+                }
+
+                if (lightningBolt.length > 0) {
+                    drawLightning(lightningBolt);
+                    if (Math.random() > 0.95) lightningBolt = [];
+                }
+
+                lightningTimer += 0.02;
+                if (lightningTimer > 3 + Math.random() * 5) {
+                    lightningTimer = 0;
+                    lightningFlash = 0.7 + Math.random() * 0.5;
+                    lightningBolt = generateLightning();
+                    if (Math.random() > 0.6) {
+                        setTimeout(() => {
+                            lightningFlash = 0.5 + Math.random() * 0.4;
+                            lightningBolt = generateLightning();
+                        }, 100 + Math.random() * 200);
+                    }
+                }
+
+                for (let drop of drops) {
+                    drop.update();
+                    drop.draw();
+                }
+
+                for (let i = splashDrops.length - 1; i >= 0; i--) {
+                    const s = splashDrops[i];
+                    s.update();
+                    if (s.life <= 0 || s.size < 0.1) {
+                        splashDrops.splice(i, 1);
+                    } else {
+                        s.draw();
+                    }
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        })();
+
+        // ============================================================
+        // PRIVACY TOGGLE
+        // ============================================================
         const privacyRadios = document.querySelectorAll('input[name="privacy"]');
         const passcodeSection = document.getElementById('passcodeSection');
         const passcodeInput = document.querySelector('#passcodeSection input');
@@ -1198,14 +1527,14 @@
         });
 
         if (passcodeInput) {
-            passcodeInput.addEventListener('input', function() { 
-                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4); 
+            passcodeInput.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);
             });
         }
 
-        // ============================================
-        // ===== UNIVERSITY "OTHER" =====
-        // ============================================
+        // ============================================================
+        // UNIVERSITY "OTHER"
+        // ============================================================
         const uniSelect = document.querySelector('#id_university');
         const customUniInput = document.getElementById('customUniInput');
         const customUniText = document.querySelector('#customUniInput input');
@@ -1222,9 +1551,9 @@
             });
         }
 
-        // ============================================
-        // ===== DRAG & DROP =====
-        // ============================================
+        // ============================================================
+        // DRAG & DROP
+        // ============================================================
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.querySelector('#id_file');
         const fileList = document.getElementById('fileList');
@@ -1284,9 +1613,9 @@
             }
         }
 
-        // ============================================
-        // ===== MESSAGES =====
-        // ============================================
+        // ============================================================
+        // MESSAGES
+        // ============================================================
         function showMessage(text, type) {
             const container = document.getElementById('messageContainer');
             const msg = document.createElement('div');
@@ -1297,23 +1626,21 @@
             setTimeout(() => { msg.remove(); }, 5000);
         }
 
-        // ============================================
-        // ===== FORM SUBMIT - SHOW GOLDEN POPUP =====
-        // ============================================
+        // ============================================================
+        // FORM SUBMIT - SHOW GOLDEN POPUP
+        // ============================================================
         const form = document.getElementById('uploadForm');
         const submitBtn = document.getElementById('submitBtn');
         const successOverlay = document.getElementById('successOverlay');
         const closeSuccess = document.getElementById('closeSuccess');
 
         form.addEventListener('submit', function(e) {
-            // Check if file is selected
             if (!selectedFile && fileInput && !fileInput.files.length) {
                 e.preventDefault();
                 showMessage('Please select a file to upload', 'error');
                 return;
             }
 
-            // Check passcode for private files
             const privateRadio = document.querySelector('input[name="privacy"][value="private"]');
             if (privateRadio && privateRadio.checked) {
                 const passcode = document.querySelector('#passcodeSection input');
@@ -1327,17 +1654,12 @@
                 }
             }
 
-            // Show uploading state
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
             submitBtn.disabled = true;
 
-            // The form will submit normally - show success popup after a delay
-            // This simulates successful upload for UX
             setTimeout(() => {
-                // Show golden/silver success popup
                 successOverlay.classList.add('active');
-                
-                // Animate LED message
+
                 const ledMsg = document.getElementById('ledMessage');
                 const messages = ['✦ UPLOAD SUCCESSFUL ✦', '✦ SHARING IS CARING ✦', '✦ KNOWLEDGE IS POWER ✦', '✦ YOU ROCK! ✦'];
                 let idx = 0;
@@ -1345,14 +1667,12 @@
                     idx = (idx + 1) % messages.length;
                     ledMsg.textContent = messages[idx];
                 }, 1200);
-                
-                // Reset after close
+
                 closeSuccess.addEventListener('click', function() {
                     clearInterval(interval);
                     successOverlay.classList.remove('active');
                     submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
                     submitBtn.disabled = false;
-                    // Reset form
                     form.reset();
                     selectedFile = null;
                     fileList.innerHTML = '';
@@ -1360,7 +1680,6 @@
             }, 1500);
         });
 
-        // Close on click outside
         successOverlay.addEventListener('click', function(e) {
             if (e.target === this) {
                 this.classList.remove('active');
@@ -1369,31 +1688,15 @@
             }
         });
 
-        // ============================================
-        // ===== KEYBOARD SHORTCUTS =====
-        // ============================================
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                if (successOverlay.classList.contains('active')) {
-                    successOverlay.classList.remove('active');
-                    submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
-                    submitBtn.disabled = false;
-                }
+            if (e.key === 'Escape' && successOverlay.classList.contains('active')) {
+                successOverlay.classList.remove('active');
+                submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
+                submitBtn.disabled = false;
             }
         });
 
-        // ============================================
-        // ===== MENU BUTTON =====
-        // ============================================
-        const menuBtn = document.getElementById('menuToggle');
-        if (menuBtn) {
-            menuBtn.addEventListener('click', function() {
-                console.log('Menu button clicked - sidebar would open');
-            });
-        }
-
-        console.log('✦ Student Hub — Upload Page with Golden/Silver Success Popup ✦');
-        console.log('📸 Scanner button added to header!');
+        console.log('✦ Student Hub — Upload Page with Gold Icons & Extra Glassy Background ✦');
     </script>
 </body>
 </html>
