@@ -1,4 +1,4 @@
-<!-- browse.html - Complete Updated Version -->
+<!-- browse.html - Complete Updated Version with Theme Switcher -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,15 +15,16 @@
             box-sizing: border-box;
         }
 
-        /* ========== THEME TOKENS ========== */
+        /* ============================================================
+           THEME TOKENS
+           ============================================================ */
         :root {
-            /* Matrix (default) */
+            /* ===== MATRIX (default) ===== */
             --bg-page: #000;
             --bg-header: rgba(0, 0, 0, 0.7);
             --bg-card: rgba(0, 0, 0, 0.45);
             --bg-card-hover: rgba(0, 0, 0, 0.65);
             --bg-search: rgba(0, 0, 0, 0.4);
-            --bg-input: transparent;
             --bg-stat: rgba(255, 255, 255, 0.02);
             --bg-sidebar: rgba(0, 0, 0, 0.92);
             --bg-modal: rgba(10, 10, 30, 0.92);
@@ -45,6 +46,7 @@
             --accent-purple: #b482ff;
             --accent-teal: #00c8c8;
             --accent-cream: #f5e6ca;
+            --accent-brown: #2c1810;
             --logo-gradient: linear-gradient(135deg, #4a7cf7, #6c9aff, #4a7cf7);
             --home-btn-bg: rgba(50, 150, 255, 0.06);
             --home-btn-border: rgba(50, 150, 255, 0.1);
@@ -139,257 +141,559 @@
             --canvas-bg: linear-gradient(180deg, #0a0a2e 0%, #0a0a20 50%, #0a0a1a 100%);
             --browse-header-color: #4a7cf7;
             --browse-header-shadow: rgba(74, 124, 247, 0.3);
+            --font-family: 'Inter', sans-serif;
         }
 
+        /* ============================================================
+           DARK (BLACKBOARD) THEME — matches homepage dark
+           ============================================================ */
         body.theme-dark {
-            --bg-page: #0a0a0f;
-            --bg-header: rgba(10, 10, 15, 0.85);
-            --bg-card: rgba(10, 10, 15, 0.85);
-            --bg-card-hover: rgba(10, 10, 15, 0.95);
-            --bg-search: rgba(10, 10, 15, 0.8);
+            --bg-page: #0a0f0d;
+            --bg-header: rgba(44, 24, 16, 0.75);
+            --bg-card: rgba(44, 24, 16, 0.75);
+            --bg-card-hover: rgba(44, 24, 16, 0.92);
+            --bg-search: rgba(44, 24, 16, 0.75);
             --bg-stat: rgba(255, 255, 255, 0.02);
-            --bg-sidebar: rgba(5, 5, 10, 0.95);
-            --bg-modal: rgba(5, 5, 10, 0.95);
-            --bg-contact: rgba(10, 10, 15, 0.5);
-            --border-color: rgba(50, 100, 255, 0.15);
-            --border-card: rgba(50, 100, 255, 0.15);
-            --border-card-hover: #5599ff;
-            --border-search: rgba(50, 100, 255, 0.15);
-            --border-header: rgba(50, 100, 255, 0.15);
-            --text-primary: #e0e0e0;
-            --text-secondary: rgba(200, 200, 220, 0.6);
-            --text-muted: rgba(255, 255, 255, 0.15);
-            --text-dim: rgba(200, 200, 220, 0.3);
-            --accent-blue: #5599ff;
-            --accent-blue-bright: #77aaff;
+            --bg-sidebar: rgba(20, 12, 8, 0.95);
+            --bg-modal: rgba(44, 24, 16, 0.95);
+            --bg-contact: rgba(44, 24, 16, 0.6);
+            --border-color: rgba(239, 68, 68, 0.15);
+            --border-card: rgba(239, 68, 68, 0.2);
+            --border-card-hover: #ef4444;
+            --border-search: rgba(239, 68, 68, 0.15);
+            --border-header: rgba(239, 68, 68, 0.15);
+            --text-primary: #f2ede0;
+            --text-secondary: rgba(242, 237, 224, 0.7);
+            --text-muted: rgba(242, 237, 224, 0.2);
+            --text-dim: rgba(242, 237, 224, 0.35);
+            --accent-blue: #a855f7;
+            --accent-blue-bright: #c084fc;
             --accent-gold: #ffd700;
-            --accent-red: #ff5555;
+            --accent-red: #ef4444;
             --accent-green: #22c55e;
-            --accent-purple: #a78bfa;
+            --accent-purple: #a855f7;
             --accent-teal: #2dd4bf;
             --accent-cream: #f5e6ca;
-            --logo-gradient: linear-gradient(135deg, #5599ff, #77aaff, #5599ff);
-            --home-btn-bg: rgba(50, 100, 255, 0.1);
-            --home-btn-border: rgba(50, 100, 255, 0.2);
-            --home-btn-color: rgba(200, 200, 220, 0.7);
-            --home-btn-hover-bg: rgba(50, 100, 255, 0.2);
-            --home-btn-hover-border: #5599ff;
-            --home-btn-hover-color: #77aaff;
-            --plus-btn-bg: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.08));
-            --plus-btn-border: rgba(255, 215, 0, 0.4);
-            --plus-btn-color: #ffd700;
-            --plus-btn-hover-bg: rgba(255, 215, 0, 0.2);
-            --plus-btn-hover-border: rgba(255, 215, 0, 0.8);
+            --accent-brown: #2c1810;
+            --logo-gradient: linear-gradient(135deg, #a855f7, #c084fc, #a855f7);
+            --home-btn-bg: rgba(168, 85, 247, 0.1);
+            --home-btn-border: rgba(168, 85, 247, 0.2);
+            --home-btn-color: rgba(242, 237, 224, 0.7);
+            --home-btn-hover-bg: rgba(168, 85, 247, 0.2);
+            --home-btn-hover-border: #a855f7;
+            --home-btn-hover-color: #c084fc;
+            --plus-btn-bg: linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(249, 115, 22, 0.08));
+            --plus-btn-border: rgba(249, 115, 22, 0.4);
+            --plus-btn-color: #fb923c;
+            --plus-btn-hover-bg: rgba(249, 115, 22, 0.25);
+            --plus-btn-hover-border: #f97316;
             --plus-btn-hover-color: #ffffff;
-            --search-btn-bg: linear-gradient(135deg, #5599ff, #77aaff);
-            --sidebar-border: rgba(50, 100, 255, 0.15);
-            --sidebar-item-color: rgba(200, 200, 220, 0.5);
-            --sidebar-item-hover-bg: rgba(50, 100, 255, 0.08);
-            --sidebar-item-hover-color: #77aaff;
-            --sidebar-badge-bg: rgba(50, 100, 255, 0.12);
-            --sidebar-badge-color: #77aaff;
-            --modal-border: rgba(50, 100, 255, 0.2);
-            --modal-shadow: rgba(50, 100, 255, 0.05);
-            --modal-heading: linear-gradient(135deg, #5599ff, #77aaff);
+            --search-btn-bg: linear-gradient(135deg, #f97316, #fb923c);
+            --sidebar-border: rgba(239, 68, 68, 0.15);
+            --sidebar-item-color: rgba(242, 237, 224, 0.5);
+            --sidebar-item-hover-bg: rgba(168, 85, 247, 0.08);
+            --sidebar-item-hover-color: #c084fc;
+            --sidebar-badge-bg: rgba(168, 85, 247, 0.15);
+            --sidebar-badge-color: #c084fc;
+            --modal-border: rgba(168, 85, 247, 0.2);
+            --modal-shadow: rgba(168, 85, 247, 0.05);
+            --modal-heading: linear-gradient(135deg, #a855f7, #c084fc);
             --theme-selector-bg: rgba(0, 0, 0, 0.3);
-            --theme-selector-border: rgba(50, 100, 255, 0.1);
-            --theme-selector-color: rgba(200, 200, 220, 0.3);
-            --theme-selector-hover-border: #5599ff;
-            --theme-selector-hover-color: #77aaff;
-            --theme-selector-active-border: #5599ff;
-            --theme-selector-active-bg: rgba(50, 100, 255, 0.08);
-            --theme-selector-active-color: #77aaff;
-            --setting-btn-bg: linear-gradient(135deg, #5599ff, #77aaff);
-            --doc-icon-bg: rgba(50, 100, 255, 0.1);
-            --doc-icon-color: #5599ff;
-            --doc-module-color: #ffffff;
+            --theme-selector-border: rgba(168, 85, 247, 0.1);
+            --theme-selector-color: rgba(242, 237, 224, 0.3);
+            --theme-selector-hover-border: #a855f7;
+            --theme-selector-hover-color: #c084fc;
+            --theme-selector-active-border: #a855f7;
+            --theme-selector-active-bg: rgba(168, 85, 247, 0.08);
+            --theme-selector-active-color: #c084fc;
+            --setting-btn-bg: linear-gradient(135deg, #f97316, #fb923c);
+            --doc-icon-bg: rgba(168, 85, 247, 0.12);
+            --doc-icon-color: #c084fc;
+            --doc-module-color: #f2ede0;
             --doc-course-color: #ffd700;
             --doc-university-color: #f5e6ca;
-            --doc-description-color: rgba(200, 200, 220, 0.6);
-            --doc-date-color: rgba(180, 130, 255, 0.5);
-            --doc-date-icon-color: rgba(180, 130, 255, 0.3);
-            --doc-size-color: rgba(45, 212, 191, 0.5);
-            --doc-size-icon-color: rgba(45, 212, 191, 0.3);
+            --doc-description-color: rgba(242, 237, 224, 0.6);
+            --doc-date-color: rgba(168, 85, 247, 0.6);
+            --doc-date-icon-color: rgba(168, 85, 247, 0.35);
+            --doc-size-color: rgba(45, 212, 191, 0.6);
+            --doc-size-icon-color: rgba(45, 212, 191, 0.35);
             --badge-public-bg: rgba(34, 197, 94, 0.12);
             --badge-public-color: #22c55e;
             --badge-public-border: rgba(34, 197, 94, 0.1);
-            --badge-private-bg: rgba(255, 152, 0, 0.12);
-            --badge-private-color: #ff9800;
-            --badge-private-border: rgba(255, 152, 0, 0.1);
+            --badge-private-bg: rgba(249, 115, 22, 0.12);
+            --badge-private-color: #fb923c;
+            --badge-private-border: rgba(249, 115, 22, 0.1);
             --badge-type-bg: rgba(255, 255, 255, 0.05);
-            --badge-type-color: rgba(255, 255, 255, 0.4);
+            --badge-type-color: rgba(242, 237, 224, 0.4);
             --badge-type-border: rgba(255, 255, 255, 0.05);
-            --badge-inline-bg: rgba(50, 100, 255, 0.1);
-            --badge-inline-color: #5599ff;
-            --badge-inline-border: rgba(50, 100, 255, 0.1);
-            --btn-view-bg: rgba(50, 100, 255, 0.1);
-            --btn-view-color: #5599ff;
-            --btn-view-border: rgba(50, 100, 255, 0.1);
-            --btn-view-hover-bg: rgba(50, 100, 255, 0.2);
-            --btn-view-hover-border: #5599ff;
-            --btn-download-bg: rgba(255, 50, 50, 0.12);
-            --btn-download-color: #ff5555;
-            --btn-download-border: rgba(255, 50, 50, 0.4);
-            --btn-download-hover-bg: rgba(255, 50, 50, 0.25);
-            --btn-download-hover-border: #ff5555;
+            --badge-inline-bg: rgba(168, 85, 247, 0.12);
+            --badge-inline-color: #c084fc;
+            --badge-inline-border: rgba(168, 85, 247, 0.1);
+            --btn-view-bg: rgba(168, 85, 247, 0.1);
+            --btn-view-color: #c084fc;
+            --btn-view-border: rgba(168, 85, 247, 0.1);
+            --btn-view-hover-bg: rgba(168, 85, 247, 0.2);
+            --btn-view-hover-border: #a855f7;
+            --btn-download-bg: rgba(239, 68, 68, 0.12);
+            --btn-download-color: #f87171;
+            --btn-download-border: rgba(239, 68, 68, 0.4);
+            --btn-download-hover-bg: rgba(239, 68, 68, 0.25);
+            --btn-download-hover-border: #ef4444;
             --btn-download-hover-color: #ffffff;
-            --stat-pill-color: rgba(200, 200, 220, 0.3);
-            --stat-pill-strong: rgba(200, 200, 220, 0.6);
-            --empty-icon-color: rgba(200, 200, 220, 0.08);
-            --empty-title-color: rgba(255, 255, 255, 0.3);
-            --empty-text-color: rgba(255, 255, 255, 0.15);
-            --empty-upload-bg: linear-gradient(135deg, #5599ff, #77aaff);
-            --contact-text-color: rgba(200, 200, 220, 0.3);
+            --stat-pill-color: rgba(242, 237, 224, 0.3);
+            --stat-pill-strong: rgba(242, 237, 224, 0.6);
+            --empty-icon-color: rgba(242, 237, 224, 0.08);
+            --empty-title-color: rgba(242, 237, 224, 0.3);
+            --empty-text-color: rgba(242, 237, 224, 0.15);
+            --empty-upload-bg: linear-gradient(135deg, #f97316, #fb923c);
+            --contact-text-color: rgba(242, 237, 224, 0.3);
             --whatsapp-bg: rgba(37, 211, 102, 0.1);
-            --whatsapp-color: #2aff66;
+            --whatsapp-color: #4be08a;
             --whatsapp-hover-bg: #25D366;
             --whatsapp-hover-color: #000;
             --social-bg: rgba(0, 0, 0, 0.4);
-            --social-border: rgba(255, 255, 255, 0.08);
+            --social-border: rgba(242, 237, 224, 0.08);
             --social-tiktok: #00f2ea;
             --social-instagram: #e4405f;
-            --footer-color: rgba(200, 200, 220, 0.6);
-            --back-to-top-bg: rgba(50, 100, 255, 0.15);
-            --back-to-top-color: #77aaff;
-            --back-to-top-border: rgba(50, 100, 255, 0.1);
-            --back-to-top-hover-bg: rgba(50, 100, 255, 0.25);
-            --sidebar-header-gradient: linear-gradient(135deg, #5599ff, #77aaff);
-            --sidebar-close-color: rgba(255, 255, 255, 0.12);
-            --sidebar-close-hover: #5599ff;
-            --sidebar-divider-bg: rgba(50, 100, 255, 0.06);
-            --logo-mark-color: #5599ff;
-            --logo-sub-color: rgba(200, 200, 220, 0.15);
+            --footer-color: rgba(242, 237, 224, 0.6);
+            --back-to-top-bg: rgba(168, 85, 247, 0.15);
+            --back-to-top-color: #c084fc;
+            --back-to-top-border: rgba(168, 85, 247, 0.1);
+            --back-to-top-hover-bg: rgba(168, 85, 247, 0.25);
+            --sidebar-header-gradient: linear-gradient(135deg, #a855f7, #c084fc);
+            --sidebar-close-color: rgba(242, 237, 224, 0.12);
+            --sidebar-close-hover: #a855f7;
+            --sidebar-divider-bg: rgba(168, 85, 247, 0.08);
+            --logo-mark-color: #a855f7;
+            --logo-sub-color: rgba(242, 237, 224, 0.2);
             --canvas-bg: linear-gradient(180deg, #0a0a1a 0%, #0a0a12 50%, #0a0a0a 100%);
-            --browse-header-color: #5599ff;
-            --browse-header-shadow: rgba(85, 153, 255, 0.3);
+            --browse-header-color: #a855f7;
+            --browse-header-shadow: rgba(168, 85, 247, 0.3);
+            --font-family: 'Inter', sans-serif;
         }
 
+        /* ============================================================
+           LIGHT (PAPER) THEME — matches homepage light
+           ============================================================ */
         body.theme-light {
-            --bg-page: #f0f0f5;
-            --bg-header: rgba(255, 255, 255, 0.9);
-            --bg-card: rgba(255, 255, 255, 0.9);
-            --bg-card-hover: rgba(255, 255, 255, 1);
-            --bg-search: rgba(255, 255, 255, 0.95);
-            --bg-stat: rgba(0, 0, 0, 0.02);
-            --bg-sidebar: rgba(255, 255, 255, 0.98);
-            --bg-modal: rgba(255, 255, 255, 0.98);
-            --bg-contact: rgba(255, 255, 255, 0.6);
-            --border-color: rgba(50, 100, 255, 0.1);
-            --border-card: rgba(50, 100, 255, 0.1);
-            --border-card-hover: #3355aa;
-            --border-search: rgba(50, 100, 255, 0.1);
-            --border-header: rgba(50, 100, 255, 0.1);
-            --text-primary: #1a1a2e;
-            --text-secondary: #444466;
-            --text-muted: rgba(0, 0, 0, 0.1);
-            --text-dim: rgba(0, 0, 0, 0.15);
-            --accent-blue: #3355aa;
-            --accent-blue-bright: #4466bb;
-            --accent-gold: #cc9900;
-            --accent-red: #dd2222;
+            --bg-page: #f5efdd;
+            --bg-header: rgba(255, 250, 240, 0.94);
+            --bg-card: rgba(255, 250, 240, 0.92);
+            --bg-card-hover: rgba(255, 250, 240, 1);
+            --bg-search: rgba(255, 250, 240, 0.95);
+            --bg-stat: rgba(36, 29, 19, 0.03);
+            --bg-sidebar: rgba(236, 225, 196, 0.98);
+            --bg-modal: rgba(255, 250, 240, 0.98);
+            --bg-contact: rgba(255, 250, 240, 0.7);
+            --border-color: rgba(220, 38, 38, 0.12);
+            --border-card: rgba(220, 38, 38, 0.12);
+            --border-card-hover: #dc2626;
+            --border-search: rgba(220, 38, 38, 0.12);
+            --border-header: rgba(220, 38, 38, 0.15);
+            --text-primary: #241d13;
+            --text-secondary: #5b5238;
+            --text-muted: rgba(36, 29, 19, 0.15);
+            --text-dim: rgba(36, 29, 19, 0.3);
+            --accent-blue: #7c3aed;
+            --accent-blue-bright: #8b5cf6;
+            --accent-gold: #d4a017;
+            --accent-red: #dc2626;
             --accent-green: #16a34a;
             --accent-purple: #7c3aed;
             --accent-teal: #0d9488;
             --accent-cream: #8b7355;
-            --logo-gradient: linear-gradient(135deg, #3355aa, #4466bb, #3355aa);
-            --home-btn-bg: rgba(50, 100, 255, 0.08);
-            --home-btn-border: rgba(50, 100, 255, 0.15);
-            --home-btn-color: #444466;
-            --home-btn-hover-bg: rgba(50, 100, 255, 0.15);
-            --home-btn-hover-border: #3355aa;
-            --home-btn-hover-color: #3355aa;
-            --plus-btn-bg: linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 193, 7, 0.08));
-            --plus-btn-border: rgba(204, 153, 0, 0.4);
-            --plus-btn-color: #cc9900;
-            --plus-btn-hover-bg: rgba(255, 193, 7, 0.25);
-            --plus-btn-hover-border: #cc9900;
+            --accent-brown: #d4c5a0;
+            --logo-gradient: linear-gradient(135deg, #7c3aed, #8b5cf6, #7c3aed);
+            --home-btn-bg: rgba(124, 58, 237, 0.08);
+            --home-btn-border: rgba(124, 58, 237, 0.15);
+            --home-btn-color: #5b5238;
+            --home-btn-hover-bg: rgba(124, 58, 237, 0.15);
+            --home-btn-hover-border: #7c3aed;
+            --home-btn-hover-color: #7c3aed;
+            --plus-btn-bg: linear-gradient(135deg, rgba(230, 126, 34, 0.15), rgba(230, 126, 34, 0.08));
+            --plus-btn-border: rgba(230, 126, 34, 0.4);
+            --plus-btn-color: #e67e22;
+            --plus-btn-hover-bg: rgba(230, 126, 34, 0.25);
+            --plus-btn-hover-border: #e67e22;
             --plus-btn-hover-color: #ffffff;
-            --search-btn-bg: linear-gradient(135deg, #3355aa, #4466bb);
-            --sidebar-border: rgba(50, 100, 255, 0.1);
-            --sidebar-item-color: #444466;
-            --sidebar-item-hover-bg: rgba(50, 100, 255, 0.06);
-            --sidebar-item-hover-color: #3355aa;
-            --sidebar-badge-bg: rgba(50, 100, 255, 0.1);
-            --sidebar-badge-color: #3355aa;
-            --modal-border: rgba(50, 100, 255, 0.15);
-            --modal-shadow: rgba(50, 100, 255, 0.03);
-            --modal-heading: linear-gradient(135deg, #3355aa, #4466bb);
-            --theme-selector-bg: rgba(0, 0, 0, 0.04);
-            --theme-selector-border: rgba(50, 100, 255, 0.1);
-            --theme-selector-color: #666688;
-            --theme-selector-hover-border: #3355aa;
-            --theme-selector-hover-color: #3355aa;
-            --theme-selector-active-border: #3355aa;
-            --theme-selector-active-bg: rgba(50, 100, 255, 0.06);
-            --theme-selector-active-color: #3355aa;
-            --setting-btn-bg: linear-gradient(135deg, #3355aa, #4466bb);
-            --doc-icon-bg: rgba(50, 100, 255, 0.08);
-            --doc-icon-color: #3355aa;
-            --doc-module-color: #1a1a2e;
-            --doc-course-color: #cc9900;
+            --search-btn-bg: linear-gradient(135deg, #e67e22, #f39c12);
+            --sidebar-border: rgba(220, 38, 38, 0.15);
+            --sidebar-item-color: #5b5238;
+            --sidebar-item-hover-bg: rgba(124, 58, 237, 0.08);
+            --sidebar-item-hover-color: #7c3aed;
+            --sidebar-badge-bg: rgba(124, 58, 237, 0.12);
+            --sidebar-badge-color: #7c3aed;
+            --modal-border: rgba(124, 58, 237, 0.2);
+            --modal-shadow: rgba(124, 58, 237, 0.05);
+            --modal-heading: linear-gradient(135deg, #7c3aed, #8b5cf6);
+            --theme-selector-bg: rgba(36, 29, 19, 0.04);
+            --theme-selector-border: rgba(124, 58, 237, 0.1);
+            --theme-selector-color: #5b5238;
+            --theme-selector-hover-border: #7c3aed;
+            --theme-selector-hover-color: #7c3aed;
+            --theme-selector-active-border: #7c3aed;
+            --theme-selector-active-bg: rgba(124, 58, 237, 0.08);
+            --theme-selector-active-color: #7c3aed;
+            --setting-btn-bg: linear-gradient(135deg, #e67e22, #f39c12);
+            --doc-icon-bg: rgba(124, 58, 237, 0.1);
+            --doc-icon-color: #7c3aed;
+            --doc-module-color: #241d13;
+            --doc-course-color: #d4a017;
             --doc-university-color: #8b7355;
-            --doc-description-color: #666688;
-            --doc-date-color: rgba(124, 58, 237, 0.6);
-            --doc-date-icon-color: rgba(124, 58, 237, 0.35);
-            --doc-size-color: rgba(13, 148, 136, 0.6);
-            --doc-size-icon-color: rgba(13, 148, 136, 0.35);
-            --badge-public-bg: rgba(22, 163, 74, 0.1);
+            --doc-description-color: #5b5238;
+            --doc-date-color: rgba(124, 58, 237, 0.7);
+            --doc-date-icon-color: rgba(124, 58, 237, 0.4);
+            --doc-size-color: rgba(13, 148, 136, 0.7);
+            --doc-size-icon-color: rgba(13, 148, 136, 0.4);
+            --badge-public-bg: rgba(22, 163, 74, 0.12);
             --badge-public-color: #16a34a;
             --badge-public-border: rgba(22, 163, 74, 0.15);
-            --badge-private-bg: rgba(255, 152, 0, 0.1);
-            --badge-private-color: #cc9900;
-            --badge-private-border: rgba(255, 152, 0, 0.15);
-            --badge-type-bg: rgba(0, 0, 0, 0.04);
-            --badge-type-color: #666688;
-            --badge-type-border: rgba(0, 0, 0, 0.06);
-            --badge-inline-bg: rgba(50, 100, 255, 0.08);
-            --badge-inline-color: #3355aa;
-            --badge-inline-border: rgba(50, 100, 255, 0.1);
-            --btn-view-bg: rgba(50, 100, 255, 0.08);
-            --btn-view-color: #3355aa;
-            --btn-view-border: rgba(50, 100, 255, 0.1);
-            --btn-view-hover-bg: rgba(50, 100, 255, 0.15);
-            --btn-view-hover-border: #3355aa;
-            --btn-download-bg: rgba(220, 50, 50, 0.08);
-            --btn-download-color: #dd2222;
-            --btn-download-border: rgba(220, 50, 50, 0.3);
-            --btn-download-hover-bg: rgba(220, 50, 50, 0.2);
-            --btn-download-hover-border: #dd2222;
+            --badge-private-bg: rgba(230, 126, 34, 0.12);
+            --badge-private-color: #e67e22;
+            --badge-private-border: rgba(230, 126, 34, 0.15);
+            --badge-type-bg: rgba(36, 29, 19, 0.05);
+            --badge-type-color: #5b5238;
+            --badge-type-border: rgba(36, 29, 19, 0.08);
+            --badge-inline-bg: rgba(124, 58, 237, 0.1);
+            --badge-inline-color: #7c3aed;
+            --badge-inline-border: rgba(124, 58, 237, 0.1);
+            --btn-view-bg: rgba(124, 58, 237, 0.1);
+            --btn-view-color: #7c3aed;
+            --btn-view-border: rgba(124, 58, 237, 0.12);
+            --btn-view-hover-bg: rgba(124, 58, 237, 0.2);
+            --btn-view-hover-border: #7c3aed;
+            --btn-download-bg: rgba(220, 38, 38, 0.08);
+            --btn-download-color: #dc2626;
+            --btn-download-border: rgba(220, 38, 38, 0.3);
+            --btn-download-hover-bg: rgba(220, 38, 38, 0.2);
+            --btn-download-hover-border: #dc2626;
             --btn-download-hover-color: #ffffff;
-            --stat-pill-color: #666688;
-            --stat-pill-strong: #3355aa;
-            --empty-icon-color: rgba(0, 0, 0, 0.06);
-            --empty-title-color: rgba(0, 0, 0, 0.25);
-            --empty-text-color: rgba(0, 0, 0, 0.15);
-            --empty-upload-bg: linear-gradient(135deg, #3355aa, #4466bb);
-            --contact-text-color: #666688;
-            --whatsapp-bg: rgba(37, 211, 102, 0.08);
-            --whatsapp-color: #16a34a;
+            --stat-pill-color: #5b5238;
+            --stat-pill-strong: #7c3aed;
+            --empty-icon-color: rgba(36, 29, 19, 0.06);
+            --empty-title-color: rgba(36, 29, 19, 0.3);
+            --empty-text-color: rgba(36, 29, 19, 0.2);
+            --empty-upload-bg: linear-gradient(135deg, #e67e22, #f39c12);
+            --contact-text-color: #5b5238;
+            --whatsapp-bg: rgba(37, 211, 102, 0.1);
+            --whatsapp-color: #1c8a4d;
             --whatsapp-hover-bg: #25D366;
             --whatsapp-hover-color: #ffffff;
-            --social-bg: rgba(0, 0, 0, 0.04);
-            --social-border: rgba(0, 0, 0, 0.08);
+            --social-bg: rgba(36, 29, 19, 0.05);
+            --social-border: rgba(36, 29, 19, 0.1);
             --social-tiktok: #00f2ea;
             --social-instagram: #e4405f;
-            --footer-color: #666688;
-            --back-to-top-bg: rgba(50, 100, 255, 0.1);
-            --back-to-top-color: #3355aa;
-            --back-to-top-border: rgba(50, 100, 255, 0.08);
-            --back-to-top-hover-bg: rgba(50, 100, 255, 0.2);
-            --sidebar-header-gradient: linear-gradient(135deg, #3355aa, #4466bb);
-            --sidebar-close-color: rgba(0, 0, 0, 0.15);
-            --sidebar-close-hover: #3355aa;
-            --sidebar-divider-bg: rgba(50, 100, 255, 0.06);
-            --logo-mark-color: #3355aa;
-            --logo-sub-color: rgba(0, 0, 0, 0.15);
-            --canvas-bg: linear-gradient(180deg, #d0d8f0 0%, #e0e5f5 50%, #e8ecf8 100%);
-            --browse-header-color: #3355aa;
-            --browse-header-shadow: rgba(51, 85, 170, 0.3);
+            --footer-color: #5b5238;
+            --back-to-top-bg: rgba(124, 58, 237, 0.12);
+            --back-to-top-color: #7c3aed;
+            --back-to-top-border: rgba(124, 58, 237, 0.1);
+            --back-to-top-hover-bg: rgba(124, 58, 237, 0.22);
+            --sidebar-header-gradient: linear-gradient(135deg, #7c3aed, #8b5cf6);
+            --sidebar-close-color: rgba(36, 29, 19, 0.2);
+            --sidebar-close-hover: #7c3aed;
+            --sidebar-divider-bg: rgba(124, 58, 237, 0.08);
+            --logo-mark-color: #7c3aed;
+            --logo-sub-color: rgba(36, 29, 19, 0.2);
+            --canvas-bg: linear-gradient(180deg, #f5efdd 0%, #ece1c4 50%, #e8dcc0 100%);
+            --browse-header-color: #7c3aed;
+            --browse-header-shadow: rgba(124, 58, 237, 0.3);
+            --font-family: 'Inter', sans-serif;
         }
 
+        /* ============================================================
+           BASE STYLES
+           ============================================================ */
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: var(--font-family);
             background: var(--bg-page);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 0.5s, color 0.5s;
+        }
+
+        /* ========== CANVAS - MATRIX RAIN ========== */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: var(--canvas-bg);
+            transition: opacity 0.8s ease;
+        }
+
+        body.theme-matrix #matrix-canvas { opacity: 1; }
+        body.theme-dark #matrix-canvas,
+        body.theme-light #matrix-canvas {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* ============================================================
+           DARK (BLACKBOARD) THEME — matches homepage dark
+           ============================================================ */
+        body.theme-dark {
+            --bg-page: #0a0f0d;
+            --bg-header: rgba(44, 24, 16, 0.75);
+            --bg-card: rgba(44, 24, 16, 0.75);
+            --bg-card-hover: rgba(44, 24, 16, 0.92);
+            --bg-search: rgba(44, 24, 16, 0.75);
+            --bg-stat: rgba(255, 255, 255, 0.02);
+            --bg-sidebar: rgba(20, 12, 8, 0.95);
+            --bg-modal: rgba(44, 24, 16, 0.95);
+            --bg-contact: rgba(44, 24, 16, 0.6);
+            --border-color: rgba(239, 68, 68, 0.15);
+            --border-card: rgba(239, 68, 68, 0.2);
+            --border-card-hover: #ef4444;
+            --border-search: rgba(239, 68, 68, 0.15);
+            --border-header: rgba(239, 68, 68, 0.15);
+            --text-primary: #f2ede0;
+            --text-secondary: rgba(242, 237, 224, 0.7);
+            --text-muted: rgba(242, 237, 224, 0.2);
+            --text-dim: rgba(242, 237, 224, 0.35);
+            --accent-blue: #a855f7;
+            --accent-blue-bright: #c084fc;
+            --accent-gold: #ffd700;
+            --accent-red: #ef4444;
+            --accent-green: #22c55e;
+            --accent-purple: #a855f7;
+            --accent-teal: #2dd4bf;
+            --accent-cream: #f5e6ca;
+            --accent-brown: #2c1810;
+            --logo-gradient: linear-gradient(135deg, #a855f7, #c084fc, #a855f7);
+            --home-btn-bg: rgba(168, 85, 247, 0.1);
+            --home-btn-border: rgba(168, 85, 247, 0.2);
+            --home-btn-color: rgba(242, 237, 224, 0.7);
+            --home-btn-hover-bg: rgba(168, 85, 247, 0.2);
+            --home-btn-hover-border: #a855f7;
+            --home-btn-hover-color: #c084fc;
+            --plus-btn-bg: linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(249, 115, 22, 0.08));
+            --plus-btn-border: rgba(249, 115, 22, 0.4);
+            --plus-btn-color: #fb923c;
+            --plus-btn-hover-bg: rgba(249, 115, 22, 0.25);
+            --plus-btn-hover-border: #f97316;
+            --plus-btn-hover-color: #ffffff;
+            --search-btn-bg: linear-gradient(135deg, #f97316, #fb923c);
+            --sidebar-border: rgba(239, 68, 68, 0.15);
+            --sidebar-item-color: rgba(242, 237, 224, 0.5);
+            --sidebar-item-hover-bg: rgba(168, 85, 247, 0.08);
+            --sidebar-item-hover-color: #c084fc;
+            --sidebar-badge-bg: rgba(168, 85, 247, 0.15);
+            --sidebar-badge-color: #c084fc;
+            --modal-border: rgba(168, 85, 247, 0.2);
+            --modal-shadow: rgba(168, 85, 247, 0.05);
+            --modal-heading: linear-gradient(135deg, #a855f7, #c084fc);
+            --theme-selector-bg: rgba(0, 0, 0, 0.3);
+            --theme-selector-border: rgba(168, 85, 247, 0.1);
+            --theme-selector-color: rgba(242, 237, 224, 0.3);
+            --theme-selector-hover-border: #a855f7;
+            --theme-selector-hover-color: #c084fc;
+            --theme-selector-active-border: #a855f7;
+            --theme-selector-active-bg: rgba(168, 85, 247, 0.08);
+            --theme-selector-active-color: #c084fc;
+            --setting-btn-bg: linear-gradient(135deg, #f97316, #fb923c);
+            --doc-icon-bg: rgba(168, 85, 247, 0.12);
+            --doc-icon-color: #c084fc;
+            --doc-module-color: #f2ede0;
+            --doc-course-color: #ffd700;
+            --doc-university-color: #f5e6ca;
+            --doc-description-color: rgba(242, 237, 224, 0.6);
+            --doc-date-color: rgba(168, 85, 247, 0.6);
+            --doc-date-icon-color: rgba(168, 85, 247, 0.35);
+            --doc-size-color: rgba(45, 212, 191, 0.6);
+            --doc-size-icon-color: rgba(45, 212, 191, 0.35);
+            --badge-public-bg: rgba(34, 197, 94, 0.12);
+            --badge-public-color: #22c55e;
+            --badge-public-border: rgba(34, 197, 94, 0.1);
+            --badge-private-bg: rgba(249, 115, 22, 0.12);
+            --badge-private-color: #fb923c;
+            --badge-private-border: rgba(249, 115, 22, 0.1);
+            --badge-type-bg: rgba(255, 255, 255, 0.05);
+            --badge-type-color: rgba(242, 237, 224, 0.4);
+            --badge-type-border: rgba(255, 255, 255, 0.05);
+            --badge-inline-bg: rgba(168, 85, 247, 0.12);
+            --badge-inline-color: #c084fc;
+            --badge-inline-border: rgba(168, 85, 247, 0.1);
+            --btn-view-bg: rgba(168, 85, 247, 0.1);
+            --btn-view-color: #c084fc;
+            --btn-view-border: rgba(168, 85, 247, 0.1);
+            --btn-view-hover-bg: rgba(168, 85, 247, 0.2);
+            --btn-view-hover-border: #a855f7;
+            --btn-download-bg: rgba(239, 68, 68, 0.12);
+            --btn-download-color: #f87171;
+            --btn-download-border: rgba(239, 68, 68, 0.4);
+            --btn-download-hover-bg: rgba(239, 68, 68, 0.25);
+            --btn-download-hover-border: #ef4444;
+            --btn-download-hover-color: #ffffff;
+            --stat-pill-color: rgba(242, 237, 224, 0.3);
+            --stat-pill-strong: rgba(242, 237, 224, 0.6);
+            --empty-icon-color: rgba(242, 237, 224, 0.08);
+            --empty-title-color: rgba(242, 237, 224, 0.3);
+            --empty-text-color: rgba(242, 237, 224, 0.15);
+            --empty-upload-bg: linear-gradient(135deg, #f97316, #fb923c);
+            --contact-text-color: rgba(242, 237, 224, 0.3);
+            --whatsapp-bg: rgba(37, 211, 102, 0.1);
+            --whatsapp-color: #4be08a;
+            --whatsapp-hover-bg: #25D366;
+            --whatsapp-hover-color: #000;
+            --social-bg: rgba(0, 0, 0, 0.4);
+            --social-border: rgba(242, 237, 224, 0.08);
+            --social-tiktok: #00f2ea;
+            --social-instagram: #e4405f;
+            --footer-color: rgba(242, 237, 224, 0.6);
+            --back-to-top-bg: rgba(168, 85, 247, 0.15);
+            --back-to-top-color: #c084fc;
+            --back-to-top-border: rgba(168, 85, 247, 0.1);
+            --back-to-top-hover-bg: rgba(168, 85, 247, 0.25);
+            --sidebar-header-gradient: linear-gradient(135deg, #a855f7, #c084fc);
+            --sidebar-close-color: rgba(242, 237, 224, 0.12);
+            --sidebar-close-hover: #a855f7;
+            --sidebar-divider-bg: rgba(168, 85, 247, 0.08);
+            --logo-mark-color: #a855f7;
+            --logo-sub-color: rgba(242, 237, 224, 0.2);
+            --canvas-bg: linear-gradient(180deg, #0a0a1a 0%, #0a0a12 50%, #0a0a0a 100%);
+            --browse-header-color: #a855f7;
+            --browse-header-shadow: rgba(168, 85, 247, 0.3);
+            --font-family: 'Inter', sans-serif;
+        }
+
+        /* ============================================================
+           LIGHT (PAPER) THEME — matches homepage light
+           ============================================================ */
+        body.theme-light {
+            --bg-page: #f5efdd;
+            --bg-header: rgba(255, 250, 240, 0.94);
+            --bg-card: rgba(255, 250, 240, 0.92);
+            --bg-card-hover: rgba(255, 250, 240, 1);
+            --bg-search: rgba(255, 250, 240, 0.95);
+            --bg-stat: rgba(36, 29, 19, 0.03);
+            --bg-sidebar: rgba(236, 225, 196, 0.98);
+            --bg-modal: rgba(255, 250, 240, 0.98);
+            --bg-contact: rgba(255, 250, 240, 0.7);
+            --border-color: rgba(220, 38, 38, 0.12);
+            --border-card: rgba(220, 38, 38, 0.12);
+            --border-card-hover: #dc2626;
+            --border-search: rgba(220, 38, 38, 0.12);
+            --border-header: rgba(220, 38, 38, 0.15);
+            --text-primary: #241d13;
+            --text-secondary: #5b5238;
+            --text-muted: rgba(36, 29, 19, 0.15);
+            --text-dim: rgba(36, 29, 19, 0.3);
+            --accent-blue: #7c3aed;
+            --accent-blue-bright: #8b5cf6;
+            --accent-gold: #d4a017;
+            --accent-red: #dc2626;
+            --accent-green: #16a34a;
+            --accent-purple: #7c3aed;
+            --accent-teal: #0d9488;
+            --accent-cream: #8b7355;
+            --accent-brown: #d4c5a0;
+            --logo-gradient: linear-gradient(135deg, #7c3aed, #8b5cf6, #7c3aed);
+            --home-btn-bg: rgba(124, 58, 237, 0.08);
+            --home-btn-border: rgba(124, 58, 237, 0.15);
+            --home-btn-color: #5b5238;
+            --home-btn-hover-bg: rgba(124, 58, 237, 0.15);
+            --home-btn-hover-border: #7c3aed;
+            --home-btn-hover-color: #7c3aed;
+            --plus-btn-bg: linear-gradient(135deg, rgba(230, 126, 34, 0.15), rgba(230, 126, 34, 0.08));
+            --plus-btn-border: rgba(230, 126, 34, 0.4);
+            --plus-btn-color: #e67e22;
+            --plus-btn-hover-bg: rgba(230, 126, 34, 0.25);
+            --plus-btn-hover-border: #e67e22;
+            --plus-btn-hover-color: #ffffff;
+            --search-btn-bg: linear-gradient(135deg, #e67e22, #f39c12);
+            --sidebar-border: rgba(220, 38, 38, 0.15);
+            --sidebar-item-color: #5b5238;
+            --sidebar-item-hover-bg: rgba(124, 58, 237, 0.08);
+            --sidebar-item-hover-color: #7c3aed;
+            --sidebar-badge-bg: rgba(124, 58, 237, 0.12);
+            --sidebar-badge-color: #7c3aed;
+            --modal-border: rgba(124, 58, 237, 0.2);
+            --modal-shadow: rgba(124, 58, 237, 0.05);
+            --modal-heading: linear-gradient(135deg, #7c3aed, #8b5cf6);
+            --theme-selector-bg: rgba(36, 29, 19, 0.04);
+            --theme-selector-border: rgba(124, 58, 237, 0.1);
+            --theme-selector-color: #5b5238;
+            --theme-selector-hover-border: #7c3aed;
+            --theme-selector-hover-color: #7c3aed;
+            --theme-selector-active-border: #7c3aed;
+            --theme-selector-active-bg: rgba(124, 58, 237, 0.08);
+            --theme-selector-active-color: #7c3aed;
+            --setting-btn-bg: linear-gradient(135deg, #e67e22, #f39c12);
+            --doc-icon-bg: rgba(124, 58, 237, 0.1);
+            --doc-icon-color: #7c3aed;
+            --doc-module-color: #241d13;
+            --doc-course-color: #d4a017;
+            --doc-university-color: #8b7355;
+            --doc-description-color: #5b5238;
+            --doc-date-color: rgba(124, 58, 237, 0.7);
+            --doc-date-icon-color: rgba(124, 58, 237, 0.4);
+            --doc-size-color: rgba(13, 148, 136, 0.7);
+            --doc-size-icon-color: rgba(13, 148, 136, 0.4);
+            --badge-public-bg: rgba(22, 163, 74, 0.12);
+            --badge-public-color: #16a34a;
+            --badge-public-border: rgba(22, 163, 74, 0.15);
+            --badge-private-bg: rgba(230, 126, 34, 0.12);
+            --badge-private-color: #e67e22;
+            --badge-private-border: rgba(230, 126, 34, 0.15);
+            --badge-type-bg: rgba(36, 29, 19, 0.05);
+            --badge-type-color: #5b5238;
+            --badge-type-border: rgba(36, 29, 19, 0.08);
+            --badge-inline-bg: rgba(124, 58, 237, 0.1);
+            --badge-inline-color: #7c3aed;
+            --badge-inline-border: rgba(124, 58, 237, 0.1);
+            --btn-view-bg: rgba(124, 58, 237, 0.1);
+            --btn-view-color: #7c3aed;
+            --btn-view-border: rgba(124, 58, 237, 0.12);
+            --btn-view-hover-bg: rgba(124, 58, 237, 0.2);
+            --btn-view-hover-border: #7c3aed;
+            --btn-download-bg: rgba(220, 38, 38, 0.08);
+            --btn-download-color: #dc2626;
+            --btn-download-border: rgba(220, 38, 38, 0.3);
+            --btn-download-hover-bg: rgba(220, 38, 38, 0.2);
+            --btn-download-hover-border: #dc2626;
+            --btn-download-hover-color: #ffffff;
+            --stat-pill-color: #5b5238;
+            --stat-pill-strong: #7c3aed;
+            --empty-icon-color: rgba(36, 29, 19, 0.06);
+            --empty-title-color: rgba(36, 29, 19, 0.3);
+            --empty-text-color: rgba(36, 29, 19, 0.2);
+            --empty-upload-bg: linear-gradient(135deg, #e67e22, #f39c12);
+            --contact-text-color: #5b5238;
+            --whatsapp-bg: rgba(37, 211, 102, 0.1);
+            --whatsapp-color: #1c8a4d;
+            --whatsapp-hover-bg: #25D366;
+            --whatsapp-hover-color: #ffffff;
+            --social-bg: rgba(36, 29, 19, 0.05);
+            --social-border: rgba(36, 29, 19, 0.1);
+            --social-tiktok: #00f2ea;
+            --social-instagram: #e4405f;
+            --footer-color: #5b5238;
+            --back-to-top-bg: rgba(124, 58, 237, 0.12);
+            --back-to-top-color: #7c3aed;
+            --back-to-top-border: rgba(124, 58, 237, 0.1);
+            --back-to-top-hover-bg: rgba(124, 58, 237, 0.22);
+            --sidebar-header-gradient: linear-gradient(135deg, #7c3aed, #8b5cf6);
+            --sidebar-close-color: rgba(36, 29, 19, 0.2);
+            --sidebar-close-hover: #7c3aed;
+            --sidebar-divider-bg: rgba(124, 58, 237, 0.08);
+            --logo-mark-color: #7c3aed;
+            --logo-sub-color: rgba(36, 29, 19, 0.2);
+            --canvas-bg: linear-gradient(180deg, #f5efdd 0%, #ece1c4 50%, #e8dcc0 100%);
+            --browse-header-color: #7c3aed;
+            --browse-header-shadow: rgba(124, 58, 237, 0.3);
+            --font-family: 'Inter', sans-serif;
+        }
+
+        /* ============================================================
+           BASE STYLES
+           ============================================================ */
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-page);
+            color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
             transition: background 0.5s, color 0.5s;
@@ -502,6 +806,35 @@
             letter-spacing: 3px;
             color: var(--logo-sub-color);
             margin-top: -2px;
+        }
+
+        /* ===== THEME SWITCHER IN HEADER ===== */
+        .theme-switch-header {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: var(--home-btn-bg);
+            border: 1px solid var(--home-btn-border);
+            border-radius: 60px;
+            color: var(--home-btn-color);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .theme-switch-header:hover {
+            background: var(--home-btn-hover-bg);
+            border-color: var(--home-btn-hover-border);
+            color: var(--home-btn-hover-color);
+            transform: translateY(-2px);
+        }
+
+        .theme-switch-header i {
+            color: var(--logo-mark-color);
+            font-size: 0.9rem;
         }
 
         /* ===== PLUS BUTTON ===== */
@@ -1382,6 +1715,7 @@
             .browse-header h1 { font-size: 1.6rem; }
             .plus-btn { padding: 8px 18px; font-size: 0.8rem; }
             .home-btn { padding: 6px 14px; font-size: 0.75rem; }
+            .theme-switch-header { padding: 6px 12px; font-size: 0.7rem; }
             .logo { font-size: 1.3rem; }
             .doc-card .doc-module { font-size: 1rem; }
             .doc-card .doc-bottom { flex-direction: column; align-items: stretch; }
@@ -1423,10 +1757,16 @@
                         <span class="logo-sub">STUDENT HUB</span>
                     </div>
                 </div>
-                <!-- PLUS BUTTON -->
-                <a href="/upload/" class="plus-btn">
-                    <i class="fas fa-plus-circle"></i> Upload
-                </a>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <!-- THEME SWITCHER IN HEADER -->
+                    <button class="theme-switch-header" id="themeSwitchHeader" title="Switch theme">
+                        <i class="fas fa-palette"></i> <span id="themeLabelHeader">Matrix</span>
+                    </button>
+                    <!-- PLUS BUTTON -->
+                    <a href="/upload/" class="plus-btn">
+                        <i class="fas fa-plus-circle"></i> Upload
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -1791,6 +2131,12 @@
                 const btn = document.getElementById('theme' + theme.charAt(0).toUpperCase() + theme.slice(1));
                 if (btn) btn.classList.add('active');
 
+                // Update header label
+                const label = document.getElementById('themeLabelHeader');
+                if (label) {
+                    label.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
+                }
+
                 localStorage.setItem('twarvis-theme', theme);
             }
 
@@ -1800,6 +2146,14 @@
             document.getElementById('themeMatrix').addEventListener('click', () => setTheme('matrix'));
             document.getElementById('themeDark').addEventListener('click', () => setTheme('dark'));
             document.getElementById('themeLight').addEventListener('click', () => setTheme('light'));
+
+            // Header theme switcher (cycles through)
+            document.getElementById('themeSwitchHeader').addEventListener('click', () => {
+                const current = localStorage.getItem('twarvis-theme') || 'matrix';
+                const order = ['matrix', 'dark', 'light'];
+                const next = order[(order.indexOf(current) + 1) % order.length];
+                setTheme(next);
+            });
 
             document.getElementById('refreshBtn').addEventListener('click', () => location.reload());
 
