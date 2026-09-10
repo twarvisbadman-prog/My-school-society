@@ -1,4 +1,4 @@
-# app.py - YOUR WORKING VERSION (FIXED) with SCANNER ROUTE ADDED
+# app.py - YOUR WORKING VERSION (FIXED) with SCANNER + ABOUT + SECRET ADMIN
 import os
 import uuid
 import json
@@ -20,9 +20,15 @@ SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 SECRET_KEY = "django-insecure-twarvis-school-key-2024"
 ADMIN = True
 
+# ========== 🔐 SECRET ADMIN PATH ==========
+# Only YOU should know this. Change it to anything random.
+# Keep it long, mixed, and hard to guess. Never share it publicly.
+SECRET_ADMIN_PATH = "admin-portal-twarvis-9x7k2m4p8q3z5w6v"
+
 print("=" * 60)
 print("🚀 TWARVIS SCHOOL - WORKING VERSION")
 print(f"📡 URL: {SUPABASE_URL}")
+print(f"🔐 Admin URL: /{SECRET_ADMIN_PATH}/")
 print("=" * 60)
 
 # ========== DJANGO SETTINGS ==========
@@ -637,7 +643,8 @@ def delete_file(request, id):
         note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
         supabase.storage.from_("notes").remove([note["filename"]])
         supabase.table("notes").delete().eq("id", id).execute()
-        return redirect("/admin/")
+        # ✅ Redirect to the new SECRET admin URL
+        return redirect(f"/{SECRET_ADMIN_PATH}/")
     except Exception as e:
         return HttpResponse(f"Delete failed: {str(e)}", status=500)
 
@@ -723,6 +730,25 @@ def admin_settings(request):
         return HttpResponse("Access Denied. Admin only.", status=403)
     return render(request, "admin_settings.html", {})
 
+# ========== ABOUT VIEW (NEW) ==========
+def about_view(request):
+    """Render the about.html page"""
+    try:
+        return render(request, "about.html")
+    except Exception as e:
+        return HttpResponse(f"""
+            <!DOCTYPE html>
+            <html>
+            <head><title>About | Twarvis School</title></head>
+            <body style="font-family:Arial;background:#0a0a1a;color:#fff;text-align:center;padding:50px;">
+                <h1 style="color:#ffd700;">About Student Hub</h1>
+                <p style="color:#888;">About page coming soon.</p>
+                <a href="/" style="color:#4a7cf7;">← Back to Home</a>
+                <p style="color:#666;font-size:12px;margin-top:20px;">Error: {e}</p>
+            </body>
+            </html>
+        """)
+
 # ========== NEW PAGE VIEWS ==========
 def calculator_view(request):
     return render(request, "calculator.html")
@@ -763,7 +789,7 @@ def free_courses_view(request):
             </html>
         """)
 
-# ========== SCANNER VIEW - NEW ADDITION ==========
+# ========== SCANNER VIEW ==========
 def scanner_view(request):
     """Render the scanner.html page for document scanning (like CamScanner)"""
     try:
@@ -875,14 +901,21 @@ def scanner_view(request):
 # ========== URLS ==========
 urlpatterns = [
     path("", index),
-    path("admin/", admin_dashboard),
-    path("admin/settings/", admin_settings),
+    
+    # 🔐 SECRET ADMIN ROUTES — only accessible if you know the exact path
+    path(f"{SECRET_ADMIN_PATH}/", admin_dashboard, name="admin_dashboard"),
+    path(f"{SECRET_ADMIN_PATH}/settings/", admin_settings, name="admin_settings"),
+    
     path("upload/", upload_view),
     path("browse/", browse_view),
     path("view/<int:id>/", view_file),
     path("download/<int:id>/", download_file),
     path("delete/<int:id>/", delete_file),
     path("update-passcode/<int:id>/", update_passcode, name="update_passcode"),
+    
+    # ========== ABOUT PAGE — NEW ==========
+    path("about.html", about_view, name="about"),
+    path("about/", about_view, name="about_alt"),
     
     # Calculator
     path("calculator.html", calculator_view),
@@ -902,8 +935,7 @@ urlpatterns = [
     path("free_courses.html", free_courses_view),
     path("free-courses/", free_courses_view, name="free_courses"),
     
-    # ========== SCANNER ROUTE - NEW ADDITION ==========
-    # This makes scanner.html accessible at /scanner.html
+    # ========== SCANNER ROUTE ==========
     path("scanner.html", scanner_view, name="scanner"),
     path("scanner/", scanner_view, name="scanner_alt"),
     
