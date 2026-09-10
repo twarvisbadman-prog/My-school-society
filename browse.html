@@ -15,61 +15,387 @@
             box-sizing: border-box;
         }
 
+        /* ========== THEME TOKENS ========== */
+        :root {
+            /* Matrix (default) */
+            --bg-page: #000;
+            --bg-header: rgba(0, 0, 0, 0.7);
+            --bg-card: rgba(0, 0, 0, 0.45);
+            --bg-card-hover: rgba(0, 0, 0, 0.65);
+            --bg-search: rgba(0, 0, 0, 0.4);
+            --bg-input: transparent;
+            --bg-stat: rgba(255, 255, 255, 0.02);
+            --bg-sidebar: rgba(0, 0, 0, 0.92);
+            --bg-modal: rgba(10, 10, 30, 0.92);
+            --bg-contact: rgba(0, 0, 0, 0.3);
+            --border-color: rgba(50, 150, 255, 0.06);
+            --border-card: rgba(50, 150, 255, 0.06);
+            --border-card-hover: rgba(50, 150, 255, 0.2);
+            --border-search: rgba(50, 150, 255, 0.06);
+            --border-header: rgba(50, 150, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(100, 180, 255, 0.5);
+            --text-muted: rgba(255, 255, 255, 0.12);
+            --text-dim: rgba(100, 180, 255, 0.2);
+            --accent-blue: #4a7cf7;
+            --accent-blue-bright: #6c9aff;
+            --accent-gold: #ffd700;
+            --accent-red: #ff3333;
+            --accent-green: #00ff41;
+            --accent-purple: #b482ff;
+            --accent-teal: #00c8c8;
+            --accent-cream: #f5e6ca;
+            --logo-gradient: linear-gradient(135deg, #4a7cf7, #6c9aff, #4a7cf7);
+            --home-btn-bg: rgba(50, 150, 255, 0.06);
+            --home-btn-border: rgba(50, 150, 255, 0.1);
+            --home-btn-color: rgba(100, 180, 255, 0.5);
+            --home-btn-hover-bg: rgba(50, 150, 255, 0.12);
+            --home-btn-hover-border: rgba(50, 150, 255, 0.3);
+            --home-btn-hover-color: #6c9aff;
+            --plus-btn-bg: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
+            --plus-btn-border: rgba(255, 193, 7, 0.3);
+            --plus-btn-color: #ffd700;
+            --plus-btn-hover-bg: rgba(255, 193, 7, 0.15);
+            --plus-btn-hover-border: rgba(255, 193, 7, 0.7);
+            --plus-btn-hover-color: #ffffff;
+            --search-btn-bg: linear-gradient(135deg, #4a7cf7, #6c9aff);
+            --sidebar-border: rgba(255, 26, 26, 0.08);
+            --sidebar-item-color: rgba(255, 255, 255, 0.3);
+            --sidebar-item-hover-bg: rgba(255, 26, 26, 0.04);
+            --sidebar-item-hover-color: #ff4d4d;
+            --sidebar-badge-bg: rgba(255, 26, 26, 0.08);
+            --sidebar-badge-color: #ff4d4d;
+            --modal-border: rgba(0, 255, 65, 0.1);
+            --modal-shadow: rgba(0, 255, 65, 0.02);
+            --modal-heading: linear-gradient(135deg, #4a7cf7, #6c9aff);
+            --theme-selector-bg: rgba(0, 0, 0, 0.2);
+            --theme-selector-border: rgba(50, 150, 255, 0.04);
+            --theme-selector-color: rgba(100, 180, 255, 0.2);
+            --theme-selector-hover-border: #4a7cf7;
+            --theme-selector-hover-color: #6c9aff;
+            --theme-selector-active-border: #4a7cf7;
+            --theme-selector-active-bg: rgba(50, 150, 255, 0.03);
+            --theme-selector-active-color: #6c9aff;
+            --setting-btn-bg: linear-gradient(135deg, #4a7cf7, #6c9aff);
+            --doc-icon-bg: rgba(50, 150, 255, 0.04);
+            --doc-icon-color: #4a7cf7;
+            --doc-module-color: #ffffff;
+            --doc-course-color: #ffd700;
+            --doc-university-color: #f5e6ca;
+            --doc-description-color: rgba(100, 180, 255, 0.5);
+            --doc-date-color: rgba(180, 130, 255, 0.4);
+            --doc-date-icon-color: rgba(180, 130, 255, 0.2);
+            --doc-size-color: rgba(0, 200, 200, 0.4);
+            --doc-size-icon-color: rgba(0, 200, 200, 0.2);
+            --badge-public-bg: rgba(0, 255, 65, 0.08);
+            --badge-public-color: #00ff41;
+            --badge-public-border: rgba(0, 255, 65, 0.06);
+            --badge-private-bg: rgba(255, 152, 0, 0.08);
+            --badge-private-color: #ff9800;
+            --badge-private-border: rgba(255, 152, 0, 0.06);
+            --badge-type-bg: rgba(255, 255, 255, 0.03);
+            --badge-type-color: rgba(255, 255, 255, 0.3);
+            --badge-type-border: rgba(255, 255, 255, 0.03);
+            --badge-inline-bg: rgba(50, 150, 255, 0.06);
+            --badge-inline-color: #4a7cf7;
+            --badge-inline-border: rgba(50, 150, 255, 0.06);
+            --btn-view-bg: rgba(50, 150, 255, 0.06);
+            --btn-view-color: #4a7cf7;
+            --btn-view-border: rgba(50, 150, 255, 0.06);
+            --btn-view-hover-bg: rgba(50, 150, 255, 0.15);
+            --btn-view-hover-border: #4a7cf7;
+            --btn-download-bg: rgba(255, 0, 0, 0.08);
+            --btn-download-color: #ff3333;
+            --btn-download-border: rgba(255, 0, 0, 0.3);
+            --btn-download-hover-bg: rgba(255, 0, 0, 0.2);
+            --btn-download-hover-border: #ff0000;
+            --btn-download-hover-color: #ffffff;
+            --stat-pill-color: rgba(100, 180, 255, 0.2);
+            --stat-pill-strong: rgba(100, 180, 255, 0.5);
+            --empty-icon-color: rgba(100, 180, 255, 0.05);
+            --empty-title-color: rgba(255, 255, 255, 0.25);
+            --empty-text-color: rgba(255, 255, 255, 0.12);
+            --empty-upload-bg: linear-gradient(135deg, #4a7cf7, #6c9aff);
+            --contact-text-color: rgba(100, 180, 255, 0.2);
+            --whatsapp-bg: rgba(37, 211, 102, 0.06);
+            --whatsapp-color: #2aff66;
+            --whatsapp-hover-bg: #25D366;
+            --whatsapp-hover-color: #000;
+            --social-bg: rgba(0, 0, 0, 0.3);
+            --social-border: rgba(255, 255, 255, 0.05);
+            --social-tiktok: #00f2ea;
+            --social-instagram: #e4405f;
+            --footer-color: rgba(100, 180, 255, 0.6);
+            --back-to-top-bg: rgba(50, 150, 255, 0.12);
+            --back-to-top-color: #6c9aff;
+            --back-to-top-border: rgba(50, 150, 255, 0.04);
+            --back-to-top-hover-bg: rgba(50, 150, 255, 0.2);
+            --sidebar-header-gradient: linear-gradient(135deg, #ff1a1a, #ff4444);
+            --sidebar-close-color: rgba(255, 255, 255, 0.08);
+            --sidebar-close-hover: #ff1a1a;
+            --sidebar-divider-bg: rgba(255, 26, 26, 0.03);
+            --logo-mark-color: #4a7cf7;
+            --logo-sub-color: rgba(100, 180, 255, 0.12);
+            --canvas-bg: linear-gradient(180deg, #0a0a2e 0%, #0a0a20 50%, #0a0a1a 100%);
+            --browse-header-color: #4a7cf7;
+            --browse-header-shadow: rgba(74, 124, 247, 0.3);
+        }
+
+        body.theme-dark {
+            --bg-page: #0a0a0f;
+            --bg-header: rgba(10, 10, 15, 0.85);
+            --bg-card: rgba(10, 10, 15, 0.85);
+            --bg-card-hover: rgba(10, 10, 15, 0.95);
+            --bg-search: rgba(10, 10, 15, 0.8);
+            --bg-stat: rgba(255, 255, 255, 0.02);
+            --bg-sidebar: rgba(5, 5, 10, 0.95);
+            --bg-modal: rgba(5, 5, 10, 0.95);
+            --bg-contact: rgba(10, 10, 15, 0.5);
+            --border-color: rgba(50, 100, 255, 0.15);
+            --border-card: rgba(50, 100, 255, 0.15);
+            --border-card-hover: #5599ff;
+            --border-search: rgba(50, 100, 255, 0.15);
+            --border-header: rgba(50, 100, 255, 0.15);
+            --text-primary: #e0e0e0;
+            --text-secondary: rgba(200, 200, 220, 0.6);
+            --text-muted: rgba(255, 255, 255, 0.15);
+            --text-dim: rgba(200, 200, 220, 0.3);
+            --accent-blue: #5599ff;
+            --accent-blue-bright: #77aaff;
+            --accent-gold: #ffd700;
+            --accent-red: #ff5555;
+            --accent-green: #22c55e;
+            --accent-purple: #a78bfa;
+            --accent-teal: #2dd4bf;
+            --accent-cream: #f5e6ca;
+            --logo-gradient: linear-gradient(135deg, #5599ff, #77aaff, #5599ff);
+            --home-btn-bg: rgba(50, 100, 255, 0.1);
+            --home-btn-border: rgba(50, 100, 255, 0.2);
+            --home-btn-color: rgba(200, 200, 220, 0.7);
+            --home-btn-hover-bg: rgba(50, 100, 255, 0.2);
+            --home-btn-hover-border: #5599ff;
+            --home-btn-hover-color: #77aaff;
+            --plus-btn-bg: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.08));
+            --plus-btn-border: rgba(255, 215, 0, 0.4);
+            --plus-btn-color: #ffd700;
+            --plus-btn-hover-bg: rgba(255, 215, 0, 0.2);
+            --plus-btn-hover-border: rgba(255, 215, 0, 0.8);
+            --plus-btn-hover-color: #ffffff;
+            --search-btn-bg: linear-gradient(135deg, #5599ff, #77aaff);
+            --sidebar-border: rgba(50, 100, 255, 0.15);
+            --sidebar-item-color: rgba(200, 200, 220, 0.5);
+            --sidebar-item-hover-bg: rgba(50, 100, 255, 0.08);
+            --sidebar-item-hover-color: #77aaff;
+            --sidebar-badge-bg: rgba(50, 100, 255, 0.12);
+            --sidebar-badge-color: #77aaff;
+            --modal-border: rgba(50, 100, 255, 0.2);
+            --modal-shadow: rgba(50, 100, 255, 0.05);
+            --modal-heading: linear-gradient(135deg, #5599ff, #77aaff);
+            --theme-selector-bg: rgba(0, 0, 0, 0.3);
+            --theme-selector-border: rgba(50, 100, 255, 0.1);
+            --theme-selector-color: rgba(200, 200, 220, 0.3);
+            --theme-selector-hover-border: #5599ff;
+            --theme-selector-hover-color: #77aaff;
+            --theme-selector-active-border: #5599ff;
+            --theme-selector-active-bg: rgba(50, 100, 255, 0.08);
+            --theme-selector-active-color: #77aaff;
+            --setting-btn-bg: linear-gradient(135deg, #5599ff, #77aaff);
+            --doc-icon-bg: rgba(50, 100, 255, 0.1);
+            --doc-icon-color: #5599ff;
+            --doc-module-color: #ffffff;
+            --doc-course-color: #ffd700;
+            --doc-university-color: #f5e6ca;
+            --doc-description-color: rgba(200, 200, 220, 0.6);
+            --doc-date-color: rgba(180, 130, 255, 0.5);
+            --doc-date-icon-color: rgba(180, 130, 255, 0.3);
+            --doc-size-color: rgba(45, 212, 191, 0.5);
+            --doc-size-icon-color: rgba(45, 212, 191, 0.3);
+            --badge-public-bg: rgba(34, 197, 94, 0.12);
+            --badge-public-color: #22c55e;
+            --badge-public-border: rgba(34, 197, 94, 0.1);
+            --badge-private-bg: rgba(255, 152, 0, 0.12);
+            --badge-private-color: #ff9800;
+            --badge-private-border: rgba(255, 152, 0, 0.1);
+            --badge-type-bg: rgba(255, 255, 255, 0.05);
+            --badge-type-color: rgba(255, 255, 255, 0.4);
+            --badge-type-border: rgba(255, 255, 255, 0.05);
+            --badge-inline-bg: rgba(50, 100, 255, 0.1);
+            --badge-inline-color: #5599ff;
+            --badge-inline-border: rgba(50, 100, 255, 0.1);
+            --btn-view-bg: rgba(50, 100, 255, 0.1);
+            --btn-view-color: #5599ff;
+            --btn-view-border: rgba(50, 100, 255, 0.1);
+            --btn-view-hover-bg: rgba(50, 100, 255, 0.2);
+            --btn-view-hover-border: #5599ff;
+            --btn-download-bg: rgba(255, 50, 50, 0.12);
+            --btn-download-color: #ff5555;
+            --btn-download-border: rgba(255, 50, 50, 0.4);
+            --btn-download-hover-bg: rgba(255, 50, 50, 0.25);
+            --btn-download-hover-border: #ff5555;
+            --btn-download-hover-color: #ffffff;
+            --stat-pill-color: rgba(200, 200, 220, 0.3);
+            --stat-pill-strong: rgba(200, 200, 220, 0.6);
+            --empty-icon-color: rgba(200, 200, 220, 0.08);
+            --empty-title-color: rgba(255, 255, 255, 0.3);
+            --empty-text-color: rgba(255, 255, 255, 0.15);
+            --empty-upload-bg: linear-gradient(135deg, #5599ff, #77aaff);
+            --contact-text-color: rgba(200, 200, 220, 0.3);
+            --whatsapp-bg: rgba(37, 211, 102, 0.1);
+            --whatsapp-color: #2aff66;
+            --whatsapp-hover-bg: #25D366;
+            --whatsapp-hover-color: #000;
+            --social-bg: rgba(0, 0, 0, 0.4);
+            --social-border: rgba(255, 255, 255, 0.08);
+            --social-tiktok: #00f2ea;
+            --social-instagram: #e4405f;
+            --footer-color: rgba(200, 200, 220, 0.6);
+            --back-to-top-bg: rgba(50, 100, 255, 0.15);
+            --back-to-top-color: #77aaff;
+            --back-to-top-border: rgba(50, 100, 255, 0.1);
+            --back-to-top-hover-bg: rgba(50, 100, 255, 0.25);
+            --sidebar-header-gradient: linear-gradient(135deg, #5599ff, #77aaff);
+            --sidebar-close-color: rgba(255, 255, 255, 0.12);
+            --sidebar-close-hover: #5599ff;
+            --sidebar-divider-bg: rgba(50, 100, 255, 0.06);
+            --logo-mark-color: #5599ff;
+            --logo-sub-color: rgba(200, 200, 220, 0.15);
+            --canvas-bg: linear-gradient(180deg, #0a0a1a 0%, #0a0a12 50%, #0a0a0a 100%);
+            --browse-header-color: #5599ff;
+            --browse-header-shadow: rgba(85, 153, 255, 0.3);
+        }
+
+        body.theme-light {
+            --bg-page: #f0f0f5;
+            --bg-header: rgba(255, 255, 255, 0.9);
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-card-hover: rgba(255, 255, 255, 1);
+            --bg-search: rgba(255, 255, 255, 0.95);
+            --bg-stat: rgba(0, 0, 0, 0.02);
+            --bg-sidebar: rgba(255, 255, 255, 0.98);
+            --bg-modal: rgba(255, 255, 255, 0.98);
+            --bg-contact: rgba(255, 255, 255, 0.6);
+            --border-color: rgba(50, 100, 255, 0.1);
+            --border-card: rgba(50, 100, 255, 0.1);
+            --border-card-hover: #3355aa;
+            --border-search: rgba(50, 100, 255, 0.1);
+            --border-header: rgba(50, 100, 255, 0.1);
+            --text-primary: #1a1a2e;
+            --text-secondary: #444466;
+            --text-muted: rgba(0, 0, 0, 0.1);
+            --text-dim: rgba(0, 0, 0, 0.15);
+            --accent-blue: #3355aa;
+            --accent-blue-bright: #4466bb;
+            --accent-gold: #cc9900;
+            --accent-red: #dd2222;
+            --accent-green: #16a34a;
+            --accent-purple: #7c3aed;
+            --accent-teal: #0d9488;
+            --accent-cream: #8b7355;
+            --logo-gradient: linear-gradient(135deg, #3355aa, #4466bb, #3355aa);
+            --home-btn-bg: rgba(50, 100, 255, 0.08);
+            --home-btn-border: rgba(50, 100, 255, 0.15);
+            --home-btn-color: #444466;
+            --home-btn-hover-bg: rgba(50, 100, 255, 0.15);
+            --home-btn-hover-border: #3355aa;
+            --home-btn-hover-color: #3355aa;
+            --plus-btn-bg: linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 193, 7, 0.08));
+            --plus-btn-border: rgba(204, 153, 0, 0.4);
+            --plus-btn-color: #cc9900;
+            --plus-btn-hover-bg: rgba(255, 193, 7, 0.25);
+            --plus-btn-hover-border: #cc9900;
+            --plus-btn-hover-color: #ffffff;
+            --search-btn-bg: linear-gradient(135deg, #3355aa, #4466bb);
+            --sidebar-border: rgba(50, 100, 255, 0.1);
+            --sidebar-item-color: #444466;
+            --sidebar-item-hover-bg: rgba(50, 100, 255, 0.06);
+            --sidebar-item-hover-color: #3355aa;
+            --sidebar-badge-bg: rgba(50, 100, 255, 0.1);
+            --sidebar-badge-color: #3355aa;
+            --modal-border: rgba(50, 100, 255, 0.15);
+            --modal-shadow: rgba(50, 100, 255, 0.03);
+            --modal-heading: linear-gradient(135deg, #3355aa, #4466bb);
+            --theme-selector-bg: rgba(0, 0, 0, 0.04);
+            --theme-selector-border: rgba(50, 100, 255, 0.1);
+            --theme-selector-color: #666688;
+            --theme-selector-hover-border: #3355aa;
+            --theme-selector-hover-color: #3355aa;
+            --theme-selector-active-border: #3355aa;
+            --theme-selector-active-bg: rgba(50, 100, 255, 0.06);
+            --theme-selector-active-color: #3355aa;
+            --setting-btn-bg: linear-gradient(135deg, #3355aa, #4466bb);
+            --doc-icon-bg: rgba(50, 100, 255, 0.08);
+            --doc-icon-color: #3355aa;
+            --doc-module-color: #1a1a2e;
+            --doc-course-color: #cc9900;
+            --doc-university-color: #8b7355;
+            --doc-description-color: #666688;
+            --doc-date-color: rgba(124, 58, 237, 0.6);
+            --doc-date-icon-color: rgba(124, 58, 237, 0.35);
+            --doc-size-color: rgba(13, 148, 136, 0.6);
+            --doc-size-icon-color: rgba(13, 148, 136, 0.35);
+            --badge-public-bg: rgba(22, 163, 74, 0.1);
+            --badge-public-color: #16a34a;
+            --badge-public-border: rgba(22, 163, 74, 0.15);
+            --badge-private-bg: rgba(255, 152, 0, 0.1);
+            --badge-private-color: #cc9900;
+            --badge-private-border: rgba(255, 152, 0, 0.15);
+            --badge-type-bg: rgba(0, 0, 0, 0.04);
+            --badge-type-color: #666688;
+            --badge-type-border: rgba(0, 0, 0, 0.06);
+            --badge-inline-bg: rgba(50, 100, 255, 0.08);
+            --badge-inline-color: #3355aa;
+            --badge-inline-border: rgba(50, 100, 255, 0.1);
+            --btn-view-bg: rgba(50, 100, 255, 0.08);
+            --btn-view-color: #3355aa;
+            --btn-view-border: rgba(50, 100, 255, 0.1);
+            --btn-view-hover-bg: rgba(50, 100, 255, 0.15);
+            --btn-view-hover-border: #3355aa;
+            --btn-download-bg: rgba(220, 50, 50, 0.08);
+            --btn-download-color: #dd2222;
+            --btn-download-border: rgba(220, 50, 50, 0.3);
+            --btn-download-hover-bg: rgba(220, 50, 50, 0.2);
+            --btn-download-hover-border: #dd2222;
+            --btn-download-hover-color: #ffffff;
+            --stat-pill-color: #666688;
+            --stat-pill-strong: #3355aa;
+            --empty-icon-color: rgba(0, 0, 0, 0.06);
+            --empty-title-color: rgba(0, 0, 0, 0.25);
+            --empty-text-color: rgba(0, 0, 0, 0.15);
+            --empty-upload-bg: linear-gradient(135deg, #3355aa, #4466bb);
+            --contact-text-color: #666688;
+            --whatsapp-bg: rgba(37, 211, 102, 0.08);
+            --whatsapp-color: #16a34a;
+            --whatsapp-hover-bg: #25D366;
+            --whatsapp-hover-color: #ffffff;
+            --social-bg: rgba(0, 0, 0, 0.04);
+            --social-border: rgba(0, 0, 0, 0.08);
+            --social-tiktok: #00f2ea;
+            --social-instagram: #e4405f;
+            --footer-color: #666688;
+            --back-to-top-bg: rgba(50, 100, 255, 0.1);
+            --back-to-top-color: #3355aa;
+            --back-to-top-border: rgba(50, 100, 255, 0.08);
+            --back-to-top-hover-bg: rgba(50, 100, 255, 0.2);
+            --sidebar-header-gradient: linear-gradient(135deg, #3355aa, #4466bb);
+            --sidebar-close-color: rgba(0, 0, 0, 0.15);
+            --sidebar-close-hover: #3355aa;
+            --sidebar-divider-bg: rgba(50, 100, 255, 0.06);
+            --logo-mark-color: #3355aa;
+            --logo-sub-color: rgba(0, 0, 0, 0.15);
+            --canvas-bg: linear-gradient(180deg, #d0d8f0 0%, #e0e5f5 50%, #e8ecf8 100%);
+            --browse-header-color: #3355aa;
+            --browse-header-shadow: rgba(51, 85, 170, 0.3);
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background: #000;
+            background: var(--bg-page);
             min-height: 100vh;
             overflow-x: hidden;
             transition: background 0.5s, color 0.5s;
         }
 
-        /* ========== THEMES ========== */
-        body.theme-matrix {
-            background: #000;
-            color: #fff;
-        }
-
-        body.theme-dark {
-            background: #0a0a0f;
-            color: #e0e0e0;
-        }
-
-        body.theme-dark .doc-card {
-            background: rgba(10, 10, 15, 0.85);
-            border-color: rgba(50, 100, 255, 0.15);
-        }
-
-        body.theme-dark .doc-card:hover {
-            border-color: #5599ff;
-            background: rgba(50, 100, 255, 0.05);
-        }
-
-        body.theme-dark .search-bar {
-            background: rgba(10, 10, 15, 0.8);
-            border-color: rgba(50, 100, 255, 0.15);
-        }
-
-        body.theme-light {
-            background: #f0f0f5;
-            color: #1a1a2e;
-        }
-
-        body.theme-light .doc-card {
-            background: rgba(255, 255, 255, 0.85);
-            border-color: rgba(50, 100, 255, 0.1);
-        }
-
-        body.theme-light .doc-card:hover {
-            border-color: #3355aa;
-            background: rgba(255, 255, 255, 0.95);
-        }
-
-        body.theme-light .search-bar {
-            background: rgba(255, 255, 255, 0.8);
-            border-color: rgba(50, 100, 255, 0.1);
-        }
-
-        /* ========== CANVAS - BLUE MATRIX RAIN ========== */
+        /* ========== CANVAS - MATRIX RAIN ========== */
         #matrix-canvas {
             position: fixed;
             top: 0;
@@ -77,7 +403,7 @@
             width: 100%;
             height: 100%;
             z-index: 0;
-            background: linear-gradient(180deg, #0a0a2e 0%, #0a0a20 50%, #0a0a1a 100%);
+            background: var(--canvas-bg);
             transition: opacity 0.8s ease;
         }
 
@@ -98,14 +424,15 @@
 
         /* ========== HEADER ========== */
         .header {
-            background: rgba(0, 0, 0, 0.7);
-            border-bottom: 1px solid rgba(50, 150, 255, 0.08);
+            background: var(--bg-header);
+            border-bottom: 1px solid var(--border-header);
             position: sticky;
             top: 0;
             z-index: 100;
             padding: 12px 24px;
             backdrop-filter: blur(12px);
             width: 100%;
+            transition: background 0.5s, border-color 0.5s;
         }
 
         .header-content {
@@ -130,10 +457,10 @@
             align-items: center;
             gap: 8px;
             padding: 8px 20px;
-            background: rgba(50, 150, 255, 0.06);
-            border: 1px solid rgba(50, 150, 255, 0.1);
+            background: var(--home-btn-bg);
+            border: 1px solid var(--home-btn-border);
             border-radius: 60px;
-            color: rgba(100, 180, 255, 0.5);
+            color: var(--home-btn-color);
             font-size: 0.85rem;
             font-weight: 600;
             text-decoration: none;
@@ -141,20 +468,20 @@
         }
 
         .home-btn:hover {
-            background: rgba(50, 150, 255, 0.12);
-            border-color: rgba(50, 150, 255, 0.3);
-            color: #6c9aff;
+            background: var(--home-btn-hover-bg);
+            border-color: var(--home-btn-hover-border);
+            color: var(--home-btn-hover-color);
             transform: translateY(-2px);
         }
 
         .home-btn i {
-            color: #4a7cf7;
+            color: var(--logo-mark-color);
         }
 
         .logo {
             font-size: 1.6rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #4a7cf7, #6c9aff, #4a7cf7);
+            background: var(--logo-gradient);
             background-size: 200% 200%;
             -webkit-background-clip: text;
             background-clip: text;
@@ -173,7 +500,7 @@
             font-size: 0.55rem;
             font-weight: 400;
             letter-spacing: 3px;
-            color: rgba(100, 180, 255, 0.12);
+            color: var(--logo-sub-color);
             margin-top: -2px;
         }
 
@@ -183,10 +510,10 @@
             align-items: center;
             gap: 10px;
             padding: 10px 28px;
-            background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
-            border: 2px solid rgba(255, 193, 7, 0.3);
+            background: var(--plus-btn-bg);
+            border: 2px solid var(--plus-btn-border);
             border-radius: 60px;
-            color: #ffd700;
+            color: var(--plus-btn-color);
             font-size: 0.95rem;
             font-weight: 700;
             text-decoration: none;
@@ -221,19 +548,19 @@
 
         .plus-btn:hover {
             transform: translateY(-3px) scale(1.03);
-            background: rgba(255, 193, 7, 0.15);
-            border-color: rgba(255, 193, 7, 0.7);
+            background: var(--plus-btn-hover-bg);
+            border-color: var(--plus-btn-hover-border);
             box-shadow: 0 0 60px rgba(255, 193, 7, 0.15);
-            color: #fff;
+            color: var(--plus-btn-hover-color);
         }
 
         .plus-btn i {
-            color: #ffd700;
+            color: var(--plus-btn-color);
             font-size: 1.2rem;
         }
 
         .plus-btn:hover i {
-            color: #fff;
+            color: var(--plus-btn-hover-color);
         }
 
         /* ========== BROWSE CONTAINER ========== */
@@ -259,15 +586,15 @@
         }
 
         @keyframes colorChange {
-            0% { color: #4a7cf7; text-shadow: 0 0 30px rgba(74, 124, 247, 0.3); }
-            25% { color: #ff1a1a; text-shadow: 0 0 30px rgba(255, 26, 26, 0.3); }
-            50% { color: #00ff41; text-shadow: 0 0 30px rgba(0, 255, 65, 0.3); }
-            75% { color: #ffffff; text-shadow: 0 0 30px rgba(255, 255, 255, 0.3); }
-            100% { color: #4a7cf7; text-shadow: 0 0 30px rgba(74, 124, 247, 0.3); }
+            0% { color: var(--browse-header-color); text-shadow: 0 0 30px var(--browse-header-shadow); }
+            25% { color: var(--accent-red); text-shadow: 0 0 30px rgba(255, 26, 26, 0.3); }
+            50% { color: var(--accent-green); text-shadow: 0 0 30px rgba(0, 255, 65, 0.3); }
+            75% { color: var(--text-primary); text-shadow: 0 0 30px rgba(255, 255, 255, 0.3); }
+            100% { color: var(--browse-header-color); text-shadow: 0 0 30px var(--browse-header-shadow); }
         }
 
         .browse-header p {
-            color: rgba(100, 180, 255, 0.35);
+            color: var(--text-secondary);
             font-size: 1rem;
         }
 
@@ -276,8 +603,8 @@
             display: flex;
             gap: 12px;
             margin-bottom: 24px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(50, 150, 255, 0.06);
+            background: var(--bg-search);
+            border: 1px solid var(--border-search);
             border-radius: 60px;
             padding: 4px 4px 4px 20px;
             transition: all 0.3s;
@@ -285,12 +612,12 @@
         }
 
         .search-bar:focus-within {
-            border-color: rgba(50, 150, 255, 0.2);
+            border-color: var(--accent-blue);
             box-shadow: 0 0 30px rgba(50, 150, 255, 0.02);
         }
 
         .search-bar i {
-            color: rgba(100, 180, 255, 0.15);
+            color: var(--text-dim);
             font-size: 0.9rem;
         }
 
@@ -299,19 +626,19 @@
             background: none;
             border: none;
             padding: 12px 0;
-            color: #fff;
+            color: var(--text-primary);
             font-size: 0.95rem;
             font-family: inherit;
             outline: none;
         }
 
         .search-bar input::placeholder {
-            color: rgba(255, 255, 255, 0.12);
+            color: var(--text-muted);
         }
 
         .search-bar button {
             padding: 10px 24px;
-            background: linear-gradient(135deg, #4a7cf7, #6c9aff);
+            background: var(--search-btn-bg);
             border: none;
             border-radius: 60px;
             color: #fff;
@@ -331,9 +658,9 @@
         .search-bar .clear-btn {
             padding: 10px 18px;
             background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
             border-radius: 60px;
-            color: rgba(255, 255, 255, 0.15);
+            color: var(--text-dim);
             cursor: pointer;
             transition: 0.3s;
             font-size: 0.8rem;
@@ -341,7 +668,7 @@
 
         .search-bar .clear-btn:hover {
             background: rgba(255, 255, 255, 0.05);
-            color: #fff;
+            color: var(--text-primary);
         }
 
         /* ===== STATS ROW ===== */
@@ -357,15 +684,15 @@
             align-items: center;
             gap: 6px;
             font-size: 0.75rem;
-            color: rgba(100, 180, 255, 0.2);
-            background: rgba(255, 255, 255, 0.02);
+            color: var(--stat-pill-color);
+            background: var(--bg-stat);
             padding: 6px 16px;
             border-radius: 50px;
-            border: 1px solid rgba(50, 150, 255, 0.04);
+            border: 1px solid var(--border-color);
         }
 
         .stat-pill strong {
-            color: rgba(100, 180, 255, 0.5);
+            color: var(--stat-pill-strong);
             font-weight: 600;
         }
 
@@ -377,8 +704,8 @@
         }
 
         .doc-card {
-            background: rgba(0, 0, 0, 0.45);
-            border: 1px solid rgba(50, 150, 255, 0.06);
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
             border-radius: 20px;
             padding: 20px 24px;
             transition: all 0.3s ease;
@@ -406,7 +733,7 @@
         }
 
         .doc-card:hover {
-            border-color: rgba(50, 150, 255, 0.2);
+            border-color: var(--border-card-hover);
             transform: translateY(-2px);
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
         }
@@ -426,21 +753,19 @@
             justify-content: center;
             font-size: 1.2rem;
             flex-shrink: 0;
-            background: rgba(50, 150, 255, 0.04);
-            color: #4a7cf7;
+            background: var(--doc-icon-bg);
+            color: var(--doc-icon-color);
         }
 
-        /* ===== COLOR-CODED DETAILS ===== */
         .doc-card .doc-details {
             flex: 1;
             min-width: 0;
         }
 
-        /* Module Name - Bold White with Lock Icon */
         .doc-card .doc-module {
             font-size: 1.1rem;
             font-weight: 700;
-            color: #ffffff;
+            color: var(--doc-module-color);
             margin-bottom: 4px;
             letter-spacing: -0.3px;
         }
@@ -451,33 +776,30 @@
             margin-right: 6px;
         }
 
-        /* Course Code - Gold/Yellow */
         .doc-card .doc-course {
             font-size: 0.85rem;
             font-weight: 600;
-            color: #ffd700;
+            color: var(--doc-course-color);
             display: inline-block;
         }
 
-        /* University - Cream Bold */
         .doc-card .doc-university {
             font-size: 0.85rem;
             font-weight: 700;
-            color: #f5e6ca;
+            color: var(--doc-university-color);
             display: inline-block;
             margin-left: 12px;
         }
 
         .doc-card .doc-university i {
-            color: #f5e6ca;
+            color: var(--doc-university-color);
             opacity: 0.5;
             margin-right: 4px;
         }
 
-        /* Description - Greyish Blue */
         .doc-card .doc-description {
             font-size: 0.88rem;
-            color: rgba(100, 180, 255, 0.5);
+            color: var(--doc-description-color);
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -486,23 +808,21 @@
             line-height: 1.5;
         }
 
-        /* Date - Soft Purple */
         .doc-card .doc-date {
             font-size: 0.75rem;
-            color: rgba(180, 130, 255, 0.4);
+            color: var(--doc-date-color);
             display: inline-flex;
             align-items: center;
             gap: 4px;
         }
 
         .doc-card .doc-date i {
-            color: rgba(180, 130, 255, 0.2);
+            color: var(--doc-date-icon-color);
         }
 
-        /* File Size - Teal */
         .doc-card .doc-size {
             font-size: 0.75rem;
-            color: rgba(0, 200, 200, 0.4);
+            color: var(--doc-size-color);
             display: inline-flex;
             align-items: center;
             gap: 4px;
@@ -510,10 +830,9 @@
         }
 
         .doc-card .doc-size i {
-            color: rgba(0, 200, 200, 0.2);
+            color: var(--doc-size-icon-color);
         }
 
-        /* Badges */
         .doc-card .doc-bottom {
             display: flex;
             justify-content: space-between;
@@ -538,30 +857,29 @@
         }
 
         .badge-public {
-            background: rgba(0, 255, 65, 0.08);
-            color: #00ff41;
-            border-color: rgba(0, 255, 65, 0.06);
+            background: var(--badge-public-bg);
+            color: var(--badge-public-color);
+            border-color: var(--badge-public-border);
         }
 
         .badge-private {
-            background: rgba(255, 152, 0, 0.08);
-            color: #ff9800;
-            border-color: rgba(255, 152, 0, 0.06);
+            background: var(--badge-private-bg);
+            color: var(--badge-private-color);
+            border-color: var(--badge-private-border);
         }
 
         .badge-type {
-            background: rgba(255, 255, 255, 0.03);
-            color: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.03);
+            background: var(--badge-type-bg);
+            color: var(--badge-type-color);
+            border-color: var(--badge-type-border);
         }
 
         .badge-inline {
-            background: rgba(50, 150, 255, 0.06);
-            color: #4a7cf7;
-            border-color: rgba(50, 150, 255, 0.06);
+            background: var(--badge-inline-bg);
+            color: var(--badge-inline-color);
+            border-color: var(--badge-inline-border);
         }
 
-        /* ===== RED GLOWING DOWNLOAD BUTTON ===== */
         .doc-card .doc-actions {
             display: flex;
             gap: 8px;
@@ -584,33 +902,32 @@
         }
 
         .btn-view {
-            background: rgba(50, 150, 255, 0.06);
-            color: #4a7cf7;
-            border-color: rgba(50, 150, 255, 0.06);
+            background: var(--btn-view-bg);
+            color: var(--btn-view-color);
+            border-color: var(--btn-view-border);
         }
 
         .btn-view:hover {
-            background: rgba(50, 150, 255, 0.15);
-            border-color: #4a7cf7;
+            background: var(--btn-view-hover-bg);
+            border-color: var(--btn-view-hover-border);
             transform: translateY(-2px);
         }
 
-        /* ===== RED GLOWING DOWNLOAD BUTTON ===== */
         .btn-download {
-            background: rgba(255, 0, 0, 0.08);
-            color: #ff3333;
-            border-color: rgba(255, 0, 0, 0.3);
+            background: var(--btn-download-bg);
+            color: var(--btn-download-color);
+            border-color: var(--btn-download-border);
             animation: redGlow 1.5s ease-in-out infinite;
             text-shadow: 0 0 10px rgba(255, 0, 0, 0.15);
             font-weight: 700;
         }
 
         .btn-download:hover {
-            background: rgba(255, 0, 0, 0.2);
-            border-color: #ff0000;
+            background: var(--btn-download-hover-bg);
+            border-color: var(--btn-download-hover-border);
             transform: translateY(-2px) scale(1.05);
             box-shadow: 0 0 40px rgba(255, 0, 0, 0.3);
-            color: #fff;
+            color: var(--btn-download-hover-color);
             text-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
         }
 
@@ -633,18 +950,18 @@
 
         .empty-state .empty-icon {
             font-size: 4rem;
-            color: rgba(100, 180, 255, 0.05);
+            color: var(--empty-icon-color);
             margin-bottom: 16px;
         }
 
         .empty-state h3 {
-            color: rgba(255, 255, 255, 0.25);
+            color: var(--empty-title-color);
             font-size: 1.2rem;
             margin-bottom: 8px;
         }
 
         .empty-state p {
-            color: rgba(255, 255, 255, 0.12);
+            color: var(--empty-text-color);
             font-size: 0.95rem;
         }
 
@@ -652,7 +969,7 @@
             display: inline-block;
             margin-top: 20px;
             padding: 12px 32px;
-            background: linear-gradient(135deg, #4a7cf7, #6c9aff);
+            background: var(--empty-upload-bg);
             color: #fff;
             border-radius: 60px;
             text-decoration: none;
@@ -674,8 +991,8 @@
         }
 
         .contact-owner {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(50, 150, 255, 0.04);
+            background: var(--bg-contact);
+            border: 1px solid var(--border-color);
             border-radius: 80px;
             padding: 14px 26px;
             display: inline-flex;
@@ -688,15 +1005,15 @@
         }
 
         .contact-owner:hover {
-            border-color: rgba(50, 150, 255, 0.1);
+            border-color: var(--border-card-hover);
         }
 
         .whatsapp-link {
-            background: rgba(37, 211, 102, 0.06);
+            background: var(--whatsapp-bg);
             padding: 6px 24px;
             border-radius: 60px;
             text-decoration: none;
-            color: #2aff66;
+            color: var(--whatsapp-color);
             font-weight: 700;
             transition: all 0.3s;
             display: inline-flex;
@@ -706,12 +1023,11 @@
         }
 
         .whatsapp-link:hover {
-            background: #25D366;
-            color: #000;
+            background: var(--whatsapp-hover-bg);
+            color: var(--whatsapp-hover-color);
             box-shadow: 0 0 20px #25D366;
         }
 
-        /* ===== SOCIAL ICONS - VISIBLE WITH COLORS ===== */
         .social-links {
             display: flex;
             gap: 20px;
@@ -727,8 +1043,8 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(255, 255, 255, 0.05);
+            background: var(--social-bg);
+            border: 2px solid var(--social-border);
         }
 
         .social-icon:hover {
@@ -737,31 +1053,30 @@
         }
 
         .social-icon.tiktok i {
-            color: #00f2ea;
+            color: var(--social-tiktok);
             font-size: 1.8rem;
             text-shadow: 0 0 30px rgba(0, 242, 234, 0.2);
         }
 
         .social-icon.instagram i {
-            color: #e4405f;
+            color: var(--social-instagram);
             font-size: 1.8rem;
             text-shadow: 0 0 30px rgba(228, 64, 95, 0.2);
         }
 
         .social-icon.tiktok:hover {
-            border-color: #00f2ea;
+            border-color: var(--social-tiktok);
             box-shadow: 0 0 50px rgba(0, 242, 234, 0.15);
         }
 
         .social-icon.instagram:hover {
-            border-color: #e4405f;
+            border-color: var(--social-instagram);
             box-shadow: 0 0 50px rgba(228, 64, 95, 0.15);
         }
 
-        /* ===== FOOTER - SHINING TEXT ===== */
         .footer-text {
             margin-top: 30px;
-            color: rgba(100, 180, 255, 0.6);
+            color: var(--footer-color);
             font-weight: 500;
             text-shadow: 0 0 20px rgba(100, 180, 255, 0.08);
             font-size: 0.85rem;
@@ -781,12 +1096,12 @@
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: rgba(50, 150, 255, 0.12);
-            color: #6c9aff;
+            background: var(--back-to-top-bg);
+            color: var(--back-to-top-color);
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            border: 1px solid rgba(50, 150, 255, 0.04);
+            border: 1px solid var(--back-to-top-border);
             display: none;
             align-items: center;
             justify-content: center;
@@ -797,7 +1112,7 @@
         }
 
         .back-to-top:hover {
-            background: rgba(50, 150, 255, 0.2);
+            background: var(--back-to-top-hover-bg);
             transform: translateY(-3px);
             box-shadow: 0 0 25px rgba(50, 150, 255, 0.04);
         }
@@ -811,8 +1126,8 @@
             left: -320px;
             width: 280px;
             height: 100%;
-            background: rgba(0, 0, 0, 0.92);
-            border-right: 1.5px solid rgba(255, 26, 26, 0.08);
+            background: var(--bg-sidebar);
+            border-right: 1.5px solid var(--sidebar-border);
             box-shadow: 8px 0 50px rgba(0, 0, 0, 0.3);
             z-index: 1000;
             transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -827,7 +1142,7 @@
 
         .sidebar-header {
             padding: 30px 28px 20px;
-            border-bottom: 1px solid rgba(255, 26, 26, 0.04);
+            border-bottom: 1px solid var(--sidebar-divider-bg);
             margin-bottom: 12px;
             text-align: center;
         }
@@ -835,14 +1150,14 @@
         .sidebar-header h2 {
             font-size: 1.6rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #ff1a1a, #ff4444);
+            background: var(--sidebar-header-gradient);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
 
         .sidebar-header p {
-            color: rgba(255, 255, 255, 0.1);
+            color: var(--text-dim);
             font-size: 0.65rem;
         }
 
@@ -850,7 +1165,7 @@
             position: absolute;
             top: 12px;
             right: 16px;
-            color: rgba(255, 255, 255, 0.08);
+            color: var(--sidebar-close-color);
             font-size: 1.6rem;
             cursor: pointer;
             transition: all 0.3s;
@@ -859,7 +1174,7 @@
         }
 
         .sidebar-close:hover {
-            color: #ff1a1a;
+            color: var(--sidebar-close-hover);
             transform: rotate(90deg);
         }
 
@@ -868,7 +1183,7 @@
             align-items: center;
             gap: 14px;
             padding: 12px 28px;
-            color: rgba(255, 255, 255, 0.3);
+            color: var(--sidebar-item-color);
             text-decoration: none;
             transition: all 0.25s;
             cursor: pointer;
@@ -878,32 +1193,32 @@
         }
 
         .sidebar-item:hover {
-            background: rgba(255, 26, 26, 0.04);
-            border-left-color: #ff1a1a;
-            color: #ff4d4d;
+            background: var(--sidebar-item-hover-bg);
+            border-left-color: var(--sidebar-item-hover-color);
+            color: var(--sidebar-item-hover-color);
             transform: translateX(4px);
         }
 
         .sidebar-item i {
             width: 28px;
             font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.08);
+            color: var(--sidebar-item-color);
             transition: all 0.3s;
         }
 
         .sidebar-item:hover i {
-            color: #ff1a1a;
+            color: var(--sidebar-item-hover-color);
         }
 
         .sidebar-item .badge {
             margin-left: auto;
-            background: rgba(255, 26, 26, 0.08);
-            color: #ff4d4d;
+            background: var(--sidebar-badge-bg);
+            color: var(--sidebar-badge-color);
             padding: 1px 12px;
             border-radius: 50px;
             font-size: 0.55rem;
             font-weight: 600;
-            border: 1px solid rgba(255, 26, 26, 0.04);
+            border: 1px solid var(--sidebar-badge-bg);
         }
 
         .sidebar-item .badge.soon {
@@ -920,7 +1235,7 @@
 
         .sidebar-divider {
             height: 1px;
-            background: rgba(255, 26, 26, 0.03);
+            background: var(--sidebar-divider-bg);
             margin: 8px 28px;
         }
 
@@ -959,14 +1274,14 @@
         .modal.active { display: flex; }
 
         .modal-content {
-            background: rgba(10, 10, 30, 0.92);
-            border: 2px solid rgba(0, 255, 65, 0.1);
+            background: var(--bg-modal);
+            border: 2px solid var(--modal-border);
             border-radius: 20px;
             padding: 28px 30px;
             max-width: 380px;
             width: 90%;
             position: relative;
-            box-shadow: 0 0 60px rgba(0, 255, 65, 0.02);
+            box-shadow: 0 0 60px var(--modal-shadow);
             animation: modalFloat 3s ease-in-out infinite;
         }
 
@@ -980,7 +1295,7 @@
             top: 10px;
             right: 14px;
             font-size: 1.4rem;
-            color: rgba(100, 180, 255, 0.12);
+            color: var(--text-dim);
             cursor: pointer;
             transition: 0.3s;
             background: none;
@@ -988,16 +1303,16 @@
         }
 
         .modal-close:hover {
-            color: #4a7cf7;
+            color: var(--accent-blue);
             transform: rotate(90deg);
         }
 
         .modal h2 {
-            color: #fff;
+            color: var(--text-primary);
             margin-bottom: 16px;
             text-align: center;
             font-size: 1.3rem;
-            background: linear-gradient(135deg, #4a7cf7, #6c9aff);
+            background: var(--modal-heading);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -1013,10 +1328,10 @@
         .theme-selector button {
             flex: 1;
             padding: 10px;
-            border: 1px solid rgba(50, 150, 255, 0.04);
+            border: 1px solid var(--theme-selector-border);
             border-radius: 12px;
-            background: rgba(0, 0, 0, 0.2);
-            color: rgba(100, 180, 255, 0.2);
+            background: var(--theme-selector-bg);
+            color: var(--theme-selector-color);
             cursor: pointer;
             transition: 0.3s;
             font-weight: 600;
@@ -1024,20 +1339,20 @@
         }
 
         .theme-selector button:hover {
-            border-color: #4a7cf7;
-            color: #6c9aff;
+            border-color: var(--theme-selector-hover-border);
+            color: var(--theme-selector-hover-color);
         }
 
         .theme-selector button.active {
-            border-color: #4a7cf7;
-            background: rgba(50, 150, 255, 0.03);
-            color: #6c9aff;
+            border-color: var(--theme-selector-active-border);
+            background: var(--theme-selector-active-bg);
+            color: var(--theme-selector-active-color);
         }
 
         .setting-btn {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #4a7cf7, #6c9aff);
+            background: var(--setting-btn-bg);
             border: none;
             border-radius: 50px;
             color: #fff;
@@ -1090,7 +1405,7 @@
         }
     </style>
 </head>
-<body>
+<body class="theme-matrix">
 
     <canvas id="matrix-canvas"></canvas>
 
@@ -1217,7 +1532,7 @@
         <!-- ========== BOTTOM ========== -->
         <div class="bottom-section">
             <div class="contact-owner">
-                <span style="color:rgba(100,180,255,0.2); font-weight:500; font-size:0.85rem;">📢 For content changes / issues :</span>
+                <span style="color:var(--contact-text-color); font-weight:500; font-size:0.85rem;">📢 For content changes / issues :</span>
                 <a href="https://wa.me/255740706007?text=Hello%20Twarvis%2C%20I%20need%20help%20on%20the%20school%20portal" class="whatsapp-link" target="_blank">
                     <i class="fab fa-whatsapp"></i> Contact Web Owner
                 </a>
@@ -1293,7 +1608,7 @@
             <h2><i class="fas fa-cog"></i> Settings</h2>
             <div>
                 <div style="margin-bottom:16px;">
-                    <label style="display:block; margin-bottom:8px; font-weight:600; color:rgba(100,180,255,0.25); font-size:0.8rem;"><i class="fas fa-palette"></i> Theme Mode</label>
+                    <label style="display:block; margin-bottom:8px; font-weight:600; color:var(--text-secondary); font-size:0.8rem;"><i class="fas fa-palette"></i> Theme Mode</label>
                     <div class="theme-selector">
                         <button id="themeMatrix" class="active">🌿 Matrix</button>
                         <button id="themeDark">🌙 Dark</button>
@@ -1301,7 +1616,7 @@
                     </div>
                 </div>
                 <div>
-                    <label style="display:block; margin-bottom:5px; color:rgba(100,180,255,0.15); font-size:0.8rem;"><i class="fas fa-sync"></i> Refresh Page</label>
+                    <label style="display:block; margin-bottom:5px; color:var(--text-dim); font-size:0.8rem;"><i class="fas fa-sync"></i> Refresh Page</label>
                     <button class="setting-btn" id="refreshBtn">Refresh Now</button>
                 </div>
             </div>
