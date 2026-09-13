@@ -1,4 +1,4 @@
-# app.py - FULL VERSION with Cloudflare R2 + Environment Variables
+# app.py - FULL VERSION with Cloudflare R2 + Correct Supabase Keys
 import os
 import uuid
 import json
@@ -31,55 +31,75 @@ except ImportError:
     pass  # python-dotenv not installed — use system env vars
 
 # ============================================================
-# CONFIGURATION — ALL FROM ENVIRONMENT VARIABLES
+# SAFE ENV VAR LOADER
+# ============================================================
+def env(key, default=""):
+    """Get env var, strip whitespace, fall back to default if empty."""
+    val = os.environ.get(key, "").strip()
+    return val if val else default
+
+# ============================================================
+# CONFIGURATION — CORRECT KEYS
 # ============================================================
 
 # ---------- Django ----------
-SECRET_KEY = os.environ.get(
-    "SECRET_KEY",
-    "django-insecure-twarvis-school-key-2024"
-)
-DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
+SECRET_KEY = env("SECRET_KEY", "django-insecure-twarvis-school-key-2024")
+DEBUG = env("DEBUG", "False").lower() == "true"
 
 # ---------- Supabase ----------
-SUPABASE_URL = os.environ.get(
+SUPABASE_URL = env(
     "SUPABASE_URL",
     "https://hnszltswipxiqurkwydm.supabase.co"
 )
-SUPABASE_KEY = os.environ.get(
+# The publishable key IS the anon JWT token — that's what supabase-py expects
+SUPABASE_KEY = env(
     "SUPABASE_KEY",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhuc3psdHN3aXB4aXF1cmt3eWRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTEyODcsImV4cCI6MjA5MzEyNzI4N30.JsSgMXE9JMqJAAZd-riwrr-D-5MURL6WCfuNTrAtoWU"
 )
 
 # ---------- Cloudflare R2 ----------
-R2_ACCESS_KEY_ID = os.environ.get("R2_ACCESS_KEY_ID", "")
-R2_SECRET_ACCESS_KEY = os.environ.get("R2_SECRET_ACCESS_KEY", "")
-R2_BUCKET_NAME = os.environ.get("R2_BUCKET_NAME", "pdf")
-R2_ENDPOINT_URL = os.environ.get("R2_ENDPOINT_URL", "")
-R2_PUBLIC_URL = os.environ.get("R2_PUBLIC_URL", "").rstrip("/")
+R2_ACCESS_KEY_ID = env("R2_ACCESS_KEY_ID", "5b7111f929b3cd22162e7a20ef69a09a")
+R2_SECRET_ACCESS_KEY = env("R2_SECRET_ACCESS_KEY", "0cebef92f4316520d5553049763e957eb7f3f778e51cd57eeaa9b797a013d6c7")
+R2_BUCKET_NAME = env("R2_BUCKET_NAME", "pdf")
+R2_ENDPOINT_URL = env("R2_ENDPOINT_URL", "https://29d150504a083e2cf780e2115ebc9b28.r2.cloudflarestorage.com")
+R2_PUBLIC_URL = env("R2_PUBLIC_URL", "https://pub-062ab58e23db4e31a628e6f6273a014c.r2.dev").rstrip("/")
 
 # ---------- Admin ----------
-SECRET_ADMIN_PATH = os.environ.get(
-    "SECRET_ADMIN_PATH",
-    "admin-portal-twarvis-9x7k2m4p8q3z5w6v"
-)
+SECRET_ADMIN_PATH = env("SECRET_ADMIN_PATH", "admin-portal-twarvis-9x7k2m4p8q3z5w6v")
 ADMIN = True
 
 # ---------- Hosts ----------
-_allowed = os.environ.get("ALLOWED_HOSTS", "*")
+_allowed = env("ALLOWED_HOSTS", "*")
 ALLOWED_HOSTS = [h.strip() for h in _allowed.split(",") if h.strip()]
 
-_csrf = os.environ.get("CSRF_TRUSTED_ORIGINS", "https://*.onrender.com")
+_csrf = env("CSRF_TRUSTED_ORIGINS", "https://*.onrender.com,http://localhost:8000")
 CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf.split(",") if o.strip()]
 
+# ============================================================
+# CONFIG SANITY CHECK
+# ============================================================
 print("=" * 60)
 print("🚀 TWARVIS SCHOOL — R2 + ENV VERSION")
-print(f"📡 Supabase: {SUPABASE_URL}")
-print(f"☁️  R2 Bucket: {R2_BUCKET_NAME}")
-print(f"☁️  R2 Public: {R2_PUBLIC_URL}")
-print(f"🔐 Admin URL: /{SECRET_ADMIN_PATH}/")
-print(f"🐛 Debug: {DEBUG}")
 print("=" * 60)
+print(f"📡 Supabase URL:  {SUPABASE_URL[:50]}")
+print(f"🔑 Supabase Key:  {'✅ VALID JWT' if SUPABASE_KEY.startswith('eyJ') else '❌ INVALID'}")
+print(f"☁️  R2 Bucket:    {R2_BUCKET_NAME}")
+print(f"☁️  R2 Endpoint:  {R2_ENDPOINT_URL[:50]}")
+print(f"☁️  R2 Public:    {R2_PUBLIC_URL[:50]}")
+print(f"🔐 Admin URL:     /{SECRET_ADMIN_PATH}/")
+print(f"🐛 Debug:         {DEBUG}")
+print("=" * 60)
+
+# Verify Supabase key format
+if not SUPABASE_KEY.startswith("eyJ"):
+    print("❌ FATAL: SUPABASE_KEY is invalid!")
+    print(f"   Got: {SUPABASE_KEY[:40]}...")
+    print("   Expected: a JWT starting with 'eyJ'")
+    print("   Fix: Delete the SUPABASE_KEY env var on Render,")
+    print("        or set it to the correct anon JWT key.")
+    raise SystemExit(1)
+
+print("✅ Supabase key format is valid (starts with 'eyJ')")
 
 # ============================================================
 # DJANGO SETTINGS
@@ -122,8 +142,12 @@ from django import forms
 # ============================================================
 # SUPABASE CLIENT
 # ============================================================
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-print("✅ Supabase connected!")
+try:
+    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+    print("✅ Supabase connected!")
+except Exception as e:
+    print(f"❌ Supabase connection FAILED: {e}")
+    raise SystemExit(1)
 
 # ============================================================
 # CLOUDFLARE R2 CLIENT
