@@ -1,4 +1,4 @@
-# app.py - YOUR WORKING VERSION (FIXED) with SCANNER + ABOUT + SECRET ADMIN
+# app.py - FULL VERSION with Cloudflare R2 + Environment Variables
 import os
 import uuid
 import json
@@ -13,33 +13,85 @@ from django import forms
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from supabase import create_client, Client
+import boto3
+from botocore.config import Config
+from botocore.exceptions import ClientError
 
-# ========== HARDCODED SUPABASE ==========
-SUPABASE_URL = "https://hnszltswipxiqurkwydm.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhuc3psdHN3aXB4aXF1cmt3eWRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTEyODcsImV4cCI6MjA5MzEyNzI4N30.JsSgMXE9JMqJAAZd-riwrr-D-5MURL6WCfuNTrAtoWU"
-SECRET_KEY = "django-insecure-twarvis-school-key-2024"
+# ============================================================
+# LOAD .env FOR LOCAL DEVELOPMENT
+# ============================================================
+try:
+    from dotenv import load_dotenv
+    from pathlib import Path
+    env_path = Path(__file__).parent / '.env'
+    if env_path.exists():
+        load_dotenv(env_path)
+        print("✅ Loaded .env file")
+except ImportError:
+    pass  # python-dotenv not installed — use system env vars
+
+# ============================================================
+# CONFIGURATION — ALL FROM ENVIRONMENT VARIABLES
+# ============================================================
+
+# ---------- Django ----------
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY",
+    "django-insecure-twarvis-school-key-2024"
+)
+DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
+
+# ---------- Supabase ----------
+SUPABASE_URL = os.environ.get(
+    "SUPABASE_URL",
+    "https://hnszltswipxiqurkwydm.supabase.co"
+)
+SUPABASE_KEY = os.environ.get(
+    "SUPABASE_KEY",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhuc3psdHN3aXB4aXF1cmt3eWRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTEyODcsImV4cCI6MjA5MzEyNzI4N30.JsSgMXE9JMqJAAZd-riwrr-D-5MURL6WCfuNTrAtoWU"
+)
+
+# ---------- Cloudflare R2 ----------
+R2_ACCESS_KEY_ID = os.environ.get("R2_ACCESS_KEY_ID", "")
+R2_SECRET_ACCESS_KEY = os.environ.get("R2_SECRET_ACCESS_KEY", "")
+R2_BUCKET_NAME = os.environ.get("R2_BUCKET_NAME", "pdf")
+R2_ENDPOINT_URL = os.environ.get("R2_ENDPOINT_URL", "")
+R2_PUBLIC_URL = os.environ.get("R2_PUBLIC_URL", "").rstrip("/")
+
+# ---------- Admin ----------
+SECRET_ADMIN_PATH = os.environ.get(
+    "SECRET_ADMIN_PATH",
+    "admin-portal-twarvis-9x7k2m4p8q3z5w6v"
+)
 ADMIN = True
 
-# ========== 🔐 SECRET ADMIN PATH ==========
-# Only YOU should know this. Change it to anything random.
-# Keep it long, mixed, and hard to guess. Never share it publicly.
-SECRET_ADMIN_PATH = "admin-portal-twarvis-9x7k2m4p8q3z5w6v"
+# ---------- Hosts ----------
+_allowed = os.environ.get("ALLOWED_HOSTS", "*")
+ALLOWED_HOSTS = [h.strip() for h in _allowed.split(",") if h.strip()]
+
+_csrf = os.environ.get("CSRF_TRUSTED_ORIGINS", "https://*.onrender.com")
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf.split(",") if o.strip()]
 
 print("=" * 60)
-print("🚀 TWARVIS SCHOOL - WORKING VERSION")
-print(f"📡 URL: {SUPABASE_URL}")
+print("🚀 TWARVIS SCHOOL — R2 + ENV VERSION")
+print(f"📡 Supabase: {SUPABASE_URL}")
+print(f"☁️  R2 Bucket: {R2_BUCKET_NAME}")
+print(f"☁️  R2 Public: {R2_PUBLIC_URL}")
 print(f"🔐 Admin URL: /{SECRET_ADMIN_PATH}/")
+print(f"🐛 Debug: {DEBUG}")
 print("=" * 60)
 
-# ========== DJANGO SETTINGS ==========
+# ============================================================
+# DJANGO SETTINGS
+# ============================================================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 if not settings.configured:
     settings.configure(
-        DEBUG=True,
+        DEBUG=DEBUG,
         SECRET_KEY=SECRET_KEY,
         ROOT_URLCONF=__name__,
-        ALLOWED_HOSTS=["*", ".onrender.com", "localhost", "127.0.0.1"],
+        ALLOWED_HOSTS=ALLOWED_HOSTS,
         INSTALLED_APPS=["django.contrib.staticfiles"],
         MIDDLEWARE=[
             "django.middleware.common.CommonMiddleware",
@@ -59,17 +111,44 @@ if not settings.configured:
         }],
         STATIC_URL="/static/",
         STATICFILES_DIRS=[BASE_DIR],
-        CSRF_TRUSTED_ORIGINS=["https://*.onrender.com", "http://localhost:8000"],
+        CSRF_TRUSTED_ORIGINS=CSRF_TRUSTED_ORIGINS,
         X_FRAME_OPTIONS="SAMEORIGIN",
+        USE_TZ=True,
+        TIME_ZONE="Africa/Dar_es_Salaam",
     )
 
 from django import forms
 
-# ========== SUPABASE ==========
+# ============================================================
+# SUPABASE CLIENT
+# ============================================================
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 print("✅ Supabase connected!")
 
-# ========== CONSTANTS ==========
+# ============================================================
+# CLOUDFLARE R2 CLIENT
+# ============================================================
+r2_client = None
+try:
+    if R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY and R2_ENDPOINT_URL:
+        r2_client = boto3.client(
+            "s3",
+            endpoint_url=R2_ENDPOINT_URL,
+            aws_access_key_id=R2_ACCESS_KEY_ID,
+            aws_secret_access_key=R2_SECRET_ACCESS_KEY,
+            config=Config(signature_version="s3v4"),
+            region_name="auto",
+        )
+        print("✅ Cloudflare R2 client initialized!")
+    else:
+        print("⚠️  R2 credentials missing — uploads will fail")
+except Exception as e:
+    print(f"⚠️  R2 client init failed: {e}")
+    r2_client = None
+
+# ============================================================
+# CONSTANTS
+# ============================================================
 ALLOWED_EXTENSIONS = [
     '.pdf', '.ppt', '.pptx', '.doc', '.docx', '.txt', '.md',
     '.xls', '.xlsx', '.csv', '.jpg', '.jpeg', '.png', '.gif',
@@ -129,7 +208,9 @@ UNIVERSITIES = [
     "Manyara Technical College",
 ]
 
-# ========== FORMS ==========
+# ============================================================
+# FORMS
+# ============================================================
 class UploadForm(forms.Form):
     file = forms.FileField(label="File", widget=forms.FileInput(attrs={"class": "form-file", "required": True}))
     file_type = forms.ChoiceField(choices=[('notes', 'Notes'), ('pastpaper', 'Past Paper')], widget=forms.RadioSelect, initial='notes')
@@ -141,7 +222,68 @@ class UploadForm(forms.Form):
     university = forms.ChoiceField(choices=[('', '-- Select your university --')] + [(u, u) for u in UNIVERSITIES] + [('Other', 'Other')], required=False, widget=forms.Select(attrs={"class": "form-select"}))
     custom_university = forms.CharField(max_length=200, required=False, widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "Type your university name..."}))
 
-# ========== HELPER FUNCTIONS ==========
+# ============================================================
+# R2 HELPER FUNCTIONS
+# ============================================================
+def upload_to_r2(file_obj, key, content_type="application/octet-stream"):
+    """Upload a file to Cloudflare R2. Returns public URL or None."""
+    if not r2_client:
+        print("❌ R2 client not initialized")
+        return None
+    try:
+        file_obj.seek(0)
+        r2_client.upload_fileobj(
+            file_obj,
+            R2_BUCKET_NAME,
+            key,
+            ExtraArgs={
+                "ContentType": content_type,
+                "CacheControl": "max-age=86400",
+            },
+        )
+        url = f"{R2_PUBLIC_URL}/{key}"
+        print(f"✅ Uploaded to R2: {url}")
+        return url
+    except ClientError as e:
+        print(f"❌ R2 upload failed: {e}")
+        return None
+    except Exception as e:
+        print(f"❌ R2 upload exception: {e}")
+        return None
+
+
+def delete_from_r2(key):
+    """Delete a file from R2 by its key."""
+    if not r2_client:
+        return False
+    try:
+        r2_client.delete_object(Bucket=R2_BUCKET_NAME, Key=key)
+        print(f"✅ Deleted from R2: {key}")
+        return True
+    except ClientError as e:
+        print(f"❌ R2 delete failed: {e}")
+        return False
+
+
+def get_r2_public_url(key):
+    """Build the public URL for an R2 object."""
+    return f"{R2_PUBLIC_URL}/{key}"
+
+
+def get_r2_file_bytes(key):
+    """Download a file from R2 and return bytes, or None."""
+    if not r2_client:
+        return None
+    try:
+        response = r2_client.get_object(Bucket=R2_BUCKET_NAME, Key=key)
+        return response["Body"].read()
+    except ClientError as e:
+        print(f"❌ R2 download failed: {e}")
+        return None
+
+# ============================================================
+# HELPER FUNCTIONS
+# ============================================================
 def get_content_type(filename):
     ext = os.path.splitext(filename)[1].lower()
     types = {
@@ -200,7 +342,9 @@ def search_notes(query):
     except Exception as e:
         return get_all_notes()
 
-# ========== PASSCODE HTML (BUILT-IN) ==========
+# ============================================================
+# PASSCODE HTML
+# ============================================================
 def get_passcode_html(file_id, filename, error=None):
     error_html = f'<div class="error-msg" style="color:#ff4444;font-size:0.85rem;margin-top:12px;background:rgba(255,68,68,0.05);padding:10px;border-radius:10px;border:1px solid rgba(255,68,68,0.1);">{error}</div>' if error else '<div class="error-msg" id="passcodeError" style="color:#ff4444;font-size:0.85rem;margin-top:12px;display:none;background:rgba(255,68,68,0.05);padding:10px;border-radius:10px;border:1px solid rgba(255,68,68,0.1);">❌ Incorrect passcode. Please try again.</div>'
     
@@ -454,7 +598,9 @@ def get_passcode_html(file_id, filename, error=None):
 </html>
 '''
 
-# ========== VIEWS ==========
+# ============================================================
+# VIEWS
+# ============================================================
 def index(request):
     return render(request, "index.html")
 
@@ -489,31 +635,38 @@ def upload_view(request):
                     unique_id = str(uuid.uuid4())[:8]
                     safe_filename = f"{timestamp}_{unique_id}_{file.name.replace(' ', '_')}"
                     
+                    # ========== ☁️ UPLOAD TO CLOUDFLARE R2 ==========
                     file_content = file.read()
+                    file_size = len(file_content)
                     
-                    supabase.storage.from_("notes").upload(
-                        safe_filename, 
-                        file_content,
-                        {"content-type": file.content_type or "application/octet-stream"}
-                    )
+                    r2_key = f"notes/{safe_filename}"
+                    content_type = file.content_type or get_content_type(file.name)
                     
-                    supabase.table("notes").insert({
-                        "filename": safe_filename,
-                        "original_filename": file.name,
-                        "module": module,
-                        "course": course,
-                        "description": description,
-                        "file_type": file_type,
-                        "privacy": privacy,
-                        "passcode": passcode if privacy == "private" else "",
-                        "university": university,
-                        "uploader": "user",
-                        "uploaded_at": datetime.now().isoformat(),
-                        "file_size": len(file_content)
-                    }).execute()
+                    file.seek(0)
+                    r2_url = upload_to_r2(file, r2_key, content_type=content_type)
                     
-                    message = f"✅ {file.name} uploaded successfully!"
-                    form = UploadForm()
+                    if not r2_url:
+                        error = "Upload to storage failed. Please try again."
+                        print(f"❌ R2 upload failed for {safe_filename}")
+                    else:
+                        # ========== 💾 SAVE METADATA TO SUPABASE DB ==========
+                        supabase.table("notes").insert({
+                            "filename": safe_filename,
+                            "original_filename": file.name,
+                            "module": module,
+                            "course": course,
+                            "description": description,
+                            "file_type": file_type,
+                            "privacy": privacy,
+                            "passcode": passcode if privacy == "private" else "",
+                            "university": university,
+                            "uploader": "user",
+                            "uploaded_at": datetime.now().isoformat(),
+                            "file_size": file_size
+                        }).execute()
+                        
+                        message = f"✅ {file.name} uploaded successfully!"
+                        form = UploadForm()
                         
             except Exception as e:
                 error = f"Upload failed: {str(e)}"
@@ -570,17 +723,17 @@ def view_file(request, id):
             correct_passcode = note.get("passcode", "")
             get_passcode = request.GET.get("passcode", "")
             
-            # If no passcode entered yet, show the passcode page
             if not get_passcode:
                 html = get_passcode_html(id, note.get("original_filename", note.get("filename", "")))
                 return HttpResponse(html)
             
-            # Verify passcode
             if get_passcode != correct_passcode:
                 html = get_passcode_html(id, note.get("original_filename", note.get("filename", "")), "❌ Incorrect passcode. Please try again.")
                 return HttpResponse(html)
         
-        file_url = supabase.storage.from_("notes").get_public_url(note["filename"])
+        # ========== ☁️ GET FILE URL FROM R2 ==========
+        r2_key = f"notes/{note['filename']}"
+        file_url = get_r2_public_url(r2_key)
         
         note["can_view_inline"] = can_view_inline(note.get("filename", ""))
         note["is_pdf"] = os.path.splitext(note.get("filename", ""))[1].lower() == '.pdf'
@@ -590,7 +743,6 @@ def view_file(request, id):
         note["text_content"] = ""
         if note["is_text"] and file_url:
             try:
-                import requests
                 response = requests.get(file_url, timeout=10)
                 if response.status_code == 200:
                     note["text_content"] = response.text
@@ -628,7 +780,13 @@ def download_file(request, id):
             if get_passcode != correct_passcode:
                 return HttpResponse("Access Denied. Incorrect passcode.", status=403)
         
-        file_data = supabase.storage.from_("notes").download(note["filename"])
+        # ========== ☁️ DOWNLOAD FROM R2 ==========
+        r2_key = f"notes/{note['filename']}"
+        file_data = get_r2_file_bytes(r2_key)
+        
+        if file_data is None:
+            return HttpResponse("File not found in storage", status=404)
+        
         content_type = get_content_type(note["filename"])
         response = HttpResponse(file_data, content_type=content_type)
         response["Content-Disposition"] = f"attachment; filename=\"{note.get('original_filename', note['filename'])}\""
@@ -641,9 +799,13 @@ def delete_file(request, id):
         return HttpResponse("Not authorized.", status=403)
     try:
         note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
-        supabase.storage.from_("notes").remove([note["filename"]])
+        
+        # ========== ☁️ DELETE FROM R2 ==========
+        delete_from_r2(f"notes/{note['filename']}")
+        
+        # ========== 🗑️ DELETE FROM SUPABASE DB ==========
         supabase.table("notes").delete().eq("id", id).execute()
-        # ✅ Redirect to the new SECRET admin URL
+        
         return redirect(f"/{SECRET_ADMIN_PATH}/")
     except Exception as e:
         return HttpResponse(f"Delete failed: {str(e)}", status=500)
@@ -730,9 +892,8 @@ def admin_settings(request):
         return HttpResponse("Access Denied. Admin only.", status=403)
     return render(request, "admin_settings.html", {})
 
-# ========== ABOUT VIEW (NEW) ==========
+# ========== ABOUT VIEW ==========
 def about_view(request):
-    """Render the about.html page"""
     try:
         return render(request, "about.html")
     except Exception as e:
@@ -754,7 +915,6 @@ def calculator_view(request):
     return render(request, "calculator.html")
 
 def hackathon_view(request):
-    # Your file is hackerthon.html (with an R)
     try:
         return render(request, "hackerthon.html")
     except Exception as e:
@@ -772,7 +932,6 @@ def hackathon_view(request):
         """)
 
 def free_courses_view(request):
-    # Your file is free_course.html (singular)
     try:
         return render(request, "free_course.html")
     except Exception as e:
@@ -791,11 +950,9 @@ def free_courses_view(request):
 
 # ========== SCANNER VIEW ==========
 def scanner_view(request):
-    """Render the scanner.html page for document scanning (like CamScanner)"""
     try:
         return render(request, "scanner.html")
     except Exception as e:
-        # Fallback if scanner.html doesn't exist yet
         return HttpResponse(f"""
             <!DOCTYPE html>
             <html>
@@ -898,11 +1055,13 @@ def scanner_view(request):
             </html>
         """)
 
-# ========== URLS ==========
+# ============================================================
+# URLS
+# ============================================================
 urlpatterns = [
     path("", index),
     
-    # 🔐 SECRET ADMIN ROUTES — only accessible if you know the exact path
+    # 🔐 SECRET ADMIN ROUTES
     path(f"{SECRET_ADMIN_PATH}/", admin_dashboard, name="admin_dashboard"),
     path(f"{SECRET_ADMIN_PATH}/settings/", admin_settings, name="admin_settings"),
     
@@ -913,7 +1072,7 @@ urlpatterns = [
     path("delete/<int:id>/", delete_file),
     path("update-passcode/<int:id>/", update_passcode, name="update_passcode"),
     
-    # ========== ABOUT PAGE — NEW ==========
+    # ABOUT PAGE
     path("about.html", about_view, name="about"),
     path("about/", about_view, name="about_alt"),
     
@@ -921,21 +1080,19 @@ urlpatterns = [
     path("calculator.html", calculator_view),
     path("calculator/", calculator_view, name="calculator"),
     
-    # HACKERTHON (your actual filename!)
+    # HACKERTHON
     path("hackerthon.html", hackathon_view),
     path("hackerthon/", hackathon_view, name="hackerthon"),
-    # Also support misspelled version
     path("hackathon.html", hackathon_view),
     path("hackathon/", hackathon_view, name="hackathon"),
     
-    # FREE_COURSE (your actual filename!)
+    # FREE_COURSE
     path("free_course.html", free_courses_view),
     path("free_course/", free_courses_view, name="free_course"),
-    # Also support plural version
     path("free_courses.html", free_courses_view),
     path("free-courses/", free_courses_view, name="free_courses"),
     
-    # ========== SCANNER ROUTE ==========
+    # SCANNER ROUTE
     path("scanner.html", scanner_view, name="scanner"),
     path("scanner/", scanner_view, name="scanner_alt"),
     
