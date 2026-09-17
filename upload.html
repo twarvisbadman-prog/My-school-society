@@ -4,1699 +4,1120 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Upload | Student Hub ✦</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* ============================================================
-           DARK CHOCOLATE GLASSY THEME — WITH BLUE NAV & GOLD ICONS
-           ============================================================ */
-        :root{
-            --board:#0a0f0d;
-            --board-deep:#060a08;
-            --dark-chocolate:#2c1810;
-            --dark-chocolate-glass:rgba(44,24,16,0.55);
-            --paper:#f5efdd;
-            --paper-line:#e3d6b3;
-            --ink:#241d13;
-            --ink-soft:#5b5238;
-            --chalk:#f2ede0;
-            --chalk-dim:rgba(242,237,224,.7);
-            --chalk-faint:rgba(242,237,224,.14);
-            
-            --orange:#f97316;
-            --orange-bright:#fb923c;
-            --orange-glow:rgba(249,115,22,.25);
-            --orange-dim:rgba(249,115,22,.10);
-            
-            /* BLUE for navigation */
-            --blue:#3b82f6;
-            --blue-bright:#60a5fa;
-            --blue-glow:rgba(59,130,246,.30);
-            --blue-dim:rgba(59,130,246,.15);
-            
-            /* GOLD for ALL icons */
-            --gold:#ffd700;
-            --gold-bright:#ffed4a;
-            --gold-glow:rgba(255,215,0,.30);
-            --gold-dim:rgba(255,215,0,.15);
-            
-            --red:#ef4444;
-            --red-bright:#f87171;
-            --red-glow:rgba(239,68,68,.30);
-            --red-dim:rgba(239,68,68,.15);
-            
-            --green:#22c55e;
-            --green-bright:#4ade80;
-            --green-glow:rgba(34,197,94,.25);
-            --green-dim:rgba(34,197,94,.10);
-            
-            --silver:#c0c0c0;
-            --cream:#f5efdd;
-            --thread:rgba(192,192,192,.15);
-            --radius-card:16px;
+        :root {
+            --board: #0a0f0d;
+            --board-deep: #060a08;
+            --dark-chocolate: #2c1810;
+            --dark-chocolate-glass: rgba(44, 24, 16, 0.65);
+            --paper: #f5efdd;
+            --paper-line: #e3d6b3;
+            --ink: #241d13;
+            --ink-soft: #5b5238;
+            --chalk: #f2ede0;
+            --chalk-dim: rgba(242, 237, 224, 0.8);
+            --chalk-faint: rgba(242, 237, 224, 0.14);
+            --blue: #3b82f6;
+            --blue-bright: #60a5fa;
+            --blue-glow: rgba(59, 130, 246, 0.3);
+            --blue-dim: rgba(59, 130, 246, 0.15);
+            --gold: #ffd700;
+            --gold-bright: #ffed4a;
+            --gold-glow: rgba(255, 215, 0, 0.3);
+            --red: #ef4444;
+            --green: #22c55e;
+            --silver: #c0c0c0;
+            --radius-card: 20px;
+            --shadow-soft: 0 18px 38px rgba(0, 0, 0, 0.25);
+            --shadow-gold: 0 0 30px rgba(255, 215, 0, 0.12);
         }
 
-        *{margin:0;padding:0;box-sizing:border-box;}
+        * { box-sizing: border-box; }
 
-        html{
-            font-size:16px;
-            scroll-behavior:smooth;
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
         }
 
-        body{
-            font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
-            background:var(--board);
-            color:var(--chalk);
-            min-height:100vh;
-            position:relative;
-            overflow-x:hidden;
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background: var(--board);
+            color: var(--chalk);
+            overflow-x: hidden;
+            position: relative;
         }
 
-        /* ============================================================
-           HEAVY RAIN + LIGHTNING CANVAS
-           ============================================================ */
-        #rain-canvas{
-            position:fixed;
-            top:0;
-            left:0;
-            width:100%;
-            height:100%;
-            z-index:0;
-            pointer-events:none;
-            opacity:0.85;
-        }
-
-        /* ===== AMBIENT BLUE GLOW ===== */
-        body::before{
-            content:'';
-            position:fixed;
-            inset:0;
-            z-index:0;
-            pointer-events:none;
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
             background:
-                radial-gradient(ellipse at 30% 20%, rgba(59,130,246,.04) 0%, transparent 60%),
-                radial-gradient(ellipse at 70% 80%, rgba(59,130,246,.03) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(59,130,246,.02) 0%, transparent 40%);
-            animation:bluePulse 6s ease-in-out infinite;
+                radial-gradient(ellipse at 30% 20%, rgba(59, 130, 246, 0.08), transparent 30%),
+                radial-gradient(ellipse at 70% 80%, rgba(59, 130, 246, 0.06), transparent 35%),
+                radial-gradient(ellipse at 50% 50%, rgba(59, 130, 246, 0.03), transparent 40%);
         }
 
-        @keyframes bluePulse{
-            0%,100%{opacity:.6;}
-            50%{opacity:1;}
+        #rain-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.7;
         }
 
-        /* ============================================================
-           BLUE EDGE ANIMATION
-           ============================================================ */
-        @keyframes blueEdgePulse{
-            0%,100%{
-                border-color:rgba(59,130,246,.12);
-                box-shadow:0 0 20px rgba(59,130,246,.02), inset 0 0 20px rgba(59,130,246,.01);
+        a { color: inherit; }
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            background: rgba(44, 24, 16, 0.72);
+            backdrop-filter: blur(18px) saturate(130%);
+            -webkit-backdrop-filter: blur(18px) saturate(130%);
+            border-bottom: 2px solid rgba(59, 130, 246, 0.18);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .menu-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1.5px solid var(--blue-dim);
+            background: transparent;
+            color: var(--gold);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .menu-btn:hover,
+        .menu-btn:focus-visible {
+            border-color: var(--gold);
+            box-shadow: var(--shadow-gold);
+            outline: none;
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            white-space: nowrap;
+            line-height: 1.1;
+        }
+
+        .logo .mark {
+            color: var(--gold);
+        }
+
+        .logo-sub {
+            display: block;
+            font-size: 0.62rem;
+            color: rgba(255, 215, 0, 0.7);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav-pill {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1.5px solid rgba(59, 130, 246, 0.18);
+            text-decoration: none;
+            color: var(--chalk);
+            font-size: 0.72rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.02);
+            transition: all 0.25s ease;
+        }
+
+        .nav-pill i {
+            color: var(--gold) !important;
+        }
+
+        .nav-pill:hover,
+        .nav-pill:focus-visible {
+            transform: translateY(-1px);
+            border-color: rgba(255, 215, 0, 0.6);
+            box-shadow: var(--shadow-gold);
+            outline: none;
+        }
+
+        .nav-pill.blue-upload {
+            background: linear-gradient(135deg, var(--blue), #2563eb);
+            border-color: var(--blue);
+            color: white;
+        }
+
+        .upload-container {
+            position: relative;
+            z-index: 2;
+            max-width: 720px;
+            margin: 28px auto 80px;
+            padding: 0 18px;
+        }
+
+        .upload-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--radius-card);
+            background: rgba(44, 24, 16, 0.7);
+            border: 1.5px solid rgba(59, 130, 246, 0.18);
+            box-shadow: var(--shadow-soft);
+            padding: clamp(20px, 3vw, 30px);
+        }
+
+        .upload-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent 0%, rgba(255, 215, 0, 0.04) 30%, transparent 60%);
+            transform: translateX(-100%);
+            animation: shimmer 7s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-120%); }
+            60% { transform: translateX(120%); }
+        }
+
+        .upload-header {
+            position: relative;
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .upload-header .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 72px;
+            height: 72px;
+            border-radius: 18px;
+            background: rgba(255, 215, 0, 0.06);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            color: var(--gold);
+            box-shadow: inset 0 0 22px rgba(255, 215, 0, 0.05);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .upload-header h2 {
+            margin: 12px 0 4px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+        }
+
+        .upload-header p {
+            margin: 0;
+            color: rgba(242, 237, 224, 0.7);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        .message {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .message.show {
+            display: flex;
+        }
+
+        .message.success {
+            color: #bbf7d0;
+            border-color: rgba(34, 197, 94, 0.3);
+            background: rgba(34, 197, 94, 0.08);
+        }
+
+        .message.error {
+            color: #fecaca;
+            border-color: rgba(239, 68, 68, 0.3);
+            background: rgba(239, 68, 68, 0.08);
+        }
+
+        form {
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            color: var(--chalk-dim);
+            text-transform: uppercase;
+        }
+
+        .form-label i {
+            color: var(--gold);
+            margin-right: 6px;
+        }
+
+        .required {
+            color: var(--gold);
+            margin-left: 4px;
+        }
+
+        .optional {
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.68rem;
+            font-weight: 500;
+            text-transform: none;
+            margin-left: 6px;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1.5px solid rgba(59, 130, 246, 0.2);
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--chalk);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.05);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .form-textarea {
+            min-height: 92px;
+            resize: vertical;
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffd700' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
+        }
+
+        .form-select option {
+            background: var(--board);
+            color: var(--chalk);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            position: relative;
+            flex: 1 1 140px;
+            min-width: 120px;
+        }
+
+        .radio-option input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .radio-option label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            height: 100%;
+            min-height: 46px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1.5px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .radio-option label i {
+            color: var(--gold);
+        }
+
+        .radio-option input:checked + label {
+            border-color: rgba(255, 215, 0, 0.8);
+            background: rgba(255, 215, 0, 0.06);
+            color: var(--gold-bright);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .drop-zone {
+            position: relative;
+            border: 2px dashed rgba(59, 130, 246, 0.16);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.015);
+            min-height: 190px;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.dragover,
+        .drop-zone:focus-within {
+            border-color: rgba(255, 215, 0, 0.7);
+            background: rgba(255, 215, 0, 0.04);
+            box-shadow: inset 0 0 24px rgba(255, 215, 0, 0.03);
+            outline: none;
+        }
+
+        .drop-zone i {
+            font-size: clamp(2.2rem, 4vw, 2.8rem);
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .drop-zone h4 {
+            margin: 0 0 6px;
+            font-size: 1rem;
+            color: var(--chalk);
+        }
+
+        .drop-zone p {
+            margin: 0;
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .browse-btn {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 8px 18px;
+            border-radius: 999px;
+            background: rgba(255, 215, 0, 0.06);
+            border: 1.5px solid rgba(255, 215, 0, 0.22);
+            color: var(--gold);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .file-input {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-list {
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            animation: slideIn 0.2s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .file-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: rgba(255, 215, 0, 0.07);
+            color: var(--gold);
+            flex-shrink: 0;
+        }
+
+        .file-info {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .file-name {
+            display: block;
+            color: var(--chalk);
+            font-size: 0.82rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-size {
+            display: block;
+            color: rgba(255, 255, 255, 0.48);
+            font-size: 0.7rem;
+            margin-top: 2px;
+        }
+
+        .file-remove {
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .file-remove:hover,
+        .file-remove:focus-visible {
+            color: var(--red);
+            outline: none;
+        }
+
+        .passcode-section {
+            display: none;
+            margin-top: 10px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: rgba(255, 215, 0, 0.03);
+            border: 1px solid rgba(255, 215, 0, 0.14);
+        }
+
+        .passcode-section.show {
+            display: block;
+        }
+
+        .warning {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gold);
+            font-size: 0.78rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .passcode-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .passcode-input input {
+            flex: 1;
+            min-width: 0;
+            padding: 11px 12px;
+            border-radius: 10px;
+            border: 1.5px solid rgba(255, 215, 0, 0.22);
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--chalk);
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.2em;
+            text-align: center;
+        }
+
+        .passcode-input input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.05);
+        }
+
+        .btn-submit {
+            position: relative;
+            width: 100%;
+            margin-top: 8px;
+            padding: 14px 16px;
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--blue), #2563eb);
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 18px 32px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-submit:hover,
+        .btn-submit:focus-visible {
+            transform: translateY(-1px);
+            box-shadow: 0 20px 36px rgba(59, 130, 246, 0.28);
+            outline: none;
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: wait;
+            transform: none;
+        }
+
+        .btn-submit i {
+            margin-right: 8px;
+            color: var(--gold);
+        }
+
+        .allowed-types {
+            margin-top: 18px;
+            padding: 10px 12px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.65);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(59, 130, 246, 0.12);
+            font-size: 0.72rem;
+            letter-spacing: 0.02em;
+        }
+
+        .allowed-types i {
+            color: var(--gold);
+            margin-right: 6px;
+        }
+
+        .allowed-types span {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .success-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(8, 12, 26, 0.86);
+            backdrop-filter: blur(12px);
+            z-index: 100;
+            padding: 18px;
+        }
+
+        .success-overlay.active {
+            display: flex;
+        }
+
+        .success-content {
+            position: relative;
+            width: min(100%, 480px);
+            text-align: center;
+            padding: clamp(28px, 4vw, 40px) clamp(22px, 3vw, 32px);
+            border-radius: 24px;
+            background: rgba(44, 24, 16, 0.82);
+            border: 1.5px solid rgba(255, 215, 0, 0.15);
+            box-shadow: 0 26px 52px rgba(0, 0, 0, 0.35);
+        }
+
+        .success-content .trophy {
+            display: block;
+            font-size: clamp(3.2rem, 7vw, 4.2rem);
+            color: var(--gold);
+            margin-bottom: 10px;
+            animation: celebrate 1.6s ease-in-out infinite;
+        }
+
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.08) rotate(-5deg); }
+            75% { transform: scale(1.08) rotate(5deg); }
+        }
+
+        .success-content .main-message {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1.5rem, 3vw, 1.9rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gold), #fff4a3, var(--silver), var(--gold));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: goldMotion 3s ease-in-out infinite;
+            margin-bottom: 8px;
+        }
+
+        @keyframes goldMotion {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .success-content .sub-message {
+            color: rgba(255, 215, 0, 0.78);
+            font-size: 0.92rem;
+            font-style: italic;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .success-content .sparkle-divider {
+            color: rgba(192, 192, 192, 0.5);
+            letter-spacing: 0.4em;
+            font-size: 0.9rem;
+            margin: 10px 0;
+        }
+
+        .success-content .led-text {
+            display: inline-block;
+            padding: 10px 18px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.18);
+            border: 1.5px solid rgba(255, 215, 0, 0.2);
+            color: var(--gold);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            letter-spacing: 0.18em;
+            margin-bottom: 18px;
+        }
+
+        .success-content .btn-submit {
+            max-width: 180px;
+            margin: 0 auto;
+            padding-left: 18px;
+            padding-right: 18px;
+        }
+
+        @media (max-width: 640px) {
+            .header-content {
+                padding: 10px 12px;
+                flex-wrap: wrap;
             }
-            50%{
-                border-color:rgba(59,130,246,.35);
-                box-shadow:0 0 40px rgba(59,130,246,.06), inset 0 0 40px rgba(59,130,246,.02);
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .radio-group {
+                flex-direction: column;
+            }
+
+            .passcode-input {
+                flex-direction: column;
+            }
+
+            .passcode-input input {
+                width: 100%;
             }
         }
 
-        /* ============================================================
-           WET EFFECT — EXTRA GLASSY
-           ============================================================ */
-        @keyframes wetShimmer{
-            0%{background-position:-200% center;}
-            100%{background-position:200% center;}
-        }
-
-        @keyframes wetDrops{
-            0%,100%{opacity:0.5;}
-            50%{opacity:1;}
-        }
-
-        .wet-effect{
-            position:relative;
-            overflow:hidden;
-        }
-
-        .wet-effect::before{
-            content:'';
-            position:absolute;
-            top:0;left:0;right:0;bottom:0;
-            background:linear-gradient(90deg,
-                transparent 0%,
-                rgba(255,255,255,0.04) 10%,
-                rgba(255,255,255,0.10) 20%,
-                rgba(255,255,255,0.04) 30%,
-                transparent 40%
-            );
-            background-size:200% 100%;
-            animation:wetShimmer 3s ease-in-out infinite;
-            pointer-events:none;
-            border-radius:30px;
-        }
-
-        .wet-effect::after{
-            content:'';
-            position:absolute;
-            top:0;left:0;right:0;bottom:0;
-            background-image:
-                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.12) 1px, transparent 1px),
-                radial-gradient(circle at 60% 70%, rgba(255,255,255,0.10) 1.5px, transparent 1.5px),
-                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.12) 1px, transparent 1px),
-                radial-gradient(circle at 40% 80%, rgba(255,255,255,0.08) 2px, transparent 2px);
-            background-size:100% 100%;
-            pointer-events:none;
-            border-radius:30px;
-            animation:wetDrops 4s ease-in-out infinite;
-        }
-
-        /* ============================================================
-           HEADER — BLUE NAVIGATION
-           ============================================================ */
-        .header{
-            border-bottom:2px solid var(--blue-dim);
-            position:sticky;
-            top:0;
-            z-index:100;
-            background:var(--dark-chocolate-glass);
-            backdrop-filter:blur(25px) saturate(180%);
-            -webkit-backdrop-filter:blur(25px) saturate(180%);
-            animation:blueEdgePulse 4s ease-in-out infinite;
-            border-bottom:2px solid rgba(59,130,246,0.15);
-        }
-        .header-content{
-            max-width:1200px;
-            margin:0 auto;
-            padding:10px 16px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:8px;
-        }
-        .header-left{
-            display:flex;
-            align-items:center;
-            gap:10px;
-            flex-shrink:0;
-        }
-
-        .menu-btn{
-            width:34px;height:34px;
-            border:2px solid var(--blue-dim);
-            border-radius:50%;
-            background:transparent;
-            color:var(--gold);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:.85rem;
-            cursor:pointer;
-            transition:.3s;
-            flex-shrink:0;
-        }
-        .menu-btn:hover{
-            border-color:var(--gold);
-            color:var(--gold-bright);
-            box-shadow:0 0 30px var(--gold-glow);
-        }
-
-        .logo{
-            font-family:'Space Grotesk',sans-serif;
-            font-size:clamp(0.9rem, 2vw, 1.1rem);
-            font-weight:700;
-            letter-spacing:-.01em;
-            color:var(--chalk);
-            white-space:nowrap;
-        }
-        .logo .mark{
-            display:inline-block;
-            color:var(--gold);
-            animation:goldShift 3s ease-in-out infinite;
-        }
-        .logo .char{
-            display:inline-block;
-            animation:wordShift 4s ease-in-out infinite;
-            animation-delay:calc(var(--i,0) * 0.08s);
-        }
-        .logo-sub{
-            display:block;
-            font-size:clamp(0.45rem, 1vw, 0.6rem);
-            color:var(--gold);
-            margin-top:1px;
-            opacity:.6;
-        }
-
-        .nav-links{
-            display:flex;
-            gap:6px;
-            align-items:center;
-            flex-wrap:wrap;
-            justify-content:flex-end;
-        }
-        .nav-pill{
-            display:inline-flex;
-            align-items:center;
-            gap:5px;
-            padding:6px 12px;
-            border:2px solid var(--blue-dim);
-            border-radius:30px;
-            font-size:clamp(0.6rem, 1.2vw, 0.72rem);
-            font-weight:600;
-            text-decoration:none;
-            color:var(--chalk);
-            transition:.3s;
-            animation:blueEdgePulse 4s ease-in-out infinite;
-            white-space:nowrap;
-            position:relative;
-            overflow:hidden;
-        }
-        .nav-pill i{
-            font-size:clamp(0.6rem, 1vw, 0.8rem);
-            color:var(--gold) !important;
-            animation:goldShift 3s ease-in-out infinite;
-        }
-
-        .nav-pill::before{
-            content:'';
-            position:absolute;
-            top:0;left:0;right:0;bottom:0;
-            background:linear-gradient(90deg,
-                transparent 0%,
-                rgba(255,255,255,0.04) 10%,
-                rgba(255,255,255,0.10) 20%,
-                rgba(255,255,255,0.04) 30%,
-                transparent 40%
-            );
-            background-size:200% 100%;
-            animation:wetShimmer 3s ease-in-out infinite;
-            pointer-events:none;
-            border-radius:30px;
-        }
-        .nav-pill::after{
-            content:'';
-            position:absolute;
-            top:0;left:0;right:0;bottom:0;
-            background-image:
-                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.10) 1px, transparent 1px),
-                radial-gradient(circle at 60% 70%, rgba(255,255,255,0.08) 1.5px, transparent 1.5px),
-                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.10) 1px, transparent 1px);
-            background-size:100% 100%;
-            pointer-events:none;
-            border-radius:30px;
-            animation:wetDrops 4s ease-in-out infinite;
-        }
-
-        .nav-pill:hover{
-            border-color:var(--gold);
-            color:var(--chalk);
-            box-shadow:0 0 30px var(--gold-glow);
-            transform:translateY(-2px);
-        }
-
-        /* === Blue "See uploaded notes" button === */
-        .nav-pill.blue-special{
-            background:linear-gradient(135deg, var(--blue), #2563eb);
-            border:2px solid var(--blue);
-            color:var(--chalk);
-            font-weight:700;
-            animation:blueEdgePulse 3s ease-in-out infinite;
-        }
-        .nav-pill.blue-special i{color:var(--gold) !important; animation:goldShift 3s ease-in-out infinite;}
-        .nav-pill.blue-special:hover{
-            background:linear-gradient(135deg, var(--blue-bright), var(--blue));
-            box-shadow:0 0 40px var(--blue-glow), 0 0 40px var(--gold-glow);
-            transform:translateY(-2px);
-            border-color:var(--gold);
-        }
-
-        /* === Upload button - BLUE === */
-        .nav-pill.blue-upload{
-            background:linear-gradient(135deg, var(--blue), #2563eb);
-            border:2px solid var(--blue);
-            color:var(--chalk);
-            font-weight:700;
-            animation:blueGlowPulse 3s ease-in-out infinite;
-        }
-        .nav-pill.blue-upload i{color:var(--gold) !important; animation:goldShift 3s ease-in-out infinite;}
-        @keyframes blueGlowPulse{
-            0%,100%{
-                border-color:var(--blue);
-                box-shadow:0 0 20px rgba(59,130,246,.1);
-            }
-            50%{
-                border-color:var(--gold);
-                box-shadow:0 0 40px rgba(255,215,0,.15);
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
             }
         }
-        .nav-pill.blue-upload:hover{
-            background:linear-gradient(135deg, var(--blue-bright), var(--blue));
-            box-shadow:0 0 40px var(--blue-glow), 0 0 40px var(--gold-glow);
-            transform:translateY(-2px);
-            border-color:var(--gold);
-        }
-
-        /* ============================================================
-           UPLOAD CONTAINER — EXTRA GLASSY
-           ============================================================ */
-        .upload-container{
-            max-width:700px;
-            margin:20px auto 0;
-            padding:0 16px 80px;
-            position:relative;
-            z-index:2;
-        }
-
-        .upload-card{
-            background:var(--dark-chocolate-glass);
-            backdrop-filter:blur(25px) saturate(180%);
-            -webkit-backdrop-filter:blur(25px) saturate(180%);
-            border:2px solid rgba(59,130,246,.10);
-            border-radius:var(--radius-card);
-            padding:clamp(18px, 3vw, 28px);
-            transition:all .35s cubic-bezier(.16,1,.3,1);
-            animation:blueEdgePulse 4s ease-in-out infinite;
-            position:relative;
-            overflow:hidden;
-        }
-
-        .upload-card::before{
-            content:'';
-            position:absolute;
-            top:0;left:0;right:0;bottom:0;
-            background:linear-gradient(90deg,
-                transparent 0%,
-                rgba(255,215,0,.02) 10%,
-                rgba(255,215,0,.04) 20%,
-                rgba(255,215,0,.02) 30%,
-                transparent 40%
-            );
-            background-size:200% 100%;
-            animation:wetShimmer 4s ease-in-out infinite;
-            pointer-events:none;
-            border-radius:var(--radius-card);
-        }
-
-        .upload-card::after{
-            content:'';
-            position:absolute;
-            top:0;left:0;right:0;bottom:0;
-            background-image:
-                radial-gradient(circle at 15% 25%, rgba(255,215,0,.04) 2px, transparent 2px),
-                radial-gradient(circle at 55% 75%, rgba(255,215,0,.03) 3px, transparent 3px),
-                radial-gradient(circle at 75% 15%, rgba(255,215,0,.04) 2px, transparent 2px),
-                radial-gradient(circle at 35% 85%, rgba(255,215,0,.02) 2.5px, transparent 2.5px),
-                radial-gradient(circle at 90% 45%, rgba(255,215,0,.03) 2px, transparent 2px);
-            background-size:100% 100%;
-            pointer-events:none;
-            border-radius:var(--radius-card);
-            animation:wetDrops 5s ease-in-out infinite;
-        }
-
-        .upload-header{
-            text-align:center;
-            margin-bottom:clamp(16px, 2.5vw, 24px);
-            position:relative;
-            z-index:1;
-        }
-
-        .upload-header .icon{
-            font-size:clamp(2.2rem, 4vw, 3rem);
-            display:inline-block;
-            animation:float 3s ease-in-out infinite;
-            color:var(--gold) !important;
-            filter:drop-shadow(0 0 20px rgba(255,215,0,.1));
-        }
-
-        @keyframes float{
-            0%,100%{transform:translateY(0);}
-            50%{transform:translateY(-6px);}
-        }
-
-        .upload-header h2{
-            font-family:'Space Grotesk',sans-serif;
-            font-size:clamp(1.2rem, 2.5vw, 1.6rem);
-            font-weight:700;
-            color:var(--chalk);
-            margin-top:4px;
-        }
-
-        .upload-header p{
-            font-size:clamp(0.7rem, 1.2vw, 0.85rem);
-            color:var(--chalk-dim);
-            margin-top:2px;
-            font-style:italic;
-        }
-
-        /* ============================================================
-           FORM — GOLD ICONS
-           ============================================================ */
-        .form-group{
-            margin-bottom:clamp(12px, 1.8vw, 16px);
-            position:relative;
-            z-index:1;
-        }
-
-        .form-label{
-            display:block;
-            font-weight:600;
-            color:var(--chalk-dim);
-            font-size:clamp(0.7rem, 1.1vw, 0.8rem);
-            margin-bottom:4px;
-            letter-spacing:0.3px;
-        }
-        .form-label i{color:var(--gold) !important; animation:goldShift 3s ease-in-out infinite; margin-right:4px;}
-        .form-label .required{ color:var(--gold); margin-left:4px; }
-        .form-label .optional{ color:rgba(255,255,255,.08); font-weight:400; font-size:0.7rem; margin-left:5px; }
-
-        .form-input, .form-textarea, .form-select{
-            width:100%;
-            padding:clamp(10px, 1.2vw, 12px) clamp(12px, 1.5vw, 14px);
-            border:2px solid rgba(59,130,246,.10);
-            border-radius:12px;
-            font-size:clamp(0.8rem, 1vw, 0.9rem);
-            transition:all .3s;
-            font-family:'Inter',sans-serif;
-            background:rgba(255,255,255,.03);
-            color:var(--chalk);
-        }
-
-        .form-input:focus, .form-textarea:focus, .form-select:focus{
-            outline:none;
-            border-color:var(--gold);
-            box-shadow:0 0 0 4px rgba(255,215,0,.04);
-            background:rgba(255,255,255,.04);
-        }
-
-        .form-input::placeholder, .form-textarea::placeholder{
-            color:rgba(255,255,255,.08);
-        }
-
-        .form-textarea{
-            resize:vertical;
-            min-height:70px;
-        }
-
-        .form-select{
-            appearance:none;
-            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffd700' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-            background-repeat:no-repeat;
-            background-position:right 14px center;
-            padding-right:40px;
-            cursor:pointer;
-        }
-        .form-select option{ background:#0a0f0d; color:var(--chalk); }
-
-        /* ============================================================
-           RADIO GROUPS — GOLD ICONS
-           ============================================================ */
-        .radio-group{
-            display:flex;
-            gap:8px;
-            flex-wrap:wrap;
-            margin-top:2px;
-        }
-
-        .radio-option{
-            flex:1;
-            min-width:80px;
-            position:relative;
-        }
-
-        .radio-option input[type="radio"]{
-            position:absolute;
-            opacity:0;
-            width:100%;
-            height:100%;
-            cursor:pointer;
-            z-index:2;
-        }
-
-        .radio-option label{
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            gap:6px;
-            padding:clamp(8px, 1vw, 10px) clamp(10px, 1.2vw, 12px);
-            background:rgba(255,255,255,.02);
-            border:2px solid rgba(255,255,255,.04);
-            border-radius:12px;
-            cursor:pointer;
-            transition:all .3s;
-            font-weight:600;
-            font-size:clamp(0.7rem, 1vw, 0.8rem);
-            color:rgba(255,255,255,.2);
-            position:relative;
-            z-index:1;
-        }
-
-        .radio-option label i{color:var(--gold) !important; animation:goldShift 3s ease-in-out infinite;}
-
-        .radio-option:first-child label{
-            border-color:rgba(59,130,246,.10);
-            color:rgba(255,255,255,.2);
-        }
-        .radio-option:first-child input[type="radio"]:checked + label{
-            border-color:var(--gold);
-            background:rgba(255,215,0,.06);
-            color:var(--gold-bright);
-            box-shadow:0 0 30px rgba(255,215,0,.05);
-        }
-
-        .radio-option:last-child label{
-            border-color:rgba(34,197,94,.08);
-            color:rgba(255,255,255,.2);
-        }
-        .radio-option:last-child input[type="radio"]:checked + label{
-            border-color:var(--gold);
-            background:rgba(255,215,0,.06);
-            color:var(--gold-bright);
-            box-shadow:0 0 30px rgba(255,215,0,.05);
-        }
-
-        .privacy-group .radio-option label{
-            border-color:rgba(255,215,0,.06);
-            color:rgba(255,255,255,.2);
-        }
-        .privacy-group .radio-option input[type="radio"]:checked + label{
-            border-color:var(--gold);
-            background:rgba(255,215,0,.06);
-            color:var(--gold-bright);
-            box-shadow:0 0 30px rgba(255,215,0,.05);
-        }
-
-        .radio-option label:hover{
-            border-color:rgba(255,215,0,.15);
-            background:rgba(255,215,0,.02);
-        }
-
-        /* ============================================================
-           DROP ZONE — GOLD ICONS
-           ============================================================ */
-        .drop-zone{
-            border:2px dashed rgba(59,130,246,.08);
-            border-radius:14px;
-            padding:clamp(20px, 3vw, 28px) clamp(12px, 2vw, 16px);
-            text-align:center;
-            transition:all .3s;
-            cursor:pointer;
-            position:relative;
-        }
-
-        .drop-zone:hover{
-            border-color:rgba(255,215,0,.15);
-            background:rgba(255,215,0,.02);
-        }
-
-        .drop-zone.dragover{
-            border-color:var(--gold);
-            background:rgba(255,215,0,.06);
-            transform:scale(1.01);
-            box-shadow:0 0 50px rgba(255,215,0,.05);
-        }
-
-        .drop-zone i{
-            font-size:clamp(2rem, 3.5vw, 2.5rem);
-            color:var(--gold) !important;
-            margin-bottom:6px;
-            display:block;
-            animation:goldShift 3s ease-in-out infinite;
-        }
-
-        .drop-zone h4{
-            color:var(--chalk);
-            font-size:clamp(0.85rem, 1.2vw, 0.95rem);
-            margin-bottom:2px;
-        }
-        .drop-zone p{
-            color:rgba(255,255,255,.06);
-            font-size:clamp(0.65rem, 0.9vw, 0.75rem);
-        }
-
-        .drop-zone .browse-btn{
-            display:inline-block;
-            margin-top:8px;
-            padding:6px 18px;
-            background:rgba(255,215,0,.04);
-            border:2px solid rgba(255,215,0,.06);
-            border-radius:60px;
-            color:var(--gold);
-            font-weight:600;
-            font-size:clamp(0.65rem, 0.9vw, 0.75rem);
-            transition:.3s;
-        }
-
-        .drop-zone:hover .browse-btn{
-            background:rgba(255,215,0,.08);
-            border-color:var(--gold);
-        }
-
-        /* ============================================================
-           FILE LIST — GOLD ICONS
-           ============================================================ */
-        .file-list{ margin-top:8px; }
-        .file-item{
-            display:flex;
-            align-items:center;
-            gap:10px;
-            padding:8px 12px;
-            background:rgba(255,255,255,.015);
-            border:2px solid rgba(59,130,246,.04);
-            border-radius:10px;
-            margin-bottom:4px;
-            animation:slideIn .3s ease;
-        }
-
-        .file-item .file-icon{
-            width:28px;
-            height:28px;
-            border-radius:6px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:.85rem;
-            flex-shrink:0;
-            background:rgba(255,215,0,.04);
-            color:var(--gold) !important;
-            animation:goldShift 3s ease-in-out infinite;
-        }
-
-        .file-item .file-info{ flex:1; min-width:0; }
-        .file-item .file-name{
-            color:var(--chalk);
-            font-weight:500;
-            font-size:clamp(0.75rem, 1vw, 0.85rem);
-            white-space:nowrap;
-            overflow:hidden;
-            text-overflow:ellipsis;
-        }
-        .file-item .file-size{
-            color:rgba(255,255,255,.06);
-            font-size:0.6rem;
-        }
-
-        .file-item .file-remove{
-            background:none;
-            border:none;
-            color:rgba(255,255,255,.04);
-            font-size:.9rem;
-            cursor:pointer;
-            transition:.2s;
-            padding:4px;
-        }
-        .file-item .file-remove:hover{ color:var(--red); }
-
-        @keyframes slideIn{
-            from{opacity:0;transform:translateY(-6px);}
-            to{opacity:1;transform:translateY(0);}
-        }
-
-        /* ============================================================
-           PASSCODE — GOLD
-           ============================================================ */
-        .passcode-section{
-            display:none;
-            animation:slideDown .3s ease;
-            background:rgba(255,215,0,.02);
-            border:2px solid rgba(255,215,0,.06);
-            border-radius:12px;
-            padding:clamp(10px, 1.5vw, 14px) clamp(12px, 1.8vw, 16px);
-            margin-top:8px;
-        }
-        .passcode-section.show{ display:block; }
-
-        @keyframes slideDown{
-            from{opacity:0;transform:translateY(-6px);}
-            to{opacity:1;transform:translateY(0);}
-        }
-
-        .passcode-section .warning{
-            display:flex;
-            align-items:center;
-            gap:8px;
-            color:var(--gold);
-            font-size:clamp(0.65rem, 0.9vw, 0.75rem);
-            padding:6px 0;
-        }
-        .passcode-section .warning i{ 
-            color:var(--gold) !important;
-            animation:goldShift 3s ease-in-out infinite;
-            font-size:1rem;
-        }
-
-        .passcode-input{
-            display:flex;
-            gap:8px;
-            align-items:center;
-            flex-wrap:wrap;
-        }
-
-        .passcode-input input{
-            flex:1;
-            min-width:120px;
-            padding:clamp(8px, 1vw, 10px) clamp(10px, 1.2vw, 12px);
-            background:rgba(255,255,255,.015);
-            border:2px solid rgba(255,215,0,.06);
-            border-radius:10px;
-            color:var(--chalk);
-            font-size:1.1rem;
-            font-family:monospace;
-            letter-spacing:6px;
-            text-align:center;
-            transition:.3s;
-        }
-
-        .passcode-input input:focus{
-            outline:none;
-            border-color:var(--gold);
-            box-shadow:0 0 0 4px rgba(255,215,0,.04);
-        }
-        .passcode-input input::placeholder{
-            letter-spacing:2px;
-            font-size:0.7rem;
-            color:rgba(255,255,255,.04);
-        }
-
-        /* ============================================================
-           SUBMIT BUTTON — BLUE WITH GOLD ICON
-           ============================================================ */
-        .btn-submit{
-            width:100%;
-            padding:clamp(12px, 1.5vw, 14px);
-            background:linear-gradient(135deg, var(--blue), #2563eb);
-            border:2px solid var(--blue);
-            border-radius:30px;
-            color:var(--chalk);
-            font-weight:700;
-            font-size:clamp(0.85rem, 1.2vw, 0.95rem);
-            cursor:pointer;
-            transition:all .3s;
-            margin-top:4px;
-            position:relative;
-            overflow:hidden;
-            animation:blueEdgePulse 3s ease-in-out infinite;
-        }
-
-        .btn-submit i{
-            color:var(--gold) !important;
-            animation:goldShift 3s ease-in-out infinite;
-            margin-right:6px;
-        }
-
-        .btn-submit::before{
-            content:'';
-            position:absolute;
-            top:-50%;
-            left:-50%;
-            width:200%;
-            height:200%;
-            background:linear-gradient(45deg, transparent, rgba(255,215,0,.05), transparent);
-            transform:rotate(45deg) translateX(-100%);
-            transition:transform .6s;
-        }
-
-        .btn-submit:hover::before{
-            transform:rotate(45deg) translateX(100%);
-        }
-
-        .btn-submit:hover{
-            transform:translateY(-2px);
-            box-shadow:0 8px 30px rgba(59,130,246,.15), 0 0 40px rgba(255,215,0,.05);
-            border-color:var(--gold);
-        }
-
-        .btn-submit:disabled{
-            opacity:0.6;
-            cursor:not-allowed;
-            transform:none;
-        }
-
-        /* ============================================================
-           ALLOWED TYPES — GOLD
-           ============================================================ */
-        .allowed-types{
-            text-align:center;
-            margin-top:14px;
-            padding:clamp(8px, 1vw, 10px);
-            background:rgba(255,255,255,.015);
-            border-radius:40px;
-            color:rgba(255,255,255,.04);
-            font-size:clamp(0.6rem, 0.8vw, 0.7rem);
-            border:2px solid rgba(59,130,246,.03);
-        }
-        .allowed-types i{ 
-            margin-right:4px; 
-            color:var(--gold) !important;
-            animation:goldShift 3s ease-in-out infinite;
-        }
-        .allowed-types span{ color:var(--gold); font-weight:600; }
-
-        /* ============================================================
-           MESSAGES
-           ============================================================ */
-        .message{
-            padding:clamp(10px, 1.2vw, 12px) clamp(14px, 1.8vw, 16px);
-            border-radius:12px;
-            margin-bottom:14px;
-            display:flex;
-            align-items:center;
-            gap:10px;
-            background:rgba(255,255,255,.015);
-            border:2px solid rgba(59,130,246,.03);
-            color:var(--chalk);
-            position:relative;
-            z-index:1;
-        }
-        .message i{color:var(--gold) !important; animation:goldShift 3s ease-in-out infinite;}
-        .message.success{ border-color:rgba(34,197,94,.06); color:var(--green-bright); }
-        .message.error{ border-color:rgba(239,68,68,.06); color:var(--red-bright); }
-
-        /* ============================================================
-           SUCCESS POPUP — GOLDEN/SILVER
-           ============================================================ */
-        .success-overlay{
-            display:none;
-            position:fixed;
-            top:0;left:0;
-            width:100%;height:100%;
-            z-index:2000;
-            background:rgba(8,12,26,.95);
-            backdrop-filter:blur(25px);
-            -webkit-backdrop-filter:blur(25px);
-            justify-content:center;
-            align-items:center;
-            animation:fadeIn .5s ease;
-        }
-        .success-overlay.active{ display:flex; }
-
-        @keyframes fadeIn{
-            from{opacity:0;}
-            to{opacity:1;}
-        }
-
-        .success-content{
-            text-align:center;
-            max-width:480px;
-            width:90%;
-            padding:clamp(30px, 5vw, 40px) clamp(20px, 3vw, 30px);
-            background:var(--dark-chocolate-glass);
-            backdrop-filter:blur(30px);
-            border:2px solid rgba(255,215,0,.08);
-            border-radius:24px;
-            animation:scaleIn .6s cubic-bezier(.34,1.56,.64,1);
-            box-shadow:0 0 80px rgba(255,215,0,.02), inset 0 0 60px rgba(255,215,0,.01);
-            position:relative;
-            overflow:hidden;
-        }
-
-        .success-content::before{
-            content:'';
-            position:absolute;
-            top:-50%;left:-50%;
-            width:200%;height:200%;
-            background:radial-gradient(circle at center, rgba(255,215,0,.02), transparent 70%);
-            animation:shimmerBg 4s ease-in-out infinite;
-            pointer-events:none;
-        }
-
-        @keyframes shimmerBg{
-            0%,100%{transform:rotate(0deg);}
-            50%{transform:rotate(180deg);}
-        }
-
-        @keyframes scaleIn{
-            from{transform:scale(.8);opacity:0;}
-            to{transform:scale(1);opacity:1;}
-        }
-
-        .success-content .trophy{
-            font-size:clamp(3.5rem, 7vw, 4.5rem);
-            display:block;
-            margin-bottom:10px;
-            animation:celebrate 1.5s ease-in-out infinite;
-            filter:drop-shadow(0 0 30px rgba(255,215,0,.1));
-        }
-
-        @keyframes celebrate{
-            0%,100%{transform:scale(1) rotate(0deg);}
-            25%{transform:scale(1.1) rotate(-5deg);}
-            75%{transform:scale(1.1) rotate(5deg);}
-        }
-
-        .success-content .main-message{
-            font-family:'Space Grotesk',sans-serif;
-            font-size:clamp(1.4rem, 3vw, 1.8rem);
-            font-weight:700;
-            background:linear-gradient(135deg, var(--gold), var(--gold-bright), var(--silver), var(--gold));
-            background-size:300% 300%;
-            -webkit-background-clip:text;
-            background-clip:text;
-            color:transparent;
-            animation:goldSilverMove 3s ease-in-out infinite;
-            margin-bottom:4px;
-            line-height:1.3;
-        }
-
-        @keyframes goldSilverMove{
-            0%,100%{background-position:0% 50%;}
-            50%{background-position:100% 50%;}
-        }
-
-        .success-content .sub-message{
-            color:rgba(255,215,0,.15);
-            font-size:clamp(0.8rem, 1.2vw, 0.95rem);
-            margin-bottom:12px;
-            letter-spacing:2px;
-            font-style:italic;
-            font-family:'Playfair Display',serif;
-            animation:goldenPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes goldenPulse{
-            0%,100%{opacity:.3;}
-            50%{opacity:.8;}
-        }
-
-        .success-content .sparkle-divider{
-            color:rgba(192,192,192,.04);
-            font-size:1rem;
-            letter-spacing:6px;
-            margin:6px 0;
-        }
-
-        .success-content .led-text{
-            font-size:clamp(0.85rem, 1.2vw, 1rem);
-            font-weight:700;
-            color:var(--gold);
-            text-shadow:0 0 20px rgba(255,215,0,.08);
-            background:rgba(0,0,0,.2);
-            padding:clamp(8px, 1vw, 10px) clamp(16px, 2vw, 22px);
-            border-radius:10px;
-            border:2px solid rgba(255,215,0,.04);
-            display:inline-block;
-            font-family:'Courier New',monospace;
-            letter-spacing:2px;
-            animation:goldenPulse 2s ease-in-out infinite;
-            margin:4px 0 12px;
-        }
-
-        .success-content .btn-row{
-            display:flex;
-            gap:10px;
-            justify-content:center;
-            flex-wrap:wrap;
-            margin-top:14px;
-        }
-
-        .success-content .btn-golden{
-            padding:clamp(10px, 1.2vw, 12px) clamp(20px, 3vw, 28px);
-            background:linear-gradient(135deg, var(--gold), #e6b800);
-            border:2px solid var(--gold);
-            border-radius:30px;
-            color:var(--board);
-            font-weight:700;
-            font-size:clamp(0.8rem, 1vw, 0.9rem);
-            cursor:pointer;
-            transition:.3s;
-            text-decoration:none;
-            display:inline-flex;
-            align-items:center;
-            gap:8px;
-            font-family:'Inter',sans-serif;
-        }
-
-        .success-content .btn-golden:hover{
-            transform:scale(1.05);
-            box-shadow:0 8px 30px -10px rgba(255,215,0,.3);
-        }
-
-        .success-content .btn-silver{
-            padding:clamp(10px, 1.2vw, 12px) clamp(20px, 3vw, 28px);
-            background:rgba(192,192,192,.04);
-            border:2px solid rgba(192,192,192,.08);
-            border-radius:30px;
-            color:var(--silver);
-            font-weight:600;
-            font-size:clamp(0.8rem, 1vw, 0.9rem);
-            cursor:pointer;
-            transition:.3s;
-            text-decoration:none;
-            display:inline-flex;
-            align-items:center;
-            gap:8px;
-            font-family:'Inter',sans-serif;
-        }
-
-        .success-content .btn-silver:hover{
-            background:rgba(192,192,192,.04);
-            border-color:rgba(192,192,192,.15);
-            transform:scale(1.05);
-        }
-
-        .custom-uni-input{ display:none; margin-top:8px; }
-        .custom-uni-input.show{ display:block; }
-
-        /* ============================================================
-           ANIMATIONS
-           ============================================================ */
-        @keyframes wordShift{
-            0%{color:#c0c0c0;text-shadow:0 0 12px rgba(192,192,192,.08);}
-            50%{color:#f5efdd;text-shadow:0 0 20px rgba(245,239,221,.12);}
-            100%{color:#c0c0c0;text-shadow:0 0 12px rgba(192,192,192,.08);}
-        }
-
-        @keyframes goldShift{
-            0%{color:#ffd700;filter:drop-shadow(0 0 6px rgba(255,215,0,.2));}
-            50%{color:#ffed4a;filter:drop-shadow(0 0 16px rgba(255,215,0,.4));}
-            100%{color:#ffd700;filter:drop-shadow(0 0 6px rgba(255,215,0,.2));}
-        }
-
-        /* ============================================================
-           RESPONSIVE
-           ============================================================ */
-        @media (max-width: 860px){
-            .nav-pill span{display:none;}
-            .nav-pill{padding:6px 10px;font-size:0.65rem;}
-            .nav-pill i{font-size:0.7rem;}
-            .nav-pill.blue-special span{display:inline;}
-            .nav-pill.blue-special{padding:6px 14px;}
-        }
-
-        @media (max-width: 560px){
-            .upload-container{padding:0 12px 60px;}
-            .upload-card{padding:14px 12px;}
-            .radio-group{flex-direction:column;}
-            .radio-option{min-width:auto;}
-            .drop-zone{padding:16px 12px;}
-            .passcode-input{flex-direction:column;}
-            .passcode-input input{width:100%;min-width:unset;}
-            .success-content{padding:20px 14px;}
-            .success-content .btn-row{flex-direction:column;align-items:center;}
-            .success-content .btn-golden,.success-content .btn-silver{width:100%;justify-content:center;}
-            .header-content{padding:8px 12px;flex-wrap:nowrap;}
-            .logo{font-size:0.8rem;}
-            .logo-sub{font-size:0.4rem;}
-            .menu-btn{width:30px;height:30px;font-size:.75rem;}
-            .nav-links{gap:4px;}
-            .nav-pill{padding:4px 8px;font-size:0.55rem;}
-            .nav-pill i{font-size:0.6rem;}
-            .nav-pill.blue-special{padding:4px 8px;}
-            .nav-pill.blue-special span{font-size:0.55rem;}
-            .nav-pill.blue-upload span{display:none;}
-            .nav-pill.blue-upload{padding:4px 8px;}
-            .nav-pill.blue-upload i{font-size:0.7rem;}
-        }
-
-        @media (max-width: 380px){
-            .upload-card{padding:10px 8px;}
-            .drop-zone{padding:12px 8px;}
-            .drop-zone i{font-size:1.6rem;}
-            .form-input,.form-textarea,.form-select{padding:8px 10px;font-size:0.75rem;}
-            .btn-submit{font-size:0.75rem;padding:10px;}
-            .success-content .main-message{font-size:1.1rem;}
-            .success-content .led-text{font-size:0.7rem;padding:6px 12px;}
-        }
-
-        @media (prefers-reduced-motion: reduce){
-            *{animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important;}
-        }
-
-        ::-webkit-scrollbar{width:3px;}
-        ::-webkit-scrollbar-track{background:transparent;}
-        ::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:10px;}
     </style>
 </head>
 <body>
-
-    <!-- ===== HEAVY RAIN + LIGHTNING CANVAS ===== -->
     <canvas id="rain-canvas"></canvas>
 
-    <div class="glass-overlay">
-
-        <!-- ===== HEADER — BLUE NAVIGATION WITH GOLD ICONS ===== -->
-        <header class="header">
-            <div class="header-content">
-                <div class="header-left">
-                    <button class="menu-btn" id="menuToggle" aria-label="Open menu">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <div>
-                        <div class="logo">
-                            <span class="mark">✦</span>
-                            <span class="char" style="--i:0">S</span>
-                            <span class="char" style="--i:1">t</span>
-                            <span class="char" style="--i:2">u</span>
-                            <span class="char" style="--i:3">d</span>
-                            <span class="char" style="--i:4">e</span>
-                            <span class="char" style="--i:5">n</span>
-                            <span class="char" style="--i:6">t</span>
-                            <span class="char" style="--i:7"> </span>
-                            <span class="char" style="--i:8">H</span>
-                            <span class="char" style="--i:9">u</span>
-                            <span class="char" style="--i:10">b</span>
-                        </div>
-                        <span class="logo-sub">powered by Twarvis</span>
-                    </div>
-                </div>
-                <div class="nav-links">
-                    <a href="/" class="nav-pill">
-                        <i class="fas fa-home"></i> <span>Home</span>
-                    </a>
-                    <a href="/browse/" class="nav-pill blue-special">
-                        <i class="fas fa-eye"></i> <span>See uploaded notes</span>
-                    </a>
-                    <a href="/upload/" class="nav-pill blue-upload">
-                        <i class="fas fa-cloud-upload-alt"></i> <span>Upload</span>
-                    </a>
-                </div>
-            </div>
-        </header>
-
-        <!-- ===== UPLOAD — EXTRA GLASSY WITH GOLD ICONS ===== -->
-        <div class="upload-container">
-            <div class="upload-card">
-
-                <div class="upload-header">
-                    <div class="icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                    <h2>📤 Upload Notes & Papers</h2>
-                    <p>Share your study materials with fellow students</p>
-                </div>
-
-                <!-- Messages -->
-                <div id="messageContainer"></div>
-
-                <form method="post" enctype="multipart/form-data" id="uploadForm" action="/upload/">
-                    {% csrf_token %}
-
-                    <!-- 1. File Upload -->
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-paperclip"></i> Upload Your File <span class="required">*</span></label>
-                        <div class="drop-zone" id="dropZone">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <h4>Drag & Drop Files Here</h4>
-                            <p>or click to browse</p>
-                            <span class="browse-btn"><i class="fas fa-folder-open"></i> Browse Files</span>
-                            {{ form.file }}
-                        </div>
-                        <div class="file-list" id="fileList"></div>
-                        <small style="display:block;margin-top:4px;color:rgba(255,255,255,.04);font-size:clamp(0.55rem, 0.7vw, 0.6rem);">
-                            <i class="fas fa-info-circle"></i> Max: 100MB | PDF, PPT, DOC, XLS, TXT, JPG, PNG, ZIP
-                        </small>
-                    </div>
-
-                    <!-- 2. File Type -->
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-tag"></i> File Type <span class="required">*</span></label>
-                        <div class="radio-group">
-                            {% for radio in form.file_type %}
-                                <div class="radio-option">
-                                    {{ radio.tag }}
-                                    <label for="{{ radio.id_for_label }}">
-                                        <i class="fas {% if radio.choice_label == 'Notes' %}fa-sticky-note{% else %}fa-file-alt{% endif %}"></i>
-                                        {{ radio.choice_label }}
-                                    </label>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-
-                    <!-- 3. Module -->
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-tag"></i> Module Name <span class="required">*</span></label>
-                        {{ form.module }}
-                    </div>
-
-                    <!-- 4. Course -->
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-book"></i> Course Code <span class="required">*</span></label>
-                        {{ form.course }}
-                    </div>
-
-                    <!-- 5. Description -->
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-align-left"></i> Description</label>
-                        {{ form.description }}
-                    </div>
-
-                    <!-- 6. Privacy -->
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-lock"></i> Privacy Setting <span class="required">*</span></label>
-                        <div class="radio-group privacy-group">
-                            {% for radio in form.privacy %}
-                                <div class="radio-option">
-                                    {{ radio.tag }}
-                                    <label for="{{ radio.id_for_label }}">
-                                        <i class="fas {% if radio.choice_label == 'Public' %}fa-globe{% else %}fa-lock{% endif %}"></i>
-                                        {{ radio.choice_label }}
-                                    </label>
-                                </div>
-                            {% endfor %}
-                        </div>
-                        <small style="display:block;margin-top:2px;color:rgba(255,255,255,.04);font-size:clamp(0.55rem, 0.7vw, 0.6rem);">
-                            <i class="fas fa-info-circle"></i> Private files require a 4-digit passcode
-                        </small>
-                    </div>
-
-                    <!-- 7. Passcode -->
-                    <div class="passcode-section" id="passcodeSection">
-                        <div class="warning">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <span><strong>⚠️ IMPORTANT:</strong> No backup. Remember your passcode!</span>
-                        </div>
-                        <div class="form-group" style="margin-bottom:0;">
-                            <label class="form-label"><i class="fas fa-key"></i> Set 4-Digit Passcode <span class="required">*</span></label>
-                            <div class="passcode-input">
-                                {{ form.passcode }}
-                                <span style="color:rgba(255,255,255,.04);font-size:0.7rem;">(4 numbers)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 8. University -->
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-university"></i> Your University <span class="optional">(optional)</span></label>
-                        <div class="uni-select-wrapper">
-                            {{ form.university }}
-                            <div class="custom-uni-input" id="customUniInput">
-                                {{ form.custom_university }}
-                            </div>
-                        </div>
-                        <small style="display:block;margin-top:2px;color:rgba(255,255,255,.04);font-size:clamp(0.55rem, 0.7vw, 0.6rem);">
-                            <i class="fas fa-info-circle"></i> Select or choose "Other" to type custom name
-                        </small>
-                    </div>
-
-                    <button type="submit" class="btn-submit" id="submitBtn">
-                        <i class="fas fa-upload"></i> Upload File
-                    </button>
-
-                    <div class="allowed-types">
-                        <i class="fas fa-shield-alt"></i> <span>Secure & Fast</span> — Your files are stored safely
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== GOLDEN/SILVER SUCCESS POPUP ===== -->
-    <div class="success-overlay" id="successOverlay">
-        <div class="success-content">
-            <span class="trophy">🏆</span>
-            <div class="main-message">✨ Sharing is Caring! ✨</div>
-            <div class="sub-message">Keep it up! Welcome!</div>
-            <div class="sparkle-divider">✦ ✧ ✦ ✧ ✦</div>
-            <div class="led-text">
-                <span id="ledMessage">✦ UPLOAD SUCCESSFUL ✦</span>
-                <span class="cursor">█</span>
-            </div>
-            <div class="btn-row">
-                <a href="/browse/" class="btn-golden">
-                    <i class="fas fa-eye"></i> See Your Notes
-                </a>
-                <button class="btn-silver" id="closeSuccess">
-                    <i class="fas fa-times"></i> Close
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <button class="menu-btn" type="button" aria-label="Open menu">
+                    <i class="fa-solid fa-bars"></i>
                 </button>
+                <div class="logo" aria-label="Student Hub logo">
+                    <span class="mark">Student</span> Hub
+                    <span class="logo-sub">Campus notes</span>
+                </div>
             </div>
+
+            <nav class="nav-links" aria-label="Main navigation">
+                <a href="#" class="nav-pill"><i class="fa-solid fa-house"></i>Home</a>
+                <a href="#" class="nav-pill"><i class="fa-solid fa-book-open"></i>Notes</a>
+                <a href="#" class="nav-pill blue-upload"><i class="fa-solid fa-upload"></i>Upload</a>
+                <a href="#" class="nav-pill"><i class="fa-solid fa-user"></i>Profile</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="upload-container">
+        <section class="upload-card" aria-labelledby="upload-title">
+            <div class="upload-header">
+                <div class="icon" aria-hidden="true"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                <h2 id="upload-title">Upload a note</h2>
+                <p>Share class files, resources, and revision material with your peers.</p>
+            </div>
+
+            <div id="formMessage" class="message" role="status" aria-live="polite"></div>
+
+            <form id="uploadForm" novalidate>
+                <div class="form-group">
+                    <label class="form-label" for="title"><i class="fa-solid fa-heading"></i>Title <span class="required">*</span></label>
+                    <input id="title" class="form-input" type="text" name="title" maxlength="100" placeholder="e.g. Biology Revision Notes" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="course"><i class="fa-solid fa-book"></i>Course / subject</label>
+                    <select id="course" class="form-select" name="course">
+                        <option value="">Select course</option>
+                        <option>Computer Science</option>
+                        <option>Mathematics</option>
+                        <option>Physics</option>
+                        <option>Chemistry</option>
+                        <option>Biology</option>
+                        <option>Business Studies</option>
+                        <option>Literature</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"><i class="fa-solid fa-users"></i>Visibility <span class="required">*</span></label>
+                    <div class="radio-group" role="radiogroup" aria-label="Visibility">
+                        <div class="radio-option">
+                            <input type="radio" id="visibility-class" name="visibility" value="class" checked>
+                            <label for="visibility-class"><i class="fa-solid fa-user-group"></i> Class</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="visibility-school" name="visibility" value="school">
+                            <label for="visibility-school"><i class="fa-solid fa-school"></i> School</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="uploadInput"><i class="fa-solid fa-paperclip"></i>File upload <span class="required">*</span></label>
+                    <div class="drop-zone" id="dropZone" tabindex="0" aria-label="Upload files">
+                        <input id="uploadInput" class="file-input" type="file" name="files" accept=".pdf,.doc,.docx,.ppt,.pptx,.png,.jpg,.jpeg,.zip" aria-label="Choose files to upload">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <h4>Drag &amp; drop files here</h4>
+                        <p>PDF, DOC, PPT, images, or ZIP • up to 10 MB each</p>
+                        <span class="browse-btn">Browse files</span>
+                    </div>
+                    <div id="fileList" class="file-list" aria-live="polite"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="description"><i class="fa-solid fa-pen-nib"></i>Description <span class="optional">optional</span></label>
+                    <textarea id="description" class="form-textarea" name="description" maxlength="500" placeholder="Add a quick summary of the file or the topic it covers..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"><i class="fa-solid fa-shield-halved"></i>Privacy setting <span class="required">*</span></label>
+                    <div class="radio-group" role="radiogroup" aria-label="Privacy setting">
+                        <div class="radio-option">
+                            <input type="radio" id="privacy-public" name="privacy" value="public" checked>
+                            <label for="privacy-public"><i class="fa-solid fa-globe"></i> Public</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="privacy-restricted" name="privacy" value="restricted">
+                            <label for="privacy-restricted"><i class="fa-solid fa-lock"></i> Restricted</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="passcodeSection" class="passcode-section" aria-live="polite">
+                    <div class="warning"><i class="fa-solid fa-key"></i>Restricted files require a passcode.</div>
+                    <div class="passcode-input">
+                        <input id="passcode" type="password" name="passcode" inputmode="numeric" maxlength="6" placeholder="Enter 6-digit code" aria-label="Passcode">
+                    </div>
+                </div>
+
+                <button class="btn-submit" type="submit"><i class="fa-solid fa-upload"></i>Submit upload</button>
+            </form>
+
+            <div class="allowed-types"><i class="fa-solid fa-file-circle-check"></i> Allowed file types: <span>PDF DOC PPT JPG PNG ZIP</span></div>
+        </section>
+    </main>
+
+    <div id="successOverlay" class="success-overlay" aria-hidden="true">
+        <div class="success-content" role="alertdialog" aria-modal="true" aria-labelledby="successTitle">
+            <span class="trophy" aria-hidden="true"><i class="fa-solid fa-trophy"></i></span>
+            <div id="successTitle" class="main-message">Upload complete</div>
+            <div class="sub-message">Your note is now live</div>
+            <div class="sparkle-divider">✦ ✦ ✦</div>
+            <div class="led-text">NOTE-READY</div>
+            <button id="closeSuccess" class="btn-submit" type="button"><i class="fa-solid fa-check"></i>Done</button>
         </div>
     </div>
 
     <script>
-        // ============================================================
-        // HEAVY RAIN + LIGHTNING
-        // ============================================================
-        (function initHeavyRainWithLightning() {
-            const canvas = document.getElementById('rain-canvas');
-            const ctx = canvas.getContext('2d');
-            let w, h;
-            const drops = [];
-            const dropCount = 400;
-            const splashDrops = [];
-            let lightningFlash = 0;
-            let lightningTimer = 0;
-            let lightningBolt = [];
-
-            function resize() {
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-            }
-            resize();
-            window.addEventListener('resize', resize);
-
-            class Drop {
-                constructor() { this.reset(); }
-                reset() {
-                    this.x = Math.random() * w;
-                    this.y = Math.random() * h - h;
-                    this.length = Math.random() * 28 + 14;
-                    this.speed = Math.random() * 14 + 6;
-                    this.opacity = Math.random() * 0.3 + 0.15;
-                    this.width = Math.random() * 1.5 + 0.5;
-                    this.angle = (Math.random() - 0.5) * 0.08;
-                }
-                update() {
-                    this.y += this.speed;
-                    this.x += this.angle;
-                    if (this.y > h + 50) {
-                        if (Math.random() > 0.65) createSplash(this.x, h);
-                        this.reset();
-                        this.y = -this.length;
-                    }
-                }
-                draw() {
-                    ctx.beginPath();
-                    ctx.moveTo(this.x, this.y);
-                    ctx.lineTo(this.x - 1.5, this.y + this.length);
-                    ctx.strokeStyle = `rgba(180, 200, 255, ${this.opacity})`;
-                    ctx.lineWidth = this.width;
-                    ctx.shadowBlur = 4;
-                    ctx.shadowColor = `rgba(180, 200, 255, ${this.opacity * 0.3})`;
-                    ctx.stroke();
-                    ctx.shadowBlur = 0;
-                }
-            }
-
-            class SplashDrop {
-                constructor(x, y) {
-                    this.x = x; this.y = y;
-                    this.vx = (Math.random() - 0.5) * 7;
-                    this.vy = Math.random() * -5 - 2;
-                    this.size = Math.random() * 3 + 1;
-                    this.life = 1;
-                    this.opacity = 0.6;
-                }
-                update() {
-                    this.x += this.vx;
-                    this.y += this.vy;
-                    this.vy += 0.1;
-                    this.life -= 0.015;
-                    this.opacity = this.life * 0.6;
-                    this.size *= 0.99;
-                }
-                draw() {
-                    if (this.life <= 0) return;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(180, 200, 255, ${this.opacity * 0.5})`;
-                    ctx.fill();
-                }
-            }
-
-            function createSplash(x, y) {
-                for (let i = 0; i < 8; i++) splashDrops.push(new SplashDrop(x, y));
-            }
-
-            function generateLightning() {
-                const bolt = [];
-                let x = Math.random() * w;
-                let y = 0;
-                bolt.push({x, y});
-                const segments = 12 + Math.floor(Math.random() * 8);
-                for (let i = 0; i < segments; i++) {
-                    x += (Math.random() - 0.5) * 60;
-                    y += (h / segments) * (0.6 + Math.random() * 0.8);
-                    bolt.push({x, y});
-                }
-                return bolt;
-            }
-
-            function drawLightning(bolt) {
-                if (!bolt.length) return;
-                ctx.beginPath();
-                ctx.moveTo(bolt[0].x, bolt[0].y);
-                for (let i = 1; i < bolt.length; i++) {
-                    ctx.lineTo(bolt[i].x, bolt[i].y);
-                }
-                ctx.strokeStyle = `rgba(255, 255, 255, ${0.4 + Math.random() * 0.6})`;
-                ctx.lineWidth = 2 + Math.random() * 2;
-                ctx.shadowBlur = 40;
-                ctx.shadowColor = 'rgba(200, 220, 255, 0.8)';
-                ctx.stroke();
-
-                ctx.strokeStyle = `rgba(150, 180, 255, 0.15)`;
-                ctx.lineWidth = 12 + Math.random() * 8;
-                ctx.shadowBlur = 80;
-                ctx.shadowColor = 'rgba(150, 180, 255, 0.3)';
-                ctx.stroke();
-
-                if (Math.random() > 0.5) {
-                    const mid = Math.floor(bolt.length / 2);
-                    const forkX = bolt[mid].x + (Math.random() - 0.5) * 80;
-                    const forkY = bolt[mid].y + (h / 10) * (0.5 + Math.random() * 0.5);
-                    ctx.beginPath();
-                    ctx.moveTo(bolt[mid].x, bolt[mid].y);
-                    ctx.lineTo(forkX, forkY);
-                    ctx.strokeStyle = `rgba(255, 255, 255, ${0.2 + Math.random() * 0.3})`;
-                    ctx.lineWidth = 1 + Math.random();
-                    ctx.shadowBlur = 20;
-                    ctx.shadowColor = 'rgba(200, 220, 255, 0.5)';
-                    ctx.stroke();
-                }
-                ctx.shadowBlur = 0;
-            }
-
-            for (let i = 0; i < dropCount; i++) drops.push(new Drop());
-
-            function animate() {
-                ctx.clearRect(0, 0, w, h);
-
-                ctx.fillStyle = `rgba(100, 120, 180, ${0.02 + Math.sin(Date.now() / 8000) * 0.01})`;
-                ctx.fillRect(0, 0, w, h);
-
-                if (lightningFlash > 0) {
-                    ctx.fillStyle = `rgba(200, 220, 255, ${lightningFlash * 0.15})`;
-                    ctx.fillRect(0, 0, w, h);
-                    lightningFlash *= 0.92;
-                    if (lightningFlash < 0.01) lightningFlash = 0;
-                }
-
-                if (lightningBolt.length > 0) {
-                    drawLightning(lightningBolt);
-                    if (Math.random() > 0.95) lightningBolt = [];
-                }
-
-                lightningTimer += 0.02;
-                if (lightningTimer > 3 + Math.random() * 5) {
-                    lightningTimer = 0;
-                    lightningFlash = 0.7 + Math.random() * 0.5;
-                    lightningBolt = generateLightning();
-                    if (Math.random() > 0.6) {
-                        setTimeout(() => {
-                            lightningFlash = 0.5 + Math.random() * 0.4;
-                            lightningBolt = generateLightning();
-                        }, 100 + Math.random() * 200);
-                    }
-                }
-
-                for (let drop of drops) {
-                    drop.update();
-                    drop.draw();
-                }
-
-                for (let i = splashDrops.length - 1; i >= 0; i--) {
-                    const s = splashDrops[i];
-                    s.update();
-                    if (s.life <= 0 || s.size < 0.1) {
-                        splashDrops.splice(i, 1);
-                    } else {
-                        s.draw();
-                    }
-                }
-
-                requestAnimationFrame(animate);
-            }
-
-            animate();
-        })();
-
-        // ============================================================
-        // PRIVACY TOGGLE
-        // ============================================================
-        const privacyRadios = document.querySelectorAll('input[name="privacy"]');
-        const passcodeSection = document.getElementById('passcodeSection');
-        const passcodeInput = document.querySelector('#passcodeSection input');
-
-        privacyRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                if (this.value === 'private') {
-                    passcodeSection.classList.add('show');
-                    if (passcodeInput) passcodeInput.required = true;
-                } else {
-                    passcodeSection.classList.remove('show');
-                    if (passcodeInput) { passcodeInput.required = false; passcodeInput.value = ''; }
-                }
-            });
-        });
-
-        if (passcodeInput) {
-            passcodeInput.addEventListener('input', function() {
-                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);
-            });
-        }
-
-        // ============================================================
-        // UNIVERSITY "OTHER"
-        // ============================================================
-        const uniSelect = document.querySelector('#id_university');
-        const customUniInput = document.getElementById('customUniInput');
-        const customUniText = document.querySelector('#customUniInput input');
-        if (uniSelect) {
-            uniSelect.addEventListener('change', function() {
-                if (this.value === 'Other') {
-                    customUniInput.classList.add('show');
-                    if (customUniText) customUniText.required = true;
-                    if (customUniText) customUniText.focus();
-                } else {
-                    customUniInput.classList.remove('show');
-                    if (customUniText) { customUniText.required = false; customUniText.value = ''; }
-                }
-            });
-        }
-
-        // ============================================================
-        // DRAG & DROP
-        // ============================================================
-        const dropZone = document.getElementById('dropZone');
-        const fileInput = document.querySelector('#id_file');
-        const fileList = document.getElementById('fileList');
-        let selectedFile = null;
-
-        if (dropZone && fileInput) {
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                dropZone.addEventListener(eventName, preventDefaults, false);
-            });
-
-            function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
-
-            ['dragenter', 'dragover'].forEach(eventName => {
-                dropZone.addEventListener(eventName, () => { dropZone.classList.add('dragover'); });
-            });
-            ['dragleave', 'drop'].forEach(eventName => {
-                dropZone.addEventListener(eventName, () => { dropZone.classList.remove('dragover'); });
-            });
-
-            dropZone.addEventListener('drop', function(e) {
-                const files = e.dataTransfer.files;
-                if (files.length > 0) handleFile(files[0]);
-            });
-            fileInput.addEventListener('change', function() {
-                if (this.files.length > 0) handleFile(this.files[0]);
-            });
-
-            function handleFile(file) {
-                const allowed = ['.pdf','.ppt','.pptx','.doc','.docx','.xls','.xlsx','.txt','.md','.jpg','.jpeg','.png','.gif','.zip','.rar','.csv','.json','.xml'];
-                const ext = '.' + file.name.split('.').pop().toLowerCase();
-                if (!allowed.includes(ext)) { showMessage('File type not allowed: ' + file.name, 'error'); return; }
-                if (file.size > 100 * 1024 * 1024) { showMessage('File too large: ' + file.name + ' (Max 100MB)', 'error'); return; }
-                selectedFile = file;
-                renderFileList();
-            }
-
-            function renderFileList() {
-                fileList.innerHTML = '';
-                if (!selectedFile) return;
-                const file = selectedFile;
-                const div = document.createElement('div');
-                div.className = 'file-item';
-                const ext = file.name.split('.').pop().toLowerCase();
-                const iconMap = { 'pdf':'file-pdf','doc':'file-word','docx':'file-word','ppt':'file-powerpoint','pptx':'file-powerpoint','xls':'file-excel','xlsx':'file-excel','jpg':'file-image','jpeg':'file-image','png':'file-image','gif':'file-image','zip':'file-archive','rar':'file-archive' };
-                const icon = iconMap[ext] || 'file';
-                div.innerHTML = `
-                    <div class="file-icon"><i class="fas fa-${icon}"></i></div>
-                    <div class="file-info"><div class="file-name">${file.name}</div><div class="file-size">${(file.size/1024/1024).toFixed(2)} MB</div></div>
-                    <button class="file-remove"><i class="fas fa-times"></i></button>
-                `;
-                fileList.appendChild(div);
-                div.querySelector('.file-remove').addEventListener('click', function() {
-                    selectedFile = null;
-                    fileInput.value = '';
-                    renderFileList();
-                });
-            }
-        }
-
-        // ============================================================
-        // MESSAGES
-        // ============================================================
-        function showMessage(text, type) {
-            const container = document.getElementById('messageContainer');
-            const msg = document.createElement('div');
-            msg.className = `message ${type}`;
-            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
-            msg.innerHTML = `<i class="fas ${icon}"></i> ${text}`;
-            container.appendChild(msg);
-            setTimeout(() => { msg.remove(); }, 5000);
-        }
-
-        // ============================================================
-        // FORM SUBMIT - SHOW GOLDEN POPUP
-        // ============================================================
         const form = document.getElementById('uploadForm');
-        const submitBtn = document.getElementById('submitBtn');
+        const formMessage = document.getElementById('formMessage');
+        const fileInput = document.getElementById('uploadInput');
+        const dropZone = document.getElementById('dropZone');
+        const fileList = document.getElementById('fileList');
+        const passcodeSection = document.getElementById('passcodeSection');
+        const passcodeInput = document.getElementById('passcode');
         const successOverlay = document.getElementById('successOverlay');
         const closeSuccess = document.getElementById('closeSuccess');
+        const submitButton = form.querySelector('.btn-submit');
+        const allowedExtensions = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'png', 'jpg', 'jpeg', 'zip'];
+        const maxFileSize = 10 * 1024 * 1024;
 
-        form.addEventListener('submit', function(e) {
-            if (!selectedFile && fileInput && !fileInput.files.length) {
-                e.preventDefault();
-                showMessage('Please select a file to upload', 'error');
+        let uploadedFiles = [];
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), sizes.length - 1);
+            const value = bytes / (1024 ** i);
+            return `${value.toFixed(value >= 10 || i === 0 ? 0 : 1)} ${sizes[i]}`;
+        }
+
+        function showMessage(text, type) {
+            formMessage.textContent = text;
+            formMessage.classList.remove('success', 'error');
+            formMessage.classList.add(type);
+            formMessage.classList.add('show');
+        }
+
+        function hideMessage() {
+            formMessage.classList.remove('show');
+            formMessage.textContent = '';
+        }
+
+        function renderFileList() {
+            fileList.innerHTML = '';
+
+            if (!uploadedFiles.length) {
                 return;
             }
 
-            const privateRadio = document.querySelector('input[name="privacy"][value="private"]');
-            if (privateRadio && privateRadio.checked) {
-                const passcode = document.querySelector('#passcodeSection input');
-                if (passcode) {
-                    const val = passcode.value;
-                    if (val.length !== 4 || !/^\d{4}$/.test(val)) {
-                        e.preventDefault();
-                        showMessage('Please enter a valid 4-digit passcode for private file', 'error');
-                        return;
+            uploadedFiles.forEach((file, index) => {
+                const item = document.createElement('div');
+                item.className = 'file-item';
+
+                const icon = document.createElement('div');
+                icon.className = 'file-icon';
+                icon.innerHTML = '<i class="fa-solid fa-file-lines"></i>';
+
+                const info = document.createElement('div');
+                info.className = 'file-info';
+                info.innerHTML = `<span class="file-name">${file.name}</span><span class="file-size">${formatBytes(file.size)}</span>`;
+
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'file-remove';
+                removeBtn.setAttribute('aria-label', `Remove ${file.name}`);
+                removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                removeBtn.addEventListener('click', () => {
+                    uploadedFiles.splice(index, 1);
+                    renderFileList();
+                    if (!uploadedFiles.length) {
+                        fileInput.value = '';
                     }
+                });
+
+                item.append(icon, info, removeBtn);
+                fileList.appendChild(item);
+            });
+        }
+
+        function handleFiles(fileListArr) {
+            const validFiles = [];
+
+            fileListArr.forEach(file => {
+                const extension = file.name.split('.').pop().toLowerCase();
+                if (!allowedExtensions.includes(extension)) {
+                    showMessage(`"${file.name}" is not supported. Please use PDF, DOC, PPT, JPG, PNG, or ZIP.`, 'error');
+                    return;
                 }
+
+                if (file.size > maxFileSize) {
+                    showMessage(`"${file.name}" is larger than 10 MB.`, 'error');
+                    return;
+                }
+
+                validFiles.push(file);
+            });
+
+            if (!validFiles.length) {
+                return;
             }
 
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
-            submitBtn.disabled = true;
+            uploadedFiles = [...uploadedFiles, ...validFiles];
+            renderFileList();
+            hideMessage();
+        }
+
+        fileInput.addEventListener('change', (event) => {
+            handleFiles([...event.target.files]);
+        });
+
+        dropZone.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (event) => {
+            event.preventDefault();
+            dropZone.classList.remove('dragover');
+            if (event.dataTransfer.files && event.dataTransfer.files.length) {
+                handleFiles([...event.dataTransfer.files]);
+            }
+        });
+
+        dropZone.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                fileInput.click();
+            }
+        });
+
+        const privacySelect = document.querySelectorAll('input[name="privacy"]');
+        privacySelect.forEach(radio => {
+            radio.addEventListener('change', () => {
+                const restricted = document.getElementById('privacy-restricted').checked;
+                passcodeSection.classList.toggle('show', restricted);
+                if (!restricted) {
+                    passcodeInput.value = '';
+                }
+            });
+        });
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            hideMessage();
+
+            const title = document.getElementById('title').value.trim();
+            const restricted = document.getElementById('privacy-restricted').checked;
+            const passcode = passcodeInput.value.trim();
+
+            if (!title) {
+                showMessage('Please enter a title for your upload.', 'error');
+                return;
+            }
+
+            if (!uploadedFiles.length) {
+                showMessage('Please attach at least one file before submitting.', 'error');
+                return;
+            }
+
+            if (restricted && (!passcode || passcode.length !== 6 || !/^\d+$/.test(passcode))) {
+                showMessage('Restricted uploads require a valid 6-digit passcode.', 'error');
+                passcodeInput.focus();
+                return;
+            }
+
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>Uploading...';
 
             setTimeout(() => {
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<i class="fa-solid fa-upload"></i>Submit upload';
                 successOverlay.classList.add('active');
-
-                const ledMsg = document.getElementById('ledMessage');
-                const messages = ['✦ UPLOAD SUCCESSFUL ✦', '✦ SHARING IS CARING ✦', '✦ KNOWLEDGE IS POWER ✦', '✦ YOU ROCK! ✦'];
-                let idx = 0;
-                const interval = setInterval(() => {
-                    idx = (idx + 1) % messages.length;
-                    ledMsg.textContent = messages[idx];
-                }, 1200);
-
-                closeSuccess.addEventListener('click', function() {
-                    clearInterval(interval);
-                    successOverlay.classList.remove('active');
-                    submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
-                    submitBtn.disabled = false;
-                    form.reset();
-                    selectedFile = null;
-                    fileList.innerHTML = '';
-                });
-            }, 1500);
+                successOverlay.setAttribute('aria-hidden', 'false');
+                form.reset();
+                uploadedFiles = [];
+                renderFileList();
+                passcodeSection.classList.remove('show');
+                document.getElementById('visibility-class').checked = true;
+                document.getElementById('privacy-public').checked = true;
+                passcodeInput.value = '';
+                showMessage('Upload submitted successfully.', 'success');
+            }, 1200);
         });
 
-        successOverlay.addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-                submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
-                submitBtn.disabled = false;
-            }
+        closeSuccess.addEventListener('click', () => {
+            successOverlay.classList.remove('active');
+            successOverlay.setAttribute('aria-hidden', 'true');
         });
 
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && successOverlay.classList.contains('active')) {
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && successOverlay.classList.contains('active')) {
                 successOverlay.classList.remove('active');
-                submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
-                submitBtn.disabled = false;
+                successOverlay.setAttribute('aria-hidden', 'true');
             }
         });
 
-        console.log('✦ Student Hub — Upload Page with Gold Icons & Extra Glassy Background ✦');
+        renderFileList();
     </script>
 </body>
 </html>
