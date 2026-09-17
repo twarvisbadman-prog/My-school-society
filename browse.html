@@ -1656,6 +1656,67 @@
             body.theme-dark .stats-row{grid-template-columns:1fr;}
             body.theme-dark .doc-actions{grid-template-columns:1fr;}
         }
+
+        /* Large lightning accent behind the content. */
+        body.theme-dark::after{
+            content:"⚡";
+            position:fixed;
+            right:clamp(20px, 8vw, 150px);
+            top:clamp(90px, 12vh, 150px);
+            z-index:0;
+            pointer-events:none;
+            color:rgba(219,234,254,.88);
+            font-family:Arial,sans-serif;
+            font-size:clamp(8rem, 19vw, 18rem);
+            font-weight:900;
+            line-height:1;
+            transform:rotate(11deg);
+            opacity:.10;
+            text-shadow:0 0 18px #fff, 0 0 55px rgba(96,165,250,.95), 0 0 120px rgba(59,130,246,.55);
+            animation:thunderFlash 7s ease-in-out infinite;
+        }
+        @keyframes thunderFlash{
+            0%, 64%, 67%, 100%{opacity:.09; filter:brightness(1);}
+            65%{opacity:.95; filter:brightness(2.2);}
+            66%{opacity:.18; filter:brightness(.9);}
+            68%{opacity:.72; filter:brightness(1.8);}
+        }
+
+        /* Thin, high-contrast search action. */
+        body.theme-dark .search-bar button:not(.clear-btn){
+            min-height:34px;
+            height:34px;
+            padding:0 16px;
+            font-size:.69rem;
+            line-height:1;
+            border-radius:999px;
+        }
+
+        /* Compact floating upload shortcut for mobile. */
+        @media (max-width:600px){
+            body.theme-dark .header-content > div:last-child{display:contents !important;}
+            body.theme-dark .plus-btn{
+                position:fixed;
+                top:76px;
+                right:14px;
+                z-index:120;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                width:50px;
+                min-width:50px;
+                height:50px;
+                min-height:50px;
+                padding:0;
+                border-radius:50%;
+                font-size:0;
+                border:2px solid #fde68a;
+                box-shadow:0 9px 24px rgba(37,99,235,.48), 0 0 0 4px rgba(7,11,20,.48);
+            }
+            body.theme-dark .plus-btn i{margin:0; font-size:1.2rem;}
+            body.theme-dark .search-bar button:not(.clear-btn){min-height:36px; height:36px;}
+        }
+        @media (prefers-reduced-motion:reduce){body.theme-dark::after{animation:none;}}
     </style>
 </head>
 <body class="theme-dark">
@@ -1699,7 +1760,7 @@
             <!-- Search Bar -->
             <div class="search-bar">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Search by module, course..." oninput="filterDocs()">
+                <input type="text" id="searchInput" placeholder="Search" oninput="filterDocs()">
                 <button onclick="filterDocs()">SEARCH</button>
                 <button class="clear-btn" onclick="clearSearch()"><i class="fas fa-times"></i></button>
             </div>
