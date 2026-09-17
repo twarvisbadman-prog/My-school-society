@@ -1598,6 +1598,64 @@
             body.theme-dark .search-bar button:not(.clear-btn){grid-column:1 / -1; width:100%;}
         }
         @media (prefers-reduced-motion:reduce){body.theme-dark::before{animation:none;}}
+
+        /* A single, consistent dark theme: the older chooser remains in the
+           markup for compatibility, but is no longer exposed to visitors. */
+        .theme-switch-header, .theme-selector{display:none !important;}
+
+        body.theme-dark .search-bar{
+            padding:6px 7px 6px 20px;
+            border:1px solid rgba(147,197,253,.62);
+            border-radius:18px;
+            background:linear-gradient(135deg, rgba(15,23,42,.96), rgba(8,15,30,.94));
+            position:relative;
+            overflow:visible;
+        }
+        body.theme-dark .search-bar::before{
+            content:"";
+            position:absolute;
+            inset:-1px;
+            z-index:-1;
+            border-radius:inherit;
+            background:linear-gradient(100deg, rgba(96,165,250,.72), rgba(251,191,36,.46), rgba(99,102,241,.72));
+            filter:blur(10px);
+            opacity:.34;
+        }
+        body.theme-dark .search-bar > i{color:#fde68a; font-size:1.05rem;}
+        body.theme-dark .search-bar button:not(.clear-btn){
+            min-height:42px;
+            padding-inline:24px;
+            border-radius:12px;
+            border:1px solid rgba(191,219,254,.75);
+            letter-spacing:.08em;
+            box-shadow:0 6px 16px rgba(37,99,235,.32);
+        }
+        body.theme-dark .search-bar .clear-btn{border-radius:10px;}
+
+        @media (max-width:600px){
+            body.theme-dark .header{padding:10px 12px;}
+            body.theme-dark .header-content{flex-direction:column; align-items:stretch;}
+            body.theme-dark .header-left{justify-content:space-between;}
+            body.theme-dark .header-content > div:last-child{display:block !important; width:100%;}
+            body.theme-dark .plus-btn{display:flex; justify-content:center; width:100%; min-height:44px;}
+            body.theme-dark .browse-header{margin:26px 0 18px;}
+            body.theme-dark .browse-header h1{font-size:clamp(1.45rem, 7vw, 2rem); line-height:1.18;}
+            body.theme-dark .browse-header p{font-size:.88rem; line-height:1.55;}
+            body.theme-dark .search-bar{display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:6px; padding:7px 8px 7px 14px;}
+            body.theme-dark .search-bar input{font-size:.9rem; min-width:0;}
+            body.theme-dark .search-bar button:not(.clear-btn){grid-column:1 / -1; width:100%; min-height:44px;}
+            body.theme-dark .stats-row{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:7px;}
+            body.theme-dark .stat-pill{justify-content:center; padding:9px 5px; font-size:.7rem; white-space:nowrap;}
+            body.theme-dark .doc-card{padding:15px;}
+            body.theme-dark .doc-top{gap:10px;}
+            body.theme-dark .doc-icon{flex:0 0 40px; width:40px; height:40px;}
+            body.theme-dark .doc-actions{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); width:100%;}
+            body.theme-dark .doc-actions a{justify-content:center; text-align:center; padding:11px 6px;}
+        }
+        @media (max-width:360px){
+            body.theme-dark .stats-row{grid-template-columns:1fr;}
+            body.theme-dark .doc-actions{grid-template-columns:1fr;}
+        }
     </style>
 </head>
 <body class="theme-dark">
@@ -1983,6 +2041,8 @@
 
             // ========== THEME ==========
             function setTheme(theme) {
+                // This page intentionally uses one unified visual theme.
+                theme = 'dark';
                 document.body.classList.remove('theme-light', 'theme-matrix', 'theme-dark');
                 document.body.classList.add('theme-' + theme);
 
