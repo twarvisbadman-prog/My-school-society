@@ -937,9 +937,105 @@
         ::-webkit-scrollbar{width:3px;}
         ::-webkit-scrollbar-track{background:transparent;}
         ::-webkit-scrollbar-thumb{background:var(--blue-dim);border-radius:10px;}
+        /* ============================================================
+           BLACK NIGHT THEME — visual enhancement layer
+           ============================================================ */
+        body.theme-dark{
+            --board:#05070c;
+            --board-deep:#020308;
+            --dark-chocolate:#0b1220;
+            --dark-chocolate-glass:rgba(7,12,24,.88);
+            --chalk:#f8fafc;
+            --chalk-dim:#cbd5e1;
+            --chalk-faint:rgba(226,232,240,.16);
+            --blue:#60a5fa;
+            --blue-bright:#bfdbfe;
+            --blue-dim:rgba(96,165,250,.32);
+            --blue-glow:rgba(59,130,246,.32);
+            --gold:#fbbf24;
+            --gold-bright:#fde68a;
+            --gold-dim:rgba(251,191,36,.20);
+            --gold-glow:rgba(251,191,36,.24);
+        }
+        body.theme-dark{
+            background:
+                radial-gradient(circle at 15% -15%, rgba(37,99,235,.22), transparent 36rem),
+                radial-gradient(circle at 88% 92%, rgba(91,33,182,.17), transparent 34rem),
+                var(--board);
+            line-height:1.6;
+        }
+        body.theme-dark::before{
+            background:
+                radial-gradient(ellipse at 28% 15%, rgba(96,165,250,.10), transparent 55%),
+                radial-gradient(ellipse at 72% 82%, rgba(168,85,247,.08), transparent 50%);
+        }
+        .glass-overlay{position:relative;z-index:1;}
+        body.theme-dark .header{
+            background:rgba(5,9,18,.90);
+            border-bottom-color:rgba(96,165,250,.36);
+            box-shadow:0 10px 32px rgba(0,0,0,.32);
+        }
+        body.theme-dark .nav-pill{
+            min-height:38px;
+            border-color:rgba(148,163,184,.34);
+            background:rgba(15,23,42,.60);
+            color:#f8fafc;
+            font-weight:800;
+        }
+        body.theme-dark .nav-pill:hover{border-color:var(--gold);background:rgba(30,41,59,.90);}
+        body.theme-dark .nav-pill.blue-special,
+        body.theme-dark .nav-pill.blue-upload{
+            background:linear-gradient(135deg,#2563eb,#4338ca);
+            border-color:#93c5fd;
+            box-shadow:0 7px 20px rgba(37,99,235,.24);
+        }
+        body.theme-dark .nav-pill.blue-upload{background:linear-gradient(135deg,#f97316,#ea580c);border-color:#fdba74;}
+        .theme-switch{display:none !important;}
+
+        body.theme-dark .about-wrap{max-width:1040px;}
+        body.theme-dark .about-hero{padding-block:clamp(32px,6vw,60px);}
+        body.theme-dark .about-hero h1{
+            color:#f8fafc;
+            text-shadow:0 0 28px rgba(96,165,250,.32);
+            letter-spacing:-.03em;
+        }
+        body.theme-dark .about-hero p{color:#dbeafe;font-weight:600;}
+        body.theme-dark .glass-card{
+            background:linear-gradient(145deg,rgba(17,27,47,.92),rgba(8,14,26,.91));
+            border-color:rgba(148,163,184,.28);
+            box-shadow:0 20px 52px rgba(0,0,0,.28),0 1px 0 rgba(255,255,255,.05) inset;
+        }
+        body.theme-dark .glass-card:hover{border-color:rgba(147,197,253,.62);}
+        body.theme-dark .card-title{color:#f8fafc;font-weight:800;}
+        body.theme-dark .card-text, body.theme-dark .feature-list li{color:#dbeafe;font-weight:600;}
+        body.theme-dark .project-card{
+            background:rgba(2,6,23,.48);
+            border-color:rgba(148,163,184,.28);
+            transition:transform .28s ease,border-color .28s ease,box-shadow .28s ease;
+        }
+        body.theme-dark .project-card:hover{
+            transform:translateY(-5px);
+            border-color:#93c5fd;
+            box-shadow:0 15px 30px rgba(0,0,0,.28);
+        }
+        body.theme-dark :is(.project-btn,.sidebar-item,.menu-btn):focus-visible,
+        body.theme-dark a:focus-visible{outline:3px solid #fde68a;outline-offset:3px;}
+
+        @media (max-width:560px){
+            body.theme-dark .header-content{align-items:flex-start;}
+            body.theme-dark .nav-links{width:100%;justify-content:flex-start;}
+            body.theme-dark .nav-pill{min-height:36px;padding:7px 10px;}
+            body.theme-dark .nav-pill.blue-special span,
+            body.theme-dark .nav-pill.blue-upload span{display:inline;font-size:.65rem;}
+            body.theme-dark .about-wrap{padding-inline:13px;}
+            body.theme-dark .glass-card{padding:18px 15px;}
+        }
+        @media (prefers-reduced-motion:reduce){
+            *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;scroll-behavior:auto !important;}
+        }
     </style>
 </head>
-<body>
+<body class="theme-dark">
 
     <canvas id="rain-canvas"></canvas>
 
@@ -1499,6 +1595,8 @@
         // THEME — LIGHT (PAPER) DEFAULT, DARK (BLACKBOARD)
         // ============================================================
         function setTheme(theme){
+            // This page uses one consistent black theme.
+            theme = 'dark';
             document.body.classList.toggle('theme-dark', theme === 'dark');
             const themeLabel = document.getElementById('themeLabel');
             if (themeLabel) themeLabel.textContent = theme === 'dark' ? 'Blackboard' : 'Paper';
@@ -1506,7 +1604,7 @@
         }
 
         // Apply saved theme or default to 'light' (Paper)
-        setTheme(localStorage.getItem('studenthub-theme') || 'light');
+        setTheme('dark');
 
         // Header theme switcher button (toggles)
         document.getElementById('themeSwitch').addEventListener('click', () => {
