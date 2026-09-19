@@ -1,149 +1,101 @@
-# 🎓 Twarvis School - Student Hub
-
 <div align="center">
 
-![Twarvis School Banner](https://img.shields.io/badge/Twarvis-School-blue?style=for-the-badge&logo=google-chrome)
-![Version](https://img.shields.io/badge/version-2.0.0-green?style=flat-square)
-![Python](https://img.shields.io/badge/Python-3.11-blue?style=flat-square&logo=python)
-![Django](https://img.shields.io/badge/Django-4.2-green?style=flat-square&logo=django)
-![Supabase](https://img.shields.io/badge/Supabase-2.5-orange?style=flat-square&logo=supabase)
-![Render](https://img.shields.io/badge/Render-Deployed-purple?style=flat-square&logo=render)
-![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
+# ⚡ TWARVIS SCHOOL – STUDENT HUB
 
-**A comprehensive student file management system for educational institutions**
+**Your command center for notes, past papers & study files.**
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-View_App-4a7cf7?style=for-the-badge&logo=render)](https://twarvis-school.onrender.com)
-[![Report Bug](https://img.shields.io/badge/Report-Bug-red?style=for-the-badge&logo=github)](https://github.com/twarvisbadman-prog/My-school-society/issues)
-[![Request Feature](https://img.shields.io/badge/Request-Feature-brightgreen?style=for-the-badge&logo=github)](https://github.com/twarvisbadman-prog/My-school-society/issues)
-
-</div>
-
----
-
-## 📋 Table of Contents
-
-- [Overview](#-overview)
-- [Features](#-features)
-- [Demo](#-demo)
-- [Technologies Used](#-technologies-used)
-- [Installation](#-installation)
-- [Environment Variables](#-environment-variables)
-- [Deployment](#-deployment)
-- [Project Structure](#-project-structure)
-- [API Endpoints](#-api-endpoints)
-- [Screenshots](#-screenshots)
-- [Contributing](#-contributing)
-- [License](#-license)
-- [Contact](#-contact)
-- [Acknowledgments](#-acknowledgments)
-
----
-
-## 🌟 Overview
-
-**Twarvis School - Student Hub** is a modern web application designed to streamline the management and sharing of academic materials. Built with Django and Supabase, it provides a secure platform for students to upload, browse, and download study materials, notes, and past papers.
-
-### Key Highlights
-
-- 🚀 **Fast & Responsive** - Built with modern web technologies
-- 🔒 **Secure** - Passcode-protected private files
-- 📱 **Mobile-Friendly** - Fully responsive design
-- 🎨 **Beautiful UI** - Glass-morphism with interactive themes
-- 📊 **GPA Calculator** - Weighted GPA calculation with multiple grading systems
-
----
-
-## ✨ Features
-
-### 📚 File Management
-- **Upload Files** - Upload notes, past papers, and study materials
-- **Browse Files** - Search and filter by module, course, or university
-- **File Privacy** - Public or private with passcode protection
-- **File Preview** - View PDFs and images inline
-- **Download** - Secure file downloads with passcode verification
-
-### 🎨 User Experience
-- **Theme System** - Matrix, Dark, and Light modes
-- **Interactive Backgrounds** - Animated fish aquarium and matrix rain
-- **Responsive Design** - Works on all devices
-- **Modern UI** - Glass-morphism design with smooth animations
-
-### 📊 GPA Calculator
-- **Multiple Grading Systems** - Diploma (5.0), Degree (4.0), Technical (5.0)
-- **Weighted Subjects** - Each subject can have custom weight
-- **Marks Input** - Enter marks (0-100) with auto-grade conversion
-- **Smart Messages** - Motivational messages based on performance
-- **Visual Overlay** - Beautiful result display with emojis
-
-### 🔐 Security Features
-- **Passcode Protection** - Private files require passcode
-- **Admin Dashboard** - Full file management for administrators
-- **Rate Limiting** - Prevents abuse
-- **Secure API Keys** - Environment variable management
-
----
-
-## 🎥 Demo
-
-### Live Application
-🔗 **[https://twarvis-school.onrender.com](https://twarvis-school.onrender.com)**
-
-### Test Credentials
-> **Note:** No login required - public access for browsing files.
-
----
-
-## 🛠️ Technologies Used
-
-### Backend
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| Python | 3.11 | Core programming language |
-| Django | 4.2.11 | Web framework |
-| Supabase | 2.5.0 | Database & Storage |
-| Gunicorn | 22.0.0 | WSGI HTTP Server |
-| WhiteNoise | 6.6.0 | Static file serving |
-
-### Frontend
-| Technology | Purpose |
-|------------|---------|
-| HTML5 | Structure |
-| CSS3 | Styling & Animations |
-| JavaScript | Interactivity |
-| Font Awesome | Icons |
-| Google Fonts | Typography |
-
-### Deployment
-| Platform | Purpose |
-|----------|---------|
-| Render.com | Hosting & Deployment |
-| GitHub | Version Control |
-
----<!-- Badges -->
-<div align="center">
-
-![Version](https://img.shields.io/badge/version-2.0.0-blue?style=for-the-badge)
-![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python)
-![Django](https://img.shields.io/badge/Django-4.2-green?style=for-the-badge&logo=django)
-![Supabase](https://img.shields.io/badge/Supabase-2.5-orange?style=for-the-badge&logo=supabase)
-![Render](https://img.shields.io/badge/Render-Deployed-purple?style=for-the-badge&logo=render)
+![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Django](https://img.shields.io/badge/Django-4.2-092E20?style=for-the-badge&logo=django&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![Render](https://img.shields.io/badge/Deployed_on-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
-![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=for-the-badge)
-![Stars](https://img.shields.io/github/stars/twarvisbadman-prog/My-school-society?style=for-the-badge)
-![Forks](https://img.shields.io/github/forks/twarvisbadman-prog/My-school-society?style=for-the-badge)
-![Issues](https://img.shields.io/github/issues/twarvisbadman-prog/My-school-society?style=for-the-badge)
+
+**Live Demo → [twarvis-school.onrender.com](https://twarvis-school.onrender.com)**
 
 </div>
 
-## 📦 Installation
+---
 
-### Prerequisites
-- Python 3.11+
-- pip
-- Git
-- Supabase account
+## 🔥 What Is This?
 
-### Step 1: Clone the Repository
+A full-stack web app built to **organize, share, and manage** academic materials.  
+No login required to browse public files. Just open, search, and download.
+
+Built for students who want their study life **clean and fast**.
+
+---
+
+## 🚀 Features
+
+| Feature | Description |
+|---------|-------------|
+| 📂 **File Vault** | Upload & manage PDFs, images, documents |
+| 🔎 **Instant Search** | Find any file by name or tag in milliseconds |
+| 🧮 **GPA Calculator** | Multi-system support (Diploma/Degree/Technical) |
+| 🎨 **Themes** | Matrix, Dark, Light — switch on the fly |
+| 🌐 **Live Backgrounds** | Matrix rain or aquarium (optional) |
+| 🔐 **Private Files** | Passcode-protected folders for sensitive stuff |
+| 📊 **Admin Dashboard** | Full control over files & users |
+
+---
+
+## 🛠️ Tech Stack
+Backend → Python 3.11, Django 4.2.11 Database → Supabase (PostgreSQL + Storage) Frontend → HTML5, CSS3, JavaScript UI Icons → Font Awesome, Google Fonts Deployment → Render.com + Gunicorn + WhiteNoise
+
+
+---
+
+## ⚡ Quick Start
+
+### Option 1 – Just Try It
+
+Hit the live link: **https://twarvis-school.onrender.com**  
+No sign-up. No hassle. Just browse.
+
+### Option 2 – Run Locally
+
 ```bash
-git clone https://github.com/twarvisbadman-prog/My-school-society.git
-cd My-school-society
+# Clone the repo
+git clone https://github.com/twarvis/Twarvis-School.git
+cd Twarvis-School
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate   # Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+Set up your .env file:
+
+SUPABASE_URL=your_supabase_url
+SUPABASE_KEY=your_supabase_key
+SECRET_KEY=your_django_secret
+Migrate and run:
+
+python manage.py migrate
+python manage.py runserver
+Open http://127.0.0.1:8000 and you're in.
+
+📁 Project Layout
+Twarvis-School/
+├── school/              # Main Django app
+├── static/              # CSS, JS, images
+├── templates/           # HTML templates
+├── manage.py
+├── requirements.txt
+└── .env.example
+🧑‍💻 Contributing
+Want to improve this? Fork it, make your changes, and send a PR.
+
+1. Fork the repo
+2. Create a branch: git checkout -b cool-feature
+3. Commit: git commit -m "Add cool feature"
+4. Push: git push origin cool-feature
+5. Open a Pull Request
+📜 License
+MIT — do whatever you want, just give credit.
+
+Built by Twarvis
+⭐ Star this repo if you like it — it fuels the code.
+
+```
