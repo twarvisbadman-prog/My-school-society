@@ -356,6 +356,112 @@
         }
 
         /* ============================================================
+           SIDEBAR — IDENTICAL TO INDEX.HTML
+           ============================================================ */
+        .sidebar-overlay{
+            position:fixed;inset:0;
+            background:rgba(36,29,19,.4);
+            backdrop-filter:blur(4px);
+            z-index:999;display:none;
+        }
+        .sidebar-overlay.active{display:block;}
+
+        .sidebar{
+            position:fixed;top:0;left:-320px;
+            width:clamp(280px, 65vw, 320px);
+            max-width:85vw;
+            height:100%;
+            background:rgba(20, 12, 8, 0.94);
+            backdrop-filter:blur(20px);
+            -webkit-backdrop-filter:blur(20px);
+            border-right:2px solid var(--blue-dim);
+            z-index:1000;
+            transition:left .35s cubic-bezier(.16,1,.3,1);
+            overflow-y:auto;
+            padding:clamp(20px, 3.5vw, 26px) 0 clamp(24px, 3.5vw, 32px);
+            animation:blueEdgePulse 4s ease-in-out infinite;
+        }
+        .sidebar.open{left:0;}
+        .sidebar-header{
+            padding:clamp(6px, 1vw, 8px) clamp(18px, 3vw, 24px) clamp(14px, 2.5vw, 20px);
+            border-bottom:2px solid var(--blue-dim);
+            margin-bottom:8px;
+        }
+        .sidebar-header h2{
+            font-family:'Space Grotesk',sans-serif;
+            font-size:clamp(1.1rem, 2.2vw, 1.3rem);
+            font-weight:700;
+            color:var(--chalk);
+        }
+        .sidebar-header h2 i{color:var(--gold);}
+        .sidebar-header p{
+            font-size:clamp(0.65rem, 1.2vw, 0.8rem);
+            color:var(--gold);
+            margin-top:3px;
+            opacity:.7;
+        }
+
+        .sidebar-close{
+            position:absolute;top:clamp(10px, 2vw, 16px);right:clamp(14px, 2vw, 18px);
+            font-size:clamp(1.2rem, 2.5vw, 1.5rem);
+            color:var(--blue-dim);
+            background:none;border:none;cursor:pointer;
+            transition:.3s;
+        }
+        .sidebar-close:hover{color:var(--gold);}
+
+        .sidebar-item{
+            display:flex;align-items:center;gap:clamp(10px, 1.8vw, 14px);
+            padding:clamp(9px, 1.5vw, 12px) clamp(18px, 3vw, 24px);
+            color:var(--chalk-dim);
+            text-decoration:none;
+            font-size:clamp(0.8rem, 1.5vw, 0.95rem);
+            font-weight:600;
+            border-left:3px solid transparent;
+            cursor:pointer;
+            transition:.3s;
+        }
+        .sidebar-item i{
+            width:clamp(20px, 3vw, 24px);
+            font-size:clamp(0.9rem, 1.5vw, 1.05rem);
+            color:var(--gold);
+            animation:goldShift 3.5s ease-in-out infinite;
+        }
+        .sidebar-item:hover{
+            border-left-color:var(--gold);
+            color:var(--chalk);
+            background:rgba(255,215,0,.06);
+        }
+
+        .sidebar-item .badge{
+            margin-left:auto;
+            font-size:clamp(0.55rem, 1vw, 0.7rem);
+            font-weight:700;
+            padding:clamp(2px, 0.3vw, 3px) clamp(8px, 1.2vw, 10px);
+            border-radius:20px;
+            border:2px solid var(--gold-dim);
+            color:var(--gold);
+        }
+        .sidebar-item .badge.soon{
+            background:var(--gold-dim);
+            border-color:var(--gold);
+            color:var(--gold);
+        }
+        .sidebar-item .badge.maint{color:var(--orange);border-color:rgba(249,115,22,.3);}
+        .sidebar-item .badge.info{
+            background:var(--gold);
+            border-color:var(--gold);
+            color:#fff;
+        }
+
+        .sidebar-divider{
+            height:2px;
+            background:var(--blue-dim);
+            margin:clamp(6px, 1vw, 8px) clamp(18px, 3vw, 24px);
+            opacity:.4;
+        }
+
+        /* ============================================================
            UPLOAD CONTAINER — EXTRA GLASSY
            ============================================================ */
         .upload-container{
@@ -1104,6 +1210,7 @@
             .nav-pill.blue-upload span{display:none;}
             .nav-pill.blue-upload{padding:4px 8px;}
             .nav-pill.blue-upload i{font-size:0.7rem;}
+            .sidebar{width:290px;}
         }
 
         @media (max-width: 380px){
@@ -1429,6 +1536,28 @@
         </div>
     </div>
 
+    <!-- ===== SIDEBAR — IDENTICAL TO INDEX.HTML ===== -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-close" id="sidebarClose">&times;</button>
+        <div class="sidebar-header">
+            <h2><i class="fas fa-graduation-cap"></i> Student Hub</h2>
+            <p>powered by Twarvis</p>
+        </div>
+        <a class="sidebar-item" href="/"><i class="fas fa-home"></i> Home <span class="badge">Active</span></a>
+        <a class="sidebar-item" href="/browse/"><i class="fas fa-eye"></i> See uploaded notes</a>
+        <a class="sidebar-item" href="/upload/"><i class="fas fa-cloud-upload-alt"></i> Upload files</a>
+        <div class="sidebar-divider"></div>
+        <a class="sidebar-item" href="/calculator/"><i class="fas fa-calculator"></i> GPA calculator <span class="badge soon">New</span></a>
+        <div class="sidebar-divider"></div>
+        <a class="sidebar-item" href="/hackerthon/"><i class="fas fa-code"></i> Hackathon <span class="badge soon">Soon</span></a>
+        <a class="sidebar-item" href="/free_course/"><i class="fas fa-graduation-cap"></i> Free courses <span class="badge maint">Maint</span></a>
+        <div class="sidebar-divider"></div>
+        <a class="sidebar-item" href="about.html"><i class="fas fa-info-circle"></i> About us <span class="badge info">Info</span></a>
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-item" id="sideSettings"><i class="fas fa-cog"></i> Settings</div>
+    </aside>
+
     <!-- ===== GOLDEN/SILVER SUCCESS POPUP ===== -->
     <div class="success-overlay" id="successOverlay">
         <div class="success-content">
@@ -1640,6 +1769,29 @@
         })();
 
         // ============================================================
+        // SIDEBAR — IDENTICAL TO INDEX.HTML
+        // ============================================================
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const menuBtn = document.getElementById('menuToggle');
+        const closeBtn = document.getElementById('sidebarClose');
+
+        function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
+
+        menuBtn.addEventListener('click', openSidebar);
+        closeBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        // Settings link in sidebar opens the sidebar close (no settings modal on upload page)
+        document.getElementById('sideSettings').addEventListener('click', () => {
+            closeSidebar();
+            setTimeout(() => {
+                alert('Settings available on home page');
+            }, 200);
+        });
+
+        // ============================================================
         // PRIVACY TOGGLE
         // ============================================================
         const privacyRadios = document.querySelectorAll('input[name="privacy"]');
@@ -1828,7 +1980,7 @@
             }
         });
 
-        console.log('✦ Student Hub — Upload Page with Gold Icons & Extra Glassy Background ✦');
+        console.log('✦ Student Hub — Upload Page with Sidebar & Gold Icons ✦');
     </script>
 </body>
 </html>
