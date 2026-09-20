@@ -10,11 +10,9 @@
     <style>
         /* ============================================================
            DARK CHOCOLATE / BLACKBOARD THEME (DEFAULT)
-           With floating, shaking buttons & glowing edges
-           PROFESSIONAL ORDER FOR HERO BUTTONS
+           Original colors preserved — top nav buttons smaller
            ============================================================ */
         :root {
-            /* ===== DARK THEME (DEFAULT) ===== */
             --board: #0a0f0d;
             --board-deep: #060a08;
             --dark-chocolate: #2c1810;
@@ -302,7 +300,7 @@
         }
 
         /* ============================================================
-           HEADER — PROFESSIONAL, ORDERED NAVIGATION
+           HEADER — PROFESSIONAL ORDER, SMALLER BUTTONS
            ============================================================ */
         .header {
             border-bottom: 2px solid var(--red-dim);
@@ -320,22 +318,22 @@
         .header-content {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 12px 20px;
+            padding: 8px 16px; /* reduced from 12px 20px */
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .header-left {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px; /* reduced from 12px */
             flex-shrink: 0;
         }
 
         .menu-btn {
-            width: 40px; height: 40px;
+            width: 32px; height: 32px; /* reduced from 40px */
             border: 2px solid var(--purple-dim);
             border-radius: 50%;
             background: transparent;
@@ -343,7 +341,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
+            font-size: 0.8rem; /* reduced from 1rem */
             cursor: pointer;
             transition: .3s;
             flex-shrink: 0;
@@ -353,12 +351,12 @@
         .menu-btn:hover {
             border-color: var(--purple);
             color: var(--purple-bright);
-            box-shadow: 0 0 30px var(--purple-glow);
+            box-shadow: 0 0 20px var(--purple-glow);
         }
 
         .logo {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+            font-size: clamp(0.95rem, 2vw, 1.15rem); /* slightly reduced */
             font-weight: 700;
             letter-spacing: -.01em;
             color: var(--chalk);
@@ -379,16 +377,16 @@
 
         .logo-sub {
             display: block;
-            font-size: clamp(0.6rem, 1.2vw, 0.75rem);
+            font-size: clamp(0.5rem, 1vw, 0.65rem); /* slightly reduced */
             color: var(--purple);
-            margin-top: 2px;
+            margin-top: 1px;
             opacity: .7;
         }
 
-        /* ===== PROFESSIONAL NAV ORDER ===== */
+        /* ===== SMALLER PROFESSIONAL NAV BUTTONS ===== */
         .nav-links {
             display: flex;
-            gap: 6px;
+            gap: 5px; /* reduced from 6px */
             align-items: center;
             flex-wrap: nowrap;
             justify-content: flex-end;
@@ -397,11 +395,11 @@
         .nav-pill {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            border: 2px solid var(--red-dim);
-            border-radius: 30px;
-            font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+            gap: 4px; /* reduced from 6px */
+            padding: 5px 10px; /* reduced from 8px 16px */
+            border: 1.5px solid var(--red-dim); /* reduced from 2px */
+            border-radius: 24px; /* slightly smaller */
+            font-size: clamp(0.6rem, 1.2vw, 0.72rem); /* reduced from 0.75-0.9rem */
             font-weight: 600;
             text-decoration: none;
             color: var(--chalk);
@@ -414,7 +412,7 @@
         }
 
         .nav-pill i {
-            font-size: clamp(0.8rem, 1.3vw, 1rem);
+            font-size: clamp(0.6rem, 1vw, 0.75rem); /* reduced from 0.8-1rem */
             color: var(--purple);
         }
 
@@ -432,7 +430,7 @@
             background-size: 200% 100%;
             animation: wetShimmer 3s ease-in-out infinite;
             pointer-events: none;
-            border-radius: 30px;
+            border-radius: 24px;
         }
 
         .nav-pill::after {
@@ -445,68 +443,96 @@
                 radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.10) 1px, transparent 1px);
             background-size: 100% 100%;
             pointer-events: none;
-            border-radius: 30px;
+            border-radius: 24px;
             animation: wetDrops 4s ease-in-out infinite;
         }
 
         .nav-pill:hover {
             border-color: var(--red);
             color: var(--chalk);
-            box-shadow: 0 0 30px var(--red-glow);
-            transform: translateY(-2px);
+            box-shadow: 0 0 20px var(--red-glow);
+            transform: translateY(-1px);
         }
 
+        /* === Home pill === */
+        .nav-pill.home-pill {
+            background: linear-gradient(135deg, var(--purple), #6d28d9);
+            border: 1.5px solid var(--purple);
+            color: #fff;
+            font-weight: 700;
+            animation: purpleGlowPulse 3s ease-in-out infinite;
+        }
+
+        .nav-pill.home-pill i { color: #fff; }
+
+        @keyframes purpleGlowPulse {
+            0%, 100% {
+                border-color: var(--purple);
+                box-shadow: 0 0 15px rgba(168, 85, 247, 0.20);
+            }
+            50% {
+                border-color: var(--purple-bright);
+                box-shadow: 0 0 30px rgba(168, 85, 247, 0.40);
+            }
+        }
+
+        .nav-pill.home-pill:hover {
+            background: linear-gradient(135deg, var(--purple-bright), var(--purple));
+            box-shadow: 0 0 30px var(--purple-glow);
+            transform: translateY(-1px);
+            border-color: var(--purple-bright);
+            color: #fff;
+        }
+
+        /* === Gold "See uploaded notes" === */
         .nav-pill.gold-special {
             background: linear-gradient(135deg, var(--gold), #e6b800);
-            border: 2px solid var(--red);
+            border: 1.5px solid var(--red);
             color: var(--board);
             font-weight: 700;
+            animation: redEdgePulse 3s ease-in-out infinite;
         }
 
         .nav-pill.gold-special i { color: var(--purple); }
 
         .nav-pill.gold-special:hover {
             background: linear-gradient(135deg, var(--gold-bright), var(--gold));
-            box-shadow: 0 0 40px var(--gold-glow), 0 0 60px var(--red-glow);
-            transform: translateY(-2px);
+            box-shadow: 0 0 30px var(--gold-glow), 0 0 40px var(--red-glow);
+            transform: translateY(-1px);
             border-color: var(--red-bright);
         }
 
+        /* === Orange "Upload" === */
         .nav-pill.orange {
             background: linear-gradient(135deg, var(--orange), #ea580c);
-            border: 2px solid var(--orange);
+            border: 1.5px solid var(--orange);
             color: #fff;
             font-weight: 700;
+            animation: orangeGlowPulse 3s ease-in-out infinite;
         }
 
         .nav-pill.orange i { color: #fff; }
 
+        @keyframes orangeGlowPulse {
+            0%, 100% {
+                border-color: var(--orange);
+                box-shadow: 0 0 15px rgba(249, 115, 22, 0.15);
+            }
+            50% {
+                border-color: var(--orange-bright);
+                box-shadow: 0 0 30px rgba(249, 115, 22, 0.25);
+            }
+        }
+
         .nav-pill.orange:hover {
             background: linear-gradient(135deg, var(--orange-bright), var(--orange));
-            box-shadow: 0 0 40px var(--orange-glow);
-            transform: translateY(-2px);
+            box-shadow: 0 0 30px var(--orange-glow);
+            transform: translateY(-1px);
             border-color: var(--orange-bright);
         }
 
-        .nav-pill.info-pill {
-            background: linear-gradient(135deg, var(--purple), #6d28d9);
-            border: 2px solid var(--purple);
-            color: #fff;
-            font-weight: 700;
-        }
-
-        .nav-pill.info-pill i { color: #fff; }
-
-        .nav-pill.info-pill:hover {
-            background: linear-gradient(135deg, var(--purple-bright), var(--purple));
-            box-shadow: 0 0 40px var(--purple-glow);
-            transform: translateY(-2px);
-            border-color: var(--purple-bright);
-            color: #fff;
-        }
-
         /* ============================================================
-           HERO — PROFESSIONAL BUTTON LAYOUT
+           HERO — ORIGINAL SIZE (unchanged)
            ============================================================ */
         .hero {
             max-width: 800px;
@@ -586,7 +612,7 @@
             font-weight: 600;
         }
 
-        /* ===== HERO ACTIONS — PROFESSIONAL ORDER ===== */
+        /* ===== HERO ACTIONS — ORIGINAL SIZE ===== */
         .hero-actions {
             display: flex;
             gap: clamp(8px, 1.8vw, 14px);
@@ -754,7 +780,7 @@
         }
 
         /* ============================================================
-           CARDS
+           CARDS — unchanged
            ============================================================ */
         .cards-container {
             max-width: 1200px;
@@ -1052,7 +1078,7 @@
         }
 
         /* ============================================================
-           RESOURCE LINKS
+           RESOURCE LINKS — unchanged
            ============================================================ */
         .resource-links {
             max-width: 1200px;
@@ -1148,7 +1174,7 @@
         }
 
         /* ============================================================
-           BOTTOM
+           BOTTOM — unchanged
            ============================================================ */
         .bottom-section {
             max-width: 1200px;
@@ -1296,7 +1322,7 @@
         }
 
         /* ============================================================
-           SIDEBAR & MODAL
+           SIDEBAR & MODAL — unchanged
            ============================================================ */
         .sidebar-overlay {
             position: fixed; inset: 0;
@@ -1577,36 +1603,33 @@
         }
 
         /* ============================================================
-           RESPONSIVE — PROFESSIONAL ORDER
+           RESPONSIVE — SMALLER NAV KEPT PROPORTIONAL
            ============================================================ */
         @media (max-width: 860px) {
             .cards-container { grid-template-columns: repeat(2, 1fr); }
             .nav-pill span { display: none; }
-            .nav-pill { padding: 8px 12px; font-size: 0.8rem; }
-            .nav-pill i { font-size: 0.9rem; }
+            .nav-pill { padding: 5px 10px; font-size: 0.65rem; }
+            .nav-pill i { font-size: 0.7rem; }
             .nav-pill.gold-special span { display: inline; }
-            .nav-pill.gold-special { padding: 8px 18px; }
-            .nav-pill.info-pill span { display: inline; }
-            .nav-pill.info-pill { padding: 8px 18px; }
+            .nav-pill.gold-special { padding: 5px 12px; }
         }
 
         @media (max-width: 560px) {
             .cards-container { grid-template-columns: 1fr; gap: 16px; }
-            .header-content { padding: 10px 14px; flex-wrap: nowrap; }
+            .header-content { padding: 6px 10px; flex-wrap: nowrap; }
             .hero { padding: 16px 16px 12px; }
             .hero h1 { font-size: 1.5rem; min-height: 2.6rem; }
             .hero h1 .cursor { height: 1.5rem; }
             .contact-owner { flex-direction: column; border-radius: 24px; padding: 14px 18px; width: 100%; }
             .scan-card, .feature-card { min-height: 150px; padding: 16px 18px 14px; }
-            .nav-links { gap: 6px; }
-            .nav-pill { padding: 7px 10px; font-size: 0.72rem; }
-            .nav-pill i { font-size: 0.8rem; }
-            .nav-pill.gold-special { padding: 7px 14px; }
-            .nav-pill.gold-special span { font-size: 0.72rem; }
-            .nav-pill.info-pill { padding: 7px 14px; }
-            .nav-pill.info-pill span { font-size: 0.72rem; }
-            .logo { font-size: 1rem; }
-            .logo-sub { font-size: 0.55rem; }
+            .nav-links { gap: 3px; }
+            .nav-pill { padding: 4px 7px; font-size: 0.55rem; border-width: 1px; }
+            .nav-pill i { font-size: 0.6rem; }
+            .nav-pill.gold-special { padding: 4px 9px; }
+            .nav-pill.gold-special span { font-size: 0.55rem; }
+            .logo { font-size: 0.85rem; }
+            .logo-sub { font-size: 0.45rem; }
+            .menu-btn { width: 28px; height: 28px; font-size: 0.7rem; }
             .btn { font-size: 0.72rem; padding: 8px 16px; }
             .hero-actions { gap: 8px; }
             .links-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1617,14 +1640,11 @@
             .cards-container { gap: 14px; }
             .scan-card, .feature-card { min-height: 140px; padding: 14px 16px 12px; }
             .nav-pill.gold-special span { display: none; }
-            .nav-pill.gold-special i { font-size: 0.9rem; }
-            .nav-pill.gold-special { padding: 7px 10px; }
+            .nav-pill.gold-special i { font-size: 0.7rem; }
+            .nav-pill.gold-special { padding: 4px 6px; }
             .nav-pill.orange span { display: none; }
-            .nav-pill.orange { padding: 7px 10px; }
-            .nav-pill.orange i { font-size: 0.9rem; }
-            .nav-pill.info-pill span { display: none; }
-            .nav-pill.info-pill i { font-size: 0.9rem; }
-            .nav-pill.info-pill { padding: 7px 10px; }
+            .nav-pill.orange { padding: 4px 6px; }
+            .nav-pill.orange i { font-size: 0.7rem; }
             .links-grid { grid-template-columns: 1fr; }
             .hero h1 { font-size: 1.3rem; min-height: 2.2rem; }
             .hero h1 .cursor { height: 1.3rem; }
@@ -1646,7 +1666,7 @@
 
     <div class="wrap">
 
-        <!-- ===== HEADER — PROFESSIONAL ORDER ===== -->
+        <!-- ===== HEADER — SMALLER PROFESSIONAL NAV ===== -->
         <header class="header">
             <div class="header-content">
                 <div class="header-left">
@@ -1672,18 +1692,15 @@
                     </div>
                 </div>
                 <div class="nav-links">
-                    <!-- Order: Theme, Browse, Upload, About — Professional & Consistent -->
-                    <button class="nav-pill" id="themeSwitch" style="cursor:pointer; border-color:var(--purple-dim);">
-                        <i class="fas fa-palette"></i> <span id="themeLabel">Blackboard</span>
-                    </button>
+                    <!-- Professional order: Home → See uploaded notes → Upload -->
+                    <a href="/" class="nav-pill home-pill">
+                        <i class="fas fa-home"></i> <span>Home</span>
+                    </a>
                     <a href="/browse/" class="nav-pill gold-special">
                         <i class="fas fa-file-alt"></i> <span>See uploaded notes</span>
                     </a>
                     <a href="/upload/" class="nav-pill orange">
                         <i class="fas fa-cloud-upload-alt"></i> <span>Upload</span>
-                    </a>
-                    <a href="about.html" class="nav-pill info-pill" title="About this site">
-                        <i class="fas fa-info-circle"></i> <span>About</span>
                     </a>
                 </div>
             </div>
@@ -1702,7 +1719,7 @@
             <p class="lede">
                 Share what you know, find what you need. <span class="highlight">Uploaded notes</span>, scanned pages, and past papers — all in one place.
             </p>
-            <!-- PROFESSIONAL HERO BUTTONS — CLEAN, ORDERED, BALANCED -->
+            <!-- HERO BUTTONS — ORIGINAL SIZE -->
             <div class="hero-actions">
                 <a href="/browse/" class="btn btn-orange-red"><i class="fas fa-file-alt"></i> See uploaded notes</a>
                 <a href="/upload/" class="btn btn-solid"><i class="fas fa-cloud-upload-alt"></i> Upload yours</a>
@@ -1849,9 +1866,7 @@
             window.addEventListener('resize', resize);
 
             class Drop {
-                constructor() {
-                    this.reset();
-                }
+                constructor() { this.reset(); }
                 reset() {
                     this.x = Math.random() * w;
                     this.y = Math.random() * h - h;
@@ -1865,9 +1880,7 @@
                     this.y += this.speed;
                     this.x += this.angle;
                     if (this.y > h + 50) {
-                        if (Math.random() > 0.6) {
-                            createSplash(this.x, h);
-                        }
+                        if (Math.random() > 0.6) createSplash(this.x, h);
                         this.reset();
                         this.y = -this.length;
                     }
@@ -1887,8 +1900,7 @@
 
             class SplashDrop {
                 constructor(x, y) {
-                    this.x = x;
-                    this.y = y;
+                    this.x = x; this.y = y;
                     this.vx = (Math.random() - 0.5) * 7;
                     this.vy = Math.random() * -5 - 2;
                     this.size = Math.random() * 3.5 + 1;
@@ -1913,36 +1925,22 @@
             }
 
             function createSplash(x, y) {
-                for (let i = 0; i < 8; i++) {
-                    splashDrops.push(new SplashDrop(x, y));
-                }
+                for (let i = 0; i < 8; i++) splashDrops.push(new SplashDrop(x, y));
             }
 
-            for (let i = 0; i < dropCount; i++) {
-                drops.push(new Drop());
-            }
+            for (let i = 0; i < dropCount; i++) drops.push(new Drop());
 
             function animate() {
                 ctx.clearRect(0, 0, w, h);
-
-                for (let drop of drops) {
-                    drop.update();
-                    drop.draw();
-                }
-
+                for (let drop of drops) { drop.update(); drop.draw(); }
                 for (let i = splashDrops.length - 1; i >= 0; i--) {
                     const s = splashDrops[i];
                     s.update();
-                    if (s.life <= 0 || s.size < 0.1) {
-                        splashDrops.splice(i, 1);
-                    } else {
-                        s.draw();
-                    }
+                    if (s.life <= 0 || s.size < 0.1) splashDrops.splice(i, 1);
+                    else s.draw();
                 }
-
                 requestAnimationFrame(animate);
             }
-
             animate();
         })();
 
@@ -1976,7 +1974,6 @@
                     setTimeout(type, 40 + Math.random() * 30);
                 }
             }
-
             setTimeout(type, 400);
         })();
 
@@ -2013,24 +2010,15 @@
             document.body.classList.toggle('theme-dark', theme === 'dark');
             document.getElementById('themeLight').classList.toggle('active', theme === 'light');
             document.getElementById('themeDark').classList.toggle('active', theme === 'dark');
-            const themeLabel = document.getElementById('themeLabel');
-            if (themeLabel) themeLabel.textContent = theme === 'dark' ? 'Blackboard' : 'Paper';
             localStorage.setItem('studenthub-theme', theme);
         }
 
-        // Default = 'dark' (Blackboard theme)
         const savedTheme = localStorage.getItem('studenthub-theme') || 'dark';
         setTheme(savedTheme);
 
         document.getElementById('themeLight').addEventListener('click', () => setTheme('light'));
         document.getElementById('themeDark').addEventListener('click', () => setTheme('dark'));
         document.getElementById('refreshBtn').addEventListener('click', () => location.reload());
-
-        // Header theme switcher button (toggles)
-        document.getElementById('themeSwitch').addEventListener('click', () => {
-            const isDark = document.body.classList.contains('theme-dark');
-            setTheme(isDark ? 'light' : 'dark');
-        });
 
         // ============================================================
         // BACK TO TOP
