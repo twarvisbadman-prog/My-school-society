@@ -2,470 +2,1195 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weighted GPA Calculator | Twarvis School</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Calculator | Student Hub ✦</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --board: #000000;
+            --chalk: #ededef;
+            --chalk-dim: rgba(237, 237, 239, 0.6);
+            --chalk-faint: rgba(237, 237, 239, 0.10);
+
+            --blue-900: #172554;
+            --blue-800: #1e3a8a;
+            --blue-700: #1d4ed8;
+            --blue-600: #2563eb;
+            --blue-500: #3b82f6;
+            --blue-400: #60a5fa;
+            --blue-300: #93c5fd;
+            --blue-glow: rgba(59, 130, 246, 0.35);
+            --blue-dim: rgba(59, 130, 246, 0.15);
+
+            --purple-600: #7c3aed;
+            --purple-400: #a855f7;
+            --purple-300: #c084fc;
+            --purple-glow: rgba(168, 85, 247, 0.45);
+
+            --gold: #fbbf24;
+            --gold-bright: #fde68a;
+            --gold-glow: rgba(251, 191, 36, 0.35);
+
+            --orange: #f97316;
+            --orange-bright: #fb923c;
+            --orange-glow: rgba(249, 115, 22, 0.35);
+
+            --cyan: #06b6d4;
+            --cyan-bright: #22d3ee;
+            --cyan-glow: rgba(6, 182, 212, 0.35);
+
+            --green: #22c55e;
+            --green-bright: #4ade80;
+            --green-glow: rgba(34, 197, 94, 0.25);
+
+            --red: #ef4444;
+            --red-bright: #f87171;
+            --red-glow: rgba(239, 68, 68, 0.35);
+            --red-dim: rgba(239, 68, 68, 0.15);
+
+            --silver: #c0c0c0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: #0a0a0a;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000000;
+            color: var(--chalk);
             min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Plus Jakarta Sans', 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        /* ============================================================
+           BLUE BUBBLES FALLING FROM TOP
+           ============================================================ */
+        .bubbles-container {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bubble {
+            position: absolute;
+            top: -120px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%,
+                rgba(96, 165, 250, 0.55) 0%,
+                rgba(59, 130, 246, 0.35) 30%,
+                rgba(30, 58, 138, 0.15) 60%,
+                transparent 100%);
+            box-shadow:
+                inset 0 0 25px rgba(147, 197, 253, 0.25),
+                0 0 40px rgba(59, 130, 246, 0.35),
+                0 0 80px rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(147, 197, 253, 0.20);
+            animation: bubbleFall linear infinite;
+        }
+
+        .bubble::after {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 20%;
+            width: 22%;
+            height: 22%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.45);
+            filter: blur(2px);
+        }
+
+        @keyframes bubbleFall {
+            0% { transform: translateY(0) translateX(0) scale(0.5); opacity: 0; }
+            10% { opacity: 0.75; }
+            50% { transform: translateY(55vh) translateX(25px) scale(1); opacity: 0.85; }
+            90% { opacity: 0.4; }
+            100% { transform: translateY(115vh) translateX(-20px) scale(0.7); opacity: 0; }
+        }
+
+        .bubble:nth-child(1) { left: 4%; width: 70px; height: 70px; animation-duration: 14s; animation-delay: 0s; }
+        .bubble:nth-child(2) { left: 12%; width: 35px; height: 35px; animation-duration: 17s; animation-delay: 1s; }
+        .bubble:nth-child(3) { left: 22%; width: 90px; height: 90px; animation-duration: 15s; animation-delay: 2s; }
+        .bubble:nth-child(4) { left: 35%; width: 50px; height: 50px; animation-duration: 18s; animation-delay: 0.5s; }
+        .bubble:nth-child(5) { left: 45%; width: 110px; height: 110px; animation-duration: 19s; animation-delay: 3s; }
+        .bubble:nth-child(6) { left: 55%; width: 40px; height: 40px; animation-duration: 13s; animation-delay: 1.5s; }
+        .bubble:nth-child(7) { left: 65%; width: 60px; height: 60px; animation-duration: 16s; animation-delay: 2.5s; }
+        .bubble:nth-child(8) { left: 75%; width: 45px; height: 45px; animation-duration: 15s; animation-delay: 3.5s; }
+        .bubble:nth-child(9) { left: 85%; width: 80px; height: 80px; animation-duration: 18s; animation-delay: 1.2s; }
+        .bubble:nth-child(10) { left: 93%; width: 55px; height: 55px; animation-duration: 14s; animation-delay: 4s; }
+        .bubble:nth-child(11) { left: 8%; width: 100px; height: 100px; animation-duration: 20s; animation-delay: 5s; }
+        .bubble:nth-child(12) { left: 40%; width: 30px; height: 30px; animation-duration: 12s; animation-delay: 6s; }
+
+        /* ============================================================
+           RAIN CANVAS
+           ============================================================ */
+        #rain-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse at 30% 20%, rgba(30, 58, 138, 0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(23, 37, 84, 0.10) 0%, transparent 40%);
+            animation: ambientPulse 6s ease-in-out infinite;
+        }
+
+        @keyframes ambientPulse {
+            0%, 100% { opacity: .6; }
+            50% { opacity: 1; }
+        }
+
+        /* ============================================================
+           SMART TOP NAVBAR — NO SEARCH
+           ============================================================ */
+        .topnav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(5, 8, 15, 0.92);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .topnav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .topnav-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .menu-toggle {
+            width: 38px;
+            height: 38px;
+            border: 1.5px solid rgba(59, 130, 246, 0.30);
+            border-radius: 10px;
+            background: rgba(15, 23, 42, 0.5);
+            color: #60a5fa;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        /* ========== GOLDEN MATRIX RAIN ========== */
-        #matrix-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            background: linear-gradient(180deg, #0a0a0a 0%, #1a1200 30%, #0a0a0a 70%, #1a0a00 100%);
+        .menu-toggle:hover {
+            border-color: #60a5fa;
+            color: #93c5fd;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
         }
 
-        .calculator-container {
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--blue-800), var(--blue-600));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 800;
+            font-size: 1.05rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
             position: relative;
-            z-index: 2;
-            max-width: 750px;
-            width: 100%;
-            padding: 10px;
+            overflow: hidden;
         }
 
-        .calculator-card {
-            background: rgba(0, 0, 0, 0.85);
-            border: 2px solid rgba(255, 215, 0, 0.25);
-            border-radius: 28px;
-            padding: 40px 35px;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 0 60px rgba(255, 215, 0, 0.03);
-            animation: float 3s ease-in-out infinite;
-            position: relative;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-6px); }
-        }
-
-        .calculator-card::before {
+        .brand-mark::after {
             content: '';
             position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 30px;
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(255, 193, 7, 0.03), rgba(255, 215, 0, 0.08));
-            background-size: 200% 200%;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 40%, rgba(255, 255, 255, 0.2) 50%, transparent 60%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+
+        .brand-name {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            color: #ededef;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-tag {
+            font-size: 0.6rem;
+            font-weight: 500;
+            color: #60a5fa;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .topnav-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .topnav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: rgba(237, 237, 239, 0.75);
+            border: 1.5px solid transparent;
+            background: rgba(15, 23, 42, 0.4);
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .topnav-link i { font-size: 0.85rem; color: #60a5fa; transition: color 0.25s ease; }
+
+        .topnav-link:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            background: rgba(59, 130, 246, 0.15);
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.25);
+        }
+
+        .topnav-link:hover i { color: #93c5fd; }
+
+        .topnav-link.active {
+            background: rgba(30, 58, 138, 0.5);
+            border-color: rgba(96, 165, 250, 0.7);
+            color: #ffffff;
+            box-shadow:
+                inset 0 1px 0 rgba(147, 197, 253, 0.2),
+                0 4px 15px rgba(30, 58, 138, 0.4);
+        }
+
+        .topnav-link.active i { color: #ffffff; }
+
+        .topnav-link[href="/"] i { color: #60a5fa; }
+        .topnav-link[href="/browse/"] i { color: #fbbf24; }
+        .topnav-link[href="/upload/"] i { color: #fb923c; }
+        .topnav-link[href="/about/"] i { color: #22d3ee; }
+
+        .topnav-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .icon-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1.5px solid rgba(59, 130, 246, 0.20);
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: #60a5fa;
+            color: #93c5fd;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1.5px solid rgba(147, 197, 253, 0.4);
+            transition: all 0.25s ease;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .user-avatar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        /* ============================================================
+           CATEGORIES NAV
+           ============================================================ */
+        .cat-nav {
+            background: rgba(8, 12, 20, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.12);
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .cat-nav::-webkit-scrollbar { display: none; }
+
+        .cat-nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            position: relative;
+            height: 48px;
+        }
+
+        .cat-glass-indicator {
+            position: absolute;
+            top: 6px;
+            bottom: 6px;
+            border-radius: 10px;
+            background: linear-gradient(135deg,
+                rgba(30, 58, 138, 0.9) 0%,
+                rgba(37, 99, 235, 0.7) 50%,
+                rgba(30, 58, 138, 0.9) 100%);
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            box-shadow:
+                inset 0 0 20px rgba(147, 197, 253, 0.25),
+                0 0 25px rgba(59, 130, 246, 0.5),
+                0 4px 15px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(147, 197, 253, 0.35);
+            transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0;
+        }
+
+        .cat-glass-indicator.visible { opacity: 1; }
+
+        .cat-glass-indicator::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 10px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.12) 20%,
+                rgba(255, 255, 255, 0.25) 50%,
+                rgba(255, 255, 255, 0.12) 80%,
+                transparent 100%);
+            background-size: 200% 100%;
+            animation: shimmerSlide 2.5s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmerSlide {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .cat-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: rgba(237, 237, 239, 0.7);
+            text-decoration: none;
+            transition: color 0.25s ease;
+            white-space: nowrap;
+            position: relative;
+            z-index: 2;
+            cursor: pointer;
+            flex-shrink: 0;
+            font-family: inherit;
+            background: transparent;
+            border: none;
+        }
+
+        .cat-link i {
+            font-size: 0.8rem;
+            color: #60a5fa;
+            transition: color 0.25s ease;
+        }
+
+        .cat-link:hover { color: #ffffff; }
+        .cat-link:hover i { color: #93c5fd; }
+        .cat-link.active { color: #ffffff; }
+        .cat-link.active i { color: #ffffff; }
+
+        /* ============================================================
+           PAGE CONTAINER
+           ============================================================ */
+        .wrap { position: relative; z-index: 1; }
+
+        .calc-container {
+            max-width: 900px;
+            margin: 30px auto 60px;
+            padding: 0 20px;
+        }
+
+        /* ============================================================
+           TABS
+           ============================================================ */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            background: rgba(10, 15, 25, 0.6);
+            border: 1.5px solid rgba(59, 130, 246, 0.20);
+            border-radius: 14px;
+            padding: 6px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 16px;
+            background: transparent;
+            border: 1.5px solid transparent;
+            border-radius: 10px;
+            color: rgba(237, 237, 239, 0.6);
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .tab-btn i { font-size: 0.9rem; }
+
+        .tab-btn:hover {
+            color: #ffffff;
+            background: rgba(59, 130, 246, 0.10);
+        }
+
+        .tab-btn.active {
+            background: rgba(30, 58, 138, 0.5);
+            border-color: rgba(96, 165, 250, 0.7);
+            color: #ffffff;
+            box-shadow:
+                inset 0 1px 0 rgba(147, 197, 253, 0.2),
+                0 4px 15px rgba(30, 58, 138, 0.4);
+        }
+
+        .tab-btn.active i { color: #93c5fd; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* ============================================================
+           CALCULATOR CARD (GPA + Basic + Scientific)
+           ============================================================ */
+        .calc-card {
+            background: rgba(10, 15, 25, 0.7);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1.5px solid rgba(59, 130, 246, 0.25);
+            border-radius: 20px;
+            padding: 28px 24px;
+            position: relative;
+            overflow: hidden;
             animation: cardGlow 4s ease-in-out infinite;
-            z-index: -1;
         }
 
         @keyframes cardGlow {
-            0%, 100% { background-position: 0% 50%; opacity: 0.3; }
-            50% { background-position: 100% 50%; opacity: 0.6; }
+            0%, 100% {
+                border-color: rgba(59, 130, 246, 0.25);
+                box-shadow:
+                    0 0 25px rgba(59, 130, 246, 0.08),
+                    0 22px 70px rgba(0, 0, 0, 0.4);
+            }
+            50% {
+                border-color: rgba(96, 165, 250, 0.55);
+                box-shadow:
+                    0 0 45px rgba(59, 130, 246, 0.20),
+                    0 22px 70px rgba(0, 0, 0, 0.4);
+            }
         }
 
-        .calculator-card .icon {
-            font-size: 3rem;
-            color: #ffd700;
+        .calc-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .calc-header .icon {
+            font-size: 2.4rem;
+            color: #60a5fa;
             display: block;
-            text-align: center;
             margin-bottom: 8px;
+            filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.6));
+            animation: float 3s ease-in-out infinite;
         }
 
-        .calculator-card h1 {
-            font-size: 2rem;
-            font-weight: 900;
-            text-align: center;
-            margin-bottom: 4px;
-            background: linear-gradient(135deg, #ffd700, #ff6b00, #ffd700);
-            background-size: 200% 200%;
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .calc-header h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #60a5fa 0%, #93c5fd 50%, #bfdbfe 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: shimmerText 3s ease-in-out infinite;
+            margin-bottom: 4px;
         }
 
-        @keyframes shimmerText {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        .calculator-card .sub-title {
-            text-align: center;
-            color: rgba(255, 215, 0, 0.25);
+        .calc-header p {
             font-size: 0.85rem;
-            margin-bottom: 25px;
-            font-weight: 400;
-            letter-spacing: 1px;
+            color: var(--chalk-dim);
+            font-style: italic;
         }
 
-        .calculator-card .info-badge {
-            text-align: center;
-            color: rgba(255, 215, 0, 0.3);
-            font-size: 0.7rem;
-            margin-bottom: 20px;
-            padding: 8px 16px;
-            background: rgba(255, 215, 0, 0.03);
-            border-radius: 50px;
-            border: 1px solid rgba(255, 215, 0, 0.05);
-            display: inline-block;
-            width: 100%;
-        }
-
-        .calculator-card .info-badge i {
-            color: #ffd700;
-            margin-right: 6px;
-        }
-
+        /* ============================================================
+           FORM ELEMENTS (GPA)
+           ============================================================ */
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 12px;
         }
 
-        .calculator-card label {
-            color: rgba(255, 215, 0, 0.5);
-            font-size: 0.8rem;
-            font-weight: 600;
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-label {
             display: block;
-            margin-top: 12px;
-            margin-bottom: 4px;
-            letter-spacing: 0.5px;
-        }
-
-        .calculator-card label i {
-            color: #ffd700;
-            margin-right: 6px;
+            color: #e2e8f0;
             font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: 0.02em;
         }
 
-        .calculator-card select,
-        .calculator-card input[type="number"] {
+        .form-label i { color: #60a5fa; margin-right: 6px; }
+
+        .form-input, .form-select {
             width: 100%;
+            min-height: 48px;
             padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1.5px solid rgba(255, 215, 0, 0.12);
-            border-radius: 14px;
-            color: #fff;
-            font-size: 0.95rem;
+            background: rgba(2, 6, 23, 0.72);
+            border: 1.5px solid rgba(148, 163, 184, 0.4);
+            border-radius: 12px;
+            color: #f8fafc;
+            font-size: 0.9rem;
             font-family: inherit;
-            transition: all 0.3s;
+            font-weight: 500;
             outline: none;
+            transition: all 0.25s ease;
         }
 
-        .calculator-card select:focus,
-        .calculator-card input[type="number"]:focus {
-            border-color: rgba(255, 215, 0, 0.4);
-            box-shadow: 0 0 25px rgba(255, 215, 0, 0.05);
-            background: rgba(255, 255, 255, 0.05);
+        .form-input:focus, .form-select:focus {
+            border-color: #60a5fa;
+            background: #0f1a2d;
+            box-shadow:
+                0 0 0 4px rgba(59, 130, 246, 0.15),
+                0 0 25px rgba(59, 130, 246, 0.25);
         }
 
-        .calculator-card select option {
-            background: #1a1a0a;
-            color: #ffd700;
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 12 12'%3E%3Cpath fill='%2360a5fa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 44px;
+            cursor: pointer;
         }
 
+        .form-select option { background: #0a1020; color: #f8fafc; }
+
+        /* ============================================================
+           GRADING SCALE INFO
+           ============================================================ */
+        .grading-scale-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 10px;
+            padding: 12px 16px;
+            background: rgba(30, 58, 138, 0.15);
+            border: 1.5px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            margin: 10px 0 16px;
+        }
+
+        .scale-item {
+            font-size: 0.72rem;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        .scale-item .grade-label { color: #60a5fa; font-weight: 800; }
+
+        /* ============================================================
+           QUICK PRESETS
+           ============================================================ */
+        .quick-presets {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .quick-presets button {
+            padding: 7px 14px;
+            background: rgba(30, 58, 138, 0.2);
+            border: 1.5px solid rgba(59, 130, 246, 0.3);
+            border-radius: 50px;
+            color: #93c5fd;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s;
+            font-family: inherit;
+        }
+
+        .quick-presets button:hover {
+            background: rgba(30, 58, 138, 0.4);
+            border-color: #60a5fa;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        /* ============================================================
+           COURSE ROWS
+           ============================================================ */
         .course-inputs {
             margin-top: 10px;
             max-height: 400px;
             overflow-y: auto;
-            padding-right: 5px;
+            padding-right: 6px;
         }
 
-        .course-inputs::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .course-inputs::-webkit-scrollbar-track {
-            background: rgba(255, 215, 0, 0.02);
-            border-radius: 10px;
-        }
-
-        .course-inputs::-webkit-scrollbar-thumb {
-            background: rgba(255, 215, 0, 0.3);
-            border-radius: 10px;
-        }
+        .course-inputs::-webkit-scrollbar { width: 5px; }
+        .course-inputs::-webkit-scrollbar-track { background: rgba(59, 130, 246, 0.05); border-radius: 10px; }
+        .course-inputs::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.4); border-radius: 10px; }
 
         .course-row {
             display: grid;
             grid-template-columns: 30px 1fr 0.8fr 0.8fr;
             gap: 10px;
             margin-bottom: 8px;
-            background: rgba(255, 215, 0, 0.02);
-            padding: 10px 14px;
+            background: rgba(30, 58, 138, 0.12);
+            padding: 10px 12px;
             border-radius: 12px;
-            border: 1px solid rgba(255, 215, 0, 0.04);
+            border: 1.5px solid rgba(59, 130, 246, 0.2);
             align-items: center;
         }
 
         .course-row .course-num {
-            color: rgba(255, 215, 0, 0.2);
-            font-size: 0.65rem;
-            font-weight: 700;
+            color: rgba(96, 165, 250, 0.5);
+            font-size: 0.7rem;
+            font-weight: 800;
             text-align: center;
-            min-width: 20px;
         }
 
         .course-row input {
-            padding: 8px 10px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 215, 0, 0.08);
+            padding: 9px 11px;
+            background: rgba(2, 6, 23, 0.6);
+            border: 1.5px solid rgba(148, 163, 184, 0.3);
             border-radius: 10px;
-            color: #fff;
+            color: #f8fafc;
             font-size: 0.85rem;
             font-family: inherit;
-            transition: 0.3s;
             outline: none;
+            transition: 0.25s;
             width: 100%;
         }
 
         .course-row input:focus {
-            border-color: rgba(255, 215, 0, 0.3);
-            background: rgba(255, 255, 255, 0.04);
+            border-color: #60a5fa;
+            background: #0f1a2d;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
 
         .course-row input::placeholder {
-            color: rgba(255, 255, 255, 0.08);
-            font-size: 0.65rem;
-        }
-
-        .course-row .weight-input {
-            border-color: rgba(255, 165, 0, 0.15);
-        }
-
-        .course-row .weight-input:focus {
-            border-color: rgba(255, 165, 0, 0.4);
-        }
-
-        .course-row .marks-input {
-            border-color: rgba(74, 124, 247, 0.12);
-        }
-
-        .course-row .marks-input:focus {
-            border-color: rgba(74, 124, 247, 0.3);
-        }
-
-        .btn-calculate {
-            width: 100%;
-            padding: 16px;
-            margin-top: 20px;
-            background: linear-gradient(135deg, #ffd700, #ff8c00);
-            border: none;
-            border-radius: 50px;
-            color: #0a0a0a;
-            font-weight: 800;
-            font-size: 1.05rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: inherit;
-            letter-spacing: 0.5px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-calculate::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 52px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 50%);
-            pointer-events: none;
-        }
-
-        .btn-calculate:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 0 50px rgba(255, 215, 0, 0.2);
-        }
-
-        .btn-calculate:active {
-            transform: scale(0.98);
-        }
-
-        .btn-row {
-            display: flex;
-            gap: 12px;
-            margin-top: 14px;
-        }
-
-        .btn-row .btn-home {
-            flex: 1;
-            padding: 14px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1.5px solid rgba(255, 215, 0, 0.05);
-            border-radius: 50px;
-            color: rgba(255, 215, 0, 0.3);
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: inherit;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-row .btn-home:hover {
-            background: rgba(255, 215, 0, 0.05);
-            border-color: rgba(255, 215, 0, 0.15);
-            color: #ffd700;
-            transform: translateY(-2px);
-        }
-
-        .btn-row .btn-reset {
-            flex: 0.5;
-            padding: 14px;
-            background: rgba(255, 68, 68, 0.03);
-            border: 1.5px solid rgba(255, 68, 68, 0.05);
-            border-radius: 50px;
-            color: rgba(255, 68, 68, 0.3);
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: inherit;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .btn-row .btn-reset:hover {
-            background: rgba(255, 68, 68, 0.08);
-            border-color: rgba(255, 68, 68, 0.15);
-            color: #ff4444;
-            transform: translateY(-2px);
-        }
-
-        .quick-presets {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-            flex-wrap: wrap;
-        }
-
-        .quick-presets button {
-            padding: 6px 16px;
-            background: rgba(255, 215, 0, 0.03);
-            border: 1px solid rgba(255, 215, 0, 0.06);
-            border-radius: 50px;
-            color: rgba(255, 215, 0, 0.2);
+            color: #64748b;
             font-size: 0.7rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            font-family: inherit;
-        }
-
-        .quick-presets button:hover {
-            background: rgba(255, 215, 0, 0.08);
-            border-color: rgba(255, 215, 0, 0.2);
-            color: #ffd700;
         }
 
         .total-weight-display {
             text-align: center;
-            color: rgba(255, 215, 0, 0.3);
-            font-size: 0.7rem;
-            margin-top: 8px;
-            padding: 6px 12px;
-            background: rgba(255, 215, 0, 0.02);
+            color: #94a3b8;
+            font-size: 0.75rem;
+            margin-top: 10px;
+            padding: 8px 14px;
+            background: rgba(30, 58, 138, 0.15);
             border-radius: 50px;
-            border: 1px solid rgba(255, 215, 0, 0.03);
+            border: 1.5px solid rgba(59, 130, 246, 0.25);
         }
 
-        .total-weight-display span {
-            color: #ffd700;
-            font-weight: 700;
-        }
+        .total-weight-display span { color: #93c5fd; font-weight: 800; }
 
-        .grading-scale-info {
-            background: rgba(255, 215, 0, 0.03);
-            border: 1px solid rgba(255, 215, 0, 0.06);
+        /* ============================================================
+           BUTTONS
+           ============================================================ */
+        .btn-calculate {
+            width: 100%;
+            min-height: 52px;
+            padding: 14px;
+            margin-top: 16px;
+            background: rgba(30, 58, 138, 0.35);
+            border: 1.5px solid rgba(59, 130, 246, 0.6);
             border-radius: 12px;
-            padding: 12px 16px;
-            margin: 12px 0 8px;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow:
+                inset 0 1px 0 rgba(147, 197, 253, 0.15),
+                0 4px 15px rgba(30, 58, 138, 0.3);
+            letter-spacing: 0.03em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-calculate i { color: #93c5fd; transition: color 0.25s; }
+
+        .btn-calculate::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(147, 197, 253, 0.10) 15%,
+                rgba(147, 197, 253, 0.22) 50%,
+                rgba(147, 197, 253, 0.10) 85%,
+                transparent 100%);
+            background-size: 200% 100%;
+            animation: btnShimmer 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes btnShimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .btn-calculate:hover {
+            background: rgba(30, 58, 138, 0.55);
+            border-color: #93c5fd;
+            transform: translateY(-2px);
+            box-shadow:
+                inset 0 1px 0 rgba(147, 197, 253, 0.3),
+                0 12px 35px rgba(59, 130, 246, 0.5),
+                0 0 40px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-calculate:hover i { color: #ffffff; }
+
+        .btn-row {
             display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .btn-home, .btn-reset {
+            flex: 1;
+            min-height: 46px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1.5px solid rgba(59, 130, 246, 0.3);
+            color: #ededef;
+        }
+
+        .btn-home i { color: #60a5fa; }
+        .btn-reset i { color: #f87171; }
+
+        .btn-home:hover {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: #60a5fa;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-reset {
+            flex: 0.6;
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #f87171;
+        }
+
+        .btn-reset:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #f87171;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        /* ============================================================
+           BASIC & SCIENTIFIC CALCULATOR
+           ============================================================ */
+        .calc-display {
+            background: rgba(2, 6, 23, 0.8);
+            border: 1.5px solid rgba(59, 130, 246, 0.3);
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            min-height: 110px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-end;
+            text-align: right;
+            word-break: break-all;
+            box-shadow:
+                inset 0 2px 10px rgba(0, 0, 0, 0.4),
+                0 0 25px rgba(59, 130, 246, 0.08);
+        }
+
+        .calc-expression {
+            color: rgba(147, 197, 253, 0.6);
+            font-size: 0.9rem;
+            font-family: 'Courier New', monospace;
+            min-height: 22px;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .calc-result {
+            color: #ffffff;
+            font-size: 2.2rem;
+            font-weight: 800;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            transition: all 0.3s ease;
+        }
+
+        .calc-result.error { color: #f87171; font-size: 1.4rem; }
+        .calc-result.success {
+            color: #93c5fd;
+            text-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+        }
+
+        .calc-buttons {
+            display: grid;
             gap: 8px;
         }
 
-        .grading-scale-info .scale-item {
-            color: rgba(255, 215, 0, 0.2);
-            font-size: 0.65rem;
-            font-weight: 500;
+        .calc-buttons.basic {
+            grid-template-columns: repeat(4, 1fr);
         }
 
-        .grading-scale-info .scale-item .grade-label {
-            color: #ffd700;
+        .calc-buttons.scientific {
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        .calc-btn {
+            padding: 16px 8px;
+            background: rgba(30, 58, 138, 0.2);
+            border: 1.5px solid rgba(59, 130, 246, 0.25);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 52px;
+        }
+
+        .calc-btn:hover {
+            background: rgba(30, 58, 138, 0.4);
+            border-color: #60a5fa;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .calc-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* Colored buttons */
+        .calc-btn.op {
+            background: rgba(30, 58, 138, 0.35);
+            color: #93c5fd;
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        .calc-btn.func {
+            background: rgba(88, 28, 135, 0.25);
+            color: #c084fc;
+            border-color: rgba(168, 85, 247, 0.4);
+            font-size: 0.85rem;
+        }
+
+        .calc-btn.func:hover {
+            background: rgba(88, 28, 135, 0.45);
+            border-color: #c084fc;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+        }
+
+        .calc-btn.equals {
+            background: rgba(30, 58, 138, 0.5);
+            color: #ffffff;
+            border-color: #60a5fa;
+            box-shadow:
+                inset 0 1px 0 rgba(147, 197, 253, 0.2),
+                0 4px 15px rgba(30, 58, 138, 0.4);
+        }
+
+        .calc-btn.equals:hover {
+            background: rgba(30, 58, 138, 0.7);
+            border-color: #93c5fd;
+            box-shadow: 0 4px 25px rgba(59, 130, 246, 0.6);
+        }
+
+        .calc-btn.clear {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        .calc-btn.clear:hover {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: #f87171;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .calc-btn.zero {
+            grid-column: span 2;
+        }
+
+        .calc-btn.mode-switch {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+            border-color: rgba(251, 191, 36, 0.4);
+            font-size: 0.78rem;
+        }
+
+        .calc-btn.mode-switch:hover {
+            background: rgba(251, 191, 36, 0.3);
+            border-color: #fde68a;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+        }
+
+        /* ============================================================
+           QUADRATIC / SIMULTANEOUS PANEL
+           ============================================================ */
+        .equation-panel {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(30, 58, 138, 0.12);
+            border: 1.5px solid rgba(59, 130, 246, 0.3);
+            border-radius: 14px;
+        }
+
+        .equation-panel h3 {
+            color: #93c5fd;
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .equation-panel h3 i { color: #60a5fa; }
+
+        .equation-panel .eq-inputs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .equation-panel .eq-inputs.simul {
+            grid-template-columns: repeat(6, 1fr);
+        }
+
+        .eq-input-wrap {
+            position: relative;
+        }
+
+        .eq-input-wrap label {
+            display: block;
+            color: #94a3b8;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            text-align: center;
+        }
+
+        .eq-input {
+            width: 100%;
+            padding: 10px 12px;
+            background: rgba(2, 6, 23, 0.6);
+            border: 1.5px solid rgba(148, 163, 184, 0.3);
+            border-radius: 10px;
+            color: #f8fafc;
+            font-size: 0.9rem;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            font-weight: 600;
+            outline: none;
+            transition: 0.25s;
+        }
+
+        .eq-input:focus {
+            border-color: #60a5fa;
+            background: #0f1a2d;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .eq-result {
+            background: rgba(2, 6, 23, 0.7);
+            border: 1.5px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            min-height: 60px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .eq-result .val { color: #93c5fd; font-weight: 700; }
+
+        .eq-result .lbl { color: #94a3b8; }
+
+        .eq-result .solution {
+            color: #4ade80;
             font-weight: 700;
         }
 
-        /* ========== RESULT OVERLAY ========== */
+        .eq-result.error { color: #f87171; border-color: rgba(239, 68, 68, 0.4); }
+
+        /* ============================================================
+           RESULT OVERLAY
+           ============================================================ */
         .result-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1000;
+            inset: 0;
+            z-index: 2000;
             justify-content: center;
             align-items: center;
-            animation: fadeInOverlay 0.5s ease;
             padding: 20px;
         }
 
-        .result-overlay.active {
-            display: flex;
-        }
-
-        @keyframes fadeInOverlay {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
+        .result-overlay.active { display: flex; }
 
         .result-overlay .overlay-bg {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(10px);
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
         }
 
         .result-overlay .overlay-card {
             position: relative;
             z-index: 2;
-            background: rgba(10, 10, 5, 0.95);
-            border: 2px solid rgba(255, 215, 0, 0.25);
-            border-radius: 32px;
-            padding: 50px 45px;
-            max-width: 550px;
+            background: rgba(10, 15, 25, 0.95);
+            border: 1.5px solid rgba(59, 130, 246, 0.4);
+            border-radius: 24px;
+            padding: 40px 32px;
+            max-width: 500px;
             width: 100%;
             text-align: center;
-            animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 0 80px rgba(255, 215, 0, 0.03);
+            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow:
+                0 0 80px rgba(59, 130, 246, 0.2),
+                inset 0 0 60px rgba(59, 130, 246, 0.05);
         }
 
         @keyframes popIn {
@@ -474,7 +1199,7 @@
         }
 
         .result-overlay .overlay-card .emoji {
-            font-size: 5rem;
+            font-size: 4rem;
             display: block;
             margin-bottom: 10px;
             animation: bounceEmoji 1.5s ease-in-out infinite;
@@ -486,177 +1211,592 @@
         }
 
         .result-overlay .overlay-card .gpa-big {
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: 900;
-            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #60a5fa, #93c5fd, #bfdbfe);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            line-height: 1.2;
-            margin-bottom: 4px;
+            line-height: 1.1;
+            margin-bottom: 8px;
         }
 
         .result-overlay .overlay-card .message {
-            font-size: 1.5rem;
+            font-size: 1.35rem;
             font-weight: 800;
-            color: #fff;
-            margin-bottom: 6px;
+            color: #ffffff;
+            margin-bottom: 8px;
         }
 
         .result-overlay .overlay-card .sub-message {
-            font-size: 1rem;
-            color: rgba(255, 215, 0, 0.4);
-            margin-bottom: 20px;
+            font-size: 0.92rem;
+            color: rgba(147, 197, 253, 0.8);
+            margin-bottom: 22px;
             line-height: 1.5;
         }
 
         .result-overlay .overlay-card .close-btn {
-            padding: 14px 40px;
-            background: linear-gradient(135deg, #ffd700, #ff8c00);
-            border: none;
-            border-radius: 50px;
-            color: #0a0a0a;
+            padding: 14px 36px;
+            background: rgba(30, 58, 138, 0.4);
+            border: 1.5px solid rgba(59, 130, 246, 0.6);
+            border-radius: 12px;
+            color: #ffffff;
             font-weight: 800;
-            font-size: 1rem;
+            font-size: 0.95rem;
             cursor: pointer;
             transition: 0.3s;
-            font-family: inherit;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            backdrop-filter: blur(10px);
         }
 
         .result-overlay .overlay-card .close-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
+            background: rgba(30, 58, 138, 0.6);
+            border-color: #93c5fd;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(59, 130, 246, 0.5);
         }
 
-        .result-overlay .overlay-card .close-btn i {
-            margin-right: 8px;
+        .result-overlay .overlay-card.excellent { border-color: #60a5fa; }
+        .result-overlay .overlay-card.good { border-color: rgba(96, 165, 250, 0.7); }
+        .result-overlay .overlay-card.average { border-color: rgba(251, 191, 36, 0.6); }
+        .result-overlay .overlay-card.poor { border-color: rgba(239, 68, 68, 0.6); }
+
+        /* ============================================================
+           SIDEBAR
+           ============================================================ */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            display: none;
         }
 
-        .result-overlay .overlay-card.excellent {
-            border-color: rgba(255, 215, 0, 0.5);
-        }
-        .result-overlay .overlay-card.good {
-            border-color: rgba(255, 193, 7, 0.4);
-        }
-        .result-overlay .overlay-card.average {
-            border-color: rgba(255, 165, 0, 0.4);
-        }
-        .result-overlay .overlay-card.poor {
-            border-color: rgba(255, 68, 68, 0.4);
+        .sidebar-overlay.active { display: block; }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -360px;
+            width: 320px;
+            max-width: 85vw;
+            height: 100%;
+            background: rgba(5, 8, 15, 0.98);
+            backdrop-filter: blur(24px);
+            border-right: 1.5px solid rgba(59, 130, 246, 0.25);
+            z-index: 1000;
+            transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow-y: auto;
+            padding: 20px 0;
         }
 
-        @media (max-width: 600px) {
-            .calculator-card { padding: 28px 16px; }
-            .calculator-card h1 { font-size: 1.6rem; }
-            .form-row { grid-template-columns: 1fr; gap: 5px; }
-            .course-row {
-                grid-template-columns: 20px 1fr 0.7fr 0.7fr;
-                gap: 6px;
-                padding: 10px;
-            }
-            .course-row .course-num { display: none; }
-            .btn-row { flex-direction: column; }
-            .btn-row .btn-reset { flex: 1; }
+        .sidebar.open { left: 0; }
+
+        .sidebar-header {
+            padding: 20px 22px 16px;
+            border-bottom: 1.5px solid rgba(59, 130, 246, 0.20);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #ededef;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-header h2 i { color: #60a5fa; }
+
+        .sidebar-close {
+            color: rgba(59, 130, 246, 0.5);
+            font-size: 1.4rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .sidebar-close:hover { color: #60a5fa; }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 22px;
+            color: rgba(237, 237, 239, 0.7);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 600;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .sidebar-item i {
+            width: 22px;
+            color: #60a5fa;
+            font-size: 0.95rem;
+        }
+
+        .sidebar-item:hover {
+            border-left-color: #60a5fa;
+            color: #ffffff;
+            background: rgba(59, 130, 246, 0.08);
+        }
+
+        .sidebar-item .badge {
+            margin-left: auto;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 20px;
+            border: 1.5px solid rgba(59, 130, 246, 0.3);
+            color: #60a5fa;
+        }
+
+        .sidebar-item .badge.soon { background: rgba(59, 130, 246, 0.15); border-color: #60a5fa; }
+        .sidebar-item .badge.maint { color: #fbbf24; border-color: rgba(251, 191, 36, 0.35); }
+        .sidebar-item .badge.info { background: #60a5fa; border-color: #60a5fa; color: #000; }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(59, 130, 246, 0.15);
+            margin: 8px 22px;
+            opacity: 0.6;
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 960px) {
+            .topnav-nav { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .topnav-inner { padding: 10px 16px; }
+            .icon-btn:nth-child(n+3):not(.user-avatar) { display: none; }
+            .calc-buttons.scientific { grid-template-columns: repeat(4, 1fr); }
+            .equation-panel .eq-inputs { grid-template-columns: repeat(3, 1fr); }
+            .equation-panel .eq-inputs.simul { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 560px) {
+            .topnav-inner { padding: 8px 12px; gap: 8px; }
+            .brand-text .brand-tag { display: none; }
+            .brand-name { font-size: 0.92rem; }
+            .menu-toggle, .brand-mark { width: 34px; height: 34px; }
+            .icon-btn { width: 38px; height: 38px; font-size: 0.85rem; }
+            .user-avatar { width: 38px; height: 38px; font-size: 0.8rem; }
+            .cat-nav-inner { padding: 0 12px; }
+            .cat-link { padding: 6px 10px; font-size: 0.75rem; }
+            .calc-container { padding: 0 12px; margin-top: 20px; }
+            .calc-card { padding: 20px 16px; }
+            .calc-header h2 { font-size: 1.2rem; }
+            .tabs { flex-direction: column; }
+            .form-row { grid-template-columns: 1fr; }
+            .course-row { grid-template-columns: 22px 1fr 0.7fr 0.7fr; gap: 6px; padding: 8px; }
+            .course-row input { font-size: 0.75rem; padding: 7px 8px; }
+            .calc-result { font-size: 1.6rem; }
+            .calc-btn { padding: 14px 6px; min-height: 48px; font-size: 0.9rem; }
+            .calc-btn.func { font-size: 0.72rem; }
             .result-overlay .overlay-card { padding: 30px 20px; }
-            .result-overlay .overlay-card .gpa-big { font-size: 3rem; }
-            .result-overlay .overlay-card .message { font-size: 1.2rem; }
-            .result-overlay .overlay-card .emoji { font-size: 3.5rem; }
-            .grading-scale-info { flex-direction: column; align-items: center; }
+            .result-overlay .overlay-card .gpa-big { font-size: 2.4rem; }
+            .result-overlay .overlay-card .message { font-size: 1.1rem; }
         }
 
-        @media (max-width: 400px) {
-            .calculator-card { padding: 18px 12px; }
-            .calculator-card h1 { font-size: 1.2rem; }
-            .course-row { grid-template-columns: 1fr 1fr; }
-            .quick-presets { justify-content: center; }
+        @media (max-width: 380px) {
+            .icon-btn:nth-child(n+2):not(.user-avatar) { display: none; }
+            .calc-buttons.scientific { grid-template-columns: repeat(4, 1fr); }
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.5); }
     </style>
 </head>
 <body>
 
-    <!-- ========== GOLDEN MATRIX RAIN CANVAS ========== -->
-    <canvas id="matrix-canvas"></canvas>
+    <!-- BLUE BUBBLES -->
+    <div class="bubbles-container">
+        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+    </div>
 
-    <div class="calculator-container">
-        <div class="calculator-card">
-            <span class="icon"><i class="fas fa-calculator"></i></span>
-            <h1>📊 Weighted GPA Calculator</h1>
-            <p class="sub-title">Calculate your GPA using marks & subject weights</p>
+    <canvas id="rain-canvas"></canvas>
 
-            <div class="info-badge">
-                <i class="fas fa-info-circle"></i> Enter your marks (0-100) and the weight for each subject
-            </div>
-
-            <!-- Grading System & Subjects -->
-            <div class="form-row">
-                <div>
-                    <label><i class="fas fa-graduation-cap"></i> Grading System</label>
-                    <select id="gradingSystem">
-                        <option value="diploma">📜 Diploma (A=80%)</option>
-                        <option value="degree">🎓 Degree (A=70%)</option>
-                        <option value="technical">🔧 Technical College (A=70%)</option>
-                    </select>
-                </div>
-                <div>
-                    <label><i class="fas fa-book"></i> Number of Subjects</label>
-                    <input type="number" id="numSubjects" min="1" max="20" value="4">
-                </div>
-            </div>
-
-            <!-- Grading Scale Info -->
-            <div class="grading-scale-info" id="gradingScaleInfo">
-                <span class="scale-item"><span class="grade-label">A</span> = 80-100</span>
-                <span class="scale-item"><span class="grade-label">B</span> = 70-79</span>
-                <span class="scale-item"><span class="grade-label">C</span> = 60-69</span>
-                <span class="scale-item"><span class="grade-label">D</span> = 50-59</span>
-                <span class="scale-item"><span class="grade-label">E</span> = 40-49</span>
-                <span class="scale-item"><span class="grade-label">F</span> = 0-39</span>
-            </div>
-
-            <!-- Quick Presets -->
-            <div class="quick-presets">
-                <button onclick="setSubjects(3)">3 Subjects</button>
-                <button onclick="setSubjects(4)">4 Subjects</button>
-                <button onclick="setSubjects(5)">5 Subjects</button>
-                <button onclick="setSubjects(6)">6 Subjects</button>
-                <button onclick="setSubjects(8)">8 Subjects</button>
-                <button onclick="setSubjects(9)">9 Subjects</button>
-                <button onclick="setSubjects(10)">10 Subjects</button>
-            </div>
-
-            <!-- Course Inputs -->
-            <div id="courseInputs" class="course-inputs"></div>
-
-            <!-- Total Weight Display -->
-            <div class="total-weight-display">
-                <i class="fas fa-weight"></i> Total Weight: <span id="totalWeightValue">0</span>
-            </div>
-
-            <!-- Calculate Button -->
-            <button class="btn-calculate" id="calculateGpa">
-                <i class="fas fa-chart-line"></i> Calculate GPA
-            </button>
-
-            <!-- Action Buttons -->
-            <div class="btn-row">
-                <a href="/" class="btn-home">
-                    <i class="fas fa-home"></i> Return Home
-                </a>
-                <button class="btn-reset" onclick="resetCalculator()">
-                    <i class="fas fa-redo-alt"></i> Reset
+    <!-- SMART TOP NAVBAR — NO SEARCH -->
+    <header class="topnav">
+        <div class="topnav-inner">
+            <div class="topnav-left">
+                <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+                    <i class="fas fa-bars"></i>
                 </button>
+                <a href="/" class="brand">
+                    <div class="brand-mark">S</div>
+                    <div class="brand-text">
+                        <span class="brand-name">Student Hub</span>
+                        <span class="brand-tag">by Twarvis</span>
+                    </div>
+                </a>
+            </div>
+
+            <nav class="topnav-nav">
+                <a href="/" class="topnav-link">
+                    <i class="fas fa-home"></i> <span>Home</span>
+                </a>
+                <a href="/browse/" class="topnav-link">
+                    <i class="fas fa-file-alt"></i> <span>Notes</span>
+                </a>
+                <a href="/upload/" class="topnav-link">
+                    <i class="fas fa-cloud-upload-alt"></i> <span>Upload</span>
+                </a>
+                <a href="/about/" class="topnav-link">
+                    <i class="fas fa-info-circle"></i> <span>About</span>
+                </a>
+            </nav>
+
+            <div class="topnav-right">
+                <a href="/browse/" class="icon-btn" title="Browse">
+                    <i class="fas fa-compass"></i>
+                </a>
+                <a href="/upload/" class="icon-btn" title="Upload">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </a>
+                <a href="#" class="icon-btn" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                </a>
+                <div class="user-avatar" title="Account">TW</div>
+            </div>
+        </div>
+
+        <nav class="cat-nav">
+            <div class="cat-nav-inner" id="catNav">
+                <div class="cat-glass-indicator" id="catIndicator"></div>
+
+                <a href="/" class="cat-link" data-cat="home">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="/browse/" class="cat-link" data-cat="browse">
+                    <i class="fas fa-file-alt"></i> Notes
+                </a>
+                <a href="/upload/" class="cat-link" data-cat="upload">
+                    <i class="fas fa-cloud-upload-alt"></i> Upload
+                </a>
+                <a href="/scanner/" class="cat-link" data-cat="scanner">
+                    <i class="fas fa-camera-retro"></i> Scanner
+                </a>
+                <a href="/calculator/" class="cat-link active" data-cat="calculator">
+                    <i class="fas fa-calculator"></i> Calculator
+                </a>
+                <a href="/about/" class="cat-link" data-cat="about">
+                    <i class="fas fa-info-circle"></i> About
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <div class="wrap">
+        <div class="calc-container">
+
+            <!-- TABS -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="gpa">
+                    <i class="fas fa-graduation-cap"></i> GPA
+                </button>
+                <button class="tab-btn" data-tab="basic">
+                    <i class="fas fa-calculator"></i> Basic
+                </button>
+                <button class="tab-btn" data-tab="scientific">
+                    <i class="fas fa-square-root-alt"></i> Scientific
+                </button>
+            </div>
+
+            <!-- ============ TAB 1: GPA CALCULATOR ============ -->
+            <div class="tab-content active" id="tab-gpa">
+                <div class="calc-card">
+                    <div class="calc-header">
+                        <span class="icon"><i class="fas fa-graduation-cap"></i></span>
+                        <h2>Weighted GPA Calculator</h2>
+                        <p>Calculate your GPA using marks & subject weights</p>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-graduation-cap"></i> Grading System</label>
+                            <select class="form-select" id="gradingSystem">
+                                <option value="diploma">📜 Diploma (A=80%)</option>
+                                <option value="degree">🎓 Degree (A=70%)</option>
+                                <option value="technical">🔧 Technical College (A=70%)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-book"></i> Number of Subjects</label>
+                            <input type="number" class="form-input" id="numSubjects" min="1" max="20" value="4">
+                        </div>
+                    </div>
+
+                    <div class="grading-scale-info" id="gradingScaleInfo"></div>
+
+                    <div class="quick-presets">
+                        <button onclick="setSubjects(3)">3 Subjects</button>
+                        <button onclick="setSubjects(4)">4 Subjects</button>
+                        <button onclick="setSubjects(5)">5 Subjects</button>
+                        <button onclick="setSubjects(6)">6 Subjects</button>
+                        <button onclick="setSubjects(8)">8 Subjects</button>
+                        <button onclick="setSubjects(9)">9 Subjects</button>
+                        <button onclick="setSubjects(10)">10 Subjects</button>
+                    </div>
+
+                    <div id="courseInputs" class="course-inputs"></div>
+
+                    <div class="total-weight-display">
+                        <i class="fas fa-weight"></i> Total Weight: <span id="totalWeightValue">0</span>
+                    </div>
+
+                    <button class="btn-calculate" id="calculateGpa">
+                        <i class="fas fa-chart-line"></i> Calculate GPA
+                    </button>
+
+                    <div class="btn-row">
+                        <a href="/" class="btn-home">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                        <button class="btn-reset" onclick="resetGpa()">
+                            <i class="fas fa-redo-alt"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ TAB 2: BASIC CALCULATOR ============ -->
+            <div class="tab-content" id="tab-basic">
+                <div class="calc-card">
+                    <div class="calc-header">
+                        <span class="icon"><i class="fas fa-calculator"></i></span>
+                        <h2>Basic Calculator</h2>
+                        <p>Everyday arithmetic — fast & simple</p>
+                    </div>
+
+                    <div class="calc-display">
+                        <div class="calc-expression" id="basicExpr"></div>
+                        <div class="calc-result" id="basicResult">0</div>
+                    </div>
+
+                    <div class="calc-buttons basic">
+                        <button class="calc-btn clear" onclick="basicClear()">AC</button>
+                        <button class="calc-btn op" onclick="basicBack()">⌫</button>
+                        <button class="calc-btn op" onclick="basicPct()">%</button>
+                        <button class="calc-btn op" onclick="basicInput('/')">÷</button>
+
+                        <button class="calc-btn" onclick="basicInput('7')">7</button>
+                        <button class="calc-btn" onclick="basicInput('8')">8</button>
+                        <button class="calc-btn" onclick="basicInput('9')">9</button>
+                        <button class="calc-btn op" onclick="basicInput('*')">×</button>
+
+                        <button class="calc-btn" onclick="basicInput('4')">4</button>
+                        <button class="calc-btn" onclick="basicInput('5')">5</button>
+                        <button class="calc-btn" onclick="basicInput('6')">6</button>
+                        <button class="calc-btn op" onclick="basicInput('-')">−</button>
+
+                        <button class="calc-btn" onclick="basicInput('1')">1</button>
+                        <button class="calc-btn" onclick="basicInput('2')">2</button>
+                        <button class="calc-btn" onclick="basicInput('3')">3</button>
+                        <button class="calc-btn op" onclick="basicInput('+')">+</button>
+
+                        <button class="calc-btn zero" onclick="basicInput('0')">0</button>
+                        <button class="calc-btn" onclick="basicInput('.')">.</button>
+                        <button class="calc-btn equals" onclick="basicEquals()">=</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ TAB 3: SCIENTIFIC CALCULATOR ============ -->
+            <div class="tab-content" id="tab-scientific">
+                <div class="calc-card">
+                    <div class="calc-header">
+                        <span class="icon"><i class="fas fa-square-root-alt"></i></span>
+                        <h2>Scientific Calculator</h2>
+                        <p>log, sin, cos, tan, inverse, antilog & more</p>
+                    </div>
+
+                    <!-- Mode selector -->
+                    <div style="display:flex; gap:8px; margin-bottom:12px; justify-content:flex-end;">
+                        <button class="calc-btn mode-switch" id="angleMode" onclick="toggleAngleMode()" style="padding:6px 14px; min-height:auto; border-radius:50px; font-size:0.72rem;">DEG</button>
+                    </div>
+
+                    <div class="calc-display">
+                        <div class="calc-expression" id="sciExpr"></div>
+                        <div class="calc-result" id="sciResult">0</div>
+                    </div>
+
+                    <div class="calc-buttons scientific">
+                        <!-- Row 1 -->
+                        <button class="calc-btn func" onclick="sciFunc('sin(')">sin</button>
+                        <button class="calc-btn func" onclick="sciFunc('cos(')">cos</button>
+                        <button class="calc-btn func" onclick="sciFunc('tan(')">tan</button>
+                        <button class="calc-btn func" onclick="sciFunc('log(')">log</button>
+                        <button class="calc-btn func" onclick="sciFunc('ln(')">ln</button>
+
+                        <!-- Row 2 -->
+                        <button class="calc-btn func" onclick="sciFunc('asin(')">sin⁻¹</button>
+                        <button class="calc-btn func" onclick="sciFunc('acos(')">cos⁻¹</button>
+                        <button class="calc-btn func" onclick="sciFunc('atan(')">tan⁻¹</button>
+                        <button class="calc-btn func" onclick="sciFunc('10^')">10ˣ</button>
+                        <button class="calc-btn func" onclick="sciFunc('e^')">eˣ</button>
+
+                        <!-- Row 3 -->
+                        <button class="calc-btn func" onclick="sciFunc('sqrt(')">√</button>
+                        <button class="calc-btn func" onclick="sciFunc('cbrt(')">∛</button>
+                        <button class="calc-btn func" onclick="sciFunc('^2')">x²</button>
+                        <button class="calc-btn func" onclick="sciFunc('^')">xʸ</button>
+                        <button class="calc-btn func" onclick="sciFunc('!')">n!</button>
+
+                        <!-- Row 4 -->
+                        <button class="calc-btn func" onclick="sciFunc('abs(')">|x|</button>
+                        <button class="calc-btn func" onclick="sciFunc('exp(')">exp</button>
+                        <button class="calc-btn func" onclick="sciFunc('pi')">π</button>
+                        <button class="calc-btn func" onclick="sciFunc('e')">e</button>
+                        <button class="calc-btn func" onclick="sciFunc('1/')">1/x</button>
+
+                        <!-- Row 5 -->
+                        <button class="calc-btn clear" onclick="sciClear()">AC</button>
+                        <button class="calc-btn op" onclick="sciBack()">⌫</button>
+                        <button class="calc-btn op" onclick="sciInput('(')">(</button>
+                        <button class="calc-btn op" onclick="sciInput(')')">)</button>
+                        <button class="calc-btn op" onclick="sciInput('%')">%</button>
+
+                        <!-- Row 6 - Numbers + operators -->
+                        <button class="calc-btn" onclick="sciInput('7')">7</button>
+                        <button class="calc-btn" onclick="sciInput('8')">8</button>
+                        <button class="calc-btn" onclick="sciInput('9')">9</button>
+                        <button class="calc-btn op" onclick="sciInput('/')">÷</button>
+                        <button class="calc-btn op" onclick="sciInput('*')">×</button>
+
+                        <button class="calc-btn" onclick="sciInput('4')">4</button>
+                        <button class="calc-btn" onclick="sciInput('5')">5</button>
+                        <button class="calc-btn" onclick="sciInput('6')">6</button>
+                        <button class="calc-btn op" onclick="sciInput('-')">−</button>
+                        <button class="calc-btn op" onclick="sciInput('+')">+</button>
+
+                        <button class="calc-btn" onclick="sciInput('1')">1</button>
+                        <button class="calc-btn" onclick="sciInput('2')">2</button>
+                        <button class="calc-btn" onclick="sciInput('3')">3</button>
+                        <button class="calc-btn" onclick="sciInput('0')">0</button>
+                        <button class="calc-btn" onclick="sciInput('.')">.</button>
+
+                        <!-- Row 7 - Equals and constants -->
+                        <button class="calc-btn equals" onclick="sciEquals()" style="grid-column: span 5;">=</button>
+                    </div>
+
+                    <!-- Quadratic Equation Solver -->
+                    <div class="equation-panel">
+                        <h3><i class="fas fa-superscript"></i> Quadratic Equation Solver — ax² + bx + c = 0</h3>
+                        <div class="eq-inputs">
+                            <div class="eq-input-wrap">
+                                <label>a</label>
+                                <input type="number" class="eq-input" id="qa" placeholder="a" step="any">
+                            </div>
+                            <div class="eq-input-wrap">
+                                <label>b</label>
+                                <input type="number" class="eq-input" id="qb" placeholder="b" step="any">
+                            </div>
+                            <div class="eq-input-wrap">
+                                <label>c</label>
+                                <input type="number" class="eq-input" id="qc" placeholder="c" step="any">
+                            </div>
+                        </div>
+                        <button class="btn-calculate" onclick="solveQuadratic()">
+                            <i class="fas fa-equals"></i> Solve Quadratic
+                        </button>
+                        <div class="eq-result" id="quadResult"><span class="lbl">Enter a, b, c values and click Solve</span></div>
+                    </div>
+
+                    <!-- Simultaneous Equations Solver -->
+                    <div class="equation-panel">
+                        <h3><i class="fas fa-equals"></i> Simultaneous Equations (2 variables)</h3>
+                        <p style="color:#94a3b8; font-size:0.78rem; margin-bottom:10px; font-family:'Courier New',monospace;">
+                            a₁x + b₁y = c₁<br>
+                            a₂x + b₂y = c₂
+                        </p>
+                        <div class="eq-inputs simul">
+                            <div class="eq-input-wrap">
+                                <label>a₁</label>
+                                <input type="number" class="eq-input" id="s_a1" placeholder="a₁" step="any">
+                            </div>
+                            <div class="eq-input-wrap">
+                                <label>b₁</label>
+                                <input type="number" class="eq-input" id="s_b1" placeholder="b₁" step="any">
+                            </div>
+                            <div class="eq-input-wrap">
+                                <label>c₁</label>
+                                <input type="number" class="eq-input" id="s_c1" placeholder="c₁" step="any">
+                            </div>
+                            <div class="eq-input-wrap">
+                                <label>a₂</label>
+                                <input type="number" class="eq-input" id="s_a2" placeholder="a₂" step="any">
+                            </div>
+                            <div class="eq-input-wrap">
+                                <label>b₂</label>
+                                <input type="number" class="eq-input" id="s_b2" placeholder="b₂" step="any">
+                            </div>
+                            <div class="eq-input-wrap">
+                                <label>c₂</label>
+                                <input type="number" class="eq-input" id="s_c2" placeholder="c₂" step="any">
+                            </div>
+                        </div>
+                        <button class="btn-calculate" onclick="solveSimultaneous()">
+                            <i class="fas fa-equals"></i> Solve x & y
+                        </button>
+                        <div class="eq-result" id="simulResult"><span class="lbl">Enter a₁, b₁, c₁, a₂, b₂, c₂ and click Solve</span></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- ========== RESULT OVERLAY ========== -->
+    <!-- SIDEBAR -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-graduation-cap"></i> Student Hub</h2>
+            <button class="sidebar-close" id="sidebarClose">&times;</button>
+        </div>
+        <a class="sidebar-item" href="/"><i class="fas fa-home"></i> Home</a>
+        <a class="sidebar-item" href="/browse/"><i class="fas fa-eye"></i> See uploaded notes</a>
+        <a class="sidebar-item" href="/upload/"><i class="fas fa-cloud-upload-alt"></i> Upload files</a>
+        <div class="sidebar-divider"></div>
+        <a class="sidebar-item" href="/scanner/"><i class="fas fa-camera-retro"></i> Scanner</a>
+        <a class="sidebar-item" href="/calculator/"><i class="fas fa-calculator"></i> Calculator <span class="badge info">Active</span></a>
+        <div class="sidebar-divider"></div>
+        <a class="sidebar-item" href="/hackerthon/"><i class="fas fa-code"></i> Hackathon <span class="badge soon">Soon</span></a>
+        <a class="sidebar-item" href="/free_course/"><i class="fas fa-graduation-cap"></i> Free courses <span class="badge maint">Maint</span></a>
+        <div class="sidebar-divider"></div>
+        <a class="sidebar-item" href="/about/"><i class="fas fa-info-circle"></i> About us <span class="badge info">Info</span></a>
+    </aside>
+
+    <!-- RESULT OVERLAY (GPA only) -->
     <div class="result-overlay" id="resultOverlay">
         <div class="overlay-bg" onclick="closeOverlay()"></div>
         <div class="overlay-card" id="overlayCard">
             <span class="emoji" id="resultEmoji">🎉</span>
             <div class="gpa-big" id="resultGpa">0.00</div>
             <div class="message" id="resultMessage">Excellent!</div>
-            <div class="sub-message" id="resultSubMessage">Outstanding performance! Keep it up!</div>
+            <div class="sub-message" id="resultSubMessage">Outstanding performance!</div>
             <button class="close-btn" onclick="closeOverlay()">
                 <i class="fas fa-check-circle"></i> Continue
             </button>
@@ -664,99 +1804,136 @@
     </div>
 
     <script>
-        // ========== GOLDEN MATRIX RAIN ==========
-        const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ★✨🔥⚡";
-        const goldShades = ['#ffd700', '#ffcc00', '#ffb800', '#ffaa00', '#ff8c00', '#ffd700'];
-
-        const drops = [];
-        const columns = Math.ceil(canvas.width / 20);
-        for (let i = 0; i < columns; i++) drops[i] = Math.random() * -200;
-
-        let particles = [];
-        for (let i = 0; i < 50; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 2 + 1,
-                speed: Math.random() * 0.3 + 0.1,
-                opacity: Math.random() * 0.3 + 0.1
+        // ============================================================
+        // TABS
+        // ============================================================
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tab = this.dataset.tab;
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById('tab-' + tab).classList.add('active');
             });
-        }
-
-        const fontSize = 18;
-
-        function drawRain() {
-            ctx.fillStyle = 'rgba(10, 10, 5, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            for (let p of particles) {
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 215, 0, ${p.opacity})`;
-                ctx.fill();
-                p.y -= p.speed;
-                if (p.y < 0) {
-                    p.y = canvas.height;
-                    p.x = Math.random() * canvas.width;
-                }
-            }
-
-            for (let i = 0; i < drops.length; i++) {
-                const char = chars[Math.floor(Math.random() * chars.length)];
-                const x = i * 20;
-                const y = drops[i] * 20;
-
-                const colorIdx = Math.floor(Math.random() * goldShades.length);
-                ctx.fillStyle = goldShades[colorIdx];
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = goldShades[colorIdx] + '66';
-                ctx.font = `bold ${fontSize}px 'Courier New', monospace`;
-
-                if (y > 0 && y < canvas.height + 50) {
-                    ctx.fillText(char, x, y);
-                }
-                ctx.shadowBlur = 0;
-
-                if (drops[i] * fontSize > canvas.height + 50 && Math.random() > 0.98) {
-                    drops[i] = 0;
-                }
-                drops[i] += 0.5 + Math.random() * 0.5;
-            }
-
-            requestAnimationFrame(drawRain);
-        }
-
-        drawRain();
-
-        // ========== BURST EFFECT ==========
-        canvas.addEventListener('click', function(e) {
-            let clientX = e.clientX;
-            let clientY = e.clientY;
-            let col = Math.floor(clientX / fontSize);
-            if (col >= 0 && col < drops.length) {
-                for (let i = -15; i <= 15; i++) {
-                    let target = col + i;
-                    if (target >= 0 && target < drops.length) {
-                        drops[target] = (clientY / fontSize) - 10;
-                    }
-                }
-            }
         });
 
-        // ========== WEIGHTED GPA CALCULATOR ==========
+        // ============================================================
+        // RAIN CANVAS — BLUE
+        // ============================================================
+        (function initRain() {
+            const canvas = document.getElementById('rain-canvas');
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            const drops = [];
+            const dropCount = 300;
 
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            class Drop {
+                constructor() { this.reset(); }
+                reset() {
+                    this.x = Math.random() * w;
+                    this.y = Math.random() * h - h;
+                    this.length = Math.random() * 22 + 10;
+                    this.speed = Math.random() * 11 + 5;
+                    this.opacity = Math.random() * 0.28 + 0.10;
+                    this.width = Math.random() * 1.4 + 0.4;
+                    this.angle = Math.random() * 0.1 - 0.05;
+                }
+                update() {
+                    this.y += this.speed;
+                    this.x += this.angle;
+                    if (this.y > h + 50) this.reset();
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.x - 1.5, this.y + this.length);
+                    ctx.strokeStyle = `rgba(59, 130, 246, ${this.opacity})`;
+                    ctx.lineWidth = this.width;
+                    ctx.shadowBlur = 5;
+                    ctx.shadowColor = `rgba(59, 130, 246, ${this.opacity * 0.4})`;
+                    ctx.stroke();
+                    ctx.shadowBlur = 0;
+                }
+            }
+
+            for (let i = 0; i < dropCount; i++) drops.push(new Drop());
+
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
+                for (let drop of drops) { drop.update(); drop.draw(); }
+                requestAnimationFrame(animate);
+            }
+            animate();
+        })();
+
+        // ============================================================
+        // SIDEBAR
+        // ============================================================
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const menuBtn = document.getElementById('menuToggle');
+        const closeBtn = document.getElementById('sidebarClose');
+
+        function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
+
+        menuBtn.addEventListener('click', openSidebar);
+        closeBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        // ============================================================
+        // CATEGORY GLASS INDICATOR
+        // ============================================================
+        (function initCatGlassSlide() {
+            const catNav = document.getElementById('catNav');
+            const indicator = document.getElementById('catIndicator');
+            const links = catNav.querySelectorAll('.cat-link');
+            const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
+            let activeLink = null;
+
+            links.forEach(link => {
+                const href = link.getAttribute('href');
+                const norm = href.replace(/\/+$/, '') || '/';
+                if (currentPath === norm || (norm !== '/' && currentPath.startsWith(norm + '/'))) activeLink = link;
+            });
+
+            if (!activeLink && links.length > 0) activeLink = links[0];
+
+            function moveIndicator(link, instant = false) {
+                if (!link || !indicator) return;
+                const navRect = catNav.getBoundingClientRect();
+                const linkRect = link.getBoundingClientRect();
+                const offsetX = linkRect.left - navRect.left;
+                if (instant) indicator.style.transition = 'none';
+                else indicator.style.transition = 'all 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
+                indicator.style.left = offsetX + 'px';
+                indicator.style.width = linkRect.width + 'px';
+                indicator.classList.add('visible');
+                if (instant) requestAnimationFrame(() => { indicator.style.transition = 'all 0.45s cubic-bezier(0.4, 0, 0.2, 1)'; });
+            }
+
+            if (activeLink) { activeLink.classList.add('active'); setTimeout(() => moveIndicator(activeLink, true), 100); }
+
+            links.forEach(link => {
+                link.addEventListener('mouseenter', () => moveIndicator(link));
+                link.addEventListener('click', () => moveIndicator(link));
+            });
+
+            catNav.addEventListener('mouseleave', () => { if (activeLink) moveIndicator(activeLink); });
+            window.addEventListener('resize', () => { if (activeLink) moveIndicator(activeLink, true); });
+        })();
+
+        // ============================================================
+        // GPA CALCULATOR
+        // ============================================================
         function getGradeFromMarks(marks, system) {
-            // Returns: { grade: 'A', gradePoint: 5.0, gradeValue: 'A' }
             const scales = {
                 diploma: {
                     'A': { min: 80, max: 100, gpa: 5.0 },
@@ -791,52 +1968,31 @@
                     'F': { min: 0, max: 34, gpa: 0.0 }
                 }
             };
-
             const scale = scales[system] || scales.diploma;
-
-            // Check if marks is a number
             const numMarks = parseFloat(marks);
-            if (isNaN(numMarks) || numMarks < 0 || numMarks > 100) {
-                return null;
-            }
-
+            if (isNaN(numMarks) || numMarks < 0 || numMarks > 100) return null;
             for (const [grade, range] of Object.entries(scale)) {
-                if (numMarks >= range.min && numMarks <= range.max) {
-                    return { grade: grade, gradePoint: range.gpa };
-                }
+                if (numMarks >= range.min && numMarks <= range.max) return { grade, gradePoint: range.gpa };
             }
-
             return { grade: 'F', gradePoint: 0.0 };
         }
 
         function updateGradingScaleInfo() {
             const system = document.getElementById('gradingSystem').value;
             const info = document.getElementById('gradingScaleInfo');
-
             const scales = {
-                diploma: {
-                    'A': '80-100', 'B': '70-79', 'C': '60-69',
-                    'D': '50-59', 'E': '40-49', 'F': '0-39'
-                },
-                degree: {
-                    'A': '70-100', 'B': '60-69', 'C': '50-59',
-                    'D': '40-49', 'E': '35-39', 'F': '0-34'
-                },
-                technical: {
-                    'A': '70-100', 'B': '60-69', 'C': '50-59',
-                    'D': '40-49', 'E': '35-39', 'F': '0-34'
-                }
+                diploma: { 'A': '80-100', 'B': '70-79', 'C': '60-69', 'D': '50-59', 'E': '40-49', 'F': '0-39' },
+                degree: { 'A': '70-100', 'B': '60-69', 'C': '50-59', 'D': '40-49', 'E': '35-39', 'F': '0-34' },
+                technical: { 'A': '70-100', 'B': '60-69', 'C': '50-59', 'D': '40-49', 'E': '35-39', 'F': '0-34' }
             };
-
             const scale = scales[system] || scales.diploma;
             info.innerHTML = '';
-            const labels = ['A', 'B', 'C', 'D', 'E', 'F'];
-            for (const label of labels) {
+            ['A', 'B', 'C', 'D', 'E', 'F'].forEach(label => {
                 const span = document.createElement('span');
                 span.className = 'scale-item';
                 span.innerHTML = `<span class="grade-label">${label}</span> = ${scale[label] || 'N/A'}`;
                 info.appendChild(span);
-            }
+            });
         }
 
         function updateTotalWeight() {
@@ -847,59 +2003,51 @@
                 if (!isNaN(val) && val > 0) total += val;
             });
             document.getElementById('totalWeightValue').textContent = total.toFixed(1);
-            return total;
         }
 
         function generateCourseInputs() {
             const num = parseInt(document.getElementById('numSubjects').value) || 4;
             const container = document.getElementById('courseInputs');
             container.innerHTML = '';
+            const system = document.getElementById('gradingSystem').value;
 
             for (let i = 0; i < num; i++) {
                 const div = document.createElement('div');
                 div.className = 'course-row';
                 div.innerHTML = `
                     <span class="course-num">#${i+1}</span>
-                    <input type="number" class="course-marks marks-input" placeholder="Marks (0-100)" min="0" max="100" step="0.01">
-                    <input type="number" class="course-weight weight-input" placeholder="Weight" min="0.5" max="30" step="0.5" value="3">
-                    <input type="text" class="course-grade-display" placeholder="Grade" readonly style="background:rgba(255,255,255,0.02);color:rgba(255,215,0,0.2);border-color:rgba(255,215,0,0.03);">
+                    <input type="number" class="course-marks" placeholder="Marks (0-100)" min="0" max="100" step="0.01">
+                    <input type="number" class="course-weight" placeholder="Weight" min="0.5" max="30" step="0.5" value="3">
+                    <input type="text" class="course-grade-display" placeholder="Grade" readonly>
                 `;
                 container.appendChild(div);
 
-                // Auto-update grade display when marks change
                 const marksInput = div.querySelector('.course-marks');
                 const gradeDisplay = div.querySelector('.course-grade-display');
-                const system = document.getElementById('gradingSystem').value;
 
                 marksInput.addEventListener('input', function() {
                     const marks = this.value;
+                    const curSystem = document.getElementById('gradingSystem').value;
                     if (marks) {
-                        const result = getGradeFromMarks(marks, system);
+                        const result = getGradeFromMarks(marks, curSystem);
                         if (result) {
                             gradeDisplay.value = result.grade;
-                            gradeDisplay.style.color = '#ffd700';
-                            gradeDisplay.style.borderColor = 'rgba(255,215,0,0.1)';
-                            gradeDisplay.style.background = 'rgba(255,215,0,0.03)';
+                            gradeDisplay.style.color = '#93c5fd';
+                            gradeDisplay.style.borderColor = 'rgba(59,130,246,0.4)';
+                            gradeDisplay.style.background = 'rgba(30,58,138,0.2)';
                         } else {
                             gradeDisplay.value = 'Invalid';
-                            gradeDisplay.style.color = '#ff4444';
-                            gradeDisplay.style.borderColor = 'rgba(255,68,68,0.1)';
-                            gradeDisplay.style.background = 'rgba(255,68,68,0.03)';
+                            gradeDisplay.style.color = '#f87171';
                         }
                     } else {
                         gradeDisplay.value = '';
-                        gradeDisplay.style.color = 'rgba(255,215,0,0.2)';
-                        gradeDisplay.style.borderColor = 'rgba(255,215,0,0.03)';
-                        gradeDisplay.style.background = 'rgba(255,255,255,0.02)';
                     }
                 });
             }
 
-            // Auto-focus first input
             const firstInput = container.querySelector('.course-marks');
             if (firstInput) firstInput.focus();
 
-            // Update total weight
             document.querySelectorAll('.course-weight').forEach(w => {
                 w.addEventListener('input', updateTotalWeight);
             });
@@ -912,7 +2060,7 @@
             generateCourseInputs();
         }
 
-        function resetCalculator() {
+        function resetGpa() {
             document.getElementById('numSubjects').value = 4;
             document.getElementById('gradingSystem').value = 'diploma';
             generateCourseInputs();
@@ -923,20 +2071,15 @@
             document.getElementById('resultOverlay').classList.remove('active');
         }
 
-        function showResultOverlay(gpa, maxGpa, status, emoji, message, subMessage, statusClass) {
+        function showResultOverlay(gpa, maxGpa, emoji, message, subMessage, statusClass) {
             const overlay = document.getElementById('resultOverlay');
             const card = document.getElementById('overlayCard');
-
             card.className = 'overlay-card';
-            if (statusClass) {
-                card.classList.add(statusClass);
-            }
-
-            document.getElementById('resultGpa').textContent = gpa.toFixed(3);
+            if (statusClass) card.classList.add(statusClass);
+            document.getElementById('resultGpa').textContent = gpa.toFixed(3) + ' / ' + maxGpa.toFixed(1);
             document.getElementById('resultEmoji').textContent = emoji;
             document.getElementById('resultMessage').textContent = message;
             document.getElementById('resultSubMessage').textContent = subMessage;
-
             overlay.classList.add('active');
         }
 
@@ -948,145 +2091,354 @@
             let totalWeightedPoints = 0;
             let totalWeight = 0;
             let hasError = false;
-            let subjectResults = [];
-
             const maxGpa = (system === 'diploma' || system === 'technical') ? 5.0 : 4.0;
 
             marksInputs.forEach((input, index) => {
                 const marks = input.value.trim();
                 const weightValue = parseFloat(weights[index]?.value) || 0;
-
-                if (!marks) {
-                    hasError = true;
-                    return;
-                }
-
-                if (weightValue <= 0) {
-                    hasError = true;
-                    return;
-                }
-
+                if (!marks || weightValue <= 0) { hasError = true; return; }
                 const result = getGradeFromMarks(marks, system);
-                if (!result) {
-                    hasError = true;
-                    return;
-                }
-
-                const gradePoint = result.gradePoint;
-                totalWeightedPoints += gradePoint * weightValue;
+                if (!result) { hasError = true; return; }
+                totalWeightedPoints += result.gradePoint * weightValue;
                 totalWeight += weightValue;
-
-                subjectResults.push({
-                    subject: index + 1,
-                    marks: parseFloat(marks),
-                    grade: result.grade,
-                    gradePoint: gradePoint,
-                    weight: weightValue,
-                    weightedPoint: gradePoint * weightValue
-                });
             });
 
             if (hasError || totalWeight === 0) {
-                showResultOverlay(
-                    0, maxGpa,
-                    'error',
-                    '😅',
-                    'Oops! Something went wrong',
-                    'Please enter valid marks (0-100) and weights (>0) for all subjects.',
-                    'poor'
-                );
+                showResultOverlay(0, maxGpa, '😅', 'Oops! Something went wrong', 'Please enter valid marks (0-100) and weights (>0) for all subjects.', 'poor');
                 return;
             }
 
             const gpa = totalWeightedPoints / totalWeight;
             const ratio = gpa / maxGpa;
-
-            // ========== SMART MESSAGES ==========
             let emoji, message, subMessage, statusClass;
 
             if (ratio >= 0.9) {
-                emoji = '🏆';
-                message = '🎉 CONGRATULATIONS! EXCELLENT!';
-                subMessage = `You're a star! Outstanding performance with GPA ${gpa.toFixed(3)}/${maxGpa.toFixed(1)}. Keep shining! 🌟`;
+                emoji = '🏆'; message = '🎉 EXCELLENT!';
+                subMessage = `You're a star! GPA ${gpa.toFixed(3)}/${maxGpa.toFixed(1)}. Keep shining! 🌟`;
                 statusClass = 'excellent';
             } else if (ratio >= 0.75) {
-                emoji = '🌟';
-                message = '💪 ALMOST THERE!';
-                subMessage = `You're doing great! GPA ${gpa.toFixed(3)}/${maxGpa.toFixed(1)}. Push a little harder and you'll reach excellence! 🚀`;
+                emoji = '🌟'; message = '💪 ALMOST THERE!';
+                subMessage = `Doing great! GPA ${gpa.toFixed(3)}/${maxGpa.toFixed(1)}. Push harder! 🚀`;
                 statusClass = 'good';
             } else if (ratio >= 0.6) {
-                emoji = '📈';
-                message = '📚 MEDIUM - DON\'T GIVE UP!';
-                subMessage = `GPA ${gpa.toFixed(3)}/${maxGpa.toFixed(1)}. You're in the middle - this is where champions are made! Keep pushing! 💪`;
+                emoji = '📈'; message = '📚 MEDIUM — KEEP GOING!';
+                subMessage = `GPA ${gpa.toFixed(3)}/${maxGpa.toFixed(1)}. Champions are made here! 💪`;
                 statusClass = 'average';
             } else if (ratio >= 0.4) {
-                emoji = '💪';
-                message = '🔴 ALMOST FAILING - DON\'T GIVE UP!';
-                subMessage = `GPA ${gpa.toFixed(3)}/${maxGpa.toFixed(1)}. You're still in the game! Use this as motivation to come back stronger. 💪`;
+                emoji = '💪'; message = '🔴 ALMOST FAILING — DON\'T GIVE UP!';
+                subMessage = `GPA ${gpa.toFixed(3)}/${maxGpa.toFixed(1)}. Come back stronger! 💪`;
                 statusClass = 'average';
             } else {
-                emoji = '🔥';
-                message = '💀 FAIL! BUT FAILURE IS NOT THE END!';
-                subMessage = `GPA ${gpa.toFixed(3)}/${maxGpa.toFixed(1)}. Every failure is a lesson. Get back up, study harder, and show them what you're made of! 🚀💪`;
+                emoji = '🔥'; message = '💀 FAIL — BUT FAILURE ISN\'T THE END!';
+                subMessage = `GPA ${gpa.toFixed(3)}/${maxGpa.toFixed(1)}. Get back up and show them! 🚀`;
                 statusClass = 'poor';
             }
 
-            showResultOverlay(gpa, maxGpa, ratio, emoji, message, subMessage, statusClass);
-
-            console.log('📊 Weighted GPA Calculation:');
-            console.log(`System: ${system}`);
-            console.log(`GPA: ${gpa.toFixed(3)} / ${maxGpa.toFixed(1)}`);
-            console.log(`Total Weight: ${totalWeight}`);
-            console.log(`Total Weighted Points: ${totalWeightedPoints.toFixed(2)}`);
-            console.log('Subject Details:', subjectResults);
+            showResultOverlay(gpa, maxGpa, emoji, message, subMessage, statusClass);
         }
 
-        // ========== EVENT LISTENERS ==========
         document.getElementById('calculateGpa').addEventListener('click', calculateGPA);
-
         document.getElementById('numSubjects').addEventListener('change', function() {
-            const val = parseInt(this.value) || 4;
+            let val = parseInt(this.value) || 4;
             if (val < 1) this.value = 1;
             if (val > 20) this.value = 20;
             generateCourseInputs();
         });
-
         document.getElementById('gradingSystem').addEventListener('change', function() {
             updateGradingScaleInfo();
-            // Update existing grade displays
-            const marksInputs = document.querySelectorAll('.course-marks');
-            const gradeDisplays = document.querySelectorAll('.course-grade-display');
             const system = this.value;
-            marksInputs.forEach((input, index) => {
+            document.querySelectorAll('.course-marks').forEach(input => {
                 const marks = input.value;
                 if (marks) {
                     const result = getGradeFromMarks(marks, system);
-                    if (result && gradeDisplays[index]) {
-                        gradeDisplays[index].value = result.grade;
-                    }
+                    const display = input.parentNode.querySelector('.course-grade-display');
+                    if (result && display) display.value = result.grade;
                 }
             });
         });
 
-        // ========== KEYBOARD SHORTCUTS ==========
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                const target = e.target;
-                if (target.classList.contains('course-marks') ||
-                    target.classList.contains('course-weight')) {
-                    e.preventDefault();
-                    calculateGPA();
-                }
-            }
-        });
+        // ============================================================
+        // BASIC CALCULATOR
+        // ============================================================
+        let basicExpr = '';
 
-        // ========== INITIALIZE ==========
+        function basicInput(val) {
+            basicExpr += val;
+            updateBasicDisplay();
+        }
+
+        function basicClear() {
+            basicExpr = '';
+            updateBasicDisplay();
+            document.getElementById('basicResult').textContent = '0';
+        }
+
+        function basicBack() {
+            basicExpr = basicExpr.slice(0, -1);
+            updateBasicDisplay();
+            if (!basicExpr) document.getElementById('basicResult').textContent = '0';
+        }
+
+        function basicPct() {
+            try {
+                const result = eval(basicExpr) / 100;
+                basicExpr = result.toString();
+                updateBasicDisplay();
+                document.getElementById('basicResult').textContent = formatNumber(result);
+            } catch (e) {}
+        }
+
+        function basicEquals() {
+            try {
+                const result = eval(basicExpr);
+                if (!isFinite(result)) throw new Error('Math error');
+                document.getElementById('basicResult').textContent = formatNumber(result);
+                document.getElementById('basicResult').classList.add('success');
+                basicExpr = result.toString();
+            } catch (e) {
+                document.getElementById('basicResult').textContent = 'Error';
+                document.getElementById('basicResult').classList.add('error');
+            }
+        }
+
+        function updateBasicDisplay() {
+            document.getElementById('basicExpr').textContent = basicExpr || '';
+            document.getElementById('basicResult').classList.remove('success', 'error');
+        }
+
+        function formatNumber(n) {
+            if (typeof n !== 'number') return n;
+            if (Math.abs(n) >= 1e15 || (Math.abs(n) < 1e-6 && n !== 0)) return n.toExponential(6);
+            return parseFloat(n.toFixed(10)).toString();
+        }
+
+        // ============================================================
+        // SCIENTIFIC CALCULATOR
+        // ============================================================
+        let sciExpr = '';
+        let angleMode = 'DEG';
+
+        function toggleAngleMode() {
+            angleMode = angleMode === 'DEG' ? 'RAD' : 'DEG';
+            document.getElementById('angleMode').textContent = angleMode;
+        }
+
+        function sciInput(val) {
+            sciExpr += val;
+            updateSciDisplay();
+        }
+
+        function sciFunc(val) {
+            sciExpr += val;
+            updateSciDisplay();
+        }
+
+        function sciClear() {
+            sciExpr = '';
+            updateSciDisplay();
+            document.getElementById('sciResult').textContent = '0';
+        }
+
+        function sciBack() {
+            sciExpr = sciExpr.slice(0, -1);
+            updateSciDisplay();
+            if (!sciExpr) document.getElementById('sciResult').textContent = '0';
+        }
+
+        function updateSciDisplay() {
+            document.getElementById('sciExpr').textContent = sciExpr || '';
+            document.getElementById('sciResult').classList.remove('success', 'error');
+        }
+
+        // Convert degrees to radians if in DEG mode
+        function toRad(angle) {
+            return angleMode === 'DEG' ? angle * Math.PI / 180 : angle;
+        }
+
+        function fromRad(angle) {
+            return angleMode === 'DEG' ? angle * 180 / Math.PI : angle;
+        }
+
+        function factorial(n) {
+            if (n < 0 || !Number.isInteger(n)) return NaN;
+            if (n === 0 || n === 1) return 1;
+            let result = 1;
+            for (let i = 2; i <= n; i++) result *= i;
+            return result;
+        }
+
+        function evaluateSci(expr) {
+            // Replace functions and constants with Math equivalents
+            let e = expr;
+
+            // Constants
+            e = e.replace(/\bpi\b/g, 'Math.PI');
+            e = e.replace(/(?<![a-zA-Z])e(?![a-zA-Z])/g, 'Math.E');
+
+            // Functions — order matters
+            e = e.replace(/asin\(/g, 'Math.asin(');
+            e = e.replace(/acos\(/g, 'Math.acos(');
+            e = e.replace(/atan\(/g, 'Math.atan(');
+            e = e.replace(/sin\(/g, 'Math.sin(');
+            e = e.replace(/cos\(/g, 'Math.cos(');
+            e = e.replace(/tan\(/g, 'Math.tan(');
+            e = e.replace(/log\(/g, 'Math.log10(');
+            e = e.replace(/ln\(/g, 'Math.log(');
+            e = e.replace(/sqrt\(/g, 'Math.sqrt(');
+            e = e.replace(/cbrt\(/g, 'Math.cbrt(');
+            e = e.replace(/abs\(/g, 'Math.abs(');
+            e = e.replace(/exp\(/g, 'Math.exp(');
+
+            // Convert trig arguments
+            e = e.replace(/Math\.(sin|cos|tan|asin|acos|atan)\(([^()]*)\)/g, (match, fn, arg) => {
+                if (fn.startsWith('a')) {
+                    return `fromRad(Math.${fn}(${arg}))`;
+                }
+                return `Math.${fn}(toRad(${arg}))`;
+            });
+
+            // Factorial: replace n! with factorial(n)
+            e = e.replace(/(\d+(?:\.\d+)?|\))!/g, (match, p1) => {
+                if (p1 === ')') {
+                    // Find matching opening
+                    return ')!'; // will be handled below
+                }
+                return `factorial(${p1})`;
+            });
+
+            // Handle ^ for exponent
+            e = e.replace(/\^/g, '**');
+
+            // Handle %, careful
+            e = e.replace(/(\d+(?:\.\d+)?)%/g, '($1/100)');
+
+            // Implicit multiplication like 2(3+4) or )( etc
+            e = e.replace(/(\d)(\()/g, '$1*$2');
+            e = e.replace(/(\))(\()/g, '$1*$2');
+            e = e.replace(/(\))(\d)/g, '$1*$2');
+
+            return e;
+        }
+
+        function sciEquals() {
+            try {
+                const toEval = evaluateSci(sciExpr);
+                const result = eval(toEval);
+                if (!isFinite(result) || isNaN(result)) throw new Error('Math error');
+                document.getElementById('sciResult').textContent = formatNumber(result);
+                document.getElementById('sciResult').classList.add('success');
+                sciExpr = result.toString();
+            } catch (e) {
+                document.getElementById('sciResult').textContent = 'Error';
+                document.getElementById('sciResult').classList.add('error');
+                console.error(e);
+            }
+        }
+
+        // ============================================================
+        // QUADRATIC EQUATION SOLVER
+        // ============================================================
+        function solveQuadratic() {
+            const a = parseFloat(document.getElementById('qa').value);
+            const b = parseFloat(document.getElementById('qb').value);
+            const c = parseFloat(document.getElementById('qc').value);
+            const result = document.getElementById('quadResult');
+            result.classList.remove('error');
+
+            if (isNaN(a) || isNaN(b) || isNaN(c)) {
+                result.innerHTML = '<span class="lbl">Please enter valid numbers for a, b, c</span>';
+                result.classList.add('error');
+                return;
+            }
+
+            if (a === 0) {
+                if (b === 0) {
+                    result.innerHTML = '<span class="lbl">Not a valid equation (a = 0 and b = 0)</span>';
+                    result.classList.add('error');
+                    return;
+                }
+                const x = -c / b;
+                result.innerHTML = `<span class="lbl">Linear equation: </span><span class="solution">x = ${formatNumber(x)}</span>`;
+                return;
+            }
+
+            const disc = b * b - 4 * a * c;
+            let html = `<span class="lbl">Equation: </span><span class="val">${a}x² ${b >= 0 ? '+' : '−'} ${Math.abs(b)}x ${c >= 0 ? '+' : '−'} ${Math.abs(c)} = 0</span>\n`;
+            html += `<span class="lbl">Discriminant (b² − 4ac): </span><span class="val">${formatNumber(disc)}</span>\n`;
+
+            if (disc > 0) {
+                const x1 = (-b + Math.sqrt(disc)) / (2 * a);
+                const x2 = (-b - Math.sqrt(disc)) / (2 * a);
+                html += `<span class="solution">Two distinct real roots:</span>\n`;
+                html += `<span class="lbl">x₁ = </span><span class="solution">${formatNumber(x1)}</span>\n`;
+                html += `<span class="lbl">x₂ = </span><span class="solution">${formatNumber(x2)}</span>`;
+            } else if (disc === 0) {
+                const x = -b / (2 * a);
+                html += `<span class="solution">One repeated real root:</span>\n`;
+                html += `<span class="lbl">x = </span><span class="solution">${formatNumber(x)}</span>`;
+            } else {
+                const real = -b / (2 * a);
+                const imag = Math.sqrt(-disc) / (2 * a);
+                html += `<span class="solution">Two complex roots:</span>\n`;
+                html += `<span class="lbl">x₁ = </span><span class="solution">${formatNumber(real)} + ${formatNumber(Math.abs(imag))}i</span>\n`;
+                html += `<span class="lbl">x₂ = </span><span class="solution">${formatNumber(real)} − ${formatNumber(Math.abs(imag))}i</span>`;
+            }
+
+            result.innerHTML = html;
+        }
+
+        // ============================================================
+        // SIMULTANEOUS EQUATIONS SOLVER
+        // ============================================================
+        function solveSimultaneous() {
+            const a1 = parseFloat(document.getElementById('s_a1').value);
+            const b1 = parseFloat(document.getElementById('s_b1').value);
+            const c1 = parseFloat(document.getElementById('s_c1').value);
+            const a2 = parseFloat(document.getElementById('s_a2').value);
+            const b2 = parseFloat(document.getElementById('s_b2').value);
+            const c2 = parseFloat(document.getElementById('s_c2').value);
+            const result = document.getElementById('simulResult');
+            result.classList.remove('error');
+
+            if ([a1, b1, c1, a2, b2, c2].some(v => isNaN(v))) {
+                result.innerHTML = '<span class="lbl">Please enter all 6 values (a₁, b₁, c₁, a₂, b₂, c₂)</span>';
+                result.classList.add('error');
+                return;
+            }
+
+            const D = a1 * b2 - a2 * b1;
+            const Dx = c1 * b2 - c2 * b1;
+            const Dy = a1 * c2 - a2 * c1;
+
+            let html = `<span class="lbl">Equations:</span>\n`;
+            html += `<span class="val">${a1}x ${b1 >= 0 ? '+' : '−'} ${Math.abs(b1)}y = ${c1}</span>\n`;
+            html += `<span class="val">${a2}x ${b2 >= 0 ? '+' : '−'} ${Math.abs(b2)}y = ${c2}</span>\n`;
+            html += `<span class="lbl">Determinant D = </span><span class="val">${formatNumber(D)}</span>\n`;
+
+            if (D === 0) {
+                if (Dx === 0 && Dy === 0) {
+                    html += `<span class="solution">Infinitely many solutions (dependent equations)</span>`;
+                } else {
+                    html += `<span class="solution">No solution (inconsistent equations)</span>`;
+                }
+            } else {
+                const x = Dx / D;
+                const y = Dy / D;
+                html += `<span class="solution">Unique solution:</span>\n`;
+                html += `<span class="lbl">x = </span><span class="solution">${formatNumber(x)}</span>\n`;
+                html += `<span class="lbl">y = </span><span class="solution">${formatNumber(y)}</span>`;
+            }
+
+            result.innerHTML = html;
+        }
+
+        // ============================================================
+        // INIT
+        // ============================================================
         generateCourseInputs();
         updateGradingScaleInfo();
 
-        console.log('📊 Weighted GPA Calculator loaded!');
-        console.log('💡 Enter marks (0-100) and subject weights');
-        console.log('📐 GPA = Σ(grade_point × weight) / Σ(weight)');
+        console.log('📊 Multi-Calculator loaded — GPA · Basic · Scientific');
     </script>
 </body>
 </html>
