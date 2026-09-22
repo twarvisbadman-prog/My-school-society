@@ -273,9 +273,12 @@
             text-transform: uppercase;
         }
 
+        /* ============================================================
+           TOP SEARCH BAR — POWERFUL
+           ============================================================ */
         .topnav-search {
             flex: 1;
-            max-width: 560px;
+            max-width: 600px;
             position: relative;
         }
 
@@ -283,25 +286,37 @@
             display: flex;
             align-items: center;
             background: rgba(15, 23, 42, 0.65);
-            border: 1.5px solid rgba(59, 130, 246, 0.25);
+            border: 1.5px solid rgba(59, 130, 246, 0.30);
             border-radius: 12px;
             padding: 0 4px 0 14px;
             transition: all 0.25s ease;
-            height: 42px;
+            height: 46px;
+            backdrop-filter: blur(10px);
         }
 
         .search-wrap:focus-within {
             border-color: #60a5fa;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15),
-                        0 0 25px rgba(59, 130, 246, 0.2);
-            background: rgba(15, 23, 42, 0.85);
+            box-shadow:
+                0 0 0 3px rgba(59, 130, 246, 0.15),
+                0 0 30px rgba(59, 130, 246, 0.3);
+            background: rgba(15, 23, 42, 0.9);
         }
 
         .search-wrap i.fa-search {
             color: #60a5fa;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             margin-right: 10px;
             flex-shrink: 0;
+            transition: color 0.25s ease;
+        }
+
+        .search-wrap.searching i.fa-search {
+            animation: searchPulse 0.8s ease-in-out infinite;
+        }
+
+        @keyframes searchPulse {
+            0%, 100% { color: #60a5fa; transform: scale(1); }
+            50% { color: #93c5fd; transform: scale(1.1); }
         }
 
         .search-wrap input {
@@ -310,33 +325,50 @@
             border: none;
             outline: none;
             color: #ededef;
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             font-family: inherit;
-            padding: 10px 0;
+            padding: 11px 0;
             min-width: 0;
+            font-weight: 500;
         }
 
-        .search-wrap input::placeholder { color: rgba(237, 237, 239, 0.4); }
+        .search-wrap input::placeholder {
+            color: rgba(237, 237, 239, 0.4);
+            font-size: 0.85rem;
+        }
 
         .search-btn {
-            padding: 8px 18px;
-            background: linear-gradient(135deg, var(--blue-600), var(--blue-700));
-            border: none;
+            padding: 9px 20px;
+            background: rgba(30, 58, 138, 0.4);
+            border: 1.5px solid rgba(59, 130, 246, 0.55);
             border-radius: 8px;
-            color: #fff;
-            font-weight: 700;
+            color: #ffffff;
+            font-weight: 800;
             font-size: 0.75rem;
             cursor: pointer;
             transition: all 0.25s ease;
             font-family: inherit;
             white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
         }
 
+        .search-btn i { color: #93c5fd; transition: color 0.25s ease; }
+
         .search-btn:hover {
-            background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+            background: rgba(30, 58, 138, 0.6);
+            border-color: #93c5fd;
             transform: translateY(-1px);
+            box-shadow:
+                0 8px 25px rgba(59, 130, 246, 0.5),
+                0 0 30px rgba(59, 130, 246, 0.3);
         }
+
+        .search-btn:hover i { color: #ffffff; }
 
         .topnav-right {
             display: flex;
@@ -503,7 +535,7 @@
             max-width: 900px;
             margin: 0 auto;
             text-align: center;
-            padding: clamp(40px, 7vw, 90px) clamp(16px, 3.5vw, 28px) clamp(30px, 4vw, 50px);
+            padding: clamp(50px, 9vw, 120px) clamp(16px, 3.5vw, 28px) clamp(40px, 5vw, 70px);
             position: relative;
         }
 
@@ -520,7 +552,7 @@
             font-weight: 700;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .hero-badge .dot {
@@ -537,33 +569,30 @@
             50% { opacity: 0.4; }
         }
 
-        /* Typing effect — 4 languages */
+        /* ===== TYPING EFFECT — FULL TITLE IN 5 LANGUAGES ===== */
         .hero h1 {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: clamp(1.9rem, 5.5vw, 3.3rem);
+            font-size: clamp(2rem, 5.8vw, 3.5rem);
             font-weight: 800;
-            line-height: 1.1;
+            line-height: 1.15;
             letter-spacing: -0.03em;
-            margin-bottom: 20px;
-            color: #ededef;
-            min-height: 2.4em;
+            margin-bottom: 24px;
+            min-height: 2.6em;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 0;
         }
 
-        .hero h1 .static-text {
+        .hero h1 .typed-language {
             background: linear-gradient(135deg, #60a5fa 0%, #93c5fd 50%, #bfdbfe 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-        }
-
-        .hero h1 .typed-language {
-            color: #ededef;
-            display: inline-block;
+            display: inline;
+            white-space: pre-wrap;
+            word-break: break-word;
         }
 
         .hero h1 .typing-cursor {
@@ -571,7 +600,7 @@
             width: 3px;
             height: 0.9em;
             background: #60a5fa;
-            margin-left: 4px;
+            margin-left: 6px;
             vertical-align: text-bottom;
             animation: blink 0.9s step-end infinite;
             box-shadow: 0 0 12px rgba(59, 130, 246, 0.7);
@@ -584,144 +613,11 @@
         }
 
         .hero p.lede {
-            font-size: clamp(0.92rem, 1.6vw, 1.05rem);
-            line-height: 1.6;
+            font-size: clamp(0.95rem, 1.6vw, 1.08rem);
+            line-height: 1.65;
             color: rgba(237, 237, 239, 0.65);
             max-width: 600px;
-            margin: 0 auto 32px;
-        }
-
-        /* ============================================================
-           HERO SEARCH BAR — LIVE SEARCH THAT REDIRECTS TO BROWSE
-           ============================================================ */
-        .hero-search {
-            max-width: 620px;
-            margin: 0 auto 32px;
-            position: relative;
-        }
-
-        .hero-search-wrap {
-            display: flex;
-            align-items: center;
-            background: rgba(15, 23, 42, 0.75);
-            border: 1.5px solid rgba(59, 130, 246, 0.4);
-            border-radius: 14px;
-            padding: 0 6px 0 18px;
-            transition: all 0.25s ease;
-            height: 58px;
-            backdrop-filter: blur(10px);
-            box-shadow:
-                inset 0 1px 0 rgba(147, 197, 253, 0.1),
-                0 8px 25px rgba(0, 0, 0, 0.4);
-        }
-
-        .hero-search-wrap:focus-within {
-            border-color: #60a5fa;
-            box-shadow:
-                inset 0 1px 0 rgba(147, 197, 253, 0.2),
-                0 0 0 4px rgba(59, 130, 246, 0.15),
-                0 0 40px rgba(59, 130, 246, 0.3);
-            background: rgba(15, 23, 42, 0.9);
-        }
-
-        .hero-search-wrap i.fa-search {
-            color: #60a5fa;
-            font-size: 1rem;
-            margin-right: 12px;
-            flex-shrink: 0;
-            transition: color 0.25s ease;
-        }
-
-        .hero-search-wrap.searching i.fa-search {
-            animation: searchPulse 0.8s ease-in-out infinite;
-        }
-
-        @keyframes searchPulse {
-            0%, 100% { color: #60a5fa; transform: scale(1); }
-            50% { color: #93c5fd; transform: scale(1.1); }
-        }
-
-        .hero-search-wrap input {
-            flex: 1;
-            background: none;
-            border: none;
-            outline: none;
-            color: #ededef;
-            font-size: 0.95rem;
-            font-family: inherit;
-            padding: 14px 0;
-            min-width: 0;
-            font-weight: 500;
-        }
-
-        .hero-search-wrap input::placeholder {
-            color: rgba(237, 237, 239, 0.4);
-            font-size: 0.9rem;
-        }
-
-        .hero-search-btn {
-            padding: 11px 22px;
-            background: rgba(30, 58, 138, 0.4);
-            border: 1.5px solid rgba(59, 130, 246, 0.6);
-            border-radius: 10px;
-            color: #ffffff;
-            font-weight: 800;
-            font-size: 0.82rem;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            font-family: inherit;
-            white-space: nowrap;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            backdrop-filter: blur(10px);
-            letter-spacing: 0.03em;
-            text-transform: uppercase;
-        }
-
-        .hero-search-btn i { color: #93c5fd; transition: color 0.25s ease; }
-
-        .hero-search-btn:hover {
-            background: rgba(30, 58, 138, 0.6);
-            border-color: #93c5fd;
-            transform: translateY(-2px);
-            box-shadow:
-                0 8px 25px rgba(59, 130, 246, 0.5),
-                0 0 40px rgba(59, 130, 246, 0.3);
-        }
-
-        .hero-search-btn:hover i { color: #ffffff; }
-
-        /* Search hint */
-        .hero-search-hint {
-            margin-top: 12px;
-            font-size: 0.75rem;
-            color: rgba(237, 237, 239, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .hero-search-hint strong {
-            color: #60a5fa;
-            font-weight: 700;
-        }
-
-        .hero-search-hint kbd {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2px 8px;
-            background: rgba(30, 58, 138, 0.3);
-            border: 1px solid rgba(59, 130, 246, 0.4);
-            border-radius: 6px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: #93c5fd;
-            letter-spacing: 0.05em;
+            margin: 0 auto 36px;
         }
 
         /* ============================================================
@@ -729,7 +625,7 @@
            ============================================================ */
         .hero-actions {
             display: flex;
-            gap: 12px;
+            gap: 14px;
             justify-content: center;
             flex-wrap: wrap;
             align-items: center;
@@ -739,10 +635,10 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            padding: 14px 28px;
+            padding: 15px 30px;
             border-radius: 12px;
             font-weight: 800;
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             text-decoration: none;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -1177,20 +1073,20 @@
             .user-avatar { width: 38px; height: 38px; font-size: 0.8rem; }
             .cat-nav-inner { padding: 0 12px; }
             .cat-link { padding: 6px 10px; font-size: 0.75rem; }
-            .hero { padding: 30px 16px 20px; }
-            .hero h1 { font-size: 1.85rem; }
-            .hero-search-wrap { height: 52px; padding: 0 4px 0 14px; }
-            .hero-search-wrap input { font-size: 0.88rem; padding: 12px 0; }
-            .hero-search-btn { padding: 9px 16px; font-size: 0.72rem; }
-            .hero-search-btn span { display: none; }
-            .btn { padding: 12px 22px; font-size: 0.8rem; }
+            .hero { padding: 40px 16px 30px; }
+            .hero h1 { font-size: 1.7rem; min-height: 3em; }
+            .search-wrap { height: 42px; padding: 0 3px 0 12px; }
+            .search-wrap input { font-size: 0.85rem; padding: 10px 0; }
+            .search-btn { padding: 8px 14px; font-size: 0.68rem; }
+            .search-btn span { display: none; }
+            .btn { padding: 12px 22px; font-size: 0.82rem; }
             .feature-section, .tools-strip, .footer { padding-left: 16px; padding-right: 16px; }
             .section-header h2 { font-size: 1.1rem; }
         }
 
         @media (max-width: 380px) {
             .icon-btn:nth-child(n+2):not(.user-avatar) { display: none; }
-            .hero h1 { font-size: 1.6rem; }
+            .hero h1 { font-size: 1.4rem; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -1231,12 +1127,13 @@
                 </a>
             </div>
 
+            <!-- TOP SEARCH BAR — ONE ONLY -->
             <div class="topnav-search">
-                <div class="search-wrap">
+                <div class="search-wrap" id="searchWrap">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="topSearch" placeholder="Search notes, modules, courses..." autocomplete="off">
-                    <button class="search-btn" onclick="goToSearch('topSearch')">
-                        <i class="fas fa-arrow-right"></i>
+                    <input type="text" id="topSearch" placeholder="Search notes by name, module, or course..." autocomplete="off">
+                    <button class="search-btn" onclick="goToSearch()">
+                        <i class="fas fa-arrow-right"></i> <span>Search</span>
                     </button>
                 </div>
             </div>
@@ -1294,29 +1191,14 @@
                 Live · Student Community
             </div>
 
-            <!-- TYPING EFFECT — Welcome message in 4 languages -->
+            <!-- TYPING EFFECT — Welcome in 5 languages -->
             <h1>
-                <span class="static-text">Welcome to Student Hub</span>
                 <span class="typed-language" id="typedLanguage"></span><span class="typing-cursor"></span>
             </h1>
 
             <p class="lede">
                 Share what you know, find what you need. Uploaded notes, scanned pages, and past papers — all in one clean, fast place.
             </p>
-
-            <!-- HERO SEARCH BAR — redirects to browse with live search -->
-            <div class="hero-search">
-                <div class="hero-search-wrap" id="heroSearchWrap">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="heroSearch" placeholder="Search by note name, module, or course..." autocomplete="off">
-                    <button class="hero-search-btn" onclick="goToSearch('heroSearch')">
-                        <i class="fas fa-arrow-right"></i> <span>Search</span>
-                    </button>
-                </div>
-                <div class="hero-search-hint">
-                    Press <kbd>Enter</kbd> to search · Try <strong>"networking"</strong>, <strong>"mobile"</strong>, <strong>"web"</strong>
-                </div>
-            </div>
 
             <div class="hero-actions">
                 <a href="/browse/" class="btn btn-primary">
@@ -1426,26 +1308,18 @@
 
     <script>
         // ============================================================
-        // TYPING EFFECT — Welcome in 4 languages
+        // TYPING EFFECT — Welcome to Student Hub in 5 LANGUAGES
         // ============================================================
         (function initMultiLanguageTyping() {
             const el = document.getElementById('typedLanguage');
             if (!el) return;
 
-            // Welcome in 4 languages (with prefix space added automatically)
-            const phrases = [
-                "— English",           // placeholder replaced below
-                "— Karibu",            // Swahili
-                "— Bienvenue",         // French
-                "— Bienvenido"         // Spanish
-            ];
-
-            // Better approach: show the welcome word in each language
-            const welcomes = [
-                "— Karibu 🇹🇿",
-                "— Bienvenue 🇫🇷",
-                "— Bienvenido 🇪🇸",
-                "— Willkommen 🇩🇪"
+            const messages = [
+                "Welcome to Student Hub",      // 🇬🇧 English
+                "Karibu Student Hub",          // 🇹🇿 Swahili
+                "Bienvenue Student Hub",       // 🇫🇷 French
+                "Bienvenido Student Hub",      // 🇪🇸 Spanish
+                "Willkommen Student Hub"       // 🇩🇪 German
             ];
 
             let phraseIndex = 0;
@@ -1453,31 +1327,33 @@
             let isDeleting = false;
 
             function type() {
-                const current = welcomes[phraseIndex];
+                const current = messages[phraseIndex];
 
                 if (!isDeleting) {
                     el.textContent = current.substring(0, charIndex + 1);
                     charIndex++;
+
                     if (charIndex === current.length) {
                         isDeleting = true;
-                        setTimeout(type, 2200);
+                        setTimeout(type, 2000);
                         return;
                     }
-                    setTimeout(type, 90);
+                    setTimeout(type, 80);
                 } else {
                     el.textContent = current.substring(0, charIndex - 1);
                     charIndex--;
+
                     if (charIndex === 0) {
                         isDeleting = false;
-                        phraseIndex = (phraseIndex + 1) % welcomes.length;
+                        phraseIndex = (phraseIndex + 1) % messages.length;
                         setTimeout(type, 350);
                         return;
                     }
-                    setTimeout(type, 40);
+                    setTimeout(type, 35);
                 }
             }
 
-            setTimeout(type, 600);
+            setTimeout(type, 500);
         })();
 
         // ============================================================
@@ -1621,10 +1497,10 @@
         overlay.addEventListener('click', closeSidebar);
 
         // ============================================================
-        // SEARCH — Redirect to Browse with query
+        // SEARCH — Send to /browse/?q=... (browse search bar)
         // ============================================================
-        function goToSearch(inputId) {
-            const input = document.getElementById(inputId);
+        function goToSearch() {
+            const input = document.getElementById('topSearch');
             if (!input) return;
             const q = input.value.trim();
 
@@ -1635,54 +1511,29 @@
             }
         }
 
-        // Hero search — Enter key
-        const heroSearch = document.getElementById('heroSearch');
-        const heroSearchWrap = document.getElementById('heroSearchWrap');
-        if (heroSearch) {
-            heroSearch.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    goToSearch('heroSearch');
-                }
-            });
-
-            // Search pulse effect
-            heroSearch.addEventListener('input', function() {
-                if (this.value.length > 0) {
-                    heroSearchWrap.classList.add('searching');
-                } else {
-                    heroSearchWrap.classList.remove('searching');
-                }
-            });
-        }
-
-        // Top nav search — Enter key
+        // Enter key triggers search
         const topSearch = document.getElementById('topSearch');
+        const searchWrap = document.getElementById('searchWrap');
         if (topSearch) {
             topSearch.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    goToSearch('topSearch');
+                    goToSearch();
+                }
+            });
+
+            // Search pulse effect
+            topSearch.addEventListener('input', function() {
+                if (this.value.length > 0) {
+                    searchWrap.classList.add('searching');
+                } else {
+                    searchWrap.classList.remove('searching');
                 }
             });
         }
 
         // Make goToSearch global
         window.goToSearch = goToSearch;
-
-        // ============================================================
-        // BACK TO TOP BUTTON
-        // ============================================================
-        const backToTopBtn = document.getElementById('backToTop');
-        if (backToTopBtn) {
-            window.addEventListener('scroll', function() {
-                if (window.pageYOffset > 300) backToTopBtn.classList.add('visible');
-                else backToTopBtn.classList.remove('visible');
-            });
-            backToTopBtn.addEventListener('click', function() {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-        }
 
         console.log('✦ Student Hub — Home Page Loaded ✦');
     </script>
