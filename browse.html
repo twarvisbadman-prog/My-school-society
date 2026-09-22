@@ -24,7 +24,6 @@
             --blue-glow: rgba(59, 130, 246, 0.35);
             --blue-dim: rgba(59, 130, 246, 0.15);
 
-            --purple-800: #581c87;
             --purple-600: #7c3aed;
             --purple-500: #8b5cf6;
             --purple-400: #a855f7;
@@ -35,18 +34,25 @@
             --gold: #fbbf24;
             --gold-bright: #fde68a;
             --gold-glow: rgba(251, 191, 36, 0.35);
+
             --orange: #f97316;
             --orange-bright: #fb923c;
             --orange-glow: rgba(249, 115, 22, 0.35);
+
             --cyan: #06b6d4;
             --cyan-bright: #22d3ee;
             --cyan-glow: rgba(6, 182, 212, 0.35);
+
             --green: #22c55e;
             --green-bright: #4ade80;
             --green-glow: rgba(34, 197, 94, 0.25);
+
             --red: #ef4444;
             --red-bright: #f87171;
             --red-glow: rgba(239, 68, 68, 0.35);
+            --red-dim: rgba(239, 68, 68, 0.15);
+
+            --silver: #c0c0c0;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -130,77 +136,6 @@
         .bubble:nth-child(10) { left: 93%; width: 55px; height: 55px; animation-duration: 14s; animation-delay: 4s; }
         .bubble:nth-child(11) { left: 8%; width: 100px; height: 100px; animation-duration: 20s; animation-delay: 5s; }
         .bubble:nth-child(12) { left: 40%; width: 30px; height: 30px; animation-duration: 12s; animation-delay: 6s; }
-
-        /* ============================================================
-           PAGE TRANSITION — SMOKY TRANSPARENT BLUE, FAST
-           ============================================================ */
-        .page-transition-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 99999;
-            pointer-events: none;
-            display: flex;
-            visibility: hidden;
-        }
-
-        .page-transition-overlay.active { visibility: visible; }
-
-        .page-transition-overlay .slide-panel {
-            flex: 1;
-            background: linear-gradient(180deg,
-                rgba(15, 23, 42, 0.0) 0%,
-                rgba(30, 58, 138, 0.35) 25%,
-                rgba(15, 23, 42, 0.75) 50%,
-                rgba(30, 58, 138, 0.35) 75%,
-                rgba(15, 23, 42, 0.0) 100%);
-            backdrop-filter: blur(20px) saturate(150%);
-            -webkit-backdrop-filter: blur(20px) saturate(150%);
-            transform: translateY(101%);
-            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .page-transition-overlay.active .slide-panel {
-            transform: translateY(0);
-        }
-
-        .page-transition-overlay .slide-panel:nth-child(1) { transition-delay: 0s; }
-        .page-transition-overlay .slide-panel:nth-child(2) { transition-delay: 0.04s; }
-        .page-transition-overlay .slide-panel:nth-child(3) { transition-delay: 0.08s; }
-        .page-transition-overlay .slide-panel:nth-child(4) { transition-delay: 0.12s; }
-        .page-transition-overlay .slide-panel:nth-child(5) { transition-delay: 0.16s; }
-
-        .page-transition-overlay::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.4) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(147, 197, 253, 0.3) 0%, transparent 45%),
-                radial-gradient(circle at 50% 50%, rgba(30, 58, 138, 0.5) 0%, transparent 60%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-
-        .page-transition-overlay.active::after { opacity: 1; }
-
-        body.page-entering .wrap {
-            animation: pageSlideIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) both;
-        }
-
-        @keyframes pageSlideIn {
-            from { opacity: 0; transform: translateX(25px); filter: blur(8px); }
-            to { opacity: 1; transform: translateX(0); filter: blur(0); }
-        }
-
-        body.page-exiting .wrap {
-            animation: pageSlideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
-        }
-
-        @keyframes pageSlideOut {
-            from { opacity: 1; transform: translateX(0); filter: blur(0); }
-            to { opacity: 0; transform: translateX(-25px); filter: blur(8px); }
-        }
 
         /* ============================================================
            RAIN CANVAS
@@ -576,7 +511,6 @@
             margin-bottom: 30px;
         }
 
-        /* TYPING EFFECT on title */
         .browse-title {
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-size: clamp(1.5rem, 3.2vw, 2.2rem);
@@ -628,7 +562,7 @@
         }
 
         /* ============================================================
-           SEARCH BAR
+           SEARCH BAR — POWERFUL LIVE SEARCH
            ============================================================ */
         .search-bar {
             display: flex;
@@ -643,7 +577,7 @@
             position: relative;
             backdrop-filter: blur(10px);
             max-width: 100%;
-            height: 48px;
+            height: 54px;
         }
 
         .search-bar:focus-within {
@@ -655,39 +589,65 @@
 
         .search-bar i.fa-search {
             color: #60a5fa;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             flex-shrink: 0;
             margin-right: 10px;
             pointer-events: none;
+            transition: color 0.25s ease;
+        }
+
+        .search-bar.searching i.fa-search {
+            animation: searchPulse 0.8s ease-in-out infinite;
+        }
+
+        @keyframes searchPulse {
+            0%, 100% { color: #60a5fa; transform: scale(1); }
+            50% { color: #93c5fd; transform: scale(1.1); }
         }
 
         .search-bar input {
             flex: 1;
             background: none;
             border: none;
-            padding: 12px 0;
+            padding: 14px 0;
             color: var(--chalk);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-family: inherit;
             outline: none;
             min-width: 0;
-            font-weight: 400;
+            font-weight: 500;
         }
 
         .search-bar input::placeholder {
-            color: rgba(237, 237, 239, 0.4);
-            font-size: 0.88rem;
+            color: rgba(237, 237, 239, 0.35);
+            font-size: 0.9rem;
         }
 
-        .search-bar button:not(.clear-btn) {
-            padding: 8px 18px;
-            background: linear-gradient(135deg, var(--blue-600), var(--blue-700));
-            border: none;
-            border-radius: 8px;
-            color: #fff;
+        .search-count {
+            font-size: 0.72rem;
+            color: #60a5fa;
             font-weight: 700;
-            font-size: 0.75rem;
-            letter-spacing: 0.3px;
+            padding: 4px 10px;
+            background: rgba(59, 130, 246, 0.15);
+            border-radius: 20px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            margin-right: 6px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .search-count.visible { opacity: 1; }
+
+        .search-bar button:not(.clear-btn) {
+            padding: 9px 20px;
+            background: rgba(30, 58, 138, 0.35);
+            border: 1.5px solid rgba(59, 130, 246, 0.6);
+            border-radius: 8px;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.78rem;
+            letter-spacing: 0.03em;
             cursor: pointer;
             transition: all 0.25s ease;
             font-family: inherit;
@@ -695,29 +655,31 @@
             flex-shrink: 0;
             margin-right: 4px;
             text-transform: uppercase;
+            backdrop-filter: blur(10px);
         }
 
         .search-bar button:not(.clear-btn):hover {
-            background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+            background: rgba(30, 58, 138, 0.55);
+            border-color: #93c5fd;
             box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
             transform: translateY(-1px);
         }
 
         .search-bar .clear-btn {
-            width: 32px;
-            height: 32px;
+            width: 34px;
+            height: 34px;
             padding: 0;
             background: transparent;
             border: none;
             border-radius: 50%;
-            color: rgba(237, 237, 239, 0.5);
+            color: rgba(237, 237, 239, 0.4);
             cursor: pointer;
             transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
         }
 
         .search-bar .clear-btn:hover {
@@ -780,6 +742,10 @@
             isolation: isolate;
         }
 
+        .doc-card.hidden {
+            display: none;
+        }
+
         .doc-card::before {
             content: '';
             position: absolute;
@@ -790,7 +756,6 @@
             z-index: 0;
         }
 
-        /* Moving light on edge */
         .doc-card::after {
             content: '';
             position: absolute;
@@ -846,6 +811,16 @@
 
         .doc-card:hover::before {
             border-color: rgba(96, 165, 250, 0.7);
+        }
+
+        /* Highlight matched text */
+        .highlight {
+            background: rgba(251, 191, 36, 0.25);
+            color: #fde68a;
+            padding: 1px 3px;
+            border-radius: 4px;
+            font-weight: 800;
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
         }
 
         .doc-card .doc-top {
@@ -1061,7 +1036,10 @@
         .empty-state {
             text-align: center;
             padding: 80px 20px;
+            display: none;
         }
+
+        .empty-state.show { display: block; }
 
         .empty-state .empty-icon {
             font-size: 4rem;
@@ -1372,10 +1350,14 @@
             .doc-card { padding: 16px 18px; }
             .doc-card .doc-module { font-size: 0.95rem; }
             .doc-card .doc-university { display: block; margin-left: 0; margin-top: 2px; }
+            .search-bar { height: 50px; padding: 0 4px 0 12px; }
+            .search-bar input { font-size: 0.88rem; }
+            .search-bar button:not(.clear-btn) { padding: 8px 14px; font-size: 0.7rem; }
         }
 
         @media (max-width: 380px) {
             .icon-btn:nth-child(n+2):not(.user-avatar) { display: none; }
+            .search-bar button:not(.clear-btn) span { display: none; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -1396,15 +1378,6 @@
         <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
         <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
         <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
-    </div>
-
-    <!-- PAGE TRANSITION -->
-    <div class="page-transition-overlay" id="pageTransition">
-        <div class="slide-panel"></div>
-        <div class="slide-panel"></div>
-        <div class="slide-panel"></div>
-        <div class="slide-panel"></div>
-        <div class="slide-panel"></div>
     </div>
 
     <canvas id="rain-canvas"></canvas>
@@ -1428,7 +1401,7 @@
             <div class="topnav-search">
                 <div class="search-wrap">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="topSearch" placeholder="Search notes, modules, courses...">
+                    <input type="text" id="topSearch" placeholder="Search notes, modules, courses..." autocomplete="off">
                     <button class="search-btn">
                         <i class="fas fa-arrow-right"></i>
                     </button>
@@ -1489,10 +1462,12 @@
                 <p>Explore notes and past papers shared by fellow students</p>
             </div>
 
-            <div class="search-bar">
+            <!-- POWERFUL LIVE SEARCH BAR -->
+            <div class="search-bar" id="searchBar">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Search by module, course, keyword..." oninput="filterDocs()">
-                <button onclick="filterDocs()">SEARCH</button>
+                <input type="text" id="searchInput" placeholder="Type to search notes — title, module, course, university..." autocomplete="off">
+                <span class="search-count" id="searchCount">0 found</span>
+                <button type="button" onclick="filterDocs()"><span>SEARCH</span></button>
                 <button class="clear-btn" onclick="clearSearch()" aria-label="Clear search">
                     <i class="fas fa-times"></i>
                 </button>
@@ -1508,7 +1483,11 @@
                 {% if notes %}
                     {% for note in notes %}
                         <div class="doc-card" 
-                             data-search="{{ note.module|default:''|lower }} {{ note.course|default:''|lower }} {{ note.description|default:''|lower }} {{ note.university|default:''|lower }}"
+                             data-search="{{ note.module|default:''|lower }} {{ note.course|default:''|lower }} {{ note.description|default:''|lower }} {{ note.university|default:''|lower }} {{ note.file_type|default:''|lower }}"
+                             data-module="{{ note.module|default:'' }}"
+                             data-course="{{ note.course|default:'' }}"
+                             data-university="{{ note.university|default:'' }}"
+                             data-description="{{ note.description|default:'' }}"
                              data-file-type="{{ note.file_type }}"
                              data-privacy="{{ note.privacy }}">
                             <div class="doc-top">
@@ -1520,14 +1499,14 @@
                                         {% if note.privacy == 'private' %}
                                             <i class="fas fa-lock lock-icon"></i>
                                         {% endif %}
-                                        {{ note.module|default:"Untitled" }}
+                                        <span class="searchable-module">{{ note.module|default:"Untitled" }}</span>
                                     </div>
                                     <div>
-                                        <span class="doc-course"><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
-                                        <span class="doc-university"><i class="fas fa-university"></i> {{ note.university|default:"Not specified" }}</span>
+                                        <span class="doc-course"><i class="fas fa-book"></i> <span class="searchable-course">{{ note.course|default:"N/A" }}</span></span>
+                                        <span class="doc-university"><i class="fas fa-university"></i> <span class="searchable-university">{{ note.university|default:"Not specified" }}</span></span>
                                     </div>
                                     {% if note.description %}
-                                        <div class="doc-description">{{ note.description|truncatechars:120 }}</div>
+                                        <div class="doc-description searchable-description">{{ note.description|truncatechars:120 }}</div>
                                     {% endif %}
                                     <div>
                                         <span class="doc-date"><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
@@ -1562,14 +1541,14 @@
                             </div>
                         </div>
                     {% endfor %}
-                {% else %}
-                    <div class="empty-state">
-                        <div class="empty-icon"><i class="fas fa-book-open"></i></div>
-                        <h3>No files yet</h3>
-                        <p>Be the first to share your study materials</p>
-                        <a href="/upload/" class="upload-link"><i class="fas fa-cloud-upload-alt"></i> Upload Now</a>
-                    </div>
                 {% endif %}
+            </div>
+
+            <!-- Empty state when no results found -->
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon"><i class="fas fa-search-minus"></i></div>
+                <h3>No notes found</h3>
+                <p>Try different keywords or check your spelling</p>
             </div>
         </div>
 
@@ -1729,41 +1708,6 @@
         })();
 
         // ============================================================
-        // PAGE TRANSITION — FAST SMOKY BLUE
-        // ============================================================
-        (function initPageTransition() {
-            const overlay = document.getElementById('pageTransition');
-
-            document.body.classList.add('page-entering');
-            setTimeout(() => document.body.classList.remove('page-entering'), 500);
-
-            document.querySelectorAll('a:not([target="_blank"]):not([data-no-transition])').forEach(link => {
-                const href = link.getAttribute('href');
-                if (!href || href === '' || href.startsWith('#') || href.startsWith('javascript:') ||
-                    href.startsWith('mailto:') || href.startsWith('tel:') ||
-                    href.startsWith('http://') || href.startsWith('https://') || href.startsWith('//')) {
-                    return;
-                }
-                if (link.dataset.transitionBound) return;
-                link.dataset.transitionBound = '1';
-
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    overlay.classList.add('active');
-                    document.body.classList.add('page-exiting');
-                    setTimeout(() => window.location.href = href, 400);
-                });
-            });
-
-            window.addEventListener('pageshow', function(e) {
-                if (e.persisted) {
-                    document.body.classList.remove('page-exiting');
-                    overlay.classList.remove('active');
-                }
-            });
-        })();
-
-        // ============================================================
         // RAIN CANVAS — BLUE
         // ============================================================
         (function initRain() {
@@ -1843,6 +1787,174 @@
         overlay.addEventListener('click', closeSidebar);
 
         // ============================================================
+        // POWERFUL LIVE SEARCH — INSTANT FILTER
+        // ============================================================
+        const searchInput = document.getElementById('searchInput');
+        const topSearchInput = document.getElementById('topSearch');
+        const searchBar = document.getElementById('searchBar');
+        const searchCount = document.getElementById('searchCount');
+        const emptyState = document.getElementById('emptyState');
+
+        let debounceTimer = null;
+
+        // Remove existing highlight
+        function clearHighlights(root) {
+            root.querySelectorAll('.highlight').forEach(el => {
+                const parent = el.parentNode;
+                parent.replaceChild(document.createTextNode(el.textContent), el);
+                parent.normalize();
+            });
+        }
+
+        // Highlight matches in text
+        function highlightMatches(element, query) {
+            if (!element || !query) return;
+            const text = element.textContent;
+            const lowerText = text.toLowerCase();
+            const lowerQuery = query.toLowerCase();
+            const index = lowerText.indexOf(lowerQuery);
+
+            if (index === -1) return;
+
+            // Clear any existing highlights first
+            clearHighlights(element);
+
+            // Re-get text after clearing
+            const currentText = element.textContent;
+            const currentIndex = currentText.toLowerCase().indexOf(lowerQuery);
+
+            if (currentIndex === -1) return;
+
+            const before = currentText.substring(0, currentIndex);
+            const match = currentText.substring(currentIndex, currentIndex + query.length);
+            const after = currentText.substring(currentIndex + query.length);
+
+            element.innerHTML = '';
+            if (before) element.appendChild(document.createTextNode(before));
+            const span = document.createElement('span');
+            span.className = 'highlight';
+            span.textContent = match;
+            element.appendChild(span);
+            if (after) element.appendChild(document.createTextNode(after));
+        }
+
+        // Main filter function — LIVE
+        function filterDocs() {
+            const q = (searchInput.value || '').trim().toLowerCase();
+            const cards = document.querySelectorAll('.doc-card');
+            let visible = 0;
+            let notes = 0;
+            let papers = 0;
+
+            // Add "searching" visual feedback
+            if (q.length > 0) {
+                searchBar.classList.add('searching');
+            } else {
+                searchBar.classList.remove('searching');
+            }
+
+            cards.forEach(card => {
+                // Clear previous highlights
+                card.querySelectorAll('.searchable-module, .searchable-course, .searchable-university, .searchable-description').forEach(el => {
+                    clearHighlights(el);
+                });
+
+                const data = (card.dataset.search || '').toLowerCase();
+
+                if (!q || data.includes(q)) {
+                    card.classList.remove('hidden');
+                    card.style.display = '';
+                    visible++;
+
+                    // Count notes vs papers
+                    if (card.dataset.fileType === 'notes') notes++;
+                    else if (card.dataset.fileType === 'pastpaper') papers++;
+                    else notes++;
+
+                    // Highlight matches in each field
+                    if (q) {
+                        highlightMatches(card.querySelector('.searchable-module'), q);
+                        highlightMatches(card.querySelector('.searchable-course'), q);
+                        highlightMatches(card.querySelector('.searchable-university'), q);
+                        highlightMatches(card.querySelector('.searchable-description'), q);
+                    }
+                } else {
+                    card.classList.add('hidden');
+                    card.style.display = 'none';
+                }
+            });
+
+            // Update counts
+            document.getElementById('totalCount').textContent = visible;
+            document.getElementById('notesCount').textContent = notes;
+            document.getElementById('papersCount').textContent = papers;
+
+            // Show/hide search count badge
+            if (q) {
+                searchCount.textContent = visible + ' found';
+                searchCount.classList.add('visible');
+            } else {
+                searchCount.classList.remove('visible');
+            }
+
+            // Show/hide empty state
+            if (visible === 0 && q) {
+                emptyState.classList.add('show');
+            } else {
+                emptyState.classList.remove('show');
+            }
+        }
+
+        // Debounced live search — for performance on large lists
+        function debouncedFilter() {
+            if (debounceTimer) clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(filterDocs, 120);
+        }
+
+        // Live search on every keystroke — INSTANT
+        if (searchInput) {
+            searchInput.addEventListener('input', debouncedFilter);
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    filterDocs();
+                }
+            });
+        }
+
+        // Top nav search — syncs with main search
+        if (topSearchInput) {
+            topSearchInput.addEventListener('input', function() {
+                if (searchInput) {
+                    searchInput.value = this.value;
+                    debouncedFilter();
+                }
+            });
+            topSearchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (searchInput) {
+                        searchInput.value = this.value;
+                        filterDocs();
+                        searchInput.focus();
+                    }
+                }
+            });
+        }
+
+        // Clear search
+        function clearSearch() {
+            if (searchInput) searchInput.value = '';
+            if (topSearchInput) topSearchInput.value = '';
+            searchBar.classList.remove('searching');
+            searchCount.classList.remove('visible');
+            filterDocs();
+        }
+
+        window.filterDocs = filterDocs;
+        window.clearSearch = clearSearch;
+
+        // ============================================================
         // BACK TO TOP
         // ============================================================
         const backToTopBtn = document.getElementById('backToTop');
@@ -1855,58 +1967,8 @@
         });
 
         // ============================================================
-        // FILTER
+        // INITIAL COUNTS
         // ============================================================
-        function filterDocs() {
-            const q = document.getElementById('searchInput').value.toLowerCase().trim();
-            const cards = document.querySelectorAll('.doc-card');
-            let count = 0, notes = 0, papers = 0;
-
-            cards.forEach(card => {
-                const data = card.dataset.search || '';
-                if (!q || data.includes(q)) {
-                    card.style.display = '';
-                    count++;
-                    if (card.dataset.fileType === 'notes') notes++;
-                    else if (card.dataset.fileType === 'pastpaper') papers++;
-                    else notes++;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-
-            document.getElementById('totalCount').textContent = count;
-            document.getElementById('notesCount').textContent = notes;
-            document.getElementById('papersCount').textContent = papers;
-        }
-
-        window.filterDocs = filterDocs;
-
-        function clearSearch() {
-            document.getElementById('searchInput').value = '';
-            filterDocs();
-        }
-
-        window.clearSearch = clearSearch;
-
-        // ============================================================
-        // TOP NAV SEARCH SYNC
-        // ============================================================
-        document.getElementById('topSearch').addEventListener('input', function() {
-            const mainSearch = document.getElementById('searchInput');
-            if (mainSearch) {
-                mainSearch.value = this.value;
-                filterDocs();
-            }
-        });
-
-        document.getElementById('topSearch').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                document.getElementById('searchInput').scrollIntoView({ behavior: 'smooth', block: 'center' });
-                filterDocs();
-            }
-        });
-
         document.addEventListener('DOMContentLoaded', function() {
             const cards = document.querySelectorAll('.doc-card');
             let notes = 0, papers = 0;
@@ -1918,7 +1980,7 @@
             document.getElementById('notesCount').textContent = notes;
             document.getElementById('papersCount').textContent = papers;
 
-            console.log('⚡ Student Hub — Browse Page Loaded');
+            console.log('⚡ Student Hub — Browse Page Loaded (Live Search Active)');
         });
     </script>
 </body>
