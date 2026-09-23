@@ -3,1031 +3,572 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Browse | Student Hub ✦</title>
+    <title>Browse Notes | Student Hub</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        :root {
-            --board: #000000;
-            --chalk: #ededef;
-            --chalk-dim: rgba(237, 237, 239, 0.6);
-            --chalk-faint: rgba(237, 237, 239, 0.10);
-
-            --blue-900: #172554;
-            --blue-800: #1e3a8a;
-            --blue-700: #1d4ed8;
-            --blue-600: #2563eb;
-            --blue-500: #3b82f6;
-            --blue-400: #60a5fa;
-            --blue-300: #93c5fd;
-            --blue-glow: rgba(59, 130, 246, 0.35);
-            --blue-dim: rgba(59, 130, 246, 0.15);
-
-            --purple-600: #7c3aed;
-            --purple-500: #8b5cf6;
-            --purple-400: #a855f7;
-            --purple-300: #c084fc;
-            --purple-glow: rgba(168, 85, 247, 0.45);
-            --purple-dim: rgba(168, 85, 247, 0.20);
-
-            --gold: #fbbf24;
-            --gold-bright: #fde68a;
-            --gold-glow: rgba(251, 191, 36, 0.35);
-
-            --orange: #f97316;
-            --orange-bright: #fb923c;
-            --orange-glow: rgba(249, 115, 22, 0.35);
-
-            --cyan: #06b6d4;
-            --cyan-bright: #22d3ee;
-            --cyan-glow: rgba(6, 182, 212, 0.35);
-
-            --green: #22c55e;
-            --green-bright: #4ade80;
-            --green-glow: rgba(34, 197, 94, 0.25);
-
-            --red: #ef4444;
-            --red-bright: #f87171;
-            --red-glow: rgba(239, 68, 68, 0.35);
-            --red-dim: rgba(239, 68, 68, 0.15);
-
-            --silver: #c0c0c0;
-        }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html {
-            font-size: 16px;
-            scroll-behavior: smooth;
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #000000;
-            color: var(--chalk);
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #ffffff;
+            color: #2c3e50;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
-        h1, h2, h3, h4 {
-            font-family: 'Plus Jakarta Sans', 'Space Grotesk', sans-serif;
-            letter-spacing: -0.02em;
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* ============================================================
+           TOP BAR
+           ============================================================ */
+        .topbar {
+            background: #1a2b47;
+            color: #ffffff;
+            font-size: 0.82rem;
+            padding: 8px 0;
+        }
+
+        .topbar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            text-align: center;
+        }
+
+        .topbar-inner span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #cdd6e4;
+            white-space: nowrap;
+        }
+
+        .topbar-inner span i {
+            color: #17a2b8;
+            font-size: 0.78rem;
         }
 
         /* ============================================================
-           BLUE BUBBLES FALLING FROM TOP
+           MAIN NAV
            ============================================================ */
-        .bubbles-container {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        .bubble {
-            position: absolute;
-            top: -120px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%,
-                rgba(96, 165, 250, 0.55) 0%,
-                rgba(59, 130, 246, 0.35) 30%,
-                rgba(30, 58, 138, 0.15) 60%,
-                transparent 100%);
-            box-shadow:
-                inset 0 0 25px rgba(147, 197, 253, 0.25),
-                0 0 40px rgba(59, 130, 246, 0.35),
-                0 0 80px rgba(59, 130, 246, 0.15);
-            border: 1px solid rgba(147, 197, 253, 0.20);
-            animation: bubbleFall linear infinite;
-        }
-
-        .bubble::after {
-            content: '';
-            position: absolute;
-            top: 15%;
-            left: 20%;
-            width: 22%;
-            height: 22%;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.45);
-            filter: blur(2px);
-        }
-
-        @keyframes bubbleFall {
-            0% { transform: translateY(0) translateX(0) scale(0.5); opacity: 0; }
-            10% { opacity: 0.75; }
-            50% { transform: translateY(55vh) translateX(25px) scale(1); opacity: 0.85; }
-            90% { opacity: 0.4; }
-            100% { transform: translateY(115vh) translateX(-20px) scale(0.7); opacity: 0; }
-        }
-
-        .bubble:nth-child(1) { left: 4%; width: 70px; height: 70px; animation-duration: 14s; animation-delay: 0s; }
-        .bubble:nth-child(2) { left: 12%; width: 35px; height: 35px; animation-duration: 17s; animation-delay: 1s; }
-        .bubble:nth-child(3) { left: 22%; width: 90px; height: 90px; animation-duration: 15s; animation-delay: 2s; }
-        .bubble:nth-child(4) { left: 35%; width: 50px; height: 50px; animation-duration: 18s; animation-delay: 0.5s; }
-        .bubble:nth-child(5) { left: 45%; width: 110px; height: 110px; animation-duration: 19s; animation-delay: 3s; }
-        .bubble:nth-child(6) { left: 55%; width: 40px; height: 40px; animation-duration: 13s; animation-delay: 1.5s; }
-        .bubble:nth-child(7) { left: 65%; width: 60px; height: 60px; animation-duration: 16s; animation-delay: 2.5s; }
-        .bubble:nth-child(8) { left: 75%; width: 45px; height: 45px; animation-duration: 15s; animation-delay: 3.5s; }
-        .bubble:nth-child(9) { left: 85%; width: 80px; height: 80px; animation-duration: 18s; animation-delay: 1.2s; }
-        .bubble:nth-child(10) { left: 93%; width: 55px; height: 55px; animation-duration: 14s; animation-delay: 4s; }
-        .bubble:nth-child(11) { left: 8%; width: 100px; height: 100px; animation-duration: 20s; animation-delay: 5s; }
-        .bubble:nth-child(12) { left: 40%; width: 30px; height: 30px; animation-duration: 12s; animation-delay: 6s; }
-
-        /* ============================================================
-           RAIN CANVAS
-           ============================================================ */
-        #rain-canvas {
-            position: fixed;
-            inset: 0;
-            width: 100%; height: 100%;
-            z-index: 0;
-            pointer-events: none;
-            opacity: 0.4;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            background:
-                radial-gradient(ellipse at 30% 20%, rgba(30, 58, 138, 0.15) 0%, transparent 60%),
-                radial-gradient(ellipse at 70% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(23, 37, 84, 0.10) 0%, transparent 40%);
-            animation: ambientPulse 6s ease-in-out infinite;
-        }
-
-        @keyframes ambientPulse {
-            0%, 100% { opacity: .6; }
-            50% { opacity: 1; }
-        }
-
-        /* ============================================================
-           SMART TOP NAVBAR
-           ============================================================ */
-        .topnav {
+        .mainnav {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e8ed;
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(5, 8, 15, 0.92);
-            backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border-bottom: 1px solid rgba(59, 130, 246, 0.15);
-            transition: all 0.3s ease;
+            width: 100%;
         }
 
-        .topnav-inner {
-            max-width: 1400px;
+        .mainnav-inner {
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 10px 24px;
+            padding: 14px 20px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
             gap: 20px;
         }
 
-        .topnav-left {
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: #1a2b47;
+            letter-spacing: -0.02em;
+            flex-shrink: 0;
+        }
+
+        .logo-mark {
+            width: 38px;
+            height: 38px;
+            background: #17a2b8;
+            border-radius: 50% 50% 50% 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1rem;
+            transform: rotate(-45deg);
+            flex-shrink: 0;
+        }
+
+        .logo-mark i { transform: rotate(45deg); }
+        .logo-text span { color: #17a2b8; }
+
+        .menu {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            flex-wrap: wrap;
+            justify-content: center;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .menu a {
+            padding: 8px 12px;
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: #2c3e50;
+            border-radius: 4px;
+            white-space: nowrap;
+            transition: color 0.25s ease, background 0.25s ease;
+        }
+
+        .menu a:hover { color: #17a2b8; background: #f0f8fa; }
+        .menu a.active { color: #17a2b8; background: #f0f8fa; }
+
+        .nav-right {
             display: flex;
             align-items: center;
             gap: 12px;
             flex-shrink: 0;
         }
 
-        .menu-toggle {
-            width: 38px;
-            height: 38px;
-            border: 1.5px solid rgba(59, 130, 246, 0.30);
-            border-radius: 10px;
-            background: rgba(15, 23, 42, 0.5);
-            color: #60a5fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .btn-quote {
+            background: #17a2b8;
+            color: #ffffff;
+            padding: 11px 22px;
+            border-radius: 3px;
+            font-weight: 700;
             font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .menu-toggle:hover {
-            border-color: #60a5fa;
-            color: #93c5fd;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
-        }
-
-        .brand {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            flex-shrink: 0;
+            gap: 8px;
+            transition: background 0.25s ease;
+            white-space: nowrap;
         }
 
-        .brand-mark {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--blue-800), var(--blue-600));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-weight: 800;
-            font-size: 1.05rem;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        .btn-quote:hover { background: #138496; }
+
+        /* ============================================================
+           BROWSE HERO — Compact banner
+           ============================================================ */
+        .browse-hero {
+            background: linear-gradient(135deg, #1a2b47 0%, #0f1b2e 100%);
+            color: #ffffff;
+            padding: 60px 20px 50px;
+            text-align: center;
             position: relative;
             overflow: hidden;
         }
 
-        .brand-mark::after {
+        .browse-hero::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, transparent 40%, rgba(255, 255, 255, 0.2) 50%, transparent 60%);
-            animation: shimmer 3s ease-in-out infinite;
-        }
-
-        @keyframes shimmer {
-            0%, 100% { transform: translateX(-100%); }
-            50% { transform: translateX(100%); }
-        }
-
-        .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
-
-        .brand-name {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 1rem;
-            font-weight: 800;
-            color: #ededef;
-            letter-spacing: -0.02em;
-        }
-
-        .brand-tag {
-            font-size: 0.6rem;
-            font-weight: 500;
-            color: #60a5fa;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-
-        .topnav-search {
-            flex: 1;
-            max-width: 560px;
-            position: relative;
-        }
-
-        .search-wrap {
-            display: flex;
-            align-items: center;
-            background: rgba(15, 23, 42, 0.65);
-            border: 1.5px solid rgba(59, 130, 246, 0.25);
-            border-radius: 12px;
-            padding: 0 4px 0 14px;
-            transition: all 0.25s ease;
-            height: 42px;
-        }
-
-        .search-wrap:focus-within {
-            border-color: #60a5fa;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15),
-                        0 0 25px rgba(59, 130, 246, 0.2);
-            background: rgba(15, 23, 42, 0.85);
-        }
-
-        .search-wrap i.fa-search {
-            color: #60a5fa;
-            font-size: 0.85rem;
-            margin-right: 10px;
-            flex-shrink: 0;
-        }
-
-        .search-wrap input {
-            flex: 1;
-            background: none;
-            border: none;
-            outline: none;
-            color: #ededef;
-            font-size: 0.88rem;
-            font-family: inherit;
-            padding: 10px 0;
-            min-width: 0;
-        }
-
-        .search-wrap input::placeholder { color: rgba(237, 237, 239, 0.4); }
-
-        .search-btn {
-            padding: 8px 18px;
-            background: linear-gradient(135deg, var(--blue-600), var(--blue-700));
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-            font-weight: 700;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            font-family: inherit;
-            white-space: nowrap;
-        }
-
-        .search-btn:hover {
-            background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-            transform: translateY(-1px);
-        }
-
-        .topnav-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-
-        .icon-btn {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: rgba(15, 23, 42, 0.5);
-            border: 1.5px solid rgba(59, 130, 246, 0.20);
-            color: #60a5fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            text-decoration: none;
-            position: relative;
-        }
-
-        .icon-btn:hover {
-            background: rgba(59, 130, 246, 0.15);
-            border-color: #60a5fa;
-            color: #93c5fd;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
-        }
-
-        .user-avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
-            color: #fff;
-            font-weight: 800;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: 1.5px solid rgba(147, 197, 253, 0.4);
-            transition: all 0.25s ease;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        .user-avatar:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
-        }
-
-        /* ============================================================
-           CATEGORIES NAV
-           ============================================================ */
-        .cat-nav {
-            background: rgba(8, 12, 20, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(59, 130, 246, 0.12);
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-
-        .cat-nav::-webkit-scrollbar { display: none; }
-
-        .cat-nav-inner {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 24px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            position: relative;
-            height: 48px;
-        }
-
-        .cat-glass-indicator {
-            position: absolute;
-            top: 6px;
-            bottom: 6px;
-            border-radius: 10px;
-            background: linear-gradient(135deg,
-                rgba(30, 58, 138, 0.9) 0%,
-                rgba(37, 99, 235, 0.7) 50%,
-                rgba(30, 58, 138, 0.9) 100%);
-            backdrop-filter: blur(12px) saturate(180%);
-            -webkit-backdrop-filter: blur(12px) saturate(180%);
-            box-shadow:
-                inset 0 0 20px rgba(147, 197, 253, 0.25),
-                0 0 25px rgba(59, 130, 246, 0.5),
-                0 4px 15px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(147, 197, 253, 0.35);
-            transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+            background:
+                radial-gradient(circle at 20% 30%, rgba(23, 162, 184, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(23, 162, 184, 0.10) 0%, transparent 50%);
             pointer-events: none;
+        }
+
+        .browse-hero-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
             z-index: 1;
-            opacity: 0;
         }
 
-        .cat-glass-indicator.visible { opacity: 1; }
-
-        .cat-glass-indicator::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 10px;
-            background: linear-gradient(90deg,
-                transparent 0%,
-                rgba(255, 255, 255, 0.12) 20%,
-                rgba(255, 255, 255, 0.25) 50%,
-                rgba(255, 255, 255, 0.12) 80%,
-                transparent 100%);
-            background-size: 200% 100%;
-            animation: shimmerSlide 2.5s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes shimmerSlide {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
-
-        .cat-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 14px;
-            border-radius: 10px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: rgba(237, 237, 239, 0.7);
-            text-decoration: none;
-            transition: color 0.25s ease;
-            white-space: nowrap;
-            position: relative;
-            z-index: 2;
-            cursor: pointer;
-            flex-shrink: 0;
-            font-family: inherit;
-            background: transparent;
-            border: none;
-        }
-
-        .cat-link i {
+        .browse-label {
+            color: #17a2b8;
             font-size: 0.8rem;
-            color: #60a5fa;
-            transition: color 0.25s ease;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: block;
         }
 
-        .cat-link:hover { color: #ffffff; }
-        .cat-link:hover i { color: #93c5fd; }
-        .cat-link.active { color: #ffffff; }
-        .cat-link.active i { color: #ffffff; }
-
-        /* ============================================================
-           BROWSE CONTAINER
-           ============================================================ */
-        .wrap { position: relative; z-index: 1; }
-
-        .browse-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px 16px 60px;
+        .browse-hero h1 {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 900;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 14px;
         }
 
-        .browse-header {
-            text-align: center;
-            margin-bottom: 30px;
+        .browse-hero h1 .accent {
+            color: #ff5a5f;
+            text-decoration: underline;
+            text-decoration-color: #ff5a5f;
+            text-underline-offset: 6px;
+            text-decoration-thickness: 4px;
         }
 
-        .browse-title {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: clamp(1.5rem, 3.2vw, 2.2rem);
-            font-weight: 800;
-            margin-bottom: 8px;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            color: #ededef;
+        .browse-hero p {
+            color: #cdd6e4;
+            font-size: clamp(0.92rem, 1.4vw, 1.05rem);
+            max-width: 560px;
+            margin: 0 auto 28px;
+            line-height: 1.7;
         }
 
-        .browse-title .typed-text {
-            background: linear-gradient(135deg, #60a5fa 0%, #93c5fd 50%, #bfdbfe 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .browse-title .typing-cursor {
-            display: inline-block;
-            width: 3px;
-            height: 0.95em;
-            background: #60a5fa;
-            margin-left: 2px;
-            vertical-align: text-bottom;
-            animation: blink 0.9s step-end infinite;
-            box-shadow: 0 0 12px rgba(59, 130, 246, 0.7);
-            border-radius: 2px;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        .emoji-blink {
-            display: inline-block;
-            animation: emojiFloat 2.5s ease-in-out infinite;
-        }
-
-        @keyframes emojiFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-4px) rotate(5deg); }
-        }
-
-        .browse-header p {
-            color: var(--chalk-dim);
-            font-size: clamp(0.82rem, 1.3vw, 0.95rem);
-        }
-
-        /* ============================================================
-           SEARCH BAR — POWERFUL LIVE SEARCH
-           ============================================================ */
+        /* Search bar */
         .search-bar {
+            max-width: 560px;
+            margin: 0 auto;
             display: flex;
             align-items: center;
-            gap: 0;
-            margin-bottom: 24px;
-            background: rgba(15, 23, 42, 0.65);
-            border: 1.5px solid rgba(59, 130, 246, 0.35);
-            border-radius: 12px;
-            padding: 0 4px 0 14px;
-            transition: all 0.25s ease;
-            position: relative;
-            backdrop-filter: blur(10px);
-            max-width: 100%;
-            height: 54px;
+            background: #ffffff;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.20);
         }
 
-        .search-bar:focus-within {
-            border-color: #60a5fa;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15),
-                        0 0 30px rgba(59, 130, 246, 0.3);
-            background: rgba(15, 23, 42, 0.85);
-        }
-
-        .search-bar i.fa-search {
-            color: #60a5fa;
+        .search-bar i {
+            padding: 0 4px 0 18px;
+            color: #8492a6;
             font-size: 0.95rem;
-            flex-shrink: 0;
-            margin-right: 10px;
-            pointer-events: none;
-            transition: color 0.25s ease;
-        }
-
-        .search-bar.searching i.fa-search {
-            animation: searchPulse 0.8s ease-in-out infinite;
-        }
-
-        @keyframes searchPulse {
-            0%, 100% { color: #60a5fa; transform: scale(1); }
-            50% { color: #93c5fd; transform: scale(1.1); }
         }
 
         .search-bar input {
             flex: 1;
-            background: none;
+            padding: 14px 14px;
             border: none;
-            padding: 14px 0;
-            color: var(--chalk);
-            font-size: 0.95rem;
-            font-family: inherit;
             outline: none;
-            min-width: 0;
-            font-weight: 500;
+            font-size: 0.92rem;
+            font-family: inherit;
+            color: #2c3e50;
+            background: transparent;
         }
 
         .search-bar input::placeholder {
-            color: rgba(237, 237, 239, 0.35);
-            font-size: 0.9rem;
+            color: #a8b3c4;
         }
 
-        .search-count {
-            font-size: 0.72rem;
-            color: #60a5fa;
-            font-weight: 700;
-            padding: 4px 10px;
-            background: rgba(59, 130, 246, 0.15);
-            border-radius: 20px;
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            margin-right: 6px;
-            white-space: nowrap;
-            opacity: 0;
-            transition: opacity 0.25s ease;
-        }
-
-        .search-count.visible { opacity: 1; }
-
-        .search-bar button:not(.clear-btn) {
-            padding: 9px 20px;
-            background: rgba(30, 58, 138, 0.35);
-            border: 1.5px solid rgba(59, 130, 246, 0.6);
-            border-radius: 8px;
+        .search-bar button {
+            padding: 14px 24px;
+            background: #17a2b8;
             color: #ffffff;
-            font-weight: 700;
-            font-size: 0.78rem;
-            letter-spacing: 0.03em;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            font-family: inherit;
-            white-space: nowrap;
-            flex-shrink: 0;
-            margin-right: 4px;
-            text-transform: uppercase;
-            backdrop-filter: blur(10px);
-        }
-
-        .search-bar button:not(.clear-btn):hover {
-            background: rgba(30, 58, 138, 0.55);
-            border-color: #93c5fd;
-            box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
-            transform: translateY(-1px);
-        }
-
-        .search-bar .clear-btn {
-            width: 34px;
-            height: 34px;
-            padding: 0;
-            background: transparent;
             border: none;
-            border-radius: 50%;
-            color: rgba(237, 237, 239, 0.4);
+            font-weight: 700;
+            font-size: 0.85rem;
             cursor: pointer;
-            transition: all 0.2s ease;
+            font-family: inherit;
+            transition: background 0.25s ease;
+        }
+
+        .search-bar button:hover { background: #138496; }
+
+        /* ============================================================
+           STATS
+           ============================================================ */
+        .stats-bar {
+            background: #f7f9fc;
+            border-bottom: 1px solid #e5e8ed;
+            padding: 16px 20px;
+        }
+
+        .stats-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+            font-size: 0.85rem;
+            color: #6b7c93;
+        }
+
+        .stats-inner span {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 0.8rem;
-        }
-
-        .search-bar .clear-btn:hover {
-            background: rgba(59, 130, 246, 0.15);
-            color: #93c5fd;
-        }
-
-        /* ============================================================
-           STATS ROW
-           ============================================================ */
-        .stats-row {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-        }
-
-        .stat-pill {
-            display: flex;
-            align-items: center;
             gap: 8px;
-            font-size: 0.78rem;
-            color: var(--chalk-dim);
-            background: rgba(15, 23, 42, 0.5);
-            padding: 8px 16px;
-            border-radius: 50px;
-            border: 1.5px solid rgba(59, 130, 246, 0.20);
-            backdrop-filter: blur(10px);
-            transition: all 0.25s ease;
+            font-weight: 600;
         }
 
-        .stat-pill:hover {
-            border-color: rgba(59, 130, 246, 0.5);
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
+        .stats-inner span i {
+            color: #17a2b8;
+            font-size: 0.85rem;
         }
 
-        .stat-pill i { color: #60a5fa; font-size: 0.85rem; }
-
-        .stat-pill strong { color: var(--gold); font-weight: 700; }
+        .stats-inner strong {
+            color: #1a2b47;
+            font-weight: 800;
+        }
 
         /* ============================================================
-           DOCUMENT CARDS — BLUE EDGE WITH MOVING LIGHT
+           DOC LIST
            ============================================================ */
+        .browse-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px 60px;
+        }
+
         .doc-list {
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 16px;
         }
 
+        /* Card layout — image left, details right */
         .doc-card {
-            position: relative;
-            background: rgba(10, 15, 25, 0.7);
-            border-radius: 18px;
-            padding: 20px 24px;
-            transition: all 0.3s ease;
-            cursor: pointer;
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            background: #ffffff;
+            border: 1px solid #e5e8ed;
+            border-radius: 8px;
             overflow: hidden;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            isolation: isolate;
+            transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
         }
-
-        .doc-card.hidden {
-            display: none;
-        }
-
-        .doc-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 18px;
-            border: 1.5px solid rgba(59, 130, 246, 0.25);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .doc-card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 18px;
-            padding: 1.5px;
-            background:
-                conic-gradient(from var(--card-angle, 0deg),
-                    transparent 0deg,
-                    transparent 320deg,
-                    rgba(59, 130, 246, 0.15) 340deg,
-                    rgba(96, 165, 250, 0.9) 355deg,
-                    rgba(191, 219, 254, 1) 360deg
-                );
-            -webkit-mask:
-                linear-gradient(#000 0 0) content-box,
-                linear-gradient(#000 0 0);
-            -webkit-mask-composite: xor;
-            mask:
-                linear-gradient(#000 0 0) content-box,
-                linear-gradient(#000 0 0);
-            mask-composite: exclude;
-            animation: cardTravel 3.5s linear infinite;
-            filter: drop-shadow(0 0 8px rgba(96, 165, 250, 1))
-                    drop-shadow(0 0 16px rgba(59, 130, 246, 0.8));
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        @keyframes cardTravel {
-            0%   { --card-angle: 0deg; }
-            100% { --card-angle: 360deg; }
-        }
-
-        @property --card-angle {
-            syntax: '<angle>';
-            initial-value: 0deg;
-            inherits: false;
-        }
-
-        .doc-card:nth-child(2n)::after { animation-duration: 4s; animation-delay: -0.5s; }
-        .doc-card:nth-child(3n)::after { animation-duration: 4.5s; animation-delay: -1.2s; }
-        .doc-card:nth-child(4n)::after { animation-duration: 5s; animation-delay: -2s; }
-        .doc-card:nth-child(5n)::after { animation-duration: 4.2s; animation-delay: -1.7s; }
 
         .doc-card:hover {
-            transform: translateY(-3px);
-            box-shadow:
-                0 12px 35px rgba(59, 130, 246, 0.4),
-                0 0 60px rgba(59, 130, 246, 0.2);
-            background: rgba(15, 25, 45, 0.85);
+            border-color: #17a2b8;
+            box-shadow: 0 12px 30px rgba(26, 43, 71, 0.10);
+            transform: translateY(-2px);
         }
 
-        .doc-card:hover::before {
-            border-color: rgba(96, 165, 250, 0.7);
-        }
-
-        /* Highlight matched text */
-        .highlight {
-            background: rgba(251, 191, 36, 0.25);
-            color: #fde68a;
-            padding: 1px 3px;
-            border-radius: 4px;
-            font-weight: 800;
-            box-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
-        }
-
-        .doc-card .doc-top {
-            display: flex;
-            align-items: flex-start;
-            gap: 14px;
+        /* Image side with mini slideshow */
+        .doc-img {
             position: relative;
-            z-index: 2;
+            min-height: 200px;
+            overflow: hidden;
+            background: #e8f6f8;
         }
 
-        .doc-card .doc-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
+        .doc-img-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
+        }
+
+        .doc-img-bg.active { opacity: 1; }
+
+        .doc-img::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(23, 162, 184, 0.20), rgba(26, 43, 71, 0.30));
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* File type badge */
+        .doc-img-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #1a2b47;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 5px 10px;
+            border-radius: 16px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            z-index: 3;
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-            background: rgba(59, 130, 246, 0.15);
-            border: 1.5px solid rgba(59, 130, 246, 0.30);
-            color: #60a5fa;
+            gap: 5px;
+        }
+
+        .doc-img-badge i { color: #17a2b8; font-size: 0.7rem; }
+
+        /* Privacy badge */
+        .doc-privacy-badge {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 12px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            z-index: 3;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .doc-privacy-badge.public {
+            background: rgba(34, 197, 94, 0.95);
+            color: #ffffff;
+        }
+
+        .doc-privacy-badge.private {
+            background: rgba(249, 115, 22, 0.95);
+            color: #ffffff;
+        }
+
+        /* Mini dots */
+        .doc-img-dots {
+            position: absolute;
+            bottom: 12px;
+            left: 14px;
+            display: flex;
+            gap: 5px;
+            z-index: 3;
+        }
+
+        .doc-img-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
             transition: all 0.3s ease;
         }
 
-        .doc-card:hover .doc-icon {
-            background: rgba(59, 130, 246, 0.25);
-            border-color: #93c5fd;
-            color: #93c5fd;
-            transform: scale(1.05);
+        .doc-img-dots span.active {
+            background: #ffffff;
+            width: 16px;
+            border-radius: 3px;
         }
 
-        .doc-card .doc-details {
-            flex: 1;
+        /* Content side */
+        .doc-body {
+            padding: 22px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
             min-width: 0;
         }
 
-        .doc-card .doc-module {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--chalk);
-            margin-bottom: 4px;
+        .doc-module {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #1a2b47;
             letter-spacing: -0.01em;
+            line-height: 1.3;
+            word-break: break-word;
         }
 
-        .doc-card .doc-module .lock-icon {
-            color: var(--orange);
-            font-size: 0.8rem;
+        .doc-module .lock-icon {
+            color: #f97316;
+            font-size: 0.85rem;
             margin-right: 6px;
         }
 
-        .doc-card .doc-course {
+        .doc-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
             font-size: 0.82rem;
+            color: #6b7c93;
             font-weight: 600;
-            color: var(--gold);
-            display: inline-block;
         }
 
-        .doc-card .doc-university {
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: rgba(237, 237, 239, 0.7);
-            display: inline-block;
-            margin-left: 12px;
+        .doc-meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        .doc-card .doc-university i {
-            color: rgba(237, 237, 239, 0.5);
-            margin-right: 4px;
+        .doc-meta span i {
+            color: #17a2b8;
+            font-size: 0.78rem;
         }
 
-        .doc-card .doc-description {
-            font-size: 0.85rem;
-            color: var(--chalk-dim);
+        .doc-meta .course { color: #d4a017; }
+        .doc-meta .course i { color: #d4a017; }
+
+        .doc-description {
+            color: #6b7c93;
+            font-size: 0.88rem;
+            line-height: 1.6;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            margin: 8px 0 12px;
-            line-height: 1.55;
+            margin-top: 2px;
         }
 
-        .doc-card .doc-date {
-            font-size: 0.75rem;
-            color: rgba(147, 197, 253, 0.85);
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .doc-card .doc-date i { color: rgba(59, 130, 246, 0.6); }
-
-        .doc-card .doc-size {
-            font-size: 0.75rem;
-            color: var(--green-bright);
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            margin-left: 14px;
-        }
-
-        .doc-card .doc-size i { color: rgba(34, 197, 94, 0.6); }
-
-        .doc-card .doc-bottom {
+        .doc-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
             gap: 10px;
-            margin-top: 4px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .doc-card .doc-badges {
-            display: flex;
-            gap: 6px;
             flex-wrap: wrap;
+            margin-top: auto;
+            padding-top: 6px;
         }
 
-        .doc-card .badge {
-            padding: 3px 12px;
-            border-radius: 50px;
-            font-size: 0.62rem;
-            font-weight: 700;
-            border: 1px solid transparent;
-            letter-spacing: 0.02em;
+        .doc-info {
+            display: flex;
+            gap: 14px;
+            font-size: 0.75rem;
+            color: #a8b3c4;
+            font-weight: 600;
         }
 
-        .badge-public {
-            background: rgba(34, 197, 94, 0.12);
-            color: var(--green-bright);
-            border-color: rgba(34, 197, 94, 0.25);
+        .doc-info span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
-        .badge-private {
-            background: rgba(249, 115, 22, 0.12);
-            color: var(--orange-bright);
-            border-color: rgba(249, 115, 22, 0.25);
+        .doc-info i {
+            font-size: 0.72rem;
         }
 
-        .badge-type {
-            background: rgba(255, 255, 255, 0.05);
-            color: rgba(237, 237, 239, 0.7);
-            border-color: rgba(255, 255, 255, 0.10);
-        }
-
-        .badge-inline {
-            background: rgba(59, 130, 246, 0.15);
-            color: #93c5fd;
-            border-color: rgba(59, 130, 246, 0.3);
-        }
-
-        .doc-card .doc-actions {
+        .doc-actions {
             display: flex;
             gap: 8px;
         }
 
-        .doc-card .doc-actions a {
-            padding: 7px 16px;
-            border-radius: 10px;
+        .btn-view {
+            padding: 8px 16px;
+            background: rgba(23, 162, 184, 0.10);
+            color: #17a2b8;
+            border: 1px solid rgba(23, 162, 184, 0.30);
+            border-radius: 4px;
             font-size: 0.75rem;
             font-weight: 700;
-            border: 1.5px solid transparent;
-            transition: all 0.25s ease;
-            text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            font-family: inherit;
             cursor: pointer;
-            letter-spacing: 0.02em;
-        }
-
-        .btn-view {
-            background: rgba(59, 130, 246, 0.15);
-            color: #93c5fd;
-            border-color: rgba(59, 130, 246, 0.3);
+            transition: all 0.25s ease;
+            font-family: inherit;
         }
 
         .btn-view:hover {
-            background: rgba(59, 130, 246, 0.3);
-            border-color: #60a5fa;
+            background: #17a2b8;
             color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+            border-color: #17a2b8;
         }
 
         .btn-download {
-            background: rgba(30, 58, 138, 0.35);
-            color: #bfdbfe;
-            border-color: rgba(59, 130, 246, 0.5);
-            backdrop-filter: blur(10px);
-            box-shadow:
-                inset 0 1px 0 rgba(147, 197, 253, 0.15),
-                0 4px 15px rgba(30, 58, 138, 0.25);
+            padding: 8px 16px;
+            background: #17a2b8;
+            color: #ffffff;
+            border: 1px solid #17a2b8;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: inherit;
         }
 
         .btn-download:hover {
-            background: rgba(30, 58, 138, 0.6);
-            border-color: #93c5fd;
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow:
-                0 8px 25px rgba(59, 130, 246, 0.5),
-                0 0 40px rgba(59, 130, 246, 0.3);
+            background: #138496;
+            border-color: #138496;
+            transform: translateY(-1px);
         }
 
         /* ============================================================
@@ -1036,885 +577,492 @@
         .empty-state {
             text-align: center;
             padding: 80px 20px;
-            display: none;
         }
 
-        .empty-state.show { display: block; }
-
-        .empty-state .empty-icon {
-            font-size: 4rem;
-            color: rgba(59, 130, 246, 0.15);
+        .empty-icon {
+            font-size: 3.5rem;
+            color: #e5e8ed;
             margin-bottom: 16px;
         }
 
         .empty-state h3 {
-            color: var(--chalk-dim);
             font-size: 1.2rem;
+            font-weight: 800;
+            color: #1a2b47;
             margin-bottom: 8px;
         }
 
         .empty-state p {
-            color: rgba(237, 237, 239, 0.4);
-            font-size: 0.95rem;
+            color: #8492a6;
+            font-size: 0.92rem;
+            margin-bottom: 20px;
         }
 
-        .empty-state .upload-link {
-            display: inline-block;
-            margin-top: 24px;
-            padding: 12px 28px;
-            background: rgba(30, 58, 138, 0.25);
-            color: #ededef;
-            border: 1.5px solid rgba(59, 130, 246, 0.55);
-            border-radius: 12px;
-            text-decoration: none;
+        .empty-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: #17a2b8;
+            color: #ffffff;
+            border-radius: 4px;
             font-weight: 700;
-            transition: all 0.25s ease;
-            backdrop-filter: blur(10px);
+            font-size: 0.88rem;
+            transition: background 0.25s ease;
         }
 
-        .empty-state .upload-link:hover {
-            background: rgba(30, 58, 138, 0.5);
-            border-color: #60a5fa;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-        }
+        .empty-btn:hover { background: #138496; }
 
         /* ============================================================
-           BOTTOM SECTION
+           CTA
            ============================================================ */
-        .bottom-section {
+        .cta {
+            background: #1a2b47;
+            padding: 50px 20px;
+        }
+
+        .cta-inner {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 16px 50px;
-            text-align: center;
-            position: relative;
-            z-index: 3;
-        }
-
-        .contact-owner {
-            background: rgba(10, 15, 25, 0.7);
-            border: 1.5px solid rgba(59, 130, 246, 0.25);
-            border-radius: 80px;
-            padding: 14px 26px;
-            display: inline-flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-bottom: 30px;
-            transition: all 0.3s;
-            backdrop-filter: blur(10px);
-        }
-
-        .contact-owner:hover {
-            border-color: #60a5fa;
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
-        }
-
-        .whatsapp-link {
-            background: rgba(37, 211, 102, 0.12);
-            padding: 8px 22px;
-            border-radius: 60px;
-            text-decoration: none;
-            color: #4be08a;
-            font-weight: 700;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.88rem;
-            border: 1.5px solid rgba(37, 211, 102, 0.25);
-        }
-
-        .whatsapp-link i { color: #60a5fa; }
-
-        .whatsapp-link:hover {
-            background: #25D366;
-            color: #fff;
-            box-shadow: 0 0 25px rgba(37, 211, 102, 0.5);
-            border-color: #25D366;
-        }
-
-        .whatsapp-link:hover i { color: #fff; }
-
-        .social-links {
             display: flex;
-            gap: 14px;
-            justify-content: center;
-            margin-top: 15px;
-        }
-
-        .social-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            background: rgba(10, 15, 25, 0.7);
-            border: 1.5px solid rgba(59, 130, 246, 0.25);
-            backdrop-filter: blur(10px);
-            text-decoration: none;
-        }
-
-        .social-icon:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-            border-color: #60a5fa;
-        }
-
-        .social-icon i {
-            font-size: 1.3rem;
-            color: #60a5fa;
-            transition: all 0.3s ease;
-        }
-
-        .social-icon.tiktok:hover i { color: #00f2ea; text-shadow: 0 0 20px rgba(0, 242, 234, 0.6); }
-        .social-icon.instagram:hover i { color: #e4405f; text-shadow: 0 0 20px rgba(228, 64, 95, 0.6); }
-
-        .footer-text {
-            margin-top: 30px;
-            color: rgba(237, 237, 239, 0.5);
-            font-weight: 500;
-            font-size: 0.82rem;
-        }
-
-        /* ============================================================
-           BACK TO TOP
-           ============================================================ */
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: rgba(10, 15, 25, 0.85);
-            color: #60a5fa;
-            width: 46px;
-            height: 46px;
-            border-radius: 12px;
-            border: 1.5px solid rgba(59, 130, 246, 0.3);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            z-index: 999;
-            font-size: 1rem;
-            backdrop-filter: blur(10px);
-        }
-
-        .back-to-top:hover {
-            background: rgba(59, 130, 246, 0.2);
-            color: #93c5fd;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
-            border-color: #60a5fa;
-        }
-
-        .back-to-top.visible { display: flex; }
-
-        /* ============================================================
-           SIDEBAR
-           ============================================================ */
-        .sidebar-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 999;
-            display: none;
-        }
-
-        .sidebar-overlay.active { display: block; }
-
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -360px;
-            width: 320px;
-            max-width: 85vw;
-            height: 100%;
-            background: rgba(5, 8, 15, 0.98);
-            backdrop-filter: blur(24px);
-            border-right: 1.5px solid rgba(59, 130, 246, 0.25);
-            z-index: 1000;
-            transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow-y: auto;
-            padding: 20px 0;
-        }
-
-        .sidebar.open { left: 0; }
-
-        .sidebar-header {
-            padding: 20px 22px 16px;
-            border-bottom: 1.5px solid rgba(59, 130, 246, 0.20);
-            display: flex;
-            align-items: center;
             justify-content: space-between;
-            margin-bottom: 12px;
-        }
-
-        .sidebar-header h2 {
-            font-size: 1.05rem;
-            font-weight: 800;
-            color: #ededef;
-            display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 24px;
+            flex-wrap: wrap;
         }
 
-        .sidebar-header h2 i { color: #60a5fa; }
-
-        .sidebar-close {
-            color: rgba(59, 130, 246, 0.5);
-            font-size: 1.4rem;
-            background: none;
-            border: none;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .sidebar-close:hover { color: #60a5fa; }
-
-        .sidebar-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px 22px;
-            color: rgba(237, 237, 239, 0.7);
-            text-decoration: none;
-            font-size: 0.88rem;
-            font-weight: 600;
-            border-left: 3px solid transparent;
-            cursor: pointer;
-            transition: 0.25s;
-        }
-
-        .sidebar-item i {
-            width: 22px;
-            color: #60a5fa;
-            font-size: 0.95rem;
-        }
-
-        .sidebar-item:hover {
-            border-left-color: #60a5fa;
+        .cta h3 {
             color: #ffffff;
-            background: rgba(59, 130, 246, 0.08);
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 4px;
         }
 
-        .sidebar-item .badge {
-            margin-left: auto;
-            font-size: 0.6rem;
+        .cta p { color: #cdd6e4; font-size: 0.92rem; }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        footer {
+            background: #f7f9fc;
+            padding: 50px 20px 24px;
+            border-top: 1px solid #e5e8ed;
+        }
+
+        .footer-inner { max-width: 1200px; margin: 0 auto; }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .footer-brand p {
+            color: #6b7c93;
+            font-size: 0.88rem;
+            margin-top: 14px;
+            max-width: 320px;
+            line-height: 1.7;
+        }
+
+        .footer-col h4 {
+            font-size: 0.82rem;
             font-weight: 700;
-            padding: 3px 9px;
-            border-radius: 20px;
-            border: 1.5px solid rgba(59, 130, 246, 0.3);
-            color: #60a5fa;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #1a2b47;
+            margin-bottom: 14px;
         }
 
-        .sidebar-item .badge.soon { background: rgba(59, 130, 246, 0.15); border-color: #60a5fa; }
-        .sidebar-item .badge.maint { color: #fbbf24; border-color: rgba(251, 191, 36, 0.35); }
-        .sidebar-item .badge.info { background: #60a5fa; border-color: #60a5fa; color: #000; }
+        .footer-col ul li { margin-bottom: 8px; }
 
-        .sidebar-divider {
-            height: 1px;
-            background: rgba(59, 130, 246, 0.15);
-            margin: 8px 22px;
-            opacity: 0.6;
+        .footer-col ul li a {
+            color: #6b7c93;
+            font-size: 0.88rem;
+            transition: color 0.25s ease;
+        }
+
+        .footer-col ul li a:hover { color: #17a2b8; }
+
+        .footer-bottom {
+            border-top: 1px solid #e5e8ed;
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer-bottom p { color: #8492a6; font-size: 0.83rem; }
+
+        .footer-socials { display: flex; gap: 8px; }
+
+        .footer-socials a {
+            width: 34px;
+            height: 34px;
+            border: 1px solid #e5e8ed;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7c93;
+            font-size: 0.85rem;
+            transition: all 0.25s ease;
+        }
+
+        .footer-socials a:hover {
+            border-color: #17a2b8;
+            color: #17a2b8;
         }
 
         /* ============================================================
            RESPONSIVE
            ============================================================ */
-        @media (max-width: 960px) {
-            .topnav-search { max-width: 320px; }
+        @media (max-width: 900px) {
+            .footer-top { grid-template-columns: 1fr 1fr; }
+            .doc-card {
+                grid-template-columns: 220px 1fr;
+            }
         }
 
-        @media (max-width: 768px) {
-            .topnav-inner { flex-wrap: wrap; padding: 10px 16px; gap: 12px; }
-            .topnav-search { order: 3; flex-basis: 100%; max-width: 100%; }
-            .topnav-right { margin-left: auto; }
-            .icon-btn:nth-child(n+3):not(.user-avatar) { display: none; }
+        @media (max-width: 720px) {
+            .mainnav-inner {
+                flex-wrap: wrap;
+                padding: 12px 16px;
+                gap: 12px;
+            }
+            .logo { font-size: 1.15rem; }
+            .logo-mark { width: 34px; height: 34px; font-size: 0.9rem; }
+            .menu {
+                order: 3;
+                flex-basis: 100%;
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 4px;
+                scrollbar-width: none;
+                gap: 0;
+            }
+            .menu::-webkit-scrollbar { display: none; }
+            .menu a {
+                padding: 8px 12px;
+                font-size: 0.82rem;
+                flex-shrink: 0;
+            }
+            .browse-hero { padding: 50px 18px 40px; }
+            .footer-top { gap: 26px; }
+
+            /* Mobile: image on top of card */
+            .doc-card {
+                grid-template-columns: 1fr;
+            }
+            .doc-img {
+                min-height: 200px;
+            }
         }
 
         @media (max-width: 560px) {
-            .topnav-inner { padding: 8px 12px; gap: 8px; }
-            .brand-text .brand-tag { display: none; }
-            .brand-name { font-size: 0.92rem; }
-            .menu-toggle, .brand-mark { width: 34px; height: 34px; }
-            .icon-btn { width: 38px; height: 38px; font-size: 0.85rem; }
-            .user-avatar { width: 38px; height: 38px; font-size: 0.8rem; }
-            .cat-nav-inner { padding: 0 12px; }
-            .cat-link { padding: 6px 10px; font-size: 0.75rem; }
-            .browse-container { padding: 20px 12px 60px; }
-            .doc-card { padding: 16px 18px; }
-            .doc-card .doc-module { font-size: 0.95rem; }
-            .doc-card .doc-university { display: block; margin-left: 0; margin-top: 2px; }
-            .search-bar { height: 50px; padding: 0 4px 0 12px; }
-            .search-bar input { font-size: 0.88rem; }
-            .search-bar button:not(.clear-btn) { padding: 8px 14px; font-size: 0.7rem; }
+            .topbar-inner { gap: 12px; font-size: 0.75rem; }
+            .topbar-inner span:nth-child(3) { display: none; }
+            .browse-hero { padding: 40px 16px 34px; }
+            .browse-hero h1 { font-size: 1.5rem; }
+            .browse-hero p { font-size: 0.88rem; }
+            .browse-container { padding: 24px 14px 50px; }
+            .doc-body { padding: 18px 18px; }
+            .doc-module { font-size: 1rem; }
+            .doc-description { font-size: 0.82rem; }
+            .search-bar input { padding: 12px 12px; font-size: 0.88rem; }
+            .search-bar button { padding: 12px 16px; font-size: 0.78rem; }
+            .search-bar i { padding: 0 3px 0 14px; }
+            .footer-top { grid-template-columns: 1fr; gap: 24px; }
+            .cta-inner { flex-direction: column; text-align: center; }
+            .cta h3 { font-size: 1.2rem; }
+            .btn-quote span { display: none; }
+            .doc-actions { width: 100%; }
+            .btn-view, .btn-download {
+                flex: 1;
+                justify-content: center;
+            }
         }
 
-        @media (max-width: 380px) {
-            .icon-btn:nth-child(n+2):not(.user-avatar) { display: none; }
-            .search-bar button:not(.clear-btn) span { display: none; }
+        @media (max-width: 400px) {
+            .logo-text { font-size: 1rem; }
+            .topbar-inner span:nth-child(2) { display: none; }
+            .browse-hero h1 { font-size: 1.3rem; }
         }
-
-        @media (prefers-reduced-motion: reduce) {
-            * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-        }
-
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.3); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.5); }
     </style>
 </head>
 <body>
 
-    <!-- BLUE BUBBLES FALLING FROM TOP -->
-    <div class="bubbles-container">
-        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
-        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
-        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
-        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <div class="topbar-inner">
+            <span><i class="fas fa-phone"></i> +255 740 706 007</span>
+            <span><i class="fas fa-envelope"></i> twarvis@studenthub.com</span>
+            <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
+        </div>
     </div>
 
-    <canvas id="rain-canvas"></canvas>
+    <!-- MAIN NAV -->
+    <nav class="mainnav">
+        <div class="mainnav-inner">
+            <a href="/" class="logo">
+                <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
+                <span class="logo-text">Student<span>Hub</span></span>
+            </a>
 
-    <!-- SMART TOP NAVBAR -->
-    <header class="topnav">
-        <div class="topnav-inner">
-            <div class="topnav-left">
-                <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <a href="/" class="brand">
-                    <div class="brand-mark">S</div>
-                    <div class="brand-text">
-                        <span class="brand-name">Student Hub</span>
-                        <span class="brand-tag">by Twarvis</span>
-                    </div>
-                </a>
+            <div class="menu">
+                <a href="/">Home</a>
+                <a href="/browse/" class="active">Browse</a>
+                <a href="/upload/">Upload</a>
+                <a href="/calculator/">Calculator</a>
+                <a href="/scanner/">Scanner</a>
+                <a href="/about/">About</a>
             </div>
 
-            <div class="topnav-search">
-                <div class="search-wrap">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="topSearch" placeholder="Search notes, modules, courses..." autocomplete="off">
-                    <button class="search-btn">
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div class="topnav-right">
-                <a href="/browse/" class="icon-btn" title="Browse">
-                    <i class="fas fa-compass"></i>
+            <div class="nav-right">
+                <a href="/upload/" class="btn-quote">
+                    <span>Upload File</span> <i class="fas fa-arrow-right"></i>
                 </a>
-                <a href="/upload/" class="icon-btn" title="Upload">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                </a>
-                <a href="/about/" class="icon-btn" title="About">
-                    <i class="fas fa-info-circle"></i>
-                </a>
-                <a href="#" class="icon-btn" title="Notifications">
-                    <i class="fas fa-bell"></i>
-                </a>
-                <div class="user-avatar" title="Account">TW</div>
             </div>
         </div>
+    </nav>
 
-        <nav class="cat-nav">
-            <div class="cat-nav-inner" id="catNav">
-                <div class="cat-glass-indicator" id="catIndicator"></div>
+    <!-- BROWSE HERO -->
+    <section class="browse-hero">
+        <div class="browse-hero-inner">
+            <span class="browse-label">All Notes & Papers</span>
+            <h1>Browse <span class="accent">Study</span> Materials</h1>
+            <p>Search notes, past papers, and study documents shared by students from universities across Tanzania.</p>
 
-                <a href="/" class="cat-link" data-cat="home">
-                    <i class="fas fa-home"></i> Home
-                </a>
-                <a href="/browse/" class="cat-link" data-cat="browse">
-                    <i class="fas fa-file-alt"></i> Notes
-                </a>
-                <a href="/upload/" class="cat-link" data-cat="upload">
-                    <i class="fas fa-cloud-upload-alt"></i> Upload
-                </a>
-                <a href="/scanner/" class="cat-link" data-cat="scanner">
-                    <i class="fas fa-camera-retro"></i> Scanner
-                </a>
-                <a href="/calculator/" class="cat-link" data-cat="calculator">
-                    <i class="fas fa-calculator"></i> GPA Calculator
-                </a>
-                <a href="/about/" class="cat-link" data-cat="about">
-                    <i class="fas fa-info-circle"></i> About
-                </a>
-            </div>
-        </nav>
-    </header>
-
-    <!-- MAIN CONTENT -->
-    <div class="wrap">
-        <div class="browse-container">
-            <div class="browse-header">
-                <h1 class="browse-title">
-                    <span class="emoji-blink">📚</span>
-                    <span class="typed-text" id="typedBrowse"></span><span class="typing-cursor"></span>
-                </h1>
-                <p>Explore notes and past papers shared by fellow students</p>
-            </div>
-
-            <!-- POWERFUL LIVE SEARCH BAR -->
-            <div class="search-bar" id="searchBar">
+            <div class="search-bar">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Type to search notes — title, module, course, university..." autocomplete="off">
-                <span class="search-count" id="searchCount">0 found</span>
-                <button type="button" onclick="filterDocs()"><span>SEARCH</span></button>
-                <button class="clear-btn" onclick="clearSearch()" aria-label="Clear search">
-                    <i class="fas fa-times"></i>
-                </button>
+                <input type="text" id="searchInput" placeholder="Search by module, course, keyword..." autocomplete="off">
+                <button type="button" onclick="filterDocs()">Search</button>
             </div>
+        </div>
+    </section>
 
-            <div class="stats-row">
-                <span class="stat-pill"><i class="fas fa-file"></i> <strong id="totalCount">{{ notes|length }}</strong> Total</span>
-                <span class="stat-pill"><i class="fas fa-sticky-note"></i> <strong id="notesCount">0</strong> Notes</span>
-                <span class="stat-pill"><i class="fas fa-file-alt"></i> <strong id="papersCount">0</strong> Papers</span>
-            </div>
+    <!-- STATS -->
+    <div class="stats-bar">
+        <div class="stats-inner">
+            <span><i class="fas fa-file"></i> <strong id="totalCount">{{ notes|length }}</strong> Total</span>
+            <span><i class="fas fa-sticky-note"></i> <strong id="notesCount">0</strong> Notes</span>
+            <span><i class="fas fa-file-alt"></i> <strong id="papersCount">0</strong> Papers</span>
+        </div>
+    </div>
 
-            <div class="doc-list" id="docList">
-                {% if notes %}
-                    {% for note in notes %}
-                        <div class="doc-card" 
-                             data-search="{{ note.module|default:''|lower }} {{ note.course|default:''|lower }} {{ note.description|default:''|lower }} {{ note.university|default:''|lower }} {{ note.file_type|default:''|lower }}"
-                             data-module="{{ note.module|default:'' }}"
-                             data-course="{{ note.course|default:'' }}"
-                             data-university="{{ note.university|default:'' }}"
-                             data-description="{{ note.description|default:'' }}"
-                             data-file-type="{{ note.file_type }}"
-                             data-privacy="{{ note.privacy }}">
-                            <div class="doc-top">
-                                <div class="doc-icon">
-                                    <i class="fas fa-{% if note.file_type == 'pastpaper' %}file-alt{% else %}file-pdf{% endif %}"></i>
-                                </div>
-                                <div class="doc-details">
-                                    <div class="doc-module">
-                                        {% if note.privacy == 'private' %}
-                                            <i class="fas fa-lock lock-icon"></i>
-                                        {% endif %}
-                                        <span class="searchable-module">{{ note.module|default:"Untitled" }}</span>
-                                    </div>
-                                    <div>
-                                        <span class="doc-course"><i class="fas fa-book"></i> <span class="searchable-course">{{ note.course|default:"N/A" }}</span></span>
-                                        <span class="doc-university"><i class="fas fa-university"></i> <span class="searchable-university">{{ note.university|default:"Not specified" }}</span></span>
-                                    </div>
-                                    {% if note.description %}
-                                        <div class="doc-description searchable-description">{{ note.description|truncatechars:120 }}</div>
-                                    {% endif %}
-                                    <div>
-                                        <span class="doc-date"><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
-                                        <span class="doc-size"><i class="fas fa-file"></i> {{ note.file_size|default:0|filesizeformat }}</span>
-                                    </div>
-                                </div>
+    <!-- BROWSE CONTAINER -->
+    <div class="browse-container">
+        <div class="doc-list" id="docList">
+            {% if notes %}
+                {% for note in notes %}
+                    <div class="doc-card"
+                         data-search="{{ note.module|default:''|lower }} {{ note.course|default:''|lower }} {{ note.description|default:''|lower }} {{ note.university|default:''|lower }} {{ note.file_type|default:''|lower }}"
+                         data-file-type="{{ note.file_type }}"
+                         data-privacy="{{ note.privacy }}">
+
+                        <!-- Image with mini slideshow (3 rotating images) -->
+                        <div class="doc-img">
+                            {% if note.file_type == 'pastpaper' %}
+                                <div class="doc-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80');"></div>
+                                <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=800&q=80');"></div>
+                                <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1550399105-c4db5fb85c18?w=800&q=80');"></div>
+                            {% else %}
+                                <div class="doc-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&q=80');"></div>
+                                <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80');"></div>
+                                <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&q=80');"></div>
+                            {% endif %}
+
+                            <span class="doc-img-badge">
+                                <i class="fas fa-{% if note.file_type == 'pastpaper' %}file-alt{% else %}sticky-note{% endif %}"></i>
+                                {{ note.file_type|default:"notes"|title }}
+                            </span>
+
+                            {% if note.privacy == 'private' %}
+                                <span class="doc-privacy-badge private"><i class="fas fa-lock"></i> Private</span>
+                            {% else %}
+                                <span class="doc-privacy-badge public"><i class="fas fa-globe"></i> Public</span>
+                            {% endif %}
+
+                            <div class="doc-img-dots">
+                                <span class="active"></span><span></span><span></span>
+                            </div>
+                        </div>
+
+                        <!-- Details -->
+                        <div class="doc-body">
+                            <div class="doc-module">
+                                {% if note.privacy == 'private' %}
+                                    <i class="fas fa-lock lock-icon"></i>
+                                {% endif %}
+                                {{ note.module|default:"Untitled" }}
                             </div>
 
-                            <div class="doc-bottom">
-                                <div class="doc-badges">
-                                    {% if note.privacy == 'private' %}
-                                        <span class="badge badge-private"><i class="fas fa-lock"></i> Private</span>
-                                    {% else %}
-                                        <span class="badge badge-public"><i class="fas fa-globe"></i> Public</span>
-                                    {% endif %}
-                                    <span class="badge badge-type">
-                                        <i class="fas fa-{% if note.file_type == 'pastpaper' %}file-alt{% else %}sticky-note{% endif %}"></i>
-                                        {{ note.file_type|default:"notes"|title }}
-                                    </span>
-                                    {% if note.can_view_inline %}
-                                        <span class="badge badge-inline"><i class="fas fa-check-circle"></i> Inline</span>
-                                    {% endif %}
+                            <div class="doc-meta">
+                                <span class="course"><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
+                                <span><i class="fas fa-university"></i> {{ note.university|default:"Not specified" }}</span>
+                            </div>
+
+                            {% if note.description %}
+                                <div class="doc-description">{{ note.description|truncatechars:140 }}</div>
+                            {% endif %}
+
+                            <div class="doc-footer">
+                                <div class="doc-info">
+                                    <span><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
+                                    <span><i class="fas fa-file"></i> {{ note.file_size|default:0|filesizeformat }}</span>
                                 </div>
+
                                 <div class="doc-actions">
                                     {% if note.can_view_inline %}
-                                        <a href="/view/{{ note.id }}/" class="btn-view"><i class="fas fa-eye"></i> VIEW</a>
+                                        <a href="/view/{{ note.id }}/" class="btn-view">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
                                     {% endif %}
                                     <a href="/download/{{ note.id }}/" class="btn-download" download>
-                                        <i class="fas fa-download"></i> DOWNLOAD
+                                        <i class="fas fa-download"></i> Download
                                     </a>
                                 </div>
                             </div>
                         </div>
-                    {% endfor %}
-                {% endif %}
-            </div>
-
-            <!-- Empty state when no results found -->
-            <div class="empty-state" id="emptyState">
-                <div class="empty-icon"><i class="fas fa-search-minus"></i></div>
-                <h3>No notes found</h3>
-                <p>Try different keywords or check your spelling</p>
-            </div>
-        </div>
-
-        <div class="bottom-section">
-            <div class="contact-owner">
-                <span style="color:var(--chalk-dim); font-weight:500; font-size:0.85rem;">📢 For content changes / issues :</span>
-                <a href="https://wa.me/255740706007?text=Hello%20Twarvis%2C%20I%20need%20help%20on%20the%20school%20portal" class="whatsapp-link" target="_blank">
-                    <i class="fab fa-whatsapp"></i> Contact Web Owner
-                </a>
-            </div>
-
-            <div class="social-links">
-                <a href="https://www.tiktok.com/@twarvis" target="_blank" class="social-icon tiktok">
-                    <i class="fab fa-tiktok"></i>
-                </a>
-                <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" class="social-icon instagram">
-                    <i class="fab fa-instagram"></i>
-                </a>
-            </div>
-
-            <div class="footer-text">
-                <p>© 2026 Student Hub — powered by Twarvis</p>
-            </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon"><i class="fas fa-book-open"></i></div>
+                    <h3>No files yet</h3>
+                    <p>Be the first to share your study materials with fellow students.</p>
+                    <a href="/upload/" class="empty-btn">
+                        <i class="fas fa-cloud-upload-alt"></i> Upload Now
+                    </a>
+                </div>
+            {% endif %}
         </div>
     </div>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2><i class="fas fa-graduation-cap"></i> Student Hub</h2>
-            <button class="sidebar-close" id="sidebarClose">&times;</button>
+    <!-- CTA -->
+    <section class="cta">
+        <div class="cta-inner">
+            <div>
+                <h3>Have notes to share?</h3>
+                <p>Upload them in seconds — help the next student out.</p>
+            </div>
+            <a href="/upload/" class="btn-quote">Upload Now <i class="fas fa-arrow-right"></i></a>
         </div>
-        <a class="sidebar-item" href="/"><i class="fas fa-home"></i> Home</a>
-        <a class="sidebar-item" href="/browse/"><i class="fas fa-eye"></i> See uploaded notes <span class="badge info">Active</span></a>
-        <a class="sidebar-item" href="/upload/"><i class="fas fa-cloud-upload-alt"></i> Upload files</a>
-        <div class="sidebar-divider"></div>
-        <a class="sidebar-item" href="/scanner/"><i class="fas fa-camera-retro"></i> Scanner</a>
-        <a class="sidebar-item" href="/calculator/"><i class="fas fa-calculator"></i> GPA calculator <span class="badge soon">New</span></a>
-        <div class="sidebar-divider"></div>
-        <a class="sidebar-item" href="/hackerthon/"><i class="fas fa-code"></i> Hackathon <span class="badge soon">Soon</span></a>
-        <a class="sidebar-item" href="/free_course/"><i class="fas fa-graduation-cap"></i> Free courses <span class="badge maint">Maint</span></a>
-        <div class="sidebar-divider"></div>
-        <a class="sidebar-item" href="/about/"><i class="fas fa-info-circle"></i> About us <span class="badge info">Info</span></a>
-    </aside>
+    </section>
 
-    <button class="back-to-top" id="backToTop">
-        <i class="fas fa-arrow-up"></i>
-    </button>
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <a href="/" class="logo">
+                        <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
+                        <span class="logo-text">Student<span>Hub</span></span>
+                    </a>
+                    <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Pages</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/browse/">Browse</a></li>
+                        <li><a href="/upload/">Upload</a></li>
+                        <li><a href="/about/">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Tools</h4>
+                    <ul>
+                        <li><a href="/calculator/">Calculator</a></li>
+                        <li><a href="/scanner/">Scanner</a></li>
+                        <li><a href="/upload/">PDF Maker</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2026 Student Hub. All rights reserved.</p>
+                <div class="footer-socials">
+                    <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script>
         // ============================================================
-        // TYPING EFFECT — Browse Title
+        // DOC CARD IMAGE ROTATION (3 images per card)
         // ============================================================
-        (function initBrowseTyping() {
-            const el = document.getElementById('typedBrowse');
-            if (!el) return;
+        (function () {
+            const cards = document.querySelectorAll('.doc-card');
 
-            const phrases = [
-                "Browse Study Materials",
-                "Find Your Notes",
-                "Discover Resources",
-                "Search Past Papers"
-            ];
+            cards.forEach((card, cardIdx) => {
+                const bgs = card.querySelectorAll('.doc-img-bg');
+                const dots = card.querySelectorAll('.doc-img-dots span');
+                if (bgs.length === 0) return;
 
-            let phraseIndex = 0;
-            let charIndex = 0;
-            let isDeleting = false;
+                let idx = 0;
+                // Stagger delays so cards don't all change at same time
+                const delay = 3000 + (cardIdx % 3) * 400 + Math.random() * 800;
 
-            function type() {
-                const current = phrases[phraseIndex];
+                setInterval(() => {
+                    bgs.forEach(b => b.classList.remove('active'));
+                    dots.forEach(d => d.classList.remove('active'));
 
-                if (!isDeleting) {
-                    el.textContent = current.substring(0, charIndex + 1);
-                    charIndex++;
-                    if (charIndex === current.length) {
-                        isDeleting = true;
-                        setTimeout(type, 2200);
-                        return;
-                    }
-                    setTimeout(type, 70);
-                } else {
-                    el.textContent = current.substring(0, charIndex - 1);
-                    charIndex--;
-                    if (charIndex === 0) {
-                        isDeleting = false;
-                        phraseIndex = (phraseIndex + 1) % phrases.length;
-                        setTimeout(type, 400);
-                        return;
-                    }
-                    setTimeout(type, 35);
-                }
-            }
-
-            setTimeout(type, 400);
-        })();
-
-        // ============================================================
-        // CATEGORY GLASS SLIDE INDICATOR
-        // ============================================================
-        (function initCatGlassSlide() {
-            const catNav = document.getElementById('catNav');
-            const indicator = document.getElementById('catIndicator');
-            const links = catNav.querySelectorAll('.cat-link');
-            const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
-
-            let activeLink = null;
-
-            links.forEach(link => {
-                const href = link.getAttribute('href');
-                const normalizedHref = href.replace(/\/+$/, '') || '/';
-                if (currentPath === normalizedHref ||
-                    (normalizedHref !== '/' && currentPath.startsWith(normalizedHref + '/'))) {
-                    activeLink = link;
-                }
-            });
-
-            if (!activeLink && links.length > 0) activeLink = links[0];
-
-            function moveIndicator(link, instant = false) {
-                if (!link || !indicator) return;
-                const navRect = catNav.getBoundingClientRect();
-                const linkRect = link.getBoundingClientRect();
-                const offsetX = linkRect.left - navRect.left;
-
-                if (instant) indicator.style.transition = 'none';
-                else indicator.style.transition = 'all 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
-
-                indicator.style.left = offsetX + 'px';
-                indicator.style.width = linkRect.width + 'px';
-                indicator.classList.add('visible');
-
-                if (instant) {
-                    requestAnimationFrame(() => {
-                        indicator.style.transition = 'all 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
-                    });
-                }
-            }
-
-            if (activeLink) {
-                activeLink.classList.add('active');
-                setTimeout(() => moveIndicator(activeLink, true), 100);
-            }
-
-            links.forEach(link => {
-                link.addEventListener('mouseenter', () => moveIndicator(link));
-                link.addEventListener('click', () => moveIndicator(link));
-            });
-
-            catNav.addEventListener('mouseleave', () => {
-                if (activeLink) moveIndicator(activeLink);
-            });
-
-            window.addEventListener('resize', () => {
-                if (activeLink) moveIndicator(activeLink, true);
+                    idx = (idx + 1) % bgs.length;
+                    bgs[idx].classList.add('active');
+                    if (dots[idx]) dots[idx].classList.add('active');
+                }, delay);
             });
         })();
 
         // ============================================================
-        // RAIN CANVAS — BLUE
+        // LIVE SEARCH — Filter cards as you type
         // ============================================================
-        (function initRain() {
-            const canvas = document.getElementById('rain-canvas');
-            const ctx = canvas.getContext('2d');
-            let w, h;
-            const drops = [];
-            const dropCount = 300;
-
-            function resize() {
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-            }
-            resize();
-            window.addEventListener('resize', resize);
-
-            class Drop {
-                constructor() { this.reset(); }
-                reset() {
-                    this.x = Math.random() * w;
-                    this.y = Math.random() * h - h;
-                    this.length = Math.random() * 22 + 10;
-                    this.speed = Math.random() * 11 + 5;
-                    this.opacity = Math.random() * 0.28 + 0.10;
-                    this.width = Math.random() * 1.4 + 0.4;
-                    this.angle = Math.random() * 0.1 - 0.05;
-                }
-                update() {
-                    this.y += this.speed;
-                    this.x += this.angle;
-                    if (this.y > h + 50) this.reset();
-                }
-                draw() {
-                    ctx.beginPath();
-                    ctx.moveTo(this.x, this.y);
-                    ctx.lineTo(this.x - 1.5, this.y + this.length);
-                    ctx.strokeStyle = `rgba(59, 130, 246, ${this.opacity})`;
-                    ctx.lineWidth = this.width;
-                    ctx.shadowBlur = 5;
-                    ctx.shadowColor = `rgba(59, 130, 246, ${this.opacity * 0.4})`;
-                    ctx.stroke();
-                    ctx.shadowBlur = 0;
-                }
-            }
-
-            for (let i = 0; i < dropCount; i++) drops.push(new Drop());
-
-            function animate() {
-                ctx.clearRect(0, 0, w, h);
-                for (let drop of drops) { drop.update(); drop.draw(); }
-                requestAnimationFrame(animate);
-            }
-            animate();
-        })();
-
-        // ============================================================
-        // SIDEBAR
-        // ============================================================
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        const menuBtn = document.getElementById('menuToggle');
-        const closeBtn = document.getElementById('sidebarClose');
-
-        function openSidebar() {
-            sidebar.classList.add('open');
-            overlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeSidebar() {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        menuBtn.addEventListener('click', openSidebar);
-        closeBtn.addEventListener('click', closeSidebar);
-        overlay.addEventListener('click', closeSidebar);
-
-        // ============================================================
-        // POWERFUL LIVE SEARCH — INSTANT FILTER
-        // ============================================================
-        const searchInput = document.getElementById('searchInput');
-        const topSearchInput = document.getElementById('topSearch');
-        const searchBar = document.getElementById('searchBar');
-        const searchCount = document.getElementById('searchCount');
-        const emptyState = document.getElementById('emptyState');
-
-        let debounceTimer = null;
-
-        // Remove existing highlight
-        function clearHighlights(root) {
-            root.querySelectorAll('.highlight').forEach(el => {
-                const parent = el.parentNode;
-                parent.replaceChild(document.createTextNode(el.textContent), el);
-                parent.normalize();
-            });
-        }
-
-        // Highlight matches in text
-        function highlightMatches(element, query) {
-            if (!element || !query) return;
-            const text = element.textContent;
-            const lowerText = text.toLowerCase();
-            const lowerQuery = query.toLowerCase();
-            const index = lowerText.indexOf(lowerQuery);
-
-            if (index === -1) return;
-
-            // Clear any existing highlights first
-            clearHighlights(element);
-
-            // Re-get text after clearing
-            const currentText = element.textContent;
-            const currentIndex = currentText.toLowerCase().indexOf(lowerQuery);
-
-            if (currentIndex === -1) return;
-
-            const before = currentText.substring(0, currentIndex);
-            const match = currentText.substring(currentIndex, currentIndex + query.length);
-            const after = currentText.substring(currentIndex + query.length);
-
-            element.innerHTML = '';
-            if (before) element.appendChild(document.createTextNode(before));
-            const span = document.createElement('span');
-            span.className = 'highlight';
-            span.textContent = match;
-            element.appendChild(span);
-            if (after) element.appendChild(document.createTextNode(after));
-        }
-
-        // Main filter function — LIVE
         function filterDocs() {
-            const q = (searchInput.value || '').trim().toLowerCase();
+            const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
             const cards = document.querySelectorAll('.doc-card');
             let visible = 0;
             let notes = 0;
             let papers = 0;
 
-            // Add "searching" visual feedback
-            if (q.length > 0) {
-                searchBar.classList.add('searching');
-            } else {
-                searchBar.classList.remove('searching');
-            }
-
             cards.forEach(card => {
-                // Clear previous highlights
-                card.querySelectorAll('.searchable-module, .searchable-course, .searchable-university, .searchable-description').forEach(el => {
-                    clearHighlights(el);
-                });
-
                 const data = (card.dataset.search || '').toLowerCase();
 
                 if (!q || data.includes(q)) {
-                    card.classList.remove('hidden');
                     card.style.display = '';
                     visible++;
 
-                    // Count notes vs papers
                     if (card.dataset.fileType === 'notes') notes++;
                     else if (card.dataset.fileType === 'pastpaper') papers++;
                     else notes++;
-
-                    // Highlight matches in each field
-                    if (q) {
-                        highlightMatches(card.querySelector('.searchable-module'), q);
-                        highlightMatches(card.querySelector('.searchable-course'), q);
-                        highlightMatches(card.querySelector('.searchable-university'), q);
-                        highlightMatches(card.querySelector('.searchable-description'), q);
-                    }
                 } else {
-                    card.classList.add('hidden');
                     card.style.display = 'none';
                 }
             });
 
-            // Update counts
             document.getElementById('totalCount').textContent = visible;
             document.getElementById('notesCount').textContent = notes;
             document.getElementById('papersCount').textContent = papers;
-
-            // Show/hide search count badge
-            if (q) {
-                searchCount.textContent = visible + ' found';
-                searchCount.classList.add('visible');
-            } else {
-                searchCount.classList.remove('visible');
-            }
-
-            // Show/hide empty state
-            if (visible === 0 && q) {
-                emptyState.classList.add('show');
-            } else {
-                emptyState.classList.remove('show');
-            }
         }
 
-        // Debounced live search — for performance on large lists
-        function debouncedFilter() {
-            if (debounceTimer) clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(filterDocs, 120);
-        }
-
-        // Live search on every keystroke — INSTANT
+        // Live search on input
+        const searchInput = document.getElementById('searchInput');
         if (searchInput) {
-            searchInput.addEventListener('input', debouncedFilter);
-            searchInput.addEventListener('keypress', function(e) {
+            let debounce;
+            searchInput.addEventListener('input', () => {
+                clearTimeout(debounce);
+                debounce = setTimeout(filterDocs, 150);
+            });
+
+            searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     filterDocs();
@@ -1922,54 +1070,10 @@
             });
         }
 
-        // Top nav search — syncs with main search
-        if (topSearchInput) {
-            topSearchInput.addEventListener('input', function() {
-                if (searchInput) {
-                    searchInput.value = this.value;
-                    debouncedFilter();
-                }
-            });
-            topSearchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    if (searchInput) {
-                        searchInput.value = this.value;
-                        filterDocs();
-                        searchInput.focus();
-                    }
-                }
-            });
-        }
-
-        // Clear search
-        function clearSearch() {
-            if (searchInput) searchInput.value = '';
-            if (topSearchInput) topSearchInput.value = '';
-            searchBar.classList.remove('searching');
-            searchCount.classList.remove('visible');
-            filterDocs();
-        }
-
-        window.filterDocs = filterDocs;
-        window.clearSearch = clearSearch;
-
-        // ============================================================
-        // BACK TO TOP
-        // ============================================================
-        const backToTopBtn = document.getElementById('backToTop');
-        window.addEventListener('scroll', function() {
-            if (window.pageYOffset > 300) backToTopBtn.classList.add('visible');
-            else backToTopBtn.classList.remove('visible');
-        });
-        backToTopBtn.addEventListener('click', function() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
         // ============================================================
         // INITIAL COUNTS
         // ============================================================
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', () => {
             const cards = document.querySelectorAll('.doc-card');
             let notes = 0, papers = 0;
             cards.forEach(c => {
@@ -1979,9 +1083,8 @@
             });
             document.getElementById('notesCount').textContent = notes;
             document.getElementById('papersCount').textContent = papers;
-
-            console.log('⚡ Student Hub — Browse Page Loaded (Live Search Active)');
         });
     </script>
+
 </body>
 </html>
