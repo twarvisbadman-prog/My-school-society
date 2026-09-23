@@ -1,1833 +1,1382 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>About | Student Hub ✦</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About | Student Hub</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <style>
-        :root {
-            --board: #000000;
-            --chalk: #ededef;
-            --chalk-dim: rgba(237, 237, 239, 0.6);
-
-            --blue-800: #1e3a8a;
-            --blue-700: #1d4ed8;
-            --blue-600: #2563eb;
-            --blue-500: #3b82f6;
-            --blue-400: #60a5fa;
-            --blue-300: #93c5fd;
-            --blue-glow: rgba(59, 130, 246, 0.35);
-            --blue-dim: rgba(59, 130, 246, 0.15);
-
-            --purple-600: #7c3aed;
-            --purple-500: #8b5cf6;
-            --purple-400: #a855f7;
-            --purple-300: #c084fc;
-            --purple-glow: rgba(168, 85, 247, 0.45);
-
-            --gold: #fbbf24;
-            --gold-bright: #fde68a;
-            --gold-glow: rgba(251, 191, 36, 0.35);
-
-            --green: #22c55e;
-            --green-bright: #4ade80;
-            --red: #ef4444;
-            --red-bright: #f87171;
-        }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html { font-size: 16px; scroll-behavior: smooth; }
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+        }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #000000;
-            color: var(--chalk);
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #ffffff;
+            color: #2c3e50;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
-        h1, h2, h3, h4 {
-            font-family: 'Plus Jakarta Sans', 'Space Grotesk', sans-serif;
-            letter-spacing: -0.02em;
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* ============================================================
+           TOP BAR
+           ============================================================ */
+        .topbar {
+            background: #1a2b47;
+            color: #ffffff;
+            font-size: 0.82rem;
+            padding: 8px 0;
+        }
+
+        .topbar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            text-align: center;
+        }
+
+        .topbar-inner span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #cdd6e4;
+            white-space: nowrap;
+        }
+
+        .topbar-inner span i {
+            color: #17a2b8;
+            font-size: 0.78rem;
         }
 
         /* ============================================================
-           BLUE BUBBLES FALLING FROM TOP
+           MAIN NAV
            ============================================================ */
-        .bubbles-container {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        .bubble {
-            position: absolute;
-            top: -120px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%,
-                rgba(96, 165, 250, 0.55) 0%,
-                rgba(59, 130, 246, 0.35) 30%,
-                rgba(30, 58, 138, 0.15) 60%,
-                transparent 100%);
-            box-shadow:
-                inset 0 0 25px rgba(147, 197, 253, 0.25),
-                0 0 40px rgba(59, 130, 246, 0.35),
-                0 0 80px rgba(59, 130, 246, 0.15);
-            border: 1px solid rgba(147, 197, 253, 0.20);
-            animation: bubbleFall linear infinite;
-        }
-
-        .bubble::after {
-            content: '';
-            position: absolute;
-            top: 15%;
-            left: 20%;
-            width: 22%;
-            height: 22%;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.45);
-            filter: blur(2px);
-        }
-
-        @keyframes bubbleFall {
-            0% { transform: translateY(0) translateX(0) scale(0.5); opacity: 0; }
-            10% { opacity: 0.75; }
-            50% { transform: translateY(55vh) translateX(25px) scale(1); opacity: 0.85; }
-            90% { opacity: 0.4; }
-            100% { transform: translateY(115vh) translateX(-20px) scale(0.7); opacity: 0; }
-        }
-
-        .bubble:nth-child(1) { left: 4%; width: 70px; height: 70px; animation-duration: 14s; animation-delay: 0s; }
-        .bubble:nth-child(2) { left: 12%; width: 35px; height: 35px; animation-duration: 17s; animation-delay: 1s; }
-        .bubble:nth-child(3) { left: 22%; width: 90px; height: 90px; animation-duration: 15s; animation-delay: 2s; }
-        .bubble:nth-child(4) { left: 35%; width: 50px; height: 50px; animation-duration: 18s; animation-delay: 0.5s; }
-        .bubble:nth-child(5) { left: 45%; width: 110px; height: 110px; animation-duration: 19s; animation-delay: 3s; }
-        .bubble:nth-child(6) { left: 55%; width: 40px; height: 40px; animation-duration: 13s; animation-delay: 1.5s; }
-        .bubble:nth-child(7) { left: 65%; width: 60px; height: 60px; animation-duration: 16s; animation-delay: 2.5s; }
-        .bubble:nth-child(8) { left: 75%; width: 45px; height: 45px; animation-duration: 15s; animation-delay: 3.5s; }
-        .bubble:nth-child(9) { left: 85%; width: 80px; height: 80px; animation-duration: 18s; animation-delay: 1.2s; }
-        .bubble:nth-child(10) { left: 93%; width: 55px; height: 55px; animation-duration: 14s; animation-delay: 4s; }
-
-        /* ============================================================
-           RAIN CANVAS
-           ============================================================ */
-        #rain-canvas {
-            position: fixed;
-            inset: 0;
-            width: 100%; height: 100%;
-            z-index: 0;
-            pointer-events: none;
-            opacity: 0.4;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            background:
-                radial-gradient(ellipse at 30% 20%, rgba(30, 58, 138, 0.15) 0%, transparent 60%),
-                radial-gradient(ellipse at 70% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(23, 37, 84, 0.10) 0%, transparent 40%);
-            animation: ambientPulse 6s ease-in-out infinite;
-        }
-
-        @keyframes ambientPulse {
-            0%, 100% { opacity: .6; }
-            50% { opacity: 1; }
-        }
-
-        /* ============================================================
-           SMART TOP NAVBAR — NO SEARCH
-           ============================================================ */
-        .topnav {
+        .mainnav {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e8ed;
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(5, 8, 15, 0.92);
-            backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border-bottom: 1px solid rgba(59, 130, 246, 0.15);
-            transition: all 0.3s ease;
+            width: 100%;
         }
 
-        .topnav-inner {
-            max-width: 1400px;
+        .mainnav-inner {
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 10px 24px;
+            padding: 14px 20px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
             gap: 20px;
         }
 
-        .topnav-left {
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: #1a2b47;
+            letter-spacing: -0.02em;
+            flex-shrink: 0;
+        }
+
+        .logo-mark {
+            width: 38px;
+            height: 38px;
+            background: #17a2b8;
+            border-radius: 50% 50% 50% 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1rem;
+            transform: rotate(-45deg);
+            flex-shrink: 0;
+        }
+
+        .logo-mark i { transform: rotate(45deg); }
+        .logo-text span { color: #17a2b8; }
+
+        .menu {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            flex-wrap: wrap;
+            justify-content: center;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .menu a {
+            padding: 8px 12px;
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: #2c3e50;
+            border-radius: 4px;
+            white-space: nowrap;
+            transition: color 0.25s ease, background 0.25s ease;
+        }
+
+        .menu a:hover { color: #17a2b8; background: #f0f8fa; }
+        .menu a.active { color: #17a2b8; background: #f0f8fa; }
+
+        .nav-right {
             display: flex;
             align-items: center;
             gap: 12px;
             flex-shrink: 0;
         }
 
-        .menu-toggle {
-            width: 38px;
-            height: 38px;
-            border: 1.5px solid rgba(59, 130, 246, 0.30);
-            border-radius: 10px;
-            background: rgba(15, 23, 42, 0.5);
-            color: #60a5fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .btn-quote {
+            background: #17a2b8;
+            color: #ffffff;
+            padding: 11px 22px;
+            border-radius: 3px;
+            font-weight: 700;
             font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .menu-toggle:hover {
-            border-color: #60a5fa;
-            color: #93c5fd;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
-        }
-
-        .brand {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            flex-shrink: 0;
+            gap: 8px;
+            transition: background 0.25s ease;
+            white-space: nowrap;
         }
 
-        .brand-mark {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--blue-800), var(--blue-600));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-weight: 800;
-            font-size: 1.05rem;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        .btn-quote:hover { background: #138496; }
+
+        /* ============================================================
+           ABOUT HERO
+           ============================================================ */
+        .about-hero {
+            background: linear-gradient(135deg, #1a2b47 0%, #0f1b2e 100%);
+            color: #ffffff;
+            padding: 90px 20px 70px;
+            text-align: center;
             position: relative;
             overflow: hidden;
         }
 
-        .brand-mark::after {
+        .about-hero::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, transparent 40%, rgba(255, 255, 255, 0.2) 50%, transparent 60%);
-            animation: shimmer 3s ease-in-out infinite;
-        }
-
-        @keyframes shimmer {
-            0%, 100% { transform: translateX(-100%); }
-            50% { transform: translateX(100%); }
-        }
-
-        .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
-
-        .brand-name {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 1rem;
-            font-weight: 800;
-            color: #ededef;
-            letter-spacing: -0.02em;
-        }
-
-        .brand-tag {
-            font-size: 0.6rem;
-            font-weight: 500;
-            color: #60a5fa;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-
-        /* ============================================================
-           INLINE NAV LINKS — REPLACES SEARCH BAR
-           ============================================================ */
-        .topnav-nav {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 6px;
-            flex: 1;
-        }
-
-        .topnav-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 9px 16px;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-decoration: none;
-            color: rgba(237, 237, 239, 0.75);
-            border: 1.5px solid transparent;
-            background: rgba(15, 23, 42, 0.4);
-            transition: all 0.25s ease;
-            white-space: nowrap;
-        }
-
-        .topnav-link i { font-size: 0.85rem; color: #60a5fa; transition: color 0.25s ease; }
-
-        .topnav-link:hover {
-            border-color: rgba(59, 130, 246, 0.5);
-            background: rgba(59, 130, 246, 0.15);
-            color: #ffffff;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.25);
-        }
-
-        .topnav-link:hover i { color: #93c5fd; }
-
-        .topnav-link.active {
-            background: rgba(30, 58, 138, 0.5);
-            border-color: rgba(96, 165, 250, 0.7);
-            color: #ffffff;
-            box-shadow:
-                inset 0 1px 0 rgba(147, 197, 253, 0.2),
-                0 4px 15px rgba(30, 58, 138, 0.4);
-        }
-
-        .topnav-link.active i { color: #ffffff; }
-
-        .topnav-link[href="/"] i { color: #60a5fa; }
-        .topnav-link[href="/browse/"] i { color: #fbbf24; }
-        .topnav-link[href="/upload/"] i { color: #fb923c; }
-        .topnav-link[href="/about/"] i { color: #22d3ee; }
-
-        .topnav-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-
-        .icon-btn {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: rgba(15, 23, 42, 0.5);
-            border: 1.5px solid rgba(59, 130, 246, 0.20);
-            color: #60a5fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            text-decoration: none;
-            position: relative;
-        }
-
-        .icon-btn:hover {
-            background: rgba(59, 130, 246, 0.15);
-            border-color: #60a5fa;
-            color: #93c5fd;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
-        }
-
-        .user-avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
-            color: #fff;
-            font-weight: 800;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: 1.5px solid rgba(147, 197, 253, 0.4);
-            transition: all 0.25s ease;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        .user-avatar:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
-        }
-
-        /* ============================================================
-           CATEGORIES NAV
-           ============================================================ */
-        .cat-nav {
-            background: rgba(8, 12, 20, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(59, 130, 246, 0.12);
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-
-        .cat-nav::-webkit-scrollbar { display: none; }
-
-        .cat-nav-inner {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 24px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            position: relative;
-            height: 48px;
-        }
-
-        .cat-glass-indicator {
-            position: absolute;
-            top: 6px;
-            bottom: 6px;
-            border-radius: 10px;
-            background: linear-gradient(135deg,
-                rgba(30, 58, 138, 0.9) 0%,
-                rgba(37, 99, 235, 0.7) 50%,
-                rgba(30, 58, 138, 0.9) 100%);
-            backdrop-filter: blur(12px) saturate(180%);
-            -webkit-backdrop-filter: blur(12px) saturate(180%);
-            box-shadow:
-                inset 0 0 20px rgba(147, 197, 253, 0.25),
-                0 0 25px rgba(59, 130, 246, 0.5),
-                0 4px 15px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(147, 197, 253, 0.35);
-            transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+            background:
+                radial-gradient(circle at 25% 35%, rgba(23, 162, 184, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 75% 65%, rgba(23, 162, 184, 0.10) 0%, transparent 50%);
             pointer-events: none;
+        }
+
+        .about-hero-inner {
+            max-width: 820px;
+            margin: 0 auto;
+            position: relative;
             z-index: 1;
-            opacity: 0;
         }
 
-        .cat-glass-indicator.visible { opacity: 1; }
-
-        .cat-glass-indicator::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 10px;
-            background: linear-gradient(90deg,
-                transparent 0%,
-                rgba(255, 255, 255, 0.12) 20%,
-                rgba(255, 255, 255, 0.25) 50%,
-                rgba(255, 255, 255, 0.12) 80%,
-                transparent 100%);
-            background-size: 200% 100%;
-            animation: shimmerSlide 2.5s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes shimmerSlide {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
-
-        .cat-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 14px;
-            border-radius: 10px;
+        .about-label {
+            color: #17a2b8;
             font-size: 0.82rem;
-            font-weight: 600;
-            color: rgba(237, 237, 239, 0.7);
-            text-decoration: none;
-            transition: color 0.25s ease;
-            white-space: nowrap;
-            position: relative;
-            z-index: 2;
-            cursor: pointer;
-            flex-shrink: 0;
-            font-family: inherit;
-            background: transparent;
-            border: none;
-        }
-
-        .cat-link i {
-            font-size: 0.8rem;
-            color: #60a5fa;
-            transition: color 0.25s ease;
-        }
-
-        .cat-link:hover { color: #ffffff; }
-        .cat-link:hover i { color: #93c5fd; }
-        .cat-link.active { color: #ffffff; }
-        .cat-link.active i { color: #ffffff; }
-
-        /* ============================================================
-           ABOUT PAGE
-           ============================================================ */
-        .wrap { position: relative; z-index: 1; }
-
-        .about-wrap {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 40px 20px 80px;
-        }
-
-        .about-hero {
-            text-align: center;
-            margin-bottom: 40px;
-            position: relative;
-        }
-
-        .about-hero .icon {
-            font-size: clamp(2.5rem, 6vw, 4rem);
-            color: #60a5fa;
-            animation: float 3s ease-in-out infinite, blueGlowPulse 3s ease-in-out infinite;
-            display: inline-block;
-            filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.7));
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-
-        @keyframes blueGlowPulse {
-            0%, 100% { color: #60a5fa; filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.7)); }
-            50% { color: #93c5fd; filter: drop-shadow(0 0 50px rgba(59, 130, 246, 1)); }
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            display: block;
         }
 
         .about-hero h1 {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: clamp(1.8rem, 4.5vw, 2.8rem);
-            font-weight: 800;
-            margin-top: 12px;
-            background: linear-gradient(135deg, #60a5fa, #93c5fd, #bfdbfe, #60a5fa);
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: goldSilverMove 3s ease-in-out infinite;
-            letter-spacing: -0.03em;
+            font-size: clamp(2rem, 5vw, 3.4rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.025em;
+            margin-bottom: 20px;
         }
 
-        @keyframes goldSilverMove {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+        .about-hero h1 .accent {
+            color: #ff5a5f;
+            text-decoration: underline;
+            text-decoration-color: #ff5a5f;
+            text-underline-offset: 8px;
+            text-decoration-thickness: 5px;
         }
 
         .about-hero p {
-            color: var(--chalk-dim);
-            font-size: clamp(0.88rem, 1.5vw, 1rem);
+            color: #cdd6e4;
+            font-size: clamp(1rem, 1.6vw, 1.15rem);
             max-width: 620px;
-            margin: 16px auto 0;
+            margin: 0 auto;
+            line-height: 1.75;
+        }
+
+        /* ============================================================
+           CONTAINER
+           ============================================================ */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 70px 20px;
+        }
+
+        .container.tight {
+            padding: 60px 20px;
+        }
+
+        /* Section heads */
+        .section-head {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-label {
+            color: #17a2b8;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .section-head h2 {
+            font-size: clamp(1.6rem, 3.2vw, 2.3rem);
+            font-weight: 800;
+            color: #1a2b47;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            margin-bottom: 14px;
+        }
+
+        .section-head p {
+            color: #6b7c93;
+            font-size: 0.98rem;
+            max-width: 600px;
+            margin: 0 auto;
             line-height: 1.7;
         }
 
-        /* GLASS CARD */
-        .glass-card {
-            background: rgba(10, 15, 25, 0.7);
-            backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
-            border: 1.5px solid rgba(59, 130, 246, 0.25);
-            border-radius: 18px;
-            padding: 28px 26px;
-            margin-bottom: 24px;
-            position: relative;
-            overflow: hidden;
-            animation: cardGlow 4s ease-in-out infinite;
+        /* ============================================================
+           ABOUT THE WEBSITE
+           ============================================================ */
+        .intro-section {
+            background: #f7f9fc;
         }
 
-        @keyframes cardGlow {
-            0%, 100% {
-                border-color: rgba(59, 130, 246, 0.25);
-                box-shadow:
-                    0 0 25px rgba(59, 130, 246, 0.08),
-                    0 22px 70px rgba(0, 0, 0, 0.4);
-            }
-            50% {
-                border-color: rgba(96, 165, 250, 0.55);
-                box-shadow:
-                    0 0 45px rgba(59, 130, 246, 0.20),
-                    0 22px 70px rgba(0, 0, 0, 0.4);
-            }
-        }
-
-        .card-title {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: clamp(1.15rem, 2.2vw, 1.45rem);
-            font-weight: 800;
-            color: #ffffff;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .card-title i {
-            color: #60a5fa;
-            font-size: 1.15em;
-            filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.7));
-        }
-
-        .card-text {
-            color: rgba(237, 237, 239, 0.75);
-            font-size: clamp(0.85rem, 1.3vw, 0.95rem);
-            line-height: 1.75;
-            position: relative;
-            z-index: 1;
-        }
-
-        .card-text p { margin-bottom: 12px; }
-        .card-text p:last-child { margin-bottom: 0; }
-        .card-text strong { color: #93c5fd; font-weight: 700; }
-        .card-text em { color: #fde68a; font-style: italic; }
-        .card-text a {
-            color: #93c5fd;
-            text-decoration: none;
-            border-bottom: 1px dotted rgba(147, 197, 253, 0.4);
-            transition: 0.2s;
-        }
-        .card-text a:hover {
-            color: #ffffff;
-            border-bottom-color: #60a5fa;
-        }
-
-        /* FEATURE LIST */
-        .feature-list {
-            list-style: none;
+        .intro-grid {
             display: grid;
-            gap: 10px;
-            margin-top: 16px;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .intro-text h2 {
+            font-size: clamp(1.6rem, 3vw, 2.1rem);
+            font-weight: 800;
+            color: #1a2b47;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .intro-text h2 .accent {
+            color: #17a2b8;
+        }
+
+        .intro-text p {
+            color: #6b7c93;
+            font-size: 0.98rem;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .intro-text p:last-child { margin-bottom: 0; }
+
+        .intro-text strong {
+            color: #1a2b47;
+            font-weight: 700;
+        }
+
+        .intro-image {
             position: relative;
-            z-index: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(26, 43, 71, 0.15);
+            aspect-ratio: 4/3;
+            background: #e8f6f8;
+        }
+
+        .intro-image-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .intro-image-bg.active { opacity: 1; }
+
+        /* Feature list */
+        .feature-list {
+            display: grid;
+            gap: 12px;
+            margin-top: 26px;
         }
 
         .feature-list li {
             display: flex;
             align-items: flex-start;
             gap: 14px;
-            color: rgba(237, 237, 239, 0.75);
-            font-size: clamp(0.82rem, 1.2vw, 0.9rem);
+            padding: 14px 18px;
+            background: #ffffff;
+            border: 1px solid #e5e8ed;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #6b7c93;
             line-height: 1.55;
-            padding: 12px 16px;
-            background: rgba(30, 58, 138, 0.12);
-            border: 1.5px solid rgba(59, 130, 246, 0.20);
-            border-radius: 12px;
-            transition: 0.3s;
+            transition: all 0.25s ease;
         }
 
         .feature-list li:hover {
-            border-color: rgba(96, 165, 250, 0.6);
-            background: rgba(30, 58, 138, 0.25);
-            transform: translateX(6px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+            border-color: #17a2b8;
+            transform: translateX(4px);
+            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.08);
         }
 
         .feature-list li i {
-            color: #60a5fa;
+            color: #17a2b8;
             font-size: 1rem;
             margin-top: 2px;
             flex-shrink: 0;
             width: 20px;
             text-align: center;
-            filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.5));
         }
 
-        .feature-list li span strong { color: #93c5fd; }
+        .feature-list li strong {
+            color: #1a2b47;
+            font-weight: 700;
+        }
 
-        /* CREATOR CARD */
+        /* ============================================================
+           CREATOR SECTION
+           ============================================================ */
+        .creator-section {
+            background: #ffffff;
+        }
+
         .creator-card {
-            display: flex;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 36px;
             align-items: center;
-            gap: 22px;
-            flex-wrap: wrap;
+            background: #f7f9fc;
+            border: 1px solid #e5e8ed;
+            border-radius: 10px;
+            padding: 44px 40px;
             position: relative;
-            z-index: 1;
+            overflow: hidden;
+        }
+
+        .creator-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #17a2b8, #138496);
         }
 
         .creator-avatar {
-            width: 90px;
-            height: 90px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.4rem;
-            background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
-            border: 3px solid #93c5fd;
+            font-size: 3rem;
+            background: linear-gradient(135deg, #1a2b47, #17a2b8);
             color: #ffffff;
-            animation: avatarGlow 3s ease-in-out infinite;
+            border: 4px solid #ffffff;
+            box-shadow: 0 12px 30px rgba(26, 43, 71, 0.20);
             flex-shrink: 0;
         }
 
-        @keyframes avatarGlow {
-            0%, 100% {
-                border-color: #60a5fa;
-                box-shadow: 0 0 30px rgba(59, 130, 246, 0.5), 0 0 60px rgba(59, 130, 246, 0.2);
-            }
-            50% {
-                border-color: #93c5fd;
-                box-shadow: 0 0 45px rgba(59, 130, 246, 0.8), 0 0 90px rgba(59, 130, 246, 0.4);
-            }
-        }
-
-        .creator-info { flex: 1; min-width: 200px; }
-
         .creator-info h3 {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: clamp(1.15rem, 2.2vw, 1.4rem);
+            font-size: clamp(1.4rem, 2.6vw, 1.8rem);
             font-weight: 800;
-            color: #93c5fd;
+            color: #1a2b47;
             margin-bottom: 6px;
+            letter-spacing: -0.02em;
         }
 
         .creator-info .role {
-            font-size: clamp(0.72rem, 1.1vw, 0.82rem);
-            color: #60a5fa;
-            margin-bottom: 12px;
+            color: #17a2b8;
+            font-size: 0.85rem;
             font-weight: 700;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.10em;
             text-transform: uppercase;
+            margin-bottom: 16px;
         }
 
         .creator-info p {
-            color: rgba(237, 237, 239, 0.75);
-            font-size: clamp(0.82rem, 1.2vw, 0.92rem);
-            line-height: 1.65;
+            color: #6b7c93;
+            font-size: 0.96rem;
+            line-height: 1.75;
+        }
+
+        .creator-info p strong {
+            color: #1a2b47;
+            font-weight: 700;
         }
 
         .social-row {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
-            margin-top: 18px;
-            position: relative;
-            z-index: 1;
+            margin-top: 22px;
         }
 
         .social-btn {
             display: inline-flex;
             align-items: center;
-            gap: 9px;
+            gap: 8px;
             padding: 10px 20px;
-            border-radius: 12px;
-            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.85rem;
             font-weight: 700;
-            font-size: clamp(0.75rem, 1.1vw, 0.85rem);
             transition: all 0.25s ease;
-            border: 1.5px solid transparent;
-            position: relative;
-            overflow: hidden;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            border: 1px solid transparent;
         }
+
+        .social-btn i { font-size: 0.9rem; }
 
         .social-btn.whatsapp {
-            background: rgba(37, 211, 102, 0.12);
-            color: #4be08a;
-            border-color: rgba(37, 211, 102, 0.3);
+            background: rgba(37, 211, 102, 0.10);
+            color: #1a8a4d;
+            border-color: rgba(37, 211, 102, 0.30);
         }
+        .social-btn.whatsapp i { color: #25D366; }
         .social-btn.whatsapp:hover {
             background: #25D366;
-            color: #fff;
+            color: #ffffff;
             border-color: #25D366;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.30);
         }
+        .social-btn.whatsapp:hover i { color: #ffffff; }
 
         .social-btn.instagram {
-            background: rgba(225, 48, 108, 0.1);
-            color: #f472b6;
-            border-color: rgba(225, 48, 108, 0.3);
+            background: rgba(225, 48, 108, 0.08);
+            color: #c13584;
+            border-color: rgba(225, 48, 108, 0.25);
         }
+        .social-btn.instagram i { color: #e4405f; }
         .social-btn.instagram:hover {
             background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-            color: #fff;
+            color: #ffffff;
             border-color: #dc2743;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(225, 48, 108, 0.5);
+            box-shadow: 0 8px 20px rgba(225, 48, 108, 0.30);
         }
+        .social-btn.instagram:hover i { color: #ffffff; }
 
         .social-btn.tiktok {
-            background: rgba(255, 255, 255, 0.04);
-            color: #ededef;
-            border-color: rgba(255, 255, 255, 0.15);
+            background: #f0f0f0;
+            color: #1a2b47;
+            border-color: #e5e8ed;
         }
+        .social-btn.tiktok i { color: #1a2b47; }
         .social-btn.tiktok:hover {
-            background: #000;
-            border-color: #00f2ea;
-            color: #00f2ea;
+            background: #000000;
+            color: #ffffff;
+            border-color: #000000;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 242, 234, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.20);
+        }
+        .social-btn.tiktok:hover i { color: #ffffff; }
+
+        /* ============================================================
+           PROJECTS
+           ============================================================ */
+        .projects-section {
+            background: #f7f9fc;
         }
 
-        /* PROJECTS GRID */
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 18px;
-            margin-top: 18px;
-            position: relative;
-            z-index: 1;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
         }
 
         .project-card {
-            background: rgba(10, 15, 25, 0.6);
-            border: 1.5px solid rgba(168, 85, 247, 0.35);
-            border-radius: 16px;
-            padding: 22px 20px;
-            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
+            background: #ffffff;
+            border: 1px solid #e5e8ed;
+            border-radius: 10px;
             overflow: hidden;
+            transition: all 0.30s ease;
             display: flex;
             flex-direction: column;
-            gap: 14px;
-            animation: purpleEdgePulse 3.5s ease-in-out infinite;
         }
-
-        @keyframes purpleEdgePulse {
-            0%, 100% {
-                border-color: rgba(168, 85, 247, 0.35);
-                box-shadow:
-                    0 0 15px rgba(168, 85, 247, 0.15),
-                    0 0 30px rgba(168, 85, 247, 0.08);
-            }
-            50% {
-                border-color: rgba(192, 132, 252, 0.9);
-                box-shadow:
-                    0 0 30px rgba(168, 85, 247, 0.5),
-                    0 0 60px rgba(168, 85, 247, 0.25);
-            }
-        }
-
-        .project-card:nth-child(1) { animation-delay: 0s; }
-        .project-card:nth-child(2) { animation-delay: 0.5s; }
 
         .project-card:hover {
-            border-color: #c084fc;
-            background: rgba(20, 15, 35, 0.9);
-            transform: translateY(-5px);
-            box-shadow:
-                0 0 40px rgba(168, 85, 247, 0.6),
-                0 0 80px rgba(168, 85, 247, 0.3);
+            border-color: #17a2b8;
+            transform: translateY(-6px);
+            box-shadow: 0 20px 45px rgba(26, 43, 71, 0.12);
         }
 
-        .project-head {
-            display: flex;
-            align-items: center;
-            gap: 14px;
+        .project-image {
             position: relative;
-            z-index: 1;
+            height: 180px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1a2b47, #17a2b8);
+        }
+
+        .project-image-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .project-image-bg.active { opacity: 1; }
+
+        .project-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(23, 162, 184, 0.55), rgba(26, 43, 71, 0.65));
+            pointer-events: none;
         }
 
         .project-icon {
-            width: 54px;
-            height: 54px;
-            border-radius: 14px;
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            background: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
-            background: linear-gradient(135deg, var(--purple-600), var(--purple-400));
-            color: #ffffff;
-            border: 2px solid #c084fc;
-            box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);
-            flex-shrink: 0;
-            animation: float 3s ease-in-out infinite;
+            color: #17a2b8;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            z-index: 2;
         }
 
-        .project-head-text h4 {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 1.1rem;
+        .project-body {
+            padding: 26px 26px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .project-body h3 {
+            font-size: 1.2rem;
             font-weight: 800;
-            color: #ffffff;
-            margin-bottom: 3px;
+            color: #1a2b47;
+            letter-spacing: -0.01em;
         }
 
-        .project-head-text span {
-            font-size: 0.7rem;
-            color: #c084fc;
+        .project-url {
+            font-size: 0.78rem;
+            color: #17a2b8;
             font-weight: 600;
-            letter-spacing: 0.03em;
             word-break: break-all;
         }
 
-        .project-desc {
-            color: rgba(237, 237, 239, 0.7);
-            font-size: 0.85rem;
-            line-height: 1.6;
+        .project-body p {
+            color: #6b7c93;
+            font-size: 0.9rem;
+            line-height: 1.65;
             flex: 1;
-            position: relative;
-            z-index: 1;
         }
 
         .project-features {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
-            position: relative;
-            z-index: 1;
+            margin-top: 4px;
         }
 
         .project-features span {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            font-size: 0.65rem;
-            font-weight: 700;
+            gap: 5px;
             padding: 4px 10px;
             border-radius: 20px;
-            background: rgba(168, 85, 247, 0.12);
-            border: 1px solid rgba(168, 85, 247, 0.3);
-            color: #c084fc;
+            background: #f0f8fa;
+            color: #17a2b8;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: 1px solid rgba(23, 162, 184, 0.20);
         }
 
-        .project-features span i { font-size: 0.6rem; color: #e9d5ff; }
+        .project-features span i { font-size: 0.65rem; }
 
         .project-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 9px;
+            gap: 8px;
             padding: 12px 20px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 800;
-            font-size: 0.82rem;
-            background: linear-gradient(135deg, var(--purple-600), var(--purple-400));
-            border: 1.5px solid #c084fc;
+            background: #17a2b8;
             color: #ffffff;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
-            margin-top: auto;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            letter-spacing: 0.02em;
-            box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            transition: all 0.25s ease;
+            margin-top: 8px;
         }
-
-        .project-btn i { color: #ffffff; }
 
         .project-btn:hover {
-            background: linear-gradient(135deg, var(--purple-400), var(--purple-600));
-            transform: translateY(-2px);
-            box-shadow: 0 12px 35px rgba(168, 85, 247, 0.6);
-            border-color: #e9d5ff;
+            background: #138496;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(23, 162, 184, 0.30);
         }
 
-        /* CC GRID */
+        /* ============================================================
+           CREATIVE COMMONS
+           ============================================================ */
+        .cc-section {
+            background: #ffffff;
+        }
+
         .cc-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 16px;
-            margin-top: 18px;
-            position: relative;
-            z-index: 1;
+            gap: 18px;
         }
 
         .cc-card {
-            background: rgba(10, 15, 25, 0.6);
-            border: 1.5px solid rgba(59, 130, 246, 0.25);
-            border-radius: 14px;
-            padding: 18px 18px;
-            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
+            background: #ffffff;
+            border: 1px solid #e5e8ed;
+            border-radius: 8px;
+            padding: 22px 22px 20px;
+            transition: all 0.25s ease;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .cc-card:hover {
-            border-color: #60a5fa;
-            background: rgba(15, 25, 45, 0.85);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 35px rgba(59, 130, 246, 0.3);
+            border-color: #17a2b8;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(26, 43, 71, 0.08);
         }
 
         .cc-head {
             display: flex;
             align-items: center;
             gap: 12px;
-            position: relative;
-            z-index: 1;
         }
 
         .cc-icon {
             width: 46px;
             height: 46px;
-            border-radius: 12px;
+            border-radius: 10px;
+            background: #f0f8fa;
+            color: #17a2b8;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
-            background: rgba(30, 58, 138, 0.3);
-            border: 1.5px solid rgba(59, 130, 246, 0.4);
-            color: #93c5fd;
             flex-shrink: 0;
-            transition: all 0.25s ease;
-        }
-
-        .cc-card:hover .cc-icon {
-            background: rgba(30, 58, 138, 0.5);
-            border-color: #60a5fa;
-            color: #ffffff;
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
         }
 
         .cc-head-text h4 {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 1rem;
+            font-size: 0.98rem;
             font-weight: 800;
-            color: #ffffff;
-            margin-bottom: 3px;
+            color: #1a2b47;
+            margin-bottom: 2px;
         }
 
         .cc-head-text span {
-            font-size: 0.7rem;
-            color: #93c5fd;
+            font-size: 0.72rem;
+            color: #8492a6;
             font-weight: 600;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.02em;
         }
 
         .cc-desc {
-            color: rgba(237, 237, 239, 0.7);
-            font-size: 0.82rem;
-            line-height: 1.55;
+            color: #6b7c93;
+            font-size: 0.85rem;
+            line-height: 1.6;
             flex: 1;
-            position: relative;
-            z-index: 1;
         }
 
         .cc-tag {
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            font-size: 0.65rem;
-            font-weight: 800;
-            padding: 4px 10px;
+            padding: 3px 10px;
             border-radius: 20px;
-            background: rgba(59, 130, 246, 0.15);
-            border: 1.5px solid rgba(59, 130, 246, 0.35);
-            color: #93c5fd;
+            background: #f0f8fa;
+            color: #17a2b8;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
             align-self: flex-start;
-            position: relative;
-            z-index: 1;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
+            border: 1px solid rgba(23, 162, 184, 0.20);
         }
 
-        .cc-tag i { font-size: 0.65rem; color: #60a5fa; }
+        .cc-tag i { font-size: 0.65rem; }
 
         .cc-visit {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 8px;
-            padding: 10px 16px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 800;
-            font-size: 0.78rem;
-            background: rgba(30, 58, 138, 0.3);
-            border: 1.5px solid rgba(59, 130, 246, 0.5);
-            color: #ffffff;
-            transition: all 0.25s ease;
-            position: relative;
-            z-index: 1;
-            margin-top: auto;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            letter-spacing: 0.02em;
-            backdrop-filter: blur(10px);
+            color: #17a2b8;
+            font-size: 0.82rem;
+            font-weight: 700;
+            transition: gap 0.25s ease;
         }
 
-        .cc-visit i { color: #93c5fd; }
-
-        .cc-visit:hover {
-            background: rgba(30, 58, 138, 0.55);
-            border-color: #93c5fd;
-            transform: translateY(-2px);
-            box-shadow:
-                0 8px 25px rgba(59, 130, 246, 0.5),
-                0 0 30px rgba(59, 130, 246, 0.3);
-        }
-
-        .cc-visit:hover i { color: #ffffff; }
+        .cc-visit:hover { gap: 14px; }
 
         .cc-note {
-            margin-top: 18px;
-            padding: 14px 18px;
-            border-radius: 12px;
-            background: rgba(30, 58, 138, 0.12);
-            border: 1.5px dashed rgba(59, 130, 246, 0.35);
-            color: rgba(237, 237, 239, 0.75);
-            font-size: 0.82rem;
-            line-height: 1.65;
+            margin-top: 30px;
+            background: #f7f9fc;
+            border: 1px solid #e5e8ed;
+            border-left: 4px solid #17a2b8;
+            border-radius: 6px;
+            padding: 18px 22px;
+            color: #6b7c93;
+            font-size: 0.88rem;
+            line-height: 1.7;
             display: flex;
-            gap: 12px;
+            gap: 14px;
             align-items: flex-start;
-            position: relative;
-            z-index: 1;
         }
 
         .cc-note i {
-            color: #60a5fa;
-            margin-top: 3px;
+            color: #17a2b8;
+            font-size: 1.1rem;
+            margin-top: 2px;
             flex-shrink: 0;
-            font-size: 1rem;
         }
 
+        .cc-note strong { color: #1a2b47; font-weight: 700; }
+
         .cc-note a {
-            color: #93c5fd;
-            text-decoration: none;
-            border-bottom: 1px dotted rgba(147, 197, 253, 0.4);
-            transition: 0.2s;
+            color: #17a2b8;
+            font-weight: 600;
+            border-bottom: 1px dotted rgba(23, 162, 184, 0.4);
         }
 
         .cc-note a:hover {
-            color: #ffffff;
-            border-bottom-color: #60a5fa;
-        }
-
-        .about-footer {
-            text-align: center;
-            margin-top: 50px;
-            padding-top: 24px;
-            border-top: 1px solid rgba(59, 130, 246, 0.15);
-            color: rgba(237, 237, 239, 0.5);
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .about-footer i {
-            color: #60a5fa;
-            animation: heartBeat 1.5s ease-in-out infinite;
-        }
-
-        @keyframes heartBeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
+            color: #138496;
+            border-bottom-color: #138496;
         }
 
         /* ============================================================
-           SIDEBAR
+           CTA
            ============================================================ */
-        .sidebar-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 999;
-            display: none;
+        .cta {
+            background: #1a2b47;
+            padding: 60px 20px;
         }
 
-        .sidebar-overlay.active { display: block; }
-
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -360px;
-            width: 320px;
-            max-width: 85vw;
-            height: 100%;
-            background: rgba(5, 8, 15, 0.98);
-            backdrop-filter: blur(24px);
-            border-right: 1.5px solid rgba(59, 130, 246, 0.25);
-            z-index: 1000;
-            transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow-y: auto;
-            padding: 20px 0;
-        }
-
-        .sidebar.open { left: 0; }
-
-        .sidebar-header {
-            padding: 20px 22px 16px;
-            border-bottom: 1.5px solid rgba(59, 130, 246, 0.20);
+        .cta-inner {
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            margin-bottom: 12px;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
         }
 
-        .sidebar-header h2 {
-            font-size: 1.05rem;
+        .cta h3 {
+            color: #ffffff;
+            font-size: 1.5rem;
             font-weight: 800;
-            color: #ededef;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            margin-bottom: 6px;
+            letter-spacing: -0.01em;
         }
 
-        .sidebar-header h2 i { color: #60a5fa; }
-
-        .sidebar-close {
-            color: rgba(59, 130, 246, 0.5);
-            font-size: 1.4rem;
-            background: none;
-            border: none;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .sidebar-close:hover { color: #60a5fa; }
-
-        .sidebar-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px 22px;
-            color: rgba(237, 237, 239, 0.7);
-            text-decoration: none;
-            font-size: 0.88rem;
-            font-weight: 600;
-            border-left: 3px solid transparent;
-            cursor: pointer;
-            transition: 0.25s;
-        }
-
-        .sidebar-item i {
-            width: 22px;
-            color: #60a5fa;
+        .cta p {
+            color: #cdd6e4;
             font-size: 0.95rem;
         }
 
-        .sidebar-item:hover {
-            border-left-color: #60a5fa;
-            color: #ffffff;
-            background: rgba(59, 130, 246, 0.08);
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        footer {
+            background: #f7f9fc;
+            padding: 60px 20px 26px;
+            border-top: 1px solid #e5e8ed;
         }
 
-        .sidebar-item.active {
-            border-left-color: #60a5fa;
-            color: #ffffff;
-            background: rgba(30, 58, 138, 0.35);
+        .footer-inner { max-width: 1200px; margin: 0 auto; }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 34px;
         }
 
-        .sidebar-item .badge {
-            margin-left: auto;
-            font-size: 0.6rem;
+        .footer-brand p {
+            color: #6b7c93;
+            font-size: 0.88rem;
+            margin-top: 14px;
+            max-width: 320px;
+            line-height: 1.7;
+        }
+
+        .footer-col h4 {
+            font-size: 0.82rem;
             font-weight: 700;
-            padding: 3px 9px;
-            border-radius: 20px;
-            border: 1.5px solid rgba(59, 130, 246, 0.3);
-            color: #60a5fa;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #1a2b47;
+            margin-bottom: 14px;
         }
 
-        .sidebar-item .badge.soon { background: rgba(59, 130, 246, 0.15); border-color: #60a5fa; }
-        .sidebar-item .badge.maint { color: #fbbf24; border-color: rgba(251, 191, 36, 0.35); }
-        .sidebar-item .badge.info { background: #60a5fa; border-color: #60a5fa; color: #000; }
-        .sidebar-item .badge.active-badge {
-            background: rgba(59, 130, 246, 0.2);
-            border-color: #60a5fa;
-            color: #93c5fd;
-        }
-        .sidebar-item .badge.gold {
-            background: rgba(251, 191, 36, 0.15);
-            border-color: #fbbf24;
-            color: #fbbf24;
+        .footer-col ul li { margin-bottom: 8px; }
+
+        .footer-col ul li a {
+            color: #6b7c93;
+            font-size: 0.88rem;
+            transition: color 0.25s ease;
         }
 
-        .sidebar-divider {
-            height: 1px;
-            background: rgba(59, 130, 246, 0.15);
-            margin: 8px 22px;
-            opacity: 0.6;
+        .footer-col ul li a:hover { color: #17a2b8; }
+
+        .footer-bottom {
+            border-top: 1px solid #e5e8ed;
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer-bottom p { color: #8492a6; font-size: 0.83rem; }
+
+        .footer-socials { display: flex; gap: 8px; }
+
+        .footer-socials a {
+            width: 34px;
+            height: 34px;
+            border: 1px solid #e5e8ed;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7c93;
+            font-size: 0.85rem;
+            transition: all 0.25s ease;
+        }
+
+        .footer-socials a:hover {
+            border-color: #17a2b8;
+            color: #17a2b8;
         }
 
         /* ============================================================
            RESPONSIVE
            ============================================================ */
-        @media (max-width: 1100px) {
-            .topnav-nav { gap: 4px; }
-            .topnav-link { padding: 8px 12px; font-size: 0.78rem; }
-            .topnav-link span { display: none; }
-        }
-
         @media (max-width: 900px) {
-            .topnav-nav { display: none; }
+            .intro-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .intro-image {
+                order: -1;
+            }
+            .creator-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding: 36px 26px;
+            }
+            .creator-card::before {
+                width: 100%;
+                height: 4px;
+                background: linear-gradient(to right, #17a2b8, #138496);
+            }
+            .creator-avatar {
+                margin: 0 auto;
+            }
+            .social-row { justify-content: center; }
+            .footer-top { grid-template-columns: 1fr 1fr; }
         }
 
-        @media (max-width: 768px) {
-            .topnav-inner { padding: 10px 16px; }
-            .icon-btn:nth-child(n+3):not(.user-avatar) { display: none; }
-            .creator-card { flex-direction: column; text-align: center; }
-            .creator-avatar { margin: 0 auto; }
-            .social-row { justify-content: center; }
+        @media (max-width: 720px) {
+            .mainnav-inner {
+                flex-wrap: wrap;
+                padding: 12px 16px;
+                gap: 12px;
+            }
+            .logo { font-size: 1.15rem; }
+            .logo-mark { width: 34px; height: 34px; font-size: 0.9rem; }
+            .menu {
+                order: 3;
+                flex-basis: 100%;
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 4px;
+                scrollbar-width: none;
+                gap: 0;
+            }
+            .menu::-webkit-scrollbar { display: none; }
+            .menu a {
+                padding: 8px 12px;
+                font-size: 0.82rem;
+                flex-shrink: 0;
+            }
+            .about-hero { padding: 60px 18px 50px; }
+            .container { padding: 50px 16px; }
+            .container.tight { padding: 44px 16px; }
+            .creator-card { padding: 30px 22px; }
+            .footer-top { gap: 26px; }
+            .cta-inner { flex-direction: column; text-align: center; }
         }
 
         @media (max-width: 560px) {
-            .topnav-inner { padding: 8px 12px; gap: 8px; }
-            .brand-text .brand-tag { display: none; }
-            .brand-name { font-size: 0.92rem; }
-            .menu-toggle, .brand-mark { width: 34px; height: 34px; }
-            .icon-btn { width: 38px; height: 38px; font-size: 0.85rem; }
-            .user-avatar { width: 38px; height: 38px; font-size: 0.8rem; }
-            .cat-nav-inner { padding: 0 12px; }
-            .cat-link { padding: 6px 10px; font-size: 0.75rem; }
-            .about-wrap { padding: 24px 14px 60px; }
-            .glass-card { padding: 22px 18px; }
-            .project-head { flex-direction: column; text-align: center; gap: 10px; }
-            .project-btn { width: 100%; justify-content: center; }
-            .creator-info { text-align: center; }
+            .topbar-inner { gap: 12px; font-size: 0.75rem; }
+            .topbar-inner span:nth-child(3) { display: none; }
+            .creator-avatar { width: 100px; height: 100px; font-size: 2.4rem; }
+            .footer-top { grid-template-columns: 1fr; gap: 24px; }
+            .btn-quote span { display: none; }
+            .section-head h2 { font-size: 1.5rem; }
+            .cta h3 { font-size: 1.25rem; }
         }
 
-        @media (max-width: 380px) {
-            .icon-btn:nth-child(n+2):not(.user-avatar) { display: none; }
-            .about-hero h1 { font-size: 1.5rem; }
+        @media (max-width: 400px) {
+            .logo-text { font-size: 1rem; }
+            .topbar-inner span:nth-child(2) { display: none; }
+            .about-hero h1 { font-size: 1.6rem; }
         }
-
-        @media (prefers-reduced-motion: reduce) {
-            * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
-        }
-
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.3); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.5); }
     </style>
 </head>
 <body>
 
-    <!-- BLUE BUBBLES FALLING FROM TOP -->
-    <div class="bubbles-container">
-        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
-        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
-        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
-        <div class="bubble"></div>
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <div class="topbar-inner">
+            <span><i class="fas fa-phone"></i> +255 740 706 007</span>
+            <span><i class="fas fa-envelope"></i> Twarvistech@gmail.com</span>
+            <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
+        </div>
     </div>
 
-    <canvas id="rain-canvas"></canvas>
+    <!-- MAIN NAV -->
+    <nav class="mainnav">
+        <div class="mainnav-inner">
+            <a href="/" class="logo">
+                <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
+                <span class="logo-text">Student<span>Hub</span></span>
+            </a>
 
-    <!-- SMART TOP NAVBAR — NO SEARCH -->
-    <header class="topnav">
-        <div class="topnav-inner">
-            <div class="topnav-left">
-                <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <a href="/" class="brand">
-                    <div class="brand-mark">S</div>
-                    <div class="brand-text">
-                        <span class="brand-name">Student Hub</span>
-                        <span class="brand-tag">by Twarvis</span>
-                    </div>
-                </a>
+            <div class="menu">
+                <a href="/">Home</a>
+                <a href="/browse/">Browse</a>
+                <a href="/upload/">Upload</a>
+                <a href="/calculator/">Calculator</a>
+                <a href="/scanner/">Scanner</a>
+                <a href="/about/" class="active">About</a>
             </div>
 
-            <!-- INLINE NAV LINKS -->
-            <nav class="topnav-nav">
-                <a href="/" class="topnav-link">
-                    <i class="fas fa-home"></i> <span>Home</span>
+            <div class="nav-right">
+                <a href="/upload/" class="btn-quote">
+                    <span>Upload File</span> <i class="fas fa-arrow-right"></i>
                 </a>
-                <a href="/browse/" class="topnav-link">
-                    <i class="fas fa-file-alt"></i> <span>Notes</span>
-                </a>
-                <a href="/upload/" class="topnav-link">
-                    <i class="fas fa-cloud-upload-alt"></i> <span>Upload</span>
-                </a>
-                <a href="/about/" class="topnav-link active">
-                    <i class="fas fa-info-circle"></i> <span>About</span>
-                </a>
-            </nav>
-
-            <div class="topnav-right">
-                <a href="/browse/" class="icon-btn" title="Browse">
-                    <i class="fas fa-compass"></i>
-                </a>
-                <a href="/upload/" class="icon-btn" title="Upload">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                </a>
-                <a href="#" class="icon-btn" title="Notifications">
-                    <i class="fas fa-bell"></i>
-                </a>
-                <div class="user-avatar" title="Account">TW</div>
             </div>
         </div>
+    </nav>
 
-        <nav class="cat-nav">
-            <div class="cat-nav-inner" id="catNav">
-                <div class="cat-glass-indicator" id="catIndicator"></div>
+    <!-- ABOUT HERO -->
+    <section class="about-hero">
+        <div class="about-hero-inner">
+            <span class="about-label">Get to know us</span>
+            <h1>About <span class="accent">Student</span> Hub</h1>
+            <p>Everything you need to know about the platform, the creator, and the free tools we love. Built in Tanzania, for students everywhere.</p>
+        </div>
+    </section>
 
-                <a href="/" class="cat-link" data-cat="home">
-                    <i class="fas fa-home"></i> Home
-                </a>
-                <a href="/browse/" class="cat-link" data-cat="browse">
-                    <i class="fas fa-file-alt"></i> Notes
-                </a>
-                <a href="/upload/" class="cat-link" data-cat="upload">
-                    <i class="fas fa-cloud-upload-alt"></i> Upload
-                </a>
-                <a href="/scanner/" class="cat-link" data-cat="scanner">
-                    <i class="fas fa-camera-retro"></i> Scanner
-                </a>
-                <a href="/calculator/" class="cat-link" data-cat="calculator">
-                    <i class="fas fa-calculator"></i> Calculator
-                </a>
-                <a href="/about/" class="cat-link active" data-cat="about">
-                    <i class="fas fa-info-circle"></i> About
-                </a>
-            </div>
-        </nav>
-    </header>
-
-    <!-- MAIN CONTENT -->
-    <div class="wrap">
-        <div class="about-wrap">
-
-            <div class="about-hero">
-                <div class="icon"><i class="fas fa-circle-info"></i></div>
-                <h1>About Student Hub</h1>
-                <p>Everything you need to know about the platform, the creator, my other projects, and free Creative Commons tools we love.</p>
-            </div>
-
-            <!-- 1. ABOUT THE WEBSITE -->
-            <div class="glass-card">
-                <div class="card-title"><i class="fas fa-graduation-cap"></i> What is Student Hub?</div>
-                <div class="card-text">
+    <!-- ABOUT THE WEBSITE -->
+    <section class="intro-section">
+        <div class="container">
+            <div class="intro-grid">
+                <div class="intro-text">
+                    <span class="section-label" style="text-align:left;display:block;margin-bottom:12px;">What is Student Hub?</span>
+                    <h2>A free platform for <span class="accent">sharing notes</span></h2>
                     <p>
                         <strong>Student Hub</strong> is a free, student-built platform made to help learners
                         share, discover, and organize study materials — all in one calm, distraction-free space.
-                        It was born from a simple idea: <em>someone already took this note</em> — so why not share it?
                     </p>
                     <p>
+                        It was born from a simple idea: <em>someone already took this note</em> — so why not share it?
                         Whether you're revising for exams, catching up on a missed lecture, or looking for past papers,
                         Student Hub connects you with what other students have already uploaded.
                     </p>
+
+                    <ul class="feature-list">
+                        <li>
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span><strong>Upload notes &amp; papers</strong> — share PDFs, slides, docs, images and archives in seconds.</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-eye"></i>
+                            <span><strong>See uploaded notes</strong> — browse everything other students have shared.</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-search"></i>
+                            <span><strong>Smart search</strong> — find files fast by module, course code, or keyword.</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-camera-retro"></i>
+                            <span><strong>Built-in scanner</strong> — photograph handwritten pages and turn them into clean PDFs.</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-lock"></i>
+                            <span><strong>Private mode</strong> — protect sensitive files with a 4-digit passcode.</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-mobile-screen"></i>
+                            <span><strong>Works everywhere</strong> — fully responsive on phone, tablet, and desktop.</span>
+                        </li>
+                    </ul>
                 </div>
-                <ul class="feature-list">
-                    <li><i class="fas fa-cloud-upload-alt"></i> <span><strong>Upload notes &amp; papers</strong> — share PDFs, slides, docs, images and archives in seconds.</span></li>
-                    <li><i class="fas fa-eye"></i> <span><strong>See uploaded notes</strong> — browse everything other students have shared.</span></li>
-                    <li><i class="fas fa-search"></i> <span><strong>Smart search</strong> — find files fast by module, course code, or keyword.</span></li>
-                    <li><i class="fas fa-camera-retro"></i> <span><strong>Built-in scanner</strong> — photograph handwritten pages and turn them into clean PDFs.</span></li>
-                    <li><i class="fas fa-lock"></i> <span><strong>Private mode</strong> — protect sensitive files with a 4-digit passcode.</span></li>
-                    <li><i class="fas fa-mobile-screen"></i> <span><strong>Works everywhere</strong> — fully responsive on phone, tablet, and desktop.</span></li>
-                </ul>
+
+                <div class="intro-image">
+                    <div class="intro-image-bg active" style="background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&q=80');"></div>
+                    <div class="intro-image-bg" style="background-image: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1200&q=80');"></div>
+                    <div class="intro-image-bg" style="background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1200&q=80');"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT THE CREATOR -->
+    <section class="creator-section">
+        <div class="container">
+            <div class="section-head">
+                <span class="section-label">The person behind it</span>
+                <h2>About the Creator</h2>
             </div>
 
-            <!-- 2. MY OTHER PROJECTS -->
-            <div class="glass-card">
-                <div class="card-title"><i class="fas fa-rocket"></i> My Other Projects</div>
-                <div class="card-text">
-                    <p>
-                        Besides Student Hub, I also build other tools that students and creators can use for free.
-                        Tap any button to explore them!
-                    </p>
+            <div class="creator-card">
+                <div class="creator-avatar">
+                    <i class="fas fa-code"></i>
                 </div>
+                <div class="creator-info">
+                    <h3>Twarvis</h3>
+                    <div class="role">Student Developer &amp; Founder</div>
+                    <p>
+                        Hi! I'm <strong>Twarvis</strong> — a student who got tired of losing notes and
+                        scrambling for past papers. I built Student Hub to make sharing study material
+                        effortless, beautiful, and free for everyone. Every pixel, animation, and line of
+                        code here was crafted with care (and a lot of late-night coding sessions).
+                    </p>
+                    <div class="social-row">
+                        <a href="https://wa.me/255740706007?text=Hello%20Twarvis%2C%20I%20saw%20your%20Student%20Hub" class="social-btn whatsapp" target="_blank" rel="noopener">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                        <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" class="social-btn instagram" target="_blank" rel="noopener">
+                            <i class="fab fa-instagram"></i> Instagram
+                        </a>
+                        <a href="https://www.tiktok.com/@twarvis" class="social-btn tiktok" target="_blank" rel="noopener">
+                            <i class="fab fa-tiktok"></i> TikTok
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                <div class="projects-grid">
+    <!-- MY OTHER PROJECTS -->
+    <section class="projects-section">
+        <div class="container">
+            <div class="section-head">
+                <span class="section-label">More from me</span>
+                <h2>My Other Projects</h2>
+                <p>Besides Student Hub, I also build other tools that students and creators can use for free.</p>
+            </div>
 
-                    <div class="project-card">
-                        <div class="project-head">
-                            <div class="project-icon"><i class="fas fa-shield-halved"></i></div>
-                            <div class="project-head-text">
-                                <h4>CyberCraft</h4>
-                                <span>cybercraft.twarvistech.workers.dev</span>
-                            </div>
-                        </div>
-                        <div class="project-desc">
-                            A cyber-security toolkit and playground for students learning ethical hacking,
-                            cryptography, and safe browsing — built with a sleek, hacker-inspired interface.
-                        </div>
+            <div class="projects-grid">
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="project-image-bg active" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1000&q=80');"></div>
+                        <div class="project-image-bg" style="background-image: url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1000&q=80');"></div>
+                        <div class="project-icon"><i class="fas fa-shield-halved"></i></div>
+                    </div>
+                    <div class="project-body">
+                        <h3>CyberCraft</h3>
+                        <div class="project-url">cybercraft.twarvistech.workers.dev</div>
+                        <p>A cyber-security toolkit and playground for students learning ethical hacking, cryptography, and safe browsing — built with a sleek, hacker-inspired interface.</p>
                         <div class="project-features">
                             <span><i class="fas fa-lock"></i> Security Tools</span>
                             <span><i class="fas fa-terminal"></i> Terminal UI</span>
                             <span><i class="fas fa-code"></i> Open Source</span>
                         </div>
                         <a href="https://cybercraft.twarvistech.workers.dev/" class="project-btn" target="_blank" rel="noopener">
-                            <i class="fas fa-arrow-up-right-from-square"></i> Visit CyberCraft
+                            Visit CyberCraft <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
+                </div>
 
-                    <div class="project-card">
-                        <div class="project-head">
-                            <div class="project-icon"><i class="fas fa-file-pdf"></i></div>
-                            <div class="project-head-text">
-                                <h4>PDF Scanner &amp; Maker</h4>
-                                <span>twarvisscanner.twarvistech.workers.dev</span>
-                            </div>
-                        </div>
-                        <div class="project-desc">
-                            Scan documents with your phone camera, crop and straighten them, then save as clean
-                            PDFs — or build new PDFs from scratch. Everything runs in the browser.
-                        </div>
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="project-image-bg active" style="background-image: url('https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1000&q=80');"></div>
+                        <div class="project-image-bg" style="background-image: url('https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=1000&q=80');"></div>
+                        <div class="project-icon"><i class="fas fa-file-pdf"></i></div>
+                    </div>
+                    <div class="project-body">
+                        <h3>PDF Scanner &amp; Maker</h3>
+                        <div class="project-url">twarvisscanner.twarvistech.workers.dev</div>
+                        <p>Scan documents with your phone camera, crop and straighten them, then save as clean PDFs — or build new PDFs from scratch. Everything runs in the browser.</p>
                         <div class="project-features">
                             <span><i class="fas fa-camera"></i> Scan</span>
                             <span><i class="fas fa-crop"></i> Crop &amp; Edit</span>
                             <span><i class="fas fa-file-export"></i> Export PDF</span>
                         </div>
                         <a href="https://twarvisscanner.twarvistech.workers.dev/" class="project-btn" target="_blank" rel="noopener">
-                            <i class="fas fa-arrow-up-right-from-square"></i> Visit Scanner
+                            Visit Scanner <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
-
                 </div>
+
             </div>
-
-            <!-- 3. ABOUT THE CREATOR -->
-            <div class="glass-card">
-                <div class="card-title"><i class="fas fa-user-astronaut"></i> About the Creator</div>
-                <div class="creator-card">
-                    <div class="creator-avatar"><i class="fas fa-code"></i></div>
-                    <div class="creator-info">
-                        <h3>Twarvis</h3>
-                        <div class="role">Student Developer &amp; Founder</div>
-                        <p>
-                            Hi! I'm <strong>Twarvis</strong> — a student who got tired of losing notes and
-                            scrambling for past papers. I built Student Hub to make sharing study material
-                            effortless, beautiful, and free for everyone. Every pixel, animation, and line of
-                            code here was crafted with care (and a lot of late-night coding sessions).
-                        </p>
-                    </div>
-                </div>
-                <div class="social-row">
-                    <a href="https://wa.me/255740706007?text=Hello%20Twarvis%2C%20I%20saw%20your%20Student%20Hub" class="social-btn whatsapp" target="_blank" rel="noopener">
-                        <i class="fab fa-whatsapp"></i> WhatsApp
-                    </a>
-                    <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" class="social-btn instagram" target="_blank" rel="noopener">
-                        <i class="fab fa-instagram"></i> Instagram
-                    </a>
-                    <a href="https://www.tiktok.com/@twarvis" class="social-btn tiktok" target="_blank" rel="noopener">
-                        <i class="fab fa-tiktok"></i> TikTok
-                    </a>
-                </div>
-            </div>
-
-            <!-- 4. CC WEBSITES -->
-            <div class="glass-card">
-                <div class="card-title"><i class="fas fa-globe"></i> Creative Commons Websites We Love</div>
-                <div class="card-text">
-                    <p>
-                        These websites offer <strong>free, openly-licensed (Creative Commons) content</strong>
-                        — perfect for students who want to learn, remix, and share legally.
-                        Tap any button to visit them directly.
-                    </p>
-                </div>
-
-                <div class="cc-grid">
-
-                    <div class="cc-card">
-                        <div class="cc-head">
-                            <div class="cc-icon"><i class="fas fa-wikipedia-w"></i></div>
-                            <div class="cc-head-text">
-                                <h4>Wikipedia</h4>
-                                <span>wikipedia.org</span>
-                            </div>
-                        </div>
-                        <div class="cc-desc">
-                            The world's largest free encyclopedia — every article is CC BY-SA licensed and editable by anyone.
-                        </div>
-                        <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-SA</span>
-                        <a href="https://www.wikipedia.org" class="cc-visit" target="_blank" rel="noopener">
-                            <i class="fas fa-arrow-up-right-from-square"></i> Visit Wikipedia
-                        </a>
-                    </div>
-
-                    <div class="cc-card">
-                        <div class="cc-head">
-                            <div class="cc-icon"><i class="fas fa-image"></i></div>
-                            <div class="cc-head-text">
-                                <h4>Unsplash</h4>
-                                <span>unsplash.com</span>
-                            </div>
-                        </div>
-                        <div class="cc-desc">
-                            Beautiful, high-resolution photos you can use freely for projects, presentations and websites.
-                        </div>
-                        <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC0</span>
-                        <a href="https://unsplash.com" class="cc-visit" target="_blank" rel="noopener">
-                            <i class="fas fa-arrow-up-right-from-square"></i> Visit Unsplash
-                        </a>
-                    </div>
-
-                    <div class="cc-card">
-                        <div class="cc-head">
-                            <div class="cc-icon"><i class="fas fa-book-open"></i></div>
-                            <div class="cc-head-text">
-                                <h4>OpenStax</h4>
-                                <span>openstax.org</span>
-                            </div>
-                        </div>
-                        <div class="cc-desc">
-                            Free, peer-reviewed, openly-licensed textbooks for university courses — perfect for students.
-                        </div>
-                        <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY</span>
-                        <a href="https://openstax.org" class="cc-visit" target="_blank" rel="noopener">
-                            <i class="fas fa-arrow-up-right-from-square"></i> Visit OpenStax
-                        </a>
-                    </div>
-
-                    <div class="cc-card">
-                        <div class="cc-head">
-                            <div class="cc-icon"><i class="fas fa-brain"></i></div>
-                            <div class="cc-head-text">
-                                <h4>Khan Academy</h4>
-                                <span>khanacademy.org</span>
-                            </div>
-                        </div>
-                        <div class="cc-desc">
-                            Free lessons and practice for math, science, computing and more — mostly CC BY-NC-SA.
-                        </div>
-                        <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-NC-SA</span>
-                        <a href="https://www.khanacademy.org" class="cc-visit" target="_blank" rel="noopener">
-                            <i class="fas fa-arrow-up-right-from-square"></i> Visit Khan Academy
-                        </a>
-                    </div>
-
-                    <div class="cc-card">
-                        <div class="cc-head">
-                            <div class="cc-icon"><i class="fas fa-file-lines"></i></div>
-                            <div class="cc-head-text">
-                                <h4>Project Gutenberg</h4>
-                                <span>gutenberg.org</span>
-                            </div>
-                        </div>
-                        <div class="cc-desc">
-                            Over 70,000 free eBooks — classic literature, reference works and more, all openly licensed.
-                        </div>
-                        <span class="cc-tag"><i class="fab fa-creative-commons"></i> Public Domain</span>
-                        <a href="https://www.gutenberg.org" class="cc-visit" target="_blank" rel="noopener">
-                            <i class="fas fa-arrow-up-right-from-square"></i> Visit Gutenberg
-                        </a>
-                    </div>
-
-                    <div class="cc-card">
-                        <div class="cc-head">
-                            <div class="cc-icon"><i class="fas fa-music"></i></div>
-                            <div class="cc-head-text">
-                                <h4>Free Music Archive</h4>
-                                <span>freemusicarchive.org</span>
-                            </div>
-                        </div>
-                        <div class="cc-desc">
-                            Curated, legal, free music under Creative Commons — great for projects and videos.
-                        </div>
-                        <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC Licensed</span>
-                        <a href="https://freemusicarchive.org" class="cc-visit" target="_blank" rel="noopener">
-                            <i class="fas fa-arrow-up-right-from-square"></i> Visit FMA
-                        </a>
-                    </div>
-
-                    <div class="cc-card">
-                        <div class="cc-head">
-                            <div class="cc-icon"><i class="fas fa-palette"></i></div>
-                            <div class="cc-head-text">
-                                <h4>Openverse</h4>
-                                <span>openverse.org</span>
-                            </div>
-                        </div>
-                        <div class="cc-desc">
-                            Search over 800 million openly-licensed images and audio from one place — by WordPress.
-                        </div>
-                        <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC Search</span>
-                        <a href="https://openverse.org" class="cc-visit" target="_blank" rel="noopener">
-                            <i class="fas fa-arrow-up-right-from-square"></i> Visit Openverse
-                        </a>
-                    </div>
-
-                    <div class="cc-card">
-                        <div class="cc-head">
-                            <div class="cc-icon"><i class="fas fa-flask"></i></div>
-                            <div class="cc-head-text">
-                                <h4>MIT OpenCourseWare</h4>
-                                <span>ocw.mit.edu</span>
-                            </div>
-                        </div>
-                        <div class="cc-desc">
-                            Free lecture notes, exams and videos from actual MIT courses — CC BY-NC-SA.
-                        </div>
-                        <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-NC-SA</span>
-                        <a href="https://ocw.mit.edu" class="cc-visit" target="_blank" rel="noopener">
-                            <i class="fas fa-arrow-up-right-from-square"></i> Visit MIT OCW
-                        </a>
-                    </div>
-
-                </div>
-
-                <div class="cc-note">
-                    <i class="fas fa-circle-info"></i>
-                    <span>
-                        <strong>About Creative Commons:</strong> CC licenses let creators share their work
-                        legally while keeping some rights. Always check the specific license (BY, BY-SA, BY-NC, CC0)
-                        before reusing content — especially for commercial use. Learn more at
-                        <a href="https://creativecommons.org/licenses/" target="_blank" rel="noopener">creativecommons.org/licenses</a>.
-                    </span>
-                </div>
-            </div>
-
-            <div class="about-footer">
-                <i class="fas fa-heart"></i>
-                Made with care for students, by students — © 2026 Student Hub · powered by Twarvis
-            </div>
-
         </div>
-    </div>
+    </section>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2><i class="fas fa-graduation-cap"></i> Student Hub</h2>
-            <button class="sidebar-close" id="sidebarClose">&times;</button>
+    <!-- CREATIVE COMMONS -->
+    <section class="cc-section">
+        <div class="container">
+            <div class="section-head">
+                <span class="section-label">Free &amp; open resources</span>
+                <h2>Creative Commons Websites We Love</h2>
+                <p>These websites offer free, openly-licensed content — perfect for students who want to learn, remix, and share legally.</p>
+            </div>
+
+            <div class="cc-grid">
+
+                <div class="cc-card">
+                    <div class="cc-head">
+                        <div class="cc-icon"><i class="fas fa-wikipedia-w"></i></div>
+                        <div class="cc-head-text">
+                            <h4>Wikipedia</h4>
+                            <span>wikipedia.org</span>
+                        </div>
+                    </div>
+                    <div class="cc-desc">The world's largest free encyclopedia — every article is CC BY-SA licensed and editable by anyone.</div>
+                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-SA</span>
+                    <a href="https://www.wikipedia.org" class="cc-visit" target="_blank" rel="noopener">Visit Wikipedia <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="cc-card">
+                    <div class="cc-head">
+                        <div class="cc-icon"><i class="fas fa-image"></i></div>
+                        <div class="cc-head-text">
+                            <h4>Unsplash</h4>
+                            <span>unsplash.com</span>
+                        </div>
+                    </div>
+                    <div class="cc-desc">Beautiful, high-resolution photos you can use freely for projects, presentations and websites.</div>
+                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC0</span>
+                    <a href="https://unsplash.com" class="cc-visit" target="_blank" rel="noopener">Visit Unsplash <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="cc-card">
+                    <div class="cc-head">
+                        <div class="cc-icon"><i class="fas fa-book-open"></i></div>
+                        <div class="cc-head-text">
+                            <h4>OpenStax</h4>
+                            <span>openstax.org</span>
+                        </div>
+                    </div>
+                    <div class="cc-desc">Free, peer-reviewed, openly-licensed textbooks for university courses — perfect for students.</div>
+                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY</span>
+                    <a href="https://openstax.org" class="cc-visit" target="_blank" rel="noopener">Visit OpenStax <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="cc-card">
+                    <div class="cc-head">
+                        <div class="cc-icon"><i class="fas fa-brain"></i></div>
+                        <div class="cc-head-text">
+                            <h4>Khan Academy</h4>
+                            <span>khanacademy.org</span>
+                        </div>
+                    </div>
+                    <div class="cc-desc">Free lessons and practice for math, science, computing and more — mostly CC BY-NC-SA.</div>
+                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-NC-SA</span>
+                    <a href="https://www.khanacademy.org" class="cc-visit" target="_blank" rel="noopener">Visit Khan Academy <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="cc-card">
+                    <div class="cc-head">
+                        <div class="cc-icon"><i class="fas fa-file-lines"></i></div>
+                        <div class="cc-head-text">
+                            <h4>Project Gutenberg</h4>
+                            <span>gutenberg.org</span>
+                        </div>
+                    </div>
+                    <div class="cc-desc">Over 70,000 free eBooks — classic literature, reference works and more, all openly licensed.</div>
+                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> Public Domain</span>
+                    <a href="https://www.gutenberg.org" class="cc-visit" target="_blank" rel="noopener">Visit Gutenberg <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="cc-card">
+                    <div class="cc-head">
+                        <div class="cc-icon"><i class="fas fa-music"></i></div>
+                        <div class="cc-head-text">
+                            <h4>Free Music Archive</h4>
+                            <span>freemusicarchive.org</span>
+                        </div>
+                    </div>
+                    <div class="cc-desc">Curated, legal, free music under Creative Commons — great for projects and videos.</div>
+                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC Licensed</span>
+                    <a href="https://freemusicarchive.org" class="cc-visit" target="_blank" rel="noopener">Visit FMA <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="cc-card">
+                    <div class="cc-head">
+                        <div class="cc-icon"><i class="fas fa-palette"></i></div>
+                        <div class="cc-head-text">
+                            <h4>Openverse</h4>
+                            <span>openverse.org</span>
+                        </div>
+                    </div>
+                    <div class="cc-desc">Search over 800 million openly-licensed images and audio from one place — by WordPress.</div>
+                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC Search</span>
+                    <a href="https://openverse.org" class="cc-visit" target="_blank" rel="noopener">Visit Openverse <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="cc-card">
+                    <div class="cc-head">
+                        <div class="cc-icon"><i class="fas fa-flask"></i></div>
+                        <div class="cc-head-text">
+                            <h4>MIT OpenCourseWare</h4>
+                            <span>ocw.mit.edu</span>
+                        </div>
+                    </div>
+                    <div class="cc-desc">Free lecture notes, exams and videos from actual MIT courses — CC BY-NC-SA.</div>
+                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-NC-SA</span>
+                    <a href="https://ocw.mit.edu" class="cc-visit" target="_blank" rel="noopener">Visit MIT OCW <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+            </div>
+
+            <div class="cc-note">
+                <i class="fas fa-circle-info"></i>
+                <span>
+                    <strong>About Creative Commons:</strong> CC licenses let creators share their work
+                    legally while keeping some rights. Always check the specific license (BY, BY-SA, BY-NC, CC0)
+                    before reusing content — especially for commercial use. Learn more at
+                    <a href="https://creativecommons.org/licenses/" target="_blank" rel="noopener">creativecommons.org/licenses</a>.
+                </span>
+            </div>
         </div>
-        <a class="sidebar-item" href="/"><i class="fas fa-home"></i> Home</a>
-        <a class="sidebar-item" href="/browse/"><i class="fas fa-eye"></i> See uploaded notes</a>
-        <a class="sidebar-item" href="/upload/"><i class="fas fa-cloud-upload-alt"></i> Upload files</a>
-        <a class="sidebar-item active" href="/about/"><i class="fas fa-circle-info"></i> About <span class="badge active-badge">Here</span></a>
-        <div class="sidebar-divider"></div>
-        <a class="sidebar-item" href="/scanner/"><i class="fas fa-camera-retro"></i> Scanner</a>
-        <a class="sidebar-item" href="/calculator/"><i class="fas fa-calculator"></i> Calculator <span class="badge soon">New</span></a>
-        <div class="sidebar-divider"></div>
-        <a class="sidebar-item" href="https://cybercraft.twarvistech.workers.dev/" target="_blank" rel="noopener"><i class="fas fa-shield-halved"></i> CyberCraft <span class="badge gold">✦</span></a>
-        <a class="sidebar-item" href="https://twarvisscanner.twarvistech.workers.dev/" target="_blank" rel="noopener"><i class="fas fa-file-pdf"></i> PDF Scanner <span class="badge gold">✦</span></a>
-        <div class="sidebar-divider"></div>
-        <a class="sidebar-item" href="/hackerthon/"><i class="fas fa-code"></i> Hackathon <span class="badge soon">Soon</span></a>
-        <a class="sidebar-item" href="/free_course/"><i class="fas fa-graduation-cap"></i> Free courses <span class="badge maint">Maint</span></a>
-        <div class="sidebar-divider"></div>
-        <div class="sidebar-item" id="sideSettings"><i class="fas fa-cog"></i> Settings</div>
-    </aside>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="cta-inner">
+            <div>
+                <h3>Have notes to share?</h3>
+                <p>Upload them in seconds — help the next student out.</p>
+            </div>
+            <a href="/upload/" class="btn-quote">Upload Now <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <a href="/" class="logo">
+                        <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
+                        <span class="logo-text">Student<span>Hub</span></span>
+                    </a>
+                    <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Pages</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/browse/">Browse</a></li>
+                        <li><a href="/upload/">Upload</a></li>
+                        <li><a href="/about/">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Tools</h4>
+                    <ul>
+                        <li><a href="/calculator/">Calculator</a></li>
+                        <li><a href="/scanner/">Scanner</a></li>
+                        <li><a href="/upload/">PDF Maker</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2026 Student Hub. All rights reserved.</p>
+                <div class="footer-socials">
+                    <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script>
         // ============================================================
-        // RAIN CANVAS — BLUE
+        // Image rotations — smooth soft transitions
         // ============================================================
-        (function initRain() {
-            const canvas = document.getElementById('rain-canvas');
-            const ctx = canvas.getContext('2d');
-            let w, h;
-            const drops = [];
-            const dropCount = 300;
 
-            function resize() {
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-            }
-            resize();
-            window.addEventListener('resize', resize);
-
-            class Drop {
-                constructor() { this.reset(); }
-                reset() {
-                    this.x = Math.random() * w;
-                    this.y = Math.random() * h - h;
-                    this.length = Math.random() * 22 + 10;
-                    this.speed = Math.random() * 11 + 5;
-                    this.opacity = Math.random() * 0.28 + 0.10;
-                    this.width = Math.random() * 1.4 + 0.4;
-                    this.angle = Math.random() * 0.1 - 0.05;
-                }
-                update() {
-                    this.y += this.speed;
-                    this.x += this.angle;
-                    if (this.y > h + 50) this.reset();
-                }
-                draw() {
-                    ctx.beginPath();
-                    ctx.moveTo(this.x, this.y);
-                    ctx.lineTo(this.x - 1.5, this.y + this.length);
-                    ctx.strokeStyle = `rgba(59, 130, 246, ${this.opacity})`;
-                    ctx.lineWidth = this.width;
-                    ctx.shadowBlur = 5;
-                    ctx.shadowColor = `rgba(59, 130, 246, ${this.opacity * 0.4})`;
-                    ctx.stroke();
-                    ctx.shadowBlur = 0;
-                }
-            }
-
-            for (let i = 0; i < dropCount; i++) drops.push(new Drop());
-
-            function animate() {
-                ctx.clearRect(0, 0, w, h);
-                for (let drop of drops) { drop.update(); drop.draw(); }
-                requestAnimationFrame(animate);
-            }
-            animate();
+        // Intro image (right side of "What is Student Hub?")
+        (function () {
+            const bgs = document.querySelectorAll('.intro-image-bg');
+            if (!bgs.length) return;
+            let i = 0;
+            setInterval(() => {
+                bgs.forEach(b => b.classList.remove('active'));
+                i = (i + 1) % bgs.length;
+                bgs[i].classList.add('active');
+            }, 4000);
         })();
 
-        // ============================================================
-        // SIDEBAR
-        // ============================================================
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        const menuBtn = document.getElementById('menuToggle');
-        const closeBtn = document.getElementById('sidebarClose');
-
-        function openSidebar() {
-            sidebar.classList.add('open');
-            overlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeSidebar() {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        menuBtn.addEventListener('click', openSidebar);
-        closeBtn.addEventListener('click', closeSidebar);
-        overlay.addEventListener('click', closeSidebar);
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && sidebar.classList.contains('open')) closeSidebar();
+        // Project cards
+        document.querySelectorAll('.project-image').forEach((img) => {
+            const bgs = img.querySelectorAll('.project-image-bg');
+            if (!bgs.length) return;
+            let i = 0;
+            const delay = 4000 + Math.random() * 1500;
+            setInterval(() => {
+                bgs.forEach(b => b.classList.remove('active'));
+                i = (i + 1) % bgs.length;
+                bgs[i].classList.add('active');
+            }, delay);
         });
 
-        document.getElementById('sideSettings').addEventListener('click', () => {
-            closeSidebar();
-            setTimeout(() => alert('Settings available on home page'), 200);
-        });
-
-        // ============================================================
-        // CATEGORY GLASS INDICATOR
-        // ============================================================
-        (function initCatGlassSlide() {
-            const catNav = document.getElementById('catNav');
-            const indicator = document.getElementById('catIndicator');
-            const links = catNav.querySelectorAll('.cat-link');
-            const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
-            let activeLink = null;
-
-            links.forEach(link => {
-                const href = link.getAttribute('href');
-                const norm = href.replace(/\/+$/, '') || '/';
-                if (currentPath === norm || (norm !== '/' && currentPath.startsWith(norm + '/'))) activeLink = link;
-            });
-
-            if (!activeLink && links.length > 0) activeLink = links[0];
-
-            function moveIndicator(link, instant = false) {
-                if (!link || !indicator) return;
-                const navRect = catNav.getBoundingClientRect();
-                const linkRect = link.getBoundingClientRect();
-                const offsetX = linkRect.left - navRect.left;
-                if (instant) indicator.style.transition = 'none';
-                else indicator.style.transition = 'all 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
-                indicator.style.left = offsetX + 'px';
-                indicator.style.width = linkRect.width + 'px';
-                indicator.classList.add('visible');
-                if (instant) requestAnimationFrame(() => { indicator.style.transition = 'all 0.45s cubic-bezier(0.4, 0, 0.2, 1)'; });
-            }
-
-            if (activeLink) { activeLink.classList.add('active'); setTimeout(() => moveIndicator(activeLink, true), 100); }
-
-            links.forEach(link => {
-                link.addEventListener('mouseenter', () => moveIndicator(link));
-                link.addEventListener('click', () => moveIndicator(link));
-            });
-
-            catNav.addEventListener('mouseleave', () => { if (activeLink) moveIndicator(activeLink); });
-            window.addEventListener('resize', () => { if (activeLink) moveIndicator(activeLink, true); });
-        })();
-
-        console.log('✦ Student Hub — About Page Loaded (No search bar) ✦');
+        console.log('✦ Student Hub — About Page (Avada-style) ✦');
     </script>
+
 </body>
 </html>
