@@ -1,495 +1,253 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Calculator | Student Hub ✦</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Calculator | Student Hub</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <style>
-        :root {
-            --board: #000000;
-            --chalk: #ededef;
-            --chalk-dim: rgba(237, 237, 239, 0.6);
-            --chalk-faint: rgba(237, 237, 239, 0.10);
-
-            --blue-900: #172554;
-            --blue-800: #1e3a8a;
-            --blue-700: #1d4ed8;
-            --blue-600: #2563eb;
-            --blue-500: #3b82f6;
-            --blue-400: #60a5fa;
-            --blue-300: #93c5fd;
-            --blue-glow: rgba(59, 130, 246, 0.35);
-            --blue-dim: rgba(59, 130, 246, 0.15);
-
-            --purple-600: #7c3aed;
-            --purple-400: #a855f7;
-            --purple-300: #c084fc;
-            --purple-glow: rgba(168, 85, 247, 0.45);
-
-            --gold: #fbbf24;
-            --gold-bright: #fde68a;
-            --gold-glow: rgba(251, 191, 36, 0.35);
-
-            --orange: #f97316;
-            --orange-bright: #fb923c;
-            --orange-glow: rgba(249, 115, 22, 0.35);
-
-            --cyan: #06b6d4;
-            --cyan-bright: #22d3ee;
-            --cyan-glow: rgba(6, 182, 212, 0.35);
-
-            --green: #22c55e;
-            --green-bright: #4ade80;
-            --green-glow: rgba(34, 197, 94, 0.25);
-
-            --red: #ef4444;
-            --red-bright: #f87171;
-            --red-glow: rgba(239, 68, 68, 0.35);
-            --red-dim: rgba(239, 68, 68, 0.15);
-
-            --silver: #c0c0c0;
-        }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html {
-            font-size: 16px;
-            scroll-behavior: smooth;
-        }
+        html, body { overflow-x: hidden; width: 100%; }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #000000;
-            color: var(--chalk);
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #ffffff;
+            color: #2c3e50;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
-        h1, h2, h3, h4 {
-            font-family: 'Plus Jakarta Sans', 'Space Grotesk', sans-serif;
-            letter-spacing: -0.02em;
-        }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        button { font-family: inherit; }
 
         /* ============================================================
-           BLUE BUBBLES FALLING FROM TOP
+           TOP BAR
            ============================================================ */
-        .bubbles-container {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
+        .topbar {
+            background: #1a2b47;
+            color: #ffffff;
+            font-size: 0.82rem;
+            padding: 8px 0;
         }
 
-        .bubble {
-            position: absolute;
-            top: -120px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%,
-                rgba(96, 165, 250, 0.55) 0%,
-                rgba(59, 130, 246, 0.35) 30%,
-                rgba(30, 58, 138, 0.15) 60%,
-                transparent 100%);
-            box-shadow:
-                inset 0 0 25px rgba(147, 197, 253, 0.25),
-                0 0 40px rgba(59, 130, 246, 0.35),
-                0 0 80px rgba(59, 130, 246, 0.15);
-            border: 1px solid rgba(147, 197, 253, 0.20);
-            animation: bubbleFall linear infinite;
+        .topbar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            text-align: center;
         }
 
-        .bubble::after {
-            content: '';
-            position: absolute;
-            top: 15%;
-            left: 20%;
-            width: 22%;
-            height: 22%;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.45);
-            filter: blur(2px);
+        .topbar-inner span {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #cdd6e4;
+            white-space: nowrap;
         }
 
-        @keyframes bubbleFall {
-            0% { transform: translateY(0) translateX(0) scale(0.5); opacity: 0; }
-            10% { opacity: 0.75; }
-            50% { transform: translateY(55vh) translateX(25px) scale(1); opacity: 0.85; }
-            90% { opacity: 0.4; }
-            100% { transform: translateY(115vh) translateX(-20px) scale(0.7); opacity: 0; }
-        }
-
-        .bubble:nth-child(1) { left: 4%; width: 70px; height: 70px; animation-duration: 14s; animation-delay: 0s; }
-        .bubble:nth-child(2) { left: 12%; width: 35px; height: 35px; animation-duration: 17s; animation-delay: 1s; }
-        .bubble:nth-child(3) { left: 22%; width: 90px; height: 90px; animation-duration: 15s; animation-delay: 2s; }
-        .bubble:nth-child(4) { left: 35%; width: 50px; height: 50px; animation-duration: 18s; animation-delay: 0.5s; }
-        .bubble:nth-child(5) { left: 45%; width: 110px; height: 110px; animation-duration: 19s; animation-delay: 3s; }
-        .bubble:nth-child(6) { left: 55%; width: 40px; height: 40px; animation-duration: 13s; animation-delay: 1.5s; }
-        .bubble:nth-child(7) { left: 65%; width: 60px; height: 60px; animation-duration: 16s; animation-delay: 2.5s; }
-        .bubble:nth-child(8) { left: 75%; width: 45px; height: 45px; animation-duration: 15s; animation-delay: 3.5s; }
-        .bubble:nth-child(9) { left: 85%; width: 80px; height: 80px; animation-duration: 18s; animation-delay: 1.2s; }
-        .bubble:nth-child(10) { left: 93%; width: 55px; height: 55px; animation-duration: 14s; animation-delay: 4s; }
-        .bubble:nth-child(11) { left: 8%; width: 100px; height: 100px; animation-duration: 20s; animation-delay: 5s; }
-        .bubble:nth-child(12) { left: 40%; width: 30px; height: 30px; animation-duration: 12s; animation-delay: 6s; }
+        .topbar-inner span i { color: #17a2b8; font-size: 0.78rem; }
 
         /* ============================================================
-           RAIN CANVAS
+           MAIN NAV
            ============================================================ */
-        #rain-canvas {
-            position: fixed;
-            inset: 0;
-            width: 100%; height: 100%;
-            z-index: 0;
-            pointer-events: none;
-            opacity: 0.4;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            background:
-                radial-gradient(ellipse at 30% 20%, rgba(30, 58, 138, 0.15) 0%, transparent 60%),
-                radial-gradient(ellipse at 70% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(23, 37, 84, 0.10) 0%, transparent 40%);
-            animation: ambientPulse 6s ease-in-out infinite;
-        }
-
-        @keyframes ambientPulse {
-            0%, 100% { opacity: .6; }
-            50% { opacity: 1; }
-        }
-
-        /* ============================================================
-           SMART TOP NAVBAR — NO SEARCH
-           ============================================================ */
-        .topnav {
+        .mainnav {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e8ed;
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(5, 8, 15, 0.92);
-            backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border-bottom: 1px solid rgba(59, 130, 246, 0.15);
-            transition: all 0.3s ease;
+            width: 100%;
         }
 
-        .topnav-inner {
-            max-width: 1400px;
+        .mainnav-inner {
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 10px 24px;
+            padding: 14px 20px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
             gap: 20px;
         }
 
-        .topnav-left {
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: #1a2b47;
+            letter-spacing: -0.02em;
+            flex-shrink: 0;
+        }
+
+        .logo-mark {
+            width: 38px;
+            height: 38px;
+            background: #17a2b8;
+            border-radius: 50% 50% 50% 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1rem;
+            transform: rotate(-45deg);
+            flex-shrink: 0;
+        }
+
+        .logo-mark i { transform: rotate(45deg); }
+        .logo-text span { color: #17a2b8; }
+
+        .menu {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            flex-wrap: wrap;
+            justify-content: center;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .menu a {
+            padding: 8px 12px;
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: #2c3e50;
+            border-radius: 4px;
+            white-space: nowrap;
+            transition: color 0.25s ease, background 0.25s ease;
+        }
+
+        .menu a:hover { color: #17a2b8; background: #f0f8fa; }
+        .menu a.active { color: #17a2b8; background: #f0f8fa; }
+
+        .nav-right {
             display: flex;
             align-items: center;
             gap: 12px;
             flex-shrink: 0;
         }
 
-        .menu-toggle {
-            width: 38px;
-            height: 38px;
-            border: 1.5px solid rgba(59, 130, 246, 0.30);
-            border-radius: 10px;
-            background: rgba(15, 23, 42, 0.5);
-            color: #60a5fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .btn-quote {
+            background: #17a2b8;
+            color: #ffffff;
+            padding: 11px 22px;
+            border-radius: 3px;
+            font-weight: 700;
             font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .menu-toggle:hover {
-            border-color: #60a5fa;
-            color: #93c5fd;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
-        }
-
-        .brand {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            flex-shrink: 0;
+            gap: 8px;
+            transition: background 0.25s ease;
+            white-space: nowrap;
         }
 
-        .brand-mark {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--blue-800), var(--blue-600));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-weight: 800;
-            font-size: 1.05rem;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        .btn-quote:hover { background: #138496; }
+
+        /* ============================================================
+           CALC HERO
+           ============================================================ */
+        .calc-hero {
+            background: linear-gradient(135deg, #1a2b47 0%, #0f1b2e 100%);
+            color: #ffffff;
+            padding: 70px 20px 90px;
+            text-align: center;
             position: relative;
             overflow: hidden;
         }
 
-        .brand-mark::after {
+        .calc-hero::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, transparent 40%, rgba(255, 255, 255, 0.2) 50%, transparent 60%);
-            animation: shimmer 3s ease-in-out infinite;
+            background:
+                radial-gradient(circle at 25% 35%, rgba(23, 162, 184, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 75% 65%, rgba(23, 162, 184, 0.10) 0%, transparent 50%);
+            pointer-events: none;
         }
 
-        @keyframes shimmer {
-            0%, 100% { transform: translateX(-100%); }
-            50% { transform: translateX(100%); }
-        }
-
-        .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
-
-        .brand-name {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 1rem;
-            font-weight: 800;
-            color: #ededef;
-            letter-spacing: -0.02em;
-        }
-
-        .brand-tag {
-            font-size: 0.6rem;
-            font-weight: 500;
-            color: #60a5fa;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-
-        .topnav-nav {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 6px;
-            flex: 1;
-        }
-
-        .topnav-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 9px 16px;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-decoration: none;
-            color: rgba(237, 237, 239, 0.75);
-            border: 1.5px solid transparent;
-            background: rgba(15, 23, 42, 0.4);
-            transition: all 0.25s ease;
-            white-space: nowrap;
-        }
-
-        .topnav-link i { font-size: 0.85rem; color: #60a5fa; transition: color 0.25s ease; }
-
-        .topnav-link:hover {
-            border-color: rgba(59, 130, 246, 0.5);
-            background: rgba(59, 130, 246, 0.15);
-            color: #ffffff;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.25);
-        }
-
-        .topnav-link:hover i { color: #93c5fd; }
-
-        .topnav-link.active {
-            background: rgba(30, 58, 138, 0.5);
-            border-color: rgba(96, 165, 250, 0.7);
-            color: #ffffff;
-            box-shadow:
-                inset 0 1px 0 rgba(147, 197, 253, 0.2),
-                0 4px 15px rgba(30, 58, 138, 0.4);
-        }
-
-        .topnav-link.active i { color: #ffffff; }
-
-        .topnav-link[href="/"] i { color: #60a5fa; }
-        .topnav-link[href="/browse/"] i { color: #fbbf24; }
-        .topnav-link[href="/upload/"] i { color: #fb923c; }
-        .topnav-link[href="/about/"] i { color: #22d3ee; }
-
-        .topnav-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-
-        .icon-btn {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: rgba(15, 23, 42, 0.5);
-            border: 1.5px solid rgba(59, 130, 246, 0.20);
-            color: #60a5fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            text-decoration: none;
-            position: relative;
-        }
-
-        .icon-btn:hover {
-            background: rgba(59, 130, 246, 0.15);
-            border-color: #60a5fa;
-            color: #93c5fd;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
-        }
-
-        .user-avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
-            color: #fff;
-            font-weight: 800;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: 1.5px solid rgba(147, 197, 253, 0.4);
-            transition: all 0.25s ease;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        .user-avatar:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
-        }
-
-        /* ============================================================
-           CATEGORIES NAV
-           ============================================================ */
-        .cat-nav {
-            background: rgba(8, 12, 20, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(59, 130, 246, 0.12);
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-
-        .cat-nav::-webkit-scrollbar { display: none; }
-
-        .cat-nav-inner {
-            max-width: 1400px;
+        .calc-hero-inner {
+            max-width: 760px;
             margin: 0 auto;
-            padding: 0 24px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
             position: relative;
-            height: 48px;
-        }
-
-        .cat-glass-indicator {
-            position: absolute;
-            top: 6px;
-            bottom: 6px;
-            border-radius: 10px;
-            background: linear-gradient(135deg,
-                rgba(30, 58, 138, 0.9) 0%,
-                rgba(37, 99, 235, 0.7) 50%,
-                rgba(30, 58, 138, 0.9) 100%);
-            backdrop-filter: blur(12px) saturate(180%);
-            -webkit-backdrop-filter: blur(12px) saturate(180%);
-            box-shadow:
-                inset 0 0 20px rgba(147, 197, 253, 0.25),
-                0 0 25px rgba(59, 130, 246, 0.5),
-                0 4px 15px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(147, 197, 253, 0.35);
-            transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: none;
             z-index: 1;
-            opacity: 0;
         }
 
-        .cat-glass-indicator.visible { opacity: 1; }
-
-        .cat-glass-indicator::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 10px;
-            background: linear-gradient(90deg,
-                transparent 0%,
-                rgba(255, 255, 255, 0.12) 20%,
-                rgba(255, 255, 255, 0.25) 50%,
-                rgba(255, 255, 255, 0.12) 80%,
-                transparent 100%);
-            background-size: 200% 100%;
-            animation: shimmerSlide 2.5s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes shimmerSlide {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
-
-        .cat-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 14px;
-            border-radius: 10px;
+        .calc-label {
+            color: #17a2b8;
             font-size: 0.82rem;
-            font-weight: 600;
-            color: rgba(237, 237, 239, 0.7);
-            text-decoration: none;
-            transition: color 0.25s ease;
-            white-space: nowrap;
-            position: relative;
-            z-index: 2;
-            cursor: pointer;
-            flex-shrink: 0;
-            font-family: inherit;
-            background: transparent;
-            border: none;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            display: block;
         }
 
-        .cat-link i {
-            font-size: 0.8rem;
-            color: #60a5fa;
-            transition: color 0.25s ease;
+        .calc-hero h1 {
+            font-size: clamp(2rem, 4.5vw, 3rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.025em;
+            margin-bottom: 16px;
         }
-
-        .cat-link:hover { color: #ffffff; }
-        .cat-link:hover i { color: #93c5fd; }
-        .cat-link.active { color: #ffffff; }
-        .cat-link.active i { color: #ffffff; }
 
         /* ============================================================
-           PAGE CONTAINER
+           TYPING EFFECT
            ============================================================ */
-        .wrap { position: relative; z-index: 1; }
+        .typed-wrap {
+            display: inline-block;
+            min-width: 6.2ch;
+            text-align: left;
+            color: #ff5a5f;
+        }
 
+        #typedWord {
+            color: #ff5a5f;
+            text-decoration: underline;
+            text-decoration-color: #ff5a5f;
+            text-underline-offset: 8px;
+            text-decoration-thickness: 5px;
+        }
+
+        .typed-wrap .cursor {
+            color: #ff5a5f;
+            font-weight: 400;
+            margin-left: 1px;
+            animation: blink 0.9s step-end infinite;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50%      { opacity: 0; }
+        }
+
+        .calc-hero p {
+            color: #cdd6e4;
+            font-size: clamp(0.95rem, 1.5vw, 1.08rem);
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.75;
+        }
+
+        /* ============================================================
+           CALC CONTAINER
+           ============================================================ */
         .calc-container {
             max-width: 900px;
-            margin: 30px auto 60px;
+            margin: -50px auto 60px;
             padding: 0 20px;
+            position: relative;
+            z-index: 2;
         }
 
         /* ============================================================
@@ -497,27 +255,26 @@
            ============================================================ */
         .tabs {
             display: flex;
-            gap: 8px;
-            margin-bottom: 24px;
-            background: rgba(10, 15, 25, 0.6);
-            border: 1.5px solid rgba(59, 130, 246, 0.20);
-            border-radius: 14px;
+            gap: 6px;
+            margin-bottom: 22px;
+            background: #ffffff;
+            border: 1px solid #e5e8ed;
+            border-radius: 10px;
             padding: 6px;
-            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(26, 43, 71, 0.06);
         }
 
         .tab-btn {
             flex: 1;
             padding: 12px 16px;
             background: transparent;
-            border: 1.5px solid transparent;
-            border-radius: 10px;
-            color: rgba(237, 237, 239, 0.6);
+            border: 1px solid transparent;
+            border-radius: 6px;
+            color: #6b7c93;
             font-weight: 700;
             font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.25s ease;
-            font-family: inherit;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -525,94 +282,69 @@
             white-space: nowrap;
         }
 
-        .tab-btn i { font-size: 0.9rem; }
+        .tab-btn i { font-size: 0.9rem; color: #17a2b8; }
 
         .tab-btn:hover {
-            color: #ffffff;
-            background: rgba(59, 130, 246, 0.10);
+            color: #1a2b47;
+            background: #f0f8fa;
         }
 
         .tab-btn.active {
-            background: rgba(30, 58, 138, 0.5);
-            border-color: rgba(96, 165, 250, 0.7);
+            background: #1a2b47;
             color: #ffffff;
-            box-shadow:
-                inset 0 1px 0 rgba(147, 197, 253, 0.2),
-                0 4px 15px rgba(30, 58, 138, 0.4);
         }
 
-        .tab-btn.active i { color: #93c5fd; }
+        .tab-btn.active i { color: #17a2b8; }
 
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
         /* ============================================================
-           CALCULATOR CARD (GPA + Basic + Scientific)
+           CALC CARD
            ============================================================ */
         .calc-card {
-            background: rgba(10, 15, 25, 0.7);
-            backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
-            border: 1.5px solid rgba(59, 130, 246, 0.25);
-            border-radius: 20px;
-            padding: 28px 24px;
-            position: relative;
-            overflow: hidden;
-            animation: cardGlow 4s ease-in-out infinite;
-        }
-
-        @keyframes cardGlow {
-            0%, 100% {
-                border-color: rgba(59, 130, 246, 0.25);
-                box-shadow:
-                    0 0 25px rgba(59, 130, 246, 0.08),
-                    0 22px 70px rgba(0, 0, 0, 0.4);
-            }
-            50% {
-                border-color: rgba(96, 165, 250, 0.55);
-                box-shadow:
-                    0 0 45px rgba(59, 130, 246, 0.20),
-                    0 22px 70px rgba(0, 0, 0, 0.4);
-            }
+            background: #ffffff;
+            border: 1px solid #e5e8ed;
+            border-radius: 10px;
+            padding: 36px 32px;
+            box-shadow: 0 20px 50px rgba(26, 43, 71, 0.08);
         }
 
         .calc-header {
             text-align: center;
-            margin-bottom: 24px;
+            margin-bottom: 26px;
+            padding-bottom: 22px;
+            border-bottom: 1px solid #e5e8ed;
         }
 
         .calc-header .icon {
-            font-size: 2.4rem;
-            color: #60a5fa;
-            display: block;
-            margin-bottom: 8px;
-            filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.6));
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #f0f8fa;
+            color: #17a2b8;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
         }
 
         .calc-header h2 {
             font-size: 1.5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #60a5fa 0%, #93c5fd 50%, #bfdbfe 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            color: #1a2b47;
+            letter-spacing: -0.02em;
             margin-bottom: 4px;
         }
 
         .calc-header p {
-            font-size: 0.85rem;
-            color: var(--chalk-dim);
-            font-style: italic;
+            font-size: 0.9rem;
+            color: #6b7c93;
         }
 
         /* ============================================================
-           FORM ELEMENTS (GPA)
+           FORM ELEMENTS
            ============================================================ */
         .form-row {
             display: grid;
@@ -620,29 +352,27 @@
             gap: 12px;
         }
 
-        .form-group {
-            margin-bottom: 14px;
-        }
+        .form-group { margin-bottom: 16px; }
 
         .form-label {
             display: block;
-            color: #e2e8f0;
-            font-size: 0.8rem;
+            color: #1a2b47;
+            font-size: 0.85rem;
             font-weight: 700;
-            margin-bottom: 6px;
-            letter-spacing: 0.02em;
+            margin-bottom: 8px;
+            letter-spacing: 0.01em;
         }
 
-        .form-label i { color: #60a5fa; margin-right: 6px; }
+        .form-label i { color: #17a2b8; margin-right: 6px; }
 
         .form-input, .form-select {
             width: 100%;
-            min-height: 48px;
+            min-height: 46px;
             padding: 12px 16px;
-            background: rgba(2, 6, 23, 0.72);
-            border: 1.5px solid rgba(148, 163, 184, 0.4);
-            border-radius: 12px;
-            color: #f8fafc;
+            background: #fafbfc;
+            border: 1px solid #e5e8ed;
+            border-radius: 6px;
+            color: #2c3e50;
             font-size: 0.9rem;
             font-family: inherit;
             font-weight: 500;
@@ -650,24 +380,27 @@
             transition: all 0.25s ease;
         }
 
+        .form-input:hover, .form-select:hover {
+            border-color: #cdd6e4;
+            background: #ffffff;
+        }
+
         .form-input:focus, .form-select:focus {
-            border-color: #60a5fa;
-            background: #0f1a2d;
-            box-shadow:
-                0 0 0 4px rgba(59, 130, 246, 0.15),
-                0 0 25px rgba(59, 130, 246, 0.25);
+            border-color: #17a2b8;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.12);
         }
 
         .form-select {
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 12 12'%3E%3Cpath fill='%2360a5fa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 12 12'%3E%3Cpath fill='%2317a2b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 16px center;
             padding-right: 44px;
             cursor: pointer;
         }
 
-        .form-select option { background: #0a1020; color: #f8fafc; }
+        .form-select option { background: #ffffff; color: #2c3e50; }
 
         /* ============================================================
            GRADING SCALE INFO
@@ -678,19 +411,19 @@
             justify-content: space-around;
             gap: 10px;
             padding: 12px 16px;
-            background: rgba(30, 58, 138, 0.15);
-            border: 1.5px solid rgba(59, 130, 246, 0.3);
-            border-radius: 12px;
+            background: #f0f8fa;
+            border: 1px solid rgba(23, 162, 184, 0.20);
+            border-radius: 6px;
             margin: 10px 0 16px;
         }
 
         .scale-item {
             font-size: 0.72rem;
-            color: #94a3b8;
+            color: #6b7c93;
             font-weight: 600;
         }
 
-        .scale-item .grade-label { color: #60a5fa; font-weight: 800; }
+        .scale-item .grade-label { color: #17a2b8; font-weight: 800; }
 
         /* ============================================================
            QUICK PRESETS
@@ -704,23 +437,22 @@
 
         .quick-presets button {
             padding: 7px 14px;
-            background: rgba(30, 58, 138, 0.2);
-            border: 1.5px solid rgba(59, 130, 246, 0.3);
+            background: #f0f8fa;
+            border: 1px solid rgba(23, 162, 184, 0.25);
             border-radius: 50px;
-            color: #93c5fd;
+            color: #17a2b8;
             font-size: 0.72rem;
             font-weight: 700;
             cursor: pointer;
             transition: 0.25s;
-            font-family: inherit;
         }
 
         .quick-presets button:hover {
-            background: rgba(30, 58, 138, 0.4);
-            border-color: #60a5fa;
+            background: #17a2b8;
             color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            border-color: #17a2b8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.25);
         }
 
         /* ============================================================
@@ -734,23 +466,23 @@
         }
 
         .course-inputs::-webkit-scrollbar { width: 5px; }
-        .course-inputs::-webkit-scrollbar-track { background: rgba(59, 130, 246, 0.05); border-radius: 10px; }
-        .course-inputs::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.4); border-radius: 10px; }
+        .course-inputs::-webkit-scrollbar-track { background: #f0f8fa; border-radius: 10px; }
+        .course-inputs::-webkit-scrollbar-thumb { background: rgba(23, 162, 184, 0.4); border-radius: 10px; }
 
         .course-row {
             display: grid;
             grid-template-columns: 30px 1fr 0.8fr 0.8fr;
             gap: 10px;
             margin-bottom: 8px;
-            background: rgba(30, 58, 138, 0.12);
+            background: #f7f9fc;
             padding: 10px 12px;
-            border-radius: 12px;
-            border: 1.5px solid rgba(59, 130, 246, 0.2);
+            border-radius: 6px;
+            border: 1px solid #e5e8ed;
             align-items: center;
         }
 
         .course-row .course-num {
-            color: rgba(96, 165, 250, 0.5);
+            color: #a8b3c4;
             font-size: 0.7rem;
             font-weight: 800;
             text-align: center;
@@ -758,10 +490,10 @@
 
         .course-row input {
             padding: 9px 11px;
-            background: rgba(2, 6, 23, 0.6);
-            border: 1.5px solid rgba(148, 163, 184, 0.3);
-            border-radius: 10px;
-            color: #f8fafc;
+            background: #ffffff;
+            border: 1px solid #e5e8ed;
+            border-radius: 6px;
+            color: #2c3e50;
             font-size: 0.85rem;
             font-family: inherit;
             outline: none;
@@ -770,28 +502,24 @@
         }
 
         .course-row input:focus {
-            border-color: #60a5fa;
-            background: #0f1a2d;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            border-color: #17a2b8;
+            box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.12);
         }
 
-        .course-row input::placeholder {
-            color: #64748b;
-            font-size: 0.7rem;
-        }
+        .course-row input::placeholder { color: #a8b3c4; font-size: 0.72rem; }
 
         .total-weight-display {
             text-align: center;
-            color: #94a3b8;
-            font-size: 0.75rem;
+            color: #6b7c93;
+            font-size: 0.78rem;
             margin-top: 10px;
             padding: 8px 14px;
-            background: rgba(30, 58, 138, 0.15);
+            background: #f7f9fc;
             border-radius: 50px;
-            border: 1.5px solid rgba(59, 130, 246, 0.25);
+            border: 1px solid #e5e8ed;
         }
 
-        .total-weight-display span { color: #93c5fd; font-weight: 800; }
+        .total-weight-display span { color: #17a2b8; font-weight: 800; }
 
         /* ============================================================
            BUTTONS
@@ -801,61 +529,26 @@
             min-height: 52px;
             padding: 14px;
             margin-top: 16px;
-            background: rgba(30, 58, 138, 0.35);
-            border: 1.5px solid rgba(59, 130, 246, 0.6);
-            border-radius: 12px;
+            background: #17a2b8;
+            border: none;
+            border-radius: 6px;
             color: #ffffff;
             font-weight: 800;
             font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-            box-shadow:
-                inset 0 1px 0 rgba(147, 197, 253, 0.15),
-                0 4px 15px rgba(30, 58, 138, 0.3);
-            letter-spacing: 0.03em;
+            transition: all 0.25s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-        }
-
-        .btn-calculate i { color: #93c5fd; transition: color 0.25s; }
-
-        .btn-calculate::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(90deg,
-                transparent 0%,
-                rgba(147, 197, 253, 0.10) 15%,
-                rgba(147, 197, 253, 0.22) 50%,
-                rgba(147, 197, 253, 0.10) 85%,
-                transparent 100%);
-            background-size: 200% 100%;
-            animation: btnShimmer 3s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes btnShimmer {
-            0% { background-position: -200% center; }
-            100% { background-position: 200% center; }
+            letter-spacing: 0.02em;
         }
 
         .btn-calculate:hover {
-            background: rgba(30, 58, 138, 0.55);
-            border-color: #93c5fd;
-            transform: translateY(-2px);
-            box-shadow:
-                inset 0 1px 0 rgba(147, 197, 253, 0.3),
-                0 12px 35px rgba(59, 130, 246, 0.5),
-                0 0 40px rgba(59, 130, 246, 0.3);
+            background: #138496;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 22px rgba(23, 162, 184, 0.30);
         }
-
-        .btn-calculate:hover i { color: #ffffff; }
 
         .btn-row {
             display: flex;
@@ -867,56 +560,55 @@
             flex: 1;
             min-height: 46px;
             padding: 12px 16px;
-            border-radius: 12px;
+            border-radius: 6px;
             font-weight: 700;
             font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.25s ease;
-            font-family: inherit;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            background: rgba(15, 23, 42, 0.5);
-            border: 1.5px solid rgba(59, 130, 246, 0.3);
-            color: #ededef;
+            border: 1px solid #e5e8ed;
+            background: #ffffff;
+            color: #2c3e50;
         }
 
-        .btn-home i { color: #60a5fa; }
-        .btn-reset i { color: #f87171; }
+        .btn-home i { color: #17a2b8; }
+        .btn-reset i { color: #ff5a5f; }
 
         .btn-home:hover {
-            background: rgba(59, 130, 246, 0.15);
-            border-color: #60a5fa;
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+            background: #f0f8fa;
+            border-color: #17a2b8;
+            color: #17a2b8;
+            transform: translateY(-1px);
         }
 
         .btn-reset {
             flex: 0.6;
-            background: rgba(239, 68, 68, 0.1);
-            border-color: rgba(239, 68, 68, 0.3);
-            color: #f87171;
+            background: rgba(255, 90, 95, 0.06);
+            border-color: rgba(255, 90, 95, 0.25);
+            color: #ff5a5f;
         }
 
         .btn-reset:hover {
-            background: rgba(239, 68, 68, 0.2);
-            border-color: #f87171;
+            background: #ff5a5f;
             color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+            border-color: #ff5a5f;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(255, 90, 95, 0.25);
         }
 
+        .btn-reset:hover i { color: #ffffff; }
+
         /* ============================================================
-           BASIC & SCIENTIFIC CALCULATOR
+           BASIC / SCIENTIFIC DISPLAY
            ============================================================ */
         .calc-display {
-            background: rgba(2, 6, 23, 0.8);
-            border: 1.5px solid rgba(59, 130, 246, 0.3);
-            border-radius: 14px;
-            padding: 16px 20px;
+            background: #1a2b47;
+            border-radius: 10px;
+            padding: 18px 22px;
             margin-bottom: 16px;
             min-height: 110px;
             display: flex;
@@ -925,13 +617,11 @@
             align-items: flex-end;
             text-align: right;
             word-break: break-all;
-            box-shadow:
-                inset 0 2px 10px rgba(0, 0, 0, 0.4),
-                0 0 25px rgba(59, 130, 246, 0.08);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.25);
         }
 
         .calc-expression {
-            color: rgba(147, 197, 253, 0.6);
+            color: rgba(205, 214, 228, 0.6);
             font-size: 0.9rem;
             font-family: 'Courier New', monospace;
             min-height: 22px;
@@ -943,40 +633,26 @@
             color: #ffffff;
             font-size: 2.2rem;
             font-weight: 800;
-            font-family: 'Plus Jakarta Sans', sans-serif;
             letter-spacing: -0.02em;
             line-height: 1.1;
             transition: all 0.3s ease;
         }
 
-        .calc-result.error { color: #f87171; font-size: 1.4rem; }
-        .calc-result.success {
-            color: #93c5fd;
-            text-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
-        }
+        .calc-result.error { color: #ff5a5f; font-size: 1.4rem; }
+        .calc-result.success { color: #17a2b8; }
 
-        .calc-buttons {
-            display: grid;
-            gap: 8px;
-        }
-
-        .calc-buttons.basic {
-            grid-template-columns: repeat(4, 1fr);
-        }
-
-        .calc-buttons.scientific {
-            grid-template-columns: repeat(5, 1fr);
-        }
+        .calc-buttons { display: grid; gap: 8px; }
+        .calc-buttons.basic { grid-template-columns: repeat(4, 1fr); }
+        .calc-buttons.scientific { grid-template-columns: repeat(5, 1fr); }
 
         .calc-btn {
             padding: 16px 8px;
-            background: rgba(30, 58, 138, 0.2);
-            border: 1.5px solid rgba(59, 130, 246, 0.25);
-            border-radius: 12px;
-            color: #ffffff;
+            background: #f7f9fc;
+            border: 1px solid #e5e8ed;
+            border-radius: 6px;
+            color: #1a2b47;
             font-size: 1rem;
             font-weight: 700;
-            font-family: 'Plus Jakarta Sans', sans-serif;
             cursor: pointer;
             transition: all 0.15s ease;
             user-select: none;
@@ -987,93 +663,90 @@
         }
 
         .calc-btn:hover {
-            background: rgba(30, 58, 138, 0.4);
-            border-color: #60a5fa;
+            background: #f0f8fa;
+            border-color: #17a2b8;
+            color: #17a2b8;
             transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.15);
         }
 
-        .calc-btn:active {
-            transform: scale(0.96);
-        }
+        .calc-btn:active { transform: scale(0.96); }
 
-        /* Colored buttons */
         .calc-btn.op {
-            background: rgba(30, 58, 138, 0.35);
-            color: #93c5fd;
-            border-color: rgba(59, 130, 246, 0.4);
+            background: rgba(23, 162, 184, 0.08);
+            color: #17a2b8;
+            border-color: rgba(23, 162, 184, 0.25);
         }
+
+        .calc-btn.op:hover { background: #17a2b8; color: #ffffff; border-color: #17a2b8; }
 
         .calc-btn.func {
-            background: rgba(88, 28, 135, 0.25);
-            color: #c084fc;
-            border-color: rgba(168, 85, 247, 0.4);
+            background: #f0f8fa;
+            color: #138496;
+            border-color: rgba(23, 162, 184, 0.25);
             font-size: 0.85rem;
         }
 
         .calc-btn.func:hover {
-            background: rgba(88, 28, 135, 0.45);
-            border-color: #c084fc;
-            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+            background: #17a2b8;
+            color: #ffffff;
+            border-color: #17a2b8;
         }
 
         .calc-btn.equals {
-            background: rgba(30, 58, 138, 0.5);
+            background: #17a2b8;
             color: #ffffff;
-            border-color: #60a5fa;
-            box-shadow:
-                inset 0 1px 0 rgba(147, 197, 253, 0.2),
-                0 4px 15px rgba(30, 58, 138, 0.4);
+            border-color: #17a2b8;
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.25);
         }
 
         .calc-btn.equals:hover {
-            background: rgba(30, 58, 138, 0.7);
-            border-color: #93c5fd;
-            box-shadow: 0 4px 25px rgba(59, 130, 246, 0.6);
+            background: #138496;
+            border-color: #138496;
+            box-shadow: 0 6px 18px rgba(23, 162, 184, 0.4);
         }
 
         .calc-btn.clear {
-            background: rgba(239, 68, 68, 0.15);
-            color: #f87171;
-            border-color: rgba(239, 68, 68, 0.4);
+            background: rgba(255, 90, 95, 0.08);
+            color: #ff5a5f;
+            border-color: rgba(255, 90, 95, 0.25);
         }
 
         .calc-btn.clear:hover {
-            background: rgba(239, 68, 68, 0.3);
-            border-color: #f87171;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            background: #ff5a5f;
+            color: #ffffff;
+            border-color: #ff5a5f;
+            box-shadow: 0 4px 12px rgba(255, 90, 95, 0.3);
         }
 
-        .calc-btn.zero {
-            grid-column: span 2;
-        }
+        .calc-btn.zero { grid-column: span 2; }
 
         .calc-btn.mode-switch {
-            background: rgba(251, 191, 36, 0.15);
-            color: #fbbf24;
-            border-color: rgba(251, 191, 36, 0.4);
+            background: rgba(255, 90, 95, 0.08);
+            color: #ff5a5f;
+            border-color: rgba(255, 90, 95, 0.25);
             font-size: 0.78rem;
         }
 
         .calc-btn.mode-switch:hover {
-            background: rgba(251, 191, 36, 0.3);
-            border-color: #fde68a;
-            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+            background: #ff5a5f;
+            color: #ffffff;
+            border-color: #ff5a5f;
         }
 
         /* ============================================================
-           QUADRATIC / SIMULTANEOUS PANEL
+           EQUATION PANELS
            ============================================================ */
         .equation-panel {
             margin-top: 20px;
-            padding: 20px;
-            background: rgba(30, 58, 138, 0.12);
-            border: 1.5px solid rgba(59, 130, 246, 0.3);
-            border-radius: 14px;
+            padding: 22px;
+            background: #f7f9fc;
+            border: 1px solid #e5e8ed;
+            border-radius: 8px;
         }
 
         .equation-panel h3 {
-            color: #93c5fd;
+            color: #1a2b47;
             font-size: 1rem;
             font-weight: 800;
             margin-bottom: 12px;
@@ -1082,7 +755,7 @@
             gap: 8px;
         }
 
-        .equation-panel h3 i { color: #60a5fa; }
+        .equation-panel h3 i { color: #17a2b8; }
 
         .equation-panel .eq-inputs {
             display: grid;
@@ -1091,30 +764,26 @@
             margin-bottom: 12px;
         }
 
-        .equation-panel .eq-inputs.simul {
-            grid-template-columns: repeat(6, 1fr);
-        }
-
-        .eq-input-wrap {
-            position: relative;
-        }
+        .equation-panel .eq-inputs.simul { grid-template-columns: repeat(6, 1fr); }
 
         .eq-input-wrap label {
             display: block;
-            color: #94a3b8;
-            font-size: 0.7rem;
+            color: #6b7c93;
+            font-size: 0.72rem;
             font-weight: 700;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
             text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
         }
 
         .eq-input {
             width: 100%;
             padding: 10px 12px;
-            background: rgba(2, 6, 23, 0.6);
-            border: 1.5px solid rgba(148, 163, 184, 0.3);
-            border-radius: 10px;
-            color: #f8fafc;
+            background: #ffffff;
+            border: 1px solid #e5e8ed;
+            border-radius: 6px;
+            color: #2c3e50;
             font-size: 0.9rem;
             font-family: 'Courier New', monospace;
             text-align: center;
@@ -1124,17 +793,16 @@
         }
 
         .eq-input:focus {
-            border-color: #60a5fa;
-            background: #0f1a2d;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            border-color: #17a2b8;
+            box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.12);
         }
 
         .eq-result {
-            background: rgba(2, 6, 23, 0.7);
-            border: 1.5px solid rgba(59, 130, 246, 0.3);
-            border-radius: 12px;
+            background: #ffffff;
+            border: 1px solid #e5e8ed;
+            border-radius: 6px;
             padding: 14px 16px;
-            color: #ffffff;
+            color: #2c3e50;
             font-family: 'Courier New', monospace;
             font-size: 0.9rem;
             line-height: 1.7;
@@ -1144,16 +812,10 @@
             word-break: break-word;
         }
 
-        .eq-result .val { color: #93c5fd; font-weight: 700; }
-
-        .eq-result .lbl { color: #94a3b8; }
-
-        .eq-result .solution {
-            color: #4ade80;
-            font-weight: 700;
-        }
-
-        .eq-result.error { color: #f87171; border-color: rgba(239, 68, 68, 0.4); }
+        .eq-result .val { color: #17a2b8; font-weight: 700; }
+        .eq-result .lbl { color: #8492a6; }
+        .eq-result .solution { color: #15803d; font-weight: 700; }
+        .eq-result.error { color: #b91c1c; border-color: rgba(255, 90, 95, 0.4); background: #fef2f2; }
 
         /* ============================================================
            RESULT OVERLAY
@@ -1173,24 +835,23 @@
         .result-overlay .overlay-bg {
             position: absolute;
             inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(15px);
+            background: rgba(26, 43, 71, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
 
         .result-overlay .overlay-card {
             position: relative;
             z-index: 2;
-            background: rgba(10, 15, 25, 0.95);
-            border: 1.5px solid rgba(59, 130, 246, 0.4);
-            border-radius: 24px;
+            background: #ffffff;
+            border-radius: 14px;
             padding: 40px 32px;
             max-width: 500px;
             width: 100%;
             text-align: center;
             animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow:
-                0 0 80px rgba(59, 130, 246, 0.2),
-                inset 0 0 60px rgba(59, 130, 246, 0.05);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.30);
+            border-top: 4px solid #17a2b8;
         }
 
         @keyframes popIn {
@@ -1211,583 +872,582 @@
         }
 
         .result-overlay .overlay-card .gpa-big {
-            font-size: 3.5rem;
+            font-size: 3.2rem;
             font-weight: 900;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: linear-gradient(135deg, #60a5fa, #93c5fd, #bfdbfe);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            color: #1a2b47;
             line-height: 1.1;
             margin-bottom: 8px;
+            letter-spacing: -0.03em;
         }
 
         .result-overlay .overlay-card .message {
             font-size: 1.35rem;
             font-weight: 800;
-            color: #ffffff;
+            color: #1a2b47;
             margin-bottom: 8px;
         }
 
         .result-overlay .overlay-card .sub-message {
             font-size: 0.92rem;
-            color: rgba(147, 197, 253, 0.8);
+            color: #6b7c93;
             margin-bottom: 22px;
-            line-height: 1.5;
+            line-height: 1.55;
         }
 
         .result-overlay .overlay-card .close-btn {
             padding: 14px 36px;
-            background: rgba(30, 58, 138, 0.4);
-            border: 1.5px solid rgba(59, 130, 246, 0.6);
-            border-radius: 12px;
+            background: #17a2b8;
+            border: none;
+            border-radius: 6px;
             color: #ffffff;
             font-weight: 800;
             font-size: 0.95rem;
-            cursor: pointer;
-            transition: 0.3s;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            backdrop-filter: blur(10px);
-        }
-
-        .result-overlay .overlay-card .close-btn:hover {
-            background: rgba(30, 58, 138, 0.6);
-            border-color: #93c5fd;
-            transform: translateY(-2px);
-            box-shadow: 0 12px 35px rgba(59, 130, 246, 0.5);
-        }
-
-        .result-overlay .overlay-card.excellent { border-color: #60a5fa; }
-        .result-overlay .overlay-card.good { border-color: rgba(96, 165, 250, 0.7); }
-        .result-overlay .overlay-card.average { border-color: rgba(251, 191, 36, 0.6); }
-        .result-overlay .overlay-card.poor { border-color: rgba(239, 68, 68, 0.6); }
-
-        /* ============================================================
-           SIDEBAR
-           ============================================================ */
-        .sidebar-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 999;
-            display: none;
-        }
-
-        .sidebar-overlay.active { display: block; }
-
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: -360px;
-            width: 320px;
-            max-width: 85vw;
-            height: 100%;
-            background: rgba(5, 8, 15, 0.98);
-            backdrop-filter: blur(24px);
-            border-right: 1.5px solid rgba(59, 130, 246, 0.25);
-            z-index: 1000;
-            transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow-y: auto;
-            padding: 20px 0;
-        }
-
-        .sidebar.open { left: 0; }
-
-        .sidebar-header {
-            padding: 20px 22px 16px;
-            border-bottom: 1.5px solid rgba(59, 130, 246, 0.20);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-
-        .sidebar-header h2 {
-            font-size: 1.05rem;
-            font-weight: 800;
-            color: #ededef;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .sidebar-header h2 i { color: #60a5fa; }
-
-        .sidebar-close {
-            color: rgba(59, 130, 246, 0.5);
-            font-size: 1.4rem;
-            background: none;
-            border: none;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .sidebar-close:hover { color: #60a5fa; }
-
-        .sidebar-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px 22px;
-            color: rgba(237, 237, 239, 0.7);
-            text-decoration: none;
-            font-size: 0.88rem;
-            font-weight: 600;
-            border-left: 3px solid transparent;
             cursor: pointer;
             transition: 0.25s;
         }
 
-        .sidebar-item i {
-            width: 22px;
-            color: #60a5fa;
-            font-size: 0.95rem;
+        .result-overlay .overlay-card .close-btn:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(23, 162, 184, 0.4);
         }
 
-        .sidebar-item:hover {
-            border-left-color: #60a5fa;
+        .result-overlay .overlay-card.excellent { border-top-color: #17a2b8; }
+        .result-overlay .overlay-card.good { border-top-color: #22c55e; }
+        .result-overlay .overlay-card.average { border-top-color: #f59e0b; }
+        .result-overlay .overlay-card.poor { border-top-color: #ff5a5f; }
+
+        /* ============================================================
+           CTA
+           ============================================================ */
+        .cta {
+            background: #1a2b47;
+            padding: 50px 20px;
+        }
+
+        .cta-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .cta h3 {
             color: #ffffff;
-            background: rgba(59, 130, 246, 0.08);
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 4px;
         }
 
-        .sidebar-item .badge {
-            margin-left: auto;
-            font-size: 0.6rem;
+        .cta p { color: #cdd6e4; font-size: 0.92rem; }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        footer {
+            background: #f7f9fc;
+            padding: 50px 20px 24px;
+            border-top: 1px solid #e5e8ed;
+        }
+
+        .footer-inner { max-width: 1200px; margin: 0 auto; }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .footer-brand p {
+            color: #6b7c93;
+            font-size: 0.88rem;
+            margin-top: 14px;
+            max-width: 320px;
+            line-height: 1.7;
+        }
+
+        .footer-col h4 {
+            font-size: 0.82rem;
             font-weight: 700;
-            padding: 3px 9px;
-            border-radius: 20px;
-            border: 1.5px solid rgba(59, 130, 246, 0.3);
-            color: #60a5fa;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #1a2b47;
+            margin-bottom: 14px;
         }
 
-        .sidebar-item .badge.soon { background: rgba(59, 130, 246, 0.15); border-color: #60a5fa; }
-        .sidebar-item .badge.maint { color: #fbbf24; border-color: rgba(251, 191, 36, 0.35); }
-        .sidebar-item .badge.info { background: #60a5fa; border-color: #60a5fa; color: #000; }
+        .footer-col ul li { margin-bottom: 8px; }
 
-        .sidebar-divider {
-            height: 1px;
-            background: rgba(59, 130, 246, 0.15);
-            margin: 8px 22px;
-            opacity: 0.6;
+        .footer-col ul li a {
+            color: #6b7c93;
+            font-size: 0.88rem;
+            transition: color 0.25s ease;
+        }
+
+        .footer-col ul li a:hover { color: #17a2b8; }
+
+        .footer-bottom {
+            border-top: 1px solid #e5e8ed;
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer-bottom p { color: #8492a6; font-size: 0.83rem; }
+
+        .footer-socials { display: flex; gap: 8px; }
+
+        .footer-socials a {
+            width: 34px;
+            height: 34px;
+            border: 1px solid #e5e8ed;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7c93;
+            font-size: 0.85rem;
+            transition: all 0.25s ease;
+            background: #ffffff;
+        }
+
+        .footer-socials a:hover {
+            border-color: #17a2b8;
+            color: #17a2b8;
         }
 
         /* ============================================================
            RESPONSIVE
            ============================================================ */
-        @media (max-width: 960px) {
-            .topnav-nav { display: none; }
+        @media (max-width: 900px) {
+            .footer-top { grid-template-columns: 1fr 1fr; }
         }
 
         @media (max-width: 768px) {
-            .topnav-inner { padding: 10px 16px; }
-            .icon-btn:nth-child(n+3):not(.user-avatar) { display: none; }
             .calc-buttons.scientific { grid-template-columns: repeat(4, 1fr); }
             .equation-panel .eq-inputs { grid-template-columns: repeat(3, 1fr); }
             .equation-panel .eq-inputs.simul { grid-template-columns: repeat(3, 1fr); }
         }
 
+        @media (max-width: 720px) {
+            .mainnav-inner {
+                flex-wrap: wrap;
+                padding: 12px 16px;
+                gap: 12px;
+            }
+            .logo { font-size: 1.15rem; }
+            .logo-mark { width: 34px; height: 34px; font-size: 0.9rem; }
+            .menu {
+                order: 3;
+                flex-basis: 100%;
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 4px;
+                scrollbar-width: none;
+                gap: 0;
+            }
+            .menu::-webkit-scrollbar { display: none; }
+            .menu a {
+                padding: 8px 12px;
+                font-size: 0.82rem;
+                flex-shrink: 0;
+            }
+            .calc-hero { padding: 55px 18px 70px; }
+            .calc-card { padding: 28px 22px; }
+            .footer-top { gap: 26px; }
+            .cta-inner { flex-direction: column; text-align: center; }
+        }
+
         @media (max-width: 560px) {
-            .topnav-inner { padding: 8px 12px; gap: 8px; }
-            .brand-text .brand-tag { display: none; }
-            .brand-name { font-size: 0.92rem; }
-            .menu-toggle, .brand-mark { width: 34px; height: 34px; }
-            .icon-btn { width: 38px; height: 38px; font-size: 0.85rem; }
-            .user-avatar { width: 38px; height: 38px; font-size: 0.8rem; }
-            .cat-nav-inner { padding: 0 12px; }
-            .cat-link { padding: 6px 10px; font-size: 0.75rem; }
-            .calc-container { padding: 0 12px; margin-top: 20px; }
-            .calc-card { padding: 20px 16px; }
+            .topbar-inner { gap: 12px; font-size: 0.75rem; }
+            .topbar-inner span:nth-child(3) { display: none; }
+            .calc-container { padding: 0 14px; margin-top: -40px; }
             .calc-header h2 { font-size: 1.2rem; }
             .tabs { flex-direction: column; }
             .form-row { grid-template-columns: 1fr; }
             .course-row { grid-template-columns: 22px 1fr 0.7fr 0.7fr; gap: 6px; padding: 8px; }
             .course-row input { font-size: 0.75rem; padding: 7px 8px; }
-            .calc-result { font-size: 1.6rem; }
+            .calc-result { font-size: 1.7rem; }
             .calc-btn { padding: 14px 6px; min-height: 48px; font-size: 0.9rem; }
             .calc-btn.func { font-size: 0.72rem; }
-            .result-overlay .overlay-card { padding: 30px 20px; }
-            .result-overlay .overlay-card .gpa-big { font-size: 2.4rem; }
+            .result-overlay .overlay-card { padding: 30px 22px; }
+            .result-overlay .overlay-card .gpa-big { font-size: 2.2rem; }
             .result-overlay .overlay-card .message { font-size: 1.1rem; }
+            .footer-top { grid-template-columns: 1fr; gap: 24px; }
+            .btn-quote span { display: none; }
+            .typed-wrap { min-width: 5.2ch; }
         }
 
-        @media (max-width: 380px) {
-            .icon-btn:nth-child(n+2):not(.user-avatar) { display: none; }
-            .calc-buttons.scientific { grid-template-columns: repeat(4, 1fr); }
+        @media (max-width: 400px) {
+            .logo-text { font-size: 1rem; }
+            .topbar-inner span:nth-child(2) { display: none; }
+            .calc-hero h1 { font-size: 1.5rem; }
         }
 
         @media (prefers-reduced-motion: reduce) {
             * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
         }
-
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.3); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.5); }
     </style>
 </head>
 <body>
 
-    <!-- BLUE BUBBLES -->
-    <div class="bubbles-container">
-        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
-        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
-        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
-        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <div class="topbar-inner">
+            <span><i class="fas fa-phone"></i> +255 740 706 007</span>
+            <span><i class="fas fa-envelope"></i> Twarvistech@gmail.com</span>
+            <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
+        </div>
     </div>
 
-    <canvas id="rain-canvas"></canvas>
+    <!-- MAIN NAV -->
+    <nav class="mainnav">
+        <div class="mainnav-inner">
+            <a href="/" class="logo">
+                <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
+                <span class="logo-text">Student<span>Hub</span></span>
+            </a>
 
-    <!-- SMART TOP NAVBAR — NO SEARCH -->
-    <header class="topnav">
-        <div class="topnav-inner">
-            <div class="topnav-left">
-                <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <a href="/" class="brand">
-                    <div class="brand-mark">S</div>
-                    <div class="brand-text">
-                        <span class="brand-name">Student Hub</span>
-                        <span class="brand-tag">by Twarvis</span>
-                    </div>
-                </a>
+            <div class="menu">
+                <a href="/">Home</a>
+                <a href="/browse/">Browse</a>
+                <a href="/upload/">Upload</a>
+                <a href="/calculator/" class="active">Calculator</a>
+                <a href="/scanner/">Scanner</a>
+                <a href="/about/">About</a>
             </div>
 
-            <nav class="topnav-nav">
-                <a href="/" class="topnav-link">
-                    <i class="fas fa-home"></i> <span>Home</span>
+            <div class="nav-right">
+                <a href="/upload/" class="btn-quote">
+                    <span>Upload File</span> <i class="fas fa-arrow-right"></i>
                 </a>
-                <a href="/browse/" class="topnav-link">
-                    <i class="fas fa-file-alt"></i> <span>Notes</span>
-                </a>
-                <a href="/upload/" class="topnav-link">
-                    <i class="fas fa-cloud-upload-alt"></i> <span>Upload</span>
-                </a>
-                <a href="/about/" class="topnav-link">
-                    <i class="fas fa-info-circle"></i> <span>About</span>
-                </a>
-            </nav>
-
-            <div class="topnav-right">
-                <a href="/browse/" class="icon-btn" title="Browse">
-                    <i class="fas fa-compass"></i>
-                </a>
-                <a href="/upload/" class="icon-btn" title="Upload">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                </a>
-                <a href="#" class="icon-btn" title="Notifications">
-                    <i class="fas fa-bell"></i>
-                </a>
-                <div class="user-avatar" title="Account">TW</div>
             </div>
         </div>
+    </nav>
 
-        <nav class="cat-nav">
-            <div class="cat-nav-inner" id="catNav">
-                <div class="cat-glass-indicator" id="catIndicator"></div>
-
-                <a href="/" class="cat-link" data-cat="home">
-                    <i class="fas fa-home"></i> Home
-                </a>
-                <a href="/browse/" class="cat-link" data-cat="browse">
-                    <i class="fas fa-file-alt"></i> Notes
-                </a>
-                <a href="/upload/" class="cat-link" data-cat="upload">
-                    <i class="fas fa-cloud-upload-alt"></i> Upload
-                </a>
-                <a href="/scanner/" class="cat-link" data-cat="scanner">
-                    <i class="fas fa-camera-retro"></i> Scanner
-                </a>
-                <a href="/calculator/" class="cat-link active" data-cat="calculator">
-                    <i class="fas fa-calculator"></i> Calculator
-                </a>
-                <a href="/about/" class="cat-link" data-cat="about">
-                    <i class="fas fa-info-circle"></i> About
-                </a>
-            </div>
-        </nav>
-    </header>
+    <!-- CALC HERO -->
+    <section class="calc-hero">
+        <div class="calc-hero-inner">
+            <span class="calc-label">Free student tools</span>
+            <h1>
+                Student
+                <span class="typed-wrap">
+                    <span id="typedWord"></span><span class="cursor">|</span>
+                </span>
+            </h1>
+            <p>GPA, basic arithmetic, scientific functions, quadratics, and simultaneous equations — all in one place, all free.</p>
+        </div>
+    </section>
 
     <!-- MAIN CONTENT -->
-    <div class="wrap">
-        <div class="calc-container">
+    <div class="calc-container">
 
-            <!-- TABS -->
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="gpa">
-                    <i class="fas fa-graduation-cap"></i> GPA
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="gpa">
+                <i class="fas fa-graduation-cap"></i> GPA
+            </button>
+            <button class="tab-btn" data-tab="basic">
+                <i class="fas fa-calculator"></i> Basic
+            </button>
+            <button class="tab-btn" data-tab="scientific">
+                <i class="fas fa-square-root-alt"></i> Scientific
+            </button>
+        </div>
+
+        <!-- ============ TAB 1: GPA CALCULATOR ============ -->
+        <div class="tab-content active" id="tab-gpa">
+            <div class="calc-card">
+                <div class="calc-header">
+                    <span class="icon"><i class="fas fa-graduation-cap"></i></span>
+                    <h2>Weighted GPA Calculator</h2>
+                    <p>Calculate your GPA using marks &amp; subject weights</p>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-graduation-cap"></i> Grading System</label>
+                        <select class="form-select" id="gradingSystem">
+                            <option value="diploma">📜 Diploma (A=80%)</option>
+                            <option value="degree">🎓 Degree (A=70%)</option>
+                            <option value="technical">🔧 Technical College (A=70%)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-book"></i> Number of Subjects</label>
+                        <input type="number" class="form-input" id="numSubjects" min="1" max="20" value="4">
+                    </div>
+                </div>
+
+                <div class="grading-scale-info" id="gradingScaleInfo"></div>
+
+                <div class="quick-presets">
+                    <button onclick="setSubjects(3)">3 Subjects</button>
+                    <button onclick="setSubjects(4)">4 Subjects</button>
+                    <button onclick="setSubjects(5)">5 Subjects</button>
+                    <button onclick="setSubjects(6)">6 Subjects</button>
+                    <button onclick="setSubjects(8)">8 Subjects</button>
+                    <button onclick="setSubjects(9)">9 Subjects</button>
+                    <button onclick="setSubjects(10)">10 Subjects</button>
+                </div>
+
+                <div id="courseInputs" class="course-inputs"></div>
+
+                <div class="total-weight-display">
+                    <i class="fas fa-weight"></i> Total Weight: <span id="totalWeightValue">0</span>
+                </div>
+
+                <button class="btn-calculate" id="calculateGpa">
+                    <i class="fas fa-chart-line"></i> Calculate GPA
                 </button>
-                <button class="tab-btn" data-tab="basic">
-                    <i class="fas fa-calculator"></i> Basic
-                </button>
-                <button class="tab-btn" data-tab="scientific">
-                    <i class="fas fa-square-root-alt"></i> Scientific
-                </button>
-            </div>
 
-            <!-- ============ TAB 1: GPA CALCULATOR ============ -->
-            <div class="tab-content active" id="tab-gpa">
-                <div class="calc-card">
-                    <div class="calc-header">
-                        <span class="icon"><i class="fas fa-graduation-cap"></i></span>
-                        <h2>Weighted GPA Calculator</h2>
-                        <p>Calculate your GPA using marks & subject weights</p>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label"><i class="fas fa-graduation-cap"></i> Grading System</label>
-                            <select class="form-select" id="gradingSystem">
-                                <option value="diploma">📜 Diploma (A=80%)</option>
-                                <option value="degree">🎓 Degree (A=70%)</option>
-                                <option value="technical">🔧 Technical College (A=70%)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label"><i class="fas fa-book"></i> Number of Subjects</label>
-                            <input type="number" class="form-input" id="numSubjects" min="1" max="20" value="4">
-                        </div>
-                    </div>
-
-                    <div class="grading-scale-info" id="gradingScaleInfo"></div>
-
-                    <div class="quick-presets">
-                        <button onclick="setSubjects(3)">3 Subjects</button>
-                        <button onclick="setSubjects(4)">4 Subjects</button>
-                        <button onclick="setSubjects(5)">5 Subjects</button>
-                        <button onclick="setSubjects(6)">6 Subjects</button>
-                        <button onclick="setSubjects(8)">8 Subjects</button>
-                        <button onclick="setSubjects(9)">9 Subjects</button>
-                        <button onclick="setSubjects(10)">10 Subjects</button>
-                    </div>
-
-                    <div id="courseInputs" class="course-inputs"></div>
-
-                    <div class="total-weight-display">
-                        <i class="fas fa-weight"></i> Total Weight: <span id="totalWeightValue">0</span>
-                    </div>
-
-                    <button class="btn-calculate" id="calculateGpa">
-                        <i class="fas fa-chart-line"></i> Calculate GPA
+                <div class="btn-row">
+                    <a href="/" class="btn-home">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <button class="btn-reset" onclick="resetGpa()">
+                        <i class="fas fa-redo-alt"></i> Reset
                     </button>
-
-                    <div class="btn-row">
-                        <a href="/" class="btn-home">
-                            <i class="fas fa-home"></i> Home
-                        </a>
-                        <button class="btn-reset" onclick="resetGpa()">
-                            <i class="fas fa-redo-alt"></i> Reset
-                        </button>
-                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- ============ TAB 2: BASIC CALCULATOR ============ -->
-            <div class="tab-content" id="tab-basic">
-                <div class="calc-card">
-                    <div class="calc-header">
-                        <span class="icon"><i class="fas fa-calculator"></i></span>
-                        <h2>Basic Calculator</h2>
-                        <p>Everyday arithmetic — fast & simple</p>
-                    </div>
+        <!-- ============ TAB 2: BASIC CALCULATOR ============ -->
+        <div class="tab-content" id="tab-basic">
+            <div class="calc-card">
+                <div class="calc-header">
+                    <span class="icon"><i class="fas fa-calculator"></i></span>
+                    <h2>Basic Calculator</h2>
+                    <p>Everyday arithmetic — fast &amp; simple</p>
+                </div>
 
-                    <div class="calc-display">
-                        <div class="calc-expression" id="basicExpr"></div>
-                        <div class="calc-result" id="basicResult">0</div>
-                    </div>
+                <div class="calc-display">
+                    <div class="calc-expression" id="basicExpr"></div>
+                    <div class="calc-result" id="basicResult">0</div>
+                </div>
 
-                    <div class="calc-buttons basic">
-                        <button class="calc-btn clear" onclick="basicClear()">AC</button>
-                        <button class="calc-btn op" onclick="basicBack()">⌫</button>
-                        <button class="calc-btn op" onclick="basicPct()">%</button>
-                        <button class="calc-btn op" onclick="basicInput('/')">÷</button>
+                <div class="calc-buttons basic">
+                    <button class="calc-btn clear" onclick="basicClear()">AC</button>
+                    <button class="calc-btn op" onclick="basicBack()">⌫</button>
+                    <button class="calc-btn op" onclick="basicPct()">%</button>
+                    <button class="calc-btn op" onclick="basicInput('/')">÷</button>
 
-                        <button class="calc-btn" onclick="basicInput('7')">7</button>
-                        <button class="calc-btn" onclick="basicInput('8')">8</button>
-                        <button class="calc-btn" onclick="basicInput('9')">9</button>
-                        <button class="calc-btn op" onclick="basicInput('*')">×</button>
+                    <button class="calc-btn" onclick="basicInput('7')">7</button>
+                    <button class="calc-btn" onclick="basicInput('8')">8</button>
+                    <button class="calc-btn" onclick="basicInput('9')">9</button>
+                    <button class="calc-btn op" onclick="basicInput('*')">×</button>
 
-                        <button class="calc-btn" onclick="basicInput('4')">4</button>
-                        <button class="calc-btn" onclick="basicInput('5')">5</button>
-                        <button class="calc-btn" onclick="basicInput('6')">6</button>
-                        <button class="calc-btn op" onclick="basicInput('-')">−</button>
+                    <button class="calc-btn" onclick="basicInput('4')">4</button>
+                    <button class="calc-btn" onclick="basicInput('5')">5</button>
+                    <button class="calc-btn" onclick="basicInput('6')">6</button>
+                    <button class="calc-btn op" onclick="basicInput('-')">−</button>
 
-                        <button class="calc-btn" onclick="basicInput('1')">1</button>
-                        <button class="calc-btn" onclick="basicInput('2')">2</button>
-                        <button class="calc-btn" onclick="basicInput('3')">3</button>
-                        <button class="calc-btn op" onclick="basicInput('+')">+</button>
+                    <button class="calc-btn" onclick="basicInput('1')">1</button>
+                    <button class="calc-btn" onclick="basicInput('2')">2</button>
+                    <button class="calc-btn" onclick="basicInput('3')">3</button>
+                    <button class="calc-btn op" onclick="basicInput('+')">+</button>
 
-                        <button class="calc-btn zero" onclick="basicInput('0')">0</button>
-                        <button class="calc-btn" onclick="basicInput('.')">.</button>
-                        <button class="calc-btn equals" onclick="basicEquals()">=</button>
-                    </div>
+                    <button class="calc-btn zero" onclick="basicInput('0')">0</button>
+                    <button class="calc-btn" onclick="basicInput('.')">.</button>
+                    <button class="calc-btn equals" onclick="basicEquals()">=</button>
                 </div>
             </div>
+        </div>
 
-            <!-- ============ TAB 3: SCIENTIFIC CALCULATOR ============ -->
-            <div class="tab-content" id="tab-scientific">
-                <div class="calc-card">
-                    <div class="calc-header">
-                        <span class="icon"><i class="fas fa-square-root-alt"></i></span>
-                        <h2>Scientific Calculator</h2>
-                        <p>log, sin, cos, tan, inverse, antilog & more</p>
-                    </div>
+        <!-- ============ TAB 3: SCIENTIFIC CALCULATOR ============ -->
+        <div class="tab-content" id="tab-scientific">
+            <div class="calc-card">
+                <div class="calc-header">
+                    <span class="icon"><i class="fas fa-square-root-alt"></i></span>
+                    <h2>Scientific Calculator</h2>
+                    <p>log, sin, cos, tan, inverse, antilog &amp; more</p>
+                </div>
 
-                    <!-- Mode selector -->
-                    <div style="display:flex; gap:8px; margin-bottom:12px; justify-content:flex-end;">
-                        <button class="calc-btn mode-switch" id="angleMode" onclick="toggleAngleMode()" style="padding:6px 14px; min-height:auto; border-radius:50px; font-size:0.72rem;">DEG</button>
-                    </div>
+                <div style="display:flex; gap:8px; margin-bottom:12px; justify-content:flex-end;">
+                    <button class="calc-btn mode-switch" id="angleMode" onclick="toggleAngleMode()" style="padding:6px 14px; min-height:auto; border-radius:50px; font-size:0.72rem;">DEG</button>
+                </div>
 
-                    <div class="calc-display">
-                        <div class="calc-expression" id="sciExpr"></div>
-                        <div class="calc-result" id="sciResult">0</div>
-                    </div>
+                <div class="calc-display">
+                    <div class="calc-expression" id="sciExpr"></div>
+                    <div class="calc-result" id="sciResult">0</div>
+                </div>
 
-                    <div class="calc-buttons scientific">
-                        <!-- Row 1 -->
-                        <button class="calc-btn func" onclick="sciFunc('sin(')">sin</button>
-                        <button class="calc-btn func" onclick="sciFunc('cos(')">cos</button>
-                        <button class="calc-btn func" onclick="sciFunc('tan(')">tan</button>
-                        <button class="calc-btn func" onclick="sciFunc('log(')">log</button>
-                        <button class="calc-btn func" onclick="sciFunc('ln(')">ln</button>
+                <div class="calc-buttons scientific">
+                    <button class="calc-btn func" onclick="sciFunc('sin(')">sin</button>
+                    <button class="calc-btn func" onclick="sciFunc('cos(')">cos</button>
+                    <button class="calc-btn func" onclick="sciFunc('tan(')">tan</button>
+                    <button class="calc-btn func" onclick="sciFunc('log(')">log</button>
+                    <button class="calc-btn func" onclick="sciFunc('ln(')">ln</button>
 
-                        <!-- Row 2 -->
-                        <button class="calc-btn func" onclick="sciFunc('asin(')">sin⁻¹</button>
-                        <button class="calc-btn func" onclick="sciFunc('acos(')">cos⁻¹</button>
-                        <button class="calc-btn func" onclick="sciFunc('atan(')">tan⁻¹</button>
-                        <button class="calc-btn func" onclick="sciFunc('10^')">10ˣ</button>
-                        <button class="calc-btn func" onclick="sciFunc('e^')">eˣ</button>
+                    <button class="calc-btn func" onclick="sciFunc('asin(')">sin⁻¹</button>
+                    <button class="calc-btn func" onclick="sciFunc('acos(')">cos⁻¹</button>
+                    <button class="calc-btn func" onclick="sciFunc('atan(')">tan⁻¹</button>
+                    <button class="calc-btn func" onclick="sciFunc('10^')">10ˣ</button>
+                    <button class="calc-btn func" onclick="sciFunc('e^')">eˣ</button>
 
-                        <!-- Row 3 -->
-                        <button class="calc-btn func" onclick="sciFunc('sqrt(')">√</button>
-                        <button class="calc-btn func" onclick="sciFunc('cbrt(')">∛</button>
-                        <button class="calc-btn func" onclick="sciFunc('^2')">x²</button>
-                        <button class="calc-btn func" onclick="sciFunc('^')">xʸ</button>
-                        <button class="calc-btn func" onclick="sciFunc('!')">n!</button>
+                    <button class="calc-btn func" onclick="sciFunc('sqrt(')">√</button>
+                    <button class="calc-btn func" onclick="sciFunc('cbrt(')">∛</button>
+                    <button class="calc-btn func" onclick="sciFunc('^2')">x²</button>
+                    <button class="calc-btn func" onclick="sciFunc('^')">xʸ</button>
+                    <button class="calc-btn func" onclick="sciFunc('!')">n!</button>
 
-                        <!-- Row 4 -->
-                        <button class="calc-btn func" onclick="sciFunc('abs(')">|x|</button>
-                        <button class="calc-btn func" onclick="sciFunc('exp(')">exp</button>
-                        <button class="calc-btn func" onclick="sciFunc('pi')">π</button>
-                        <button class="calc-btn func" onclick="sciFunc('e')">e</button>
-                        <button class="calc-btn func" onclick="sciFunc('1/')">1/x</button>
+                    <button class="calc-btn func" onclick="sciFunc('abs(')">|x|</button>
+                    <button class="calc-btn func" onclick="sciFunc('exp(')">exp</button>
+                    <button class="calc-btn func" onclick="sciFunc('pi')">π</button>
+                    <button class="calc-btn func" onclick="sciFunc('e')">e</button>
+                    <button class="calc-btn func" onclick="sciFunc('1/')">1/x</button>
 
-                        <!-- Row 5 -->
-                        <button class="calc-btn clear" onclick="sciClear()">AC</button>
-                        <button class="calc-btn op" onclick="sciBack()">⌫</button>
-                        <button class="calc-btn op" onclick="sciInput('(')">(</button>
-                        <button class="calc-btn op" onclick="sciInput(')')">)</button>
-                        <button class="calc-btn op" onclick="sciInput('%')">%</button>
+                    <button class="calc-btn clear" onclick="sciClear()">AC</button>
+                    <button class="calc-btn op" onclick="sciBack()">⌫</button>
+                    <button class="calc-btn op" onclick="sciInput('(')">(</button>
+                    <button class="calc-btn op" onclick="sciInput(')')">)</button>
+                    <button class="calc-btn op" onclick="sciInput('%')">%</button>
 
-                        <!-- Row 6 - Numbers + operators -->
-                        <button class="calc-btn" onclick="sciInput('7')">7</button>
-                        <button class="calc-btn" onclick="sciInput('8')">8</button>
-                        <button class="calc-btn" onclick="sciInput('9')">9</button>
-                        <button class="calc-btn op" onclick="sciInput('/')">÷</button>
-                        <button class="calc-btn op" onclick="sciInput('*')">×</button>
+                    <button class="calc-btn" onclick="sciInput('7')">7</button>
+                    <button class="calc-btn" onclick="sciInput('8')">8</button>
+                    <button class="calc-btn" onclick="sciInput('9')">9</button>
+                    <button class="calc-btn op" onclick="sciInput('/')">÷</button>
+                    <button class="calc-btn op" onclick="sciInput('*')">×</button>
 
-                        <button class="calc-btn" onclick="sciInput('4')">4</button>
-                        <button class="calc-btn" onclick="sciInput('5')">5</button>
-                        <button class="calc-btn" onclick="sciInput('6')">6</button>
-                        <button class="calc-btn op" onclick="sciInput('-')">−</button>
-                        <button class="calc-btn op" onclick="sciInput('+')">+</button>
+                    <button class="calc-btn" onclick="sciInput('4')">4</button>
+                    <button class="calc-btn" onclick="sciInput('5')">5</button>
+                    <button class="calc-btn" onclick="sciInput('6')">6</button>
+                    <button class="calc-btn op" onclick="sciInput('-')">−</button>
+                    <button class="calc-btn op" onclick="sciInput('+')">+</button>
 
-                        <button class="calc-btn" onclick="sciInput('1')">1</button>
-                        <button class="calc-btn" onclick="sciInput('2')">2</button>
-                        <button class="calc-btn" onclick="sciInput('3')">3</button>
-                        <button class="calc-btn" onclick="sciInput('0')">0</button>
-                        <button class="calc-btn" onclick="sciInput('.')">.</button>
+                    <button class="calc-btn" onclick="sciInput('1')">1</button>
+                    <button class="calc-btn" onclick="sciInput('2')">2</button>
+                    <button class="calc-btn" onclick="sciInput('3')">3</button>
+                    <button class="calc-btn" onclick="sciInput('0')">0</button>
+                    <button class="calc-btn" onclick="sciInput('.')">.</button>
 
-                        <!-- Row 7 - Equals and constants -->
-                        <button class="calc-btn equals" onclick="sciEquals()" style="grid-column: span 5;">=</button>
-                    </div>
+                    <button class="calc-btn equals" onclick="sciEquals()" style="grid-column: span 5;">=</button>
+                </div>
 
-                    <!-- Quadratic Equation Solver -->
-                    <div class="equation-panel">
-                        <h3><i class="fas fa-superscript"></i> Quadratic Equation Solver — ax² + bx + c = 0</h3>
-                        <div class="eq-inputs">
-                            <div class="eq-input-wrap">
-                                <label>a</label>
-                                <input type="number" class="eq-input" id="qa" placeholder="a" step="any">
-                            </div>
-                            <div class="eq-input-wrap">
-                                <label>b</label>
-                                <input type="number" class="eq-input" id="qb" placeholder="b" step="any">
-                            </div>
-                            <div class="eq-input-wrap">
-                                <label>c</label>
-                                <input type="number" class="eq-input" id="qc" placeholder="c" step="any">
-                            </div>
+                <!-- Quadratic Equation Solver -->
+                <div class="equation-panel">
+                    <h3><i class="fas fa-superscript"></i> Quadratic Equation Solver — ax² + bx + c = 0</h3>
+                    <div class="eq-inputs">
+                        <div class="eq-input-wrap">
+                            <label>a</label>
+                            <input type="number" class="eq-input" id="qa" placeholder="a" step="any">
                         </div>
-                        <button class="btn-calculate" onclick="solveQuadratic()">
-                            <i class="fas fa-equals"></i> Solve Quadratic
-                        </button>
-                        <div class="eq-result" id="quadResult"><span class="lbl">Enter a, b, c values and click Solve</span></div>
-                    </div>
-
-                    <!-- Simultaneous Equations Solver -->
-                    <div class="equation-panel">
-                        <h3><i class="fas fa-equals"></i> Simultaneous Equations (2 variables)</h3>
-                        <p style="color:#94a3b8; font-size:0.78rem; margin-bottom:10px; font-family:'Courier New',monospace;">
-                            a₁x + b₁y = c₁<br>
-                            a₂x + b₂y = c₂
-                        </p>
-                        <div class="eq-inputs simul">
-                            <div class="eq-input-wrap">
-                                <label>a₁</label>
-                                <input type="number" class="eq-input" id="s_a1" placeholder="a₁" step="any">
-                            </div>
-                            <div class="eq-input-wrap">
-                                <label>b₁</label>
-                                <input type="number" class="eq-input" id="s_b1" placeholder="b₁" step="any">
-                            </div>
-                            <div class="eq-input-wrap">
-                                <label>c₁</label>
-                                <input type="number" class="eq-input" id="s_c1" placeholder="c₁" step="any">
-                            </div>
-                            <div class="eq-input-wrap">
-                                <label>a₂</label>
-                                <input type="number" class="eq-input" id="s_a2" placeholder="a₂" step="any">
-                            </div>
-                            <div class="eq-input-wrap">
-                                <label>b₂</label>
-                                <input type="number" class="eq-input" id="s_b2" placeholder="b₂" step="any">
-                            </div>
-                            <div class="eq-input-wrap">
-                                <label>c₂</label>
-                                <input type="number" class="eq-input" id="s_c2" placeholder="c₂" step="any">
-                            </div>
+                        <div class="eq-input-wrap">
+                            <label>b</label>
+                            <input type="number" class="eq-input" id="qb" placeholder="b" step="any">
                         </div>
-                        <button class="btn-calculate" onclick="solveSimultaneous()">
-                            <i class="fas fa-equals"></i> Solve x & y
-                        </button>
-                        <div class="eq-result" id="simulResult"><span class="lbl">Enter a₁, b₁, c₁, a₂, b₂, c₂ and click Solve</span></div>
+                        <div class="eq-input-wrap">
+                            <label>c</label>
+                            <input type="number" class="eq-input" id="qc" placeholder="c" step="any">
+                        </div>
                     </div>
+                    <button class="btn-calculate" onclick="solveQuadratic()">
+                        <i class="fas fa-equals"></i> Solve Quadratic
+                    </button>
+                    <div class="eq-result" id="quadResult"><span class="lbl">Enter a, b, c values and click Solve</span></div>
+                </div>
+
+                <!-- Simultaneous Equations Solver -->
+                <div class="equation-panel">
+                    <h3><i class="fas fa-equals"></i> Simultaneous Equations (2 variables)</h3>
+                    <p style="color:#6b7c93; font-size:0.78rem; margin-bottom:10px; font-family:'Courier New',monospace;">
+                        a₁x + b₁y = c₁<br>
+                        a₂x + b₂y = c₂
+                    </p>
+                    <div class="eq-inputs simul">
+                        <div class="eq-input-wrap">
+                            <label>a₁</label>
+                            <input type="number" class="eq-input" id="s_a1" placeholder="a₁" step="any">
+                        </div>
+                        <div class="eq-input-wrap">
+                            <label>b₁</label>
+                            <input type="number" class="eq-input" id="s_b1" placeholder="b₁" step="any">
+                        </div>
+                        <div class="eq-input-wrap">
+                            <label>c₁</label>
+                            <input type="number" class="eq-input" id="s_c1" placeholder="c₁" step="any">
+                        </div>
+                        <div class="eq-input-wrap">
+                            <label>a₂</label>
+                            <input type="number" class="eq-input" id="s_a2" placeholder="a₂" step="any">
+                        </div>
+                        <div class="eq-input-wrap">
+                            <label>b₂</label>
+                            <input type="number" class="eq-input" id="s_b2" placeholder="b₂" step="any">
+                        </div>
+                        <div class="eq-input-wrap">
+                            <label>c₂</label>
+                            <input type="number" class="eq-input" id="s_c2" placeholder="c₂" step="any">
+                        </div>
+                    </div>
+                    <button class="btn-calculate" onclick="solveSimultaneous()">
+                        <i class="fas fa-equals"></i> Solve x &amp; y
+                    </button>
+                    <div class="eq-result" id="simulResult"><span class="lbl">Enter a₁, b₁, c₁, a₂, b₂, c₂ and click Solve</span></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2><i class="fas fa-graduation-cap"></i> Student Hub</h2>
-            <button class="sidebar-close" id="sidebarClose">&times;</button>
+    <!-- CTA -->
+    <section class="cta">
+        <div class="cta-inner">
+            <div>
+                <h3>Need to scan a document?</h3>
+                <p>Turn handwritten notes into clean PDFs with our free scanner.</p>
+            </div>
+            <a href="/scanner/" class="btn-quote">Open Scanner <i class="fas fa-arrow-right"></i></a>
         </div>
-        <a class="sidebar-item" href="/"><i class="fas fa-home"></i> Home</a>
-        <a class="sidebar-item" href="/browse/"><i class="fas fa-eye"></i> See uploaded notes</a>
-        <a class="sidebar-item" href="/upload/"><i class="fas fa-cloud-upload-alt"></i> Upload files</a>
-        <div class="sidebar-divider"></div>
-        <a class="sidebar-item" href="/scanner/"><i class="fas fa-camera-retro"></i> Scanner</a>
-        <a class="sidebar-item" href="/calculator/"><i class="fas fa-calculator"></i> Calculator <span class="badge info">Active</span></a>
-        <div class="sidebar-divider"></div>
-        <a class="sidebar-item" href="/hackerthon/"><i class="fas fa-code"></i> Hackathon <span class="badge soon">Soon</span></a>
-        <a class="sidebar-item" href="/free_course/"><i class="fas fa-graduation-cap"></i> Free courses <span class="badge maint">Maint</span></a>
-        <div class="sidebar-divider"></div>
-        <a class="sidebar-item" href="/about/"><i class="fas fa-info-circle"></i> About us <span class="badge info">Info</span></a>
-    </aside>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <a href="/" class="logo">
+                        <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
+                        <span class="logo-text">Student<span>Hub</span></span>
+                    </a>
+                    <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Pages</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/browse/">Browse</a></li>
+                        <li><a href="/upload/">Upload</a></li>
+                        <li><a href="/about/">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Tools</h4>
+                    <ul>
+                        <li><a href="/calculator/">Calculator</a></li>
+                        <li><a href="/scanner/">Scanner</a></li>
+                        <li><a href="/upload/">PDF Maker</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2026 Student Hub. All rights reserved.</p>
+                <div class="footer-socials">
+                    <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <!-- RESULT OVERLAY (GPA only) -->
     <div class="result-overlay" id="resultOverlay">
@@ -1805,6 +1465,54 @@
 
     <script>
         // ============================================================
+        // TYPING EFFECT — "Calculator" / "GPA" / "Tools" / "Math" ...
+        // ============================================================
+        (function typingEffect() {
+            const target = document.getElementById('typedWord');
+            if (!target) return;
+
+            const words = ['Calculator', 'GPA', 'Tools', 'Math', 'Solver', 'Hub'];
+
+            let wordIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+
+            const TYPE_SPEED   = 90;   // ms per character when typing
+            const DELETE_SPEED = 50;   // ms per character when deleting
+            const HOLD_TIME    = 1400; // ms to hold a complete word
+            const GAP_TIME     = 350;  // ms pause before typing next word
+
+            function tick() {
+                const currentWord = words[wordIndex];
+
+                if (!isDeleting) {
+                    target.textContent = currentWord.slice(0, charIndex + 1);
+                    charIndex++;
+
+                    if (charIndex === currentWord.length) {
+                        isDeleting = true;
+                        setTimeout(tick, HOLD_TIME);
+                        return;
+                    }
+                    setTimeout(tick, TYPE_SPEED);
+                } else {
+                    target.textContent = currentWord.slice(0, charIndex - 1);
+                    charIndex--;
+
+                    if (charIndex === 0) {
+                        isDeleting = false;
+                        wordIndex = (wordIndex + 1) % words.length;
+                        setTimeout(tick, GAP_TIME);
+                        return;
+                    }
+                    setTimeout(tick, DELETE_SPEED);
+                }
+            }
+
+            setTimeout(tick, 600);
+        })();
+
+        // ============================================================
         // TABS
         // ============================================================
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1816,119 +1524,6 @@
                 document.getElementById('tab-' + tab).classList.add('active');
             });
         });
-
-        // ============================================================
-        // RAIN CANVAS — BLUE
-        // ============================================================
-        (function initRain() {
-            const canvas = document.getElementById('rain-canvas');
-            const ctx = canvas.getContext('2d');
-            let w, h;
-            const drops = [];
-            const dropCount = 300;
-
-            function resize() {
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-            }
-            resize();
-            window.addEventListener('resize', resize);
-
-            class Drop {
-                constructor() { this.reset(); }
-                reset() {
-                    this.x = Math.random() * w;
-                    this.y = Math.random() * h - h;
-                    this.length = Math.random() * 22 + 10;
-                    this.speed = Math.random() * 11 + 5;
-                    this.opacity = Math.random() * 0.28 + 0.10;
-                    this.width = Math.random() * 1.4 + 0.4;
-                    this.angle = Math.random() * 0.1 - 0.05;
-                }
-                update() {
-                    this.y += this.speed;
-                    this.x += this.angle;
-                    if (this.y > h + 50) this.reset();
-                }
-                draw() {
-                    ctx.beginPath();
-                    ctx.moveTo(this.x, this.y);
-                    ctx.lineTo(this.x - 1.5, this.y + this.length);
-                    ctx.strokeStyle = `rgba(59, 130, 246, ${this.opacity})`;
-                    ctx.lineWidth = this.width;
-                    ctx.shadowBlur = 5;
-                    ctx.shadowColor = `rgba(59, 130, 246, ${this.opacity * 0.4})`;
-                    ctx.stroke();
-                    ctx.shadowBlur = 0;
-                }
-            }
-
-            for (let i = 0; i < dropCount; i++) drops.push(new Drop());
-
-            function animate() {
-                ctx.clearRect(0, 0, w, h);
-                for (let drop of drops) { drop.update(); drop.draw(); }
-                requestAnimationFrame(animate);
-            }
-            animate();
-        })();
-
-        // ============================================================
-        // SIDEBAR
-        // ============================================================
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        const menuBtn = document.getElementById('menuToggle');
-        const closeBtn = document.getElementById('sidebarClose');
-
-        function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
-        function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
-
-        menuBtn.addEventListener('click', openSidebar);
-        closeBtn.addEventListener('click', closeSidebar);
-        overlay.addEventListener('click', closeSidebar);
-
-        // ============================================================
-        // CATEGORY GLASS INDICATOR
-        // ============================================================
-        (function initCatGlassSlide() {
-            const catNav = document.getElementById('catNav');
-            const indicator = document.getElementById('catIndicator');
-            const links = catNav.querySelectorAll('.cat-link');
-            const currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
-            let activeLink = null;
-
-            links.forEach(link => {
-                const href = link.getAttribute('href');
-                const norm = href.replace(/\/+$/, '') || '/';
-                if (currentPath === norm || (norm !== '/' && currentPath.startsWith(norm + '/'))) activeLink = link;
-            });
-
-            if (!activeLink && links.length > 0) activeLink = links[0];
-
-            function moveIndicator(link, instant = false) {
-                if (!link || !indicator) return;
-                const navRect = catNav.getBoundingClientRect();
-                const linkRect = link.getBoundingClientRect();
-                const offsetX = linkRect.left - navRect.left;
-                if (instant) indicator.style.transition = 'none';
-                else indicator.style.transition = 'all 0.45s cubic-bezier(0.4, 0, 0.2, 1)';
-                indicator.style.left = offsetX + 'px';
-                indicator.style.width = linkRect.width + 'px';
-                indicator.classList.add('visible');
-                if (instant) requestAnimationFrame(() => { indicator.style.transition = 'all 0.45s cubic-bezier(0.4, 0, 0.2, 1)'; });
-            }
-
-            if (activeLink) { activeLink.classList.add('active'); setTimeout(() => moveIndicator(activeLink, true), 100); }
-
-            links.forEach(link => {
-                link.addEventListener('mouseenter', () => moveIndicator(link));
-                link.addEventListener('click', () => moveIndicator(link));
-            });
-
-            catNav.addEventListener('mouseleave', () => { if (activeLink) moveIndicator(activeLink); });
-            window.addEventListener('resize', () => { if (activeLink) moveIndicator(activeLink, true); });
-        })();
 
         // ============================================================
         // GPA CALCULATOR
@@ -2009,7 +1604,6 @@
             const num = parseInt(document.getElementById('numSubjects').value) || 4;
             const container = document.getElementById('courseInputs');
             container.innerHTML = '';
-            const system = document.getElementById('gradingSystem').value;
 
             for (let i = 0; i < num; i++) {
                 const div = document.createElement('div');
@@ -2032,12 +1626,11 @@
                         const result = getGradeFromMarks(marks, curSystem);
                         if (result) {
                             gradeDisplay.value = result.grade;
-                            gradeDisplay.style.color = '#93c5fd';
-                            gradeDisplay.style.borderColor = 'rgba(59,130,246,0.4)';
-                            gradeDisplay.style.background = 'rgba(30,58,138,0.2)';
+                            gradeDisplay.style.color = '#17a2b8';
+                            gradeDisplay.style.fontWeight = '800';
                         } else {
                             gradeDisplay.value = 'Invalid';
-                            gradeDisplay.style.color = '#f87171';
+                            gradeDisplay.style.color = '#ff5a5f';
                         }
                     } else {
                         gradeDisplay.value = '';
@@ -2250,7 +1843,6 @@
             document.getElementById('sciResult').classList.remove('success', 'error');
         }
 
-        // Convert degrees to radians if in DEG mode
         function toRad(angle) {
             return angleMode === 'DEG' ? angle * Math.PI / 180 : angle;
         }
@@ -2268,14 +1860,9 @@
         }
 
         function evaluateSci(expr) {
-            // Replace functions and constants with Math equivalents
             let e = expr;
-
-            // Constants
             e = e.replace(/\bpi\b/g, 'Math.PI');
             e = e.replace(/(?<![a-zA-Z])e(?![a-zA-Z])/g, 'Math.E');
-
-            // Functions — order matters
             e = e.replace(/asin\(/g, 'Math.asin(');
             e = e.replace(/acos\(/g, 'Math.acos(');
             e = e.replace(/atan\(/g, 'Math.atan(');
@@ -2289,7 +1876,6 @@
             e = e.replace(/abs\(/g, 'Math.abs(');
             e = e.replace(/exp\(/g, 'Math.exp(');
 
-            // Convert trig arguments
             e = e.replace(/Math\.(sin|cos|tan|asin|acos|atan)\(([^()]*)\)/g, (match, fn, arg) => {
                 if (fn.startsWith('a')) {
                     return `fromRad(Math.${fn}(${arg}))`;
@@ -2297,22 +1883,13 @@
                 return `Math.${fn}(toRad(${arg}))`;
             });
 
-            // Factorial: replace n! with factorial(n)
             e = e.replace(/(\d+(?:\.\d+)?|\))!/g, (match, p1) => {
-                if (p1 === ')') {
-                    // Find matching opening
-                    return ')!'; // will be handled below
-                }
+                if (p1 === ')') return ')!';
                 return `factorial(${p1})`;
             });
 
-            // Handle ^ for exponent
             e = e.replace(/\^/g, '**');
-
-            // Handle %, careful
             e = e.replace(/(\d+(?:\.\d+)?)%/g, '($1/100)');
-
-            // Implicit multiplication like 2(3+4) or )( etc
             e = e.replace(/(\d)(\()/g, '$1*$2');
             e = e.replace(/(\))(\()/g, '$1*$2');
             e = e.replace(/(\))(\d)/g, '$1*$2');
@@ -2438,7 +2015,7 @@
         generateCourseInputs();
         updateGradingScaleInfo();
 
-        console.log('📊 Multi-Calculator loaded — GPA · Basic · Scientific');
+        console.log('✦ Student Hub — Calculator (typed hero) ✦');
     </script>
 </body>
 </html>
