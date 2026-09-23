@@ -128,11 +128,11 @@
             color: #2c3e50;
             border-radius: 4px;
             white-space: nowrap;
-            transition: color 0.2s;
+            transition: color 0.25s ease, background 0.25s ease;
         }
 
-        .menu a:hover { color: #17a2b8; }
-        .menu a.active { color: #17a2b8; }
+        .menu a:hover { color: #17a2b8; background: #f0f8fa; }
+        .menu a.active { color: #17a2b8; background: #f0f8fa; }
 
         .nav-right {
             display: flex;
@@ -151,39 +151,61 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            transition: background 0.2s;
+            transition: background 0.25s ease;
             white-space: nowrap;
         }
 
         .btn-quote:hover { background: #138496; }
 
         /* ============================================================
-           HERO SLIDER
+           HERO SLIDER — With image slideshow inside each slide
            ============================================================ */
         .hero {
             position: relative;
             height: 640px;
             overflow: hidden;
+            cursor: grab;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: pan-y;
         }
+
+        .hero:active { cursor: grabbing; }
 
         .slide {
             position: absolute;
             inset: 0;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        visibility 1.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(1.04);
+            pointer-events: none;
+            overflow: hidden;
         }
 
         .slide.active {
             opacity: 1;
             visibility: visible;
+            transform: scale(1);
+            pointer-events: auto;
         }
 
-        .slide::before {
-            content: '';
+        /* Background image stack inside each slide */
+        .slide-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0;
+            transition: opacity 1.6s ease-in-out;
+        }
+
+        .slide-bg.active { opacity: 1; }
+
+        .slide-overlay {
             position: absolute;
             inset: 0;
             background: linear-gradient(
@@ -192,20 +214,26 @@
                 rgba(15, 27, 46, 0.55) 50%,
                 rgba(15, 27, 46, 0.80) 100%
             );
+            z-index: 1;
         }
 
-        .slide.s1 { background-image: url('https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1600&q=80'); }
-        .slide.s2 { background-image: url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=1600&q=80'); }
-        .slide.s3 { background-image: url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1600&q=80'); }
-        .slide.s4 { background-image: url('https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1600&q=80'); }
-        .slide.s5 { background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1600&q=80'); }
+        .slide-btn {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            color: inherit;
+            text-decoration: none;
+            position: relative;
+            z-index: 2;
+        }
 
         .hero-inner {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
             position: relative;
-            z-index: 2;
+            z-index: 3;
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -239,7 +267,7 @@
             margin-bottom: 28px;
         }
 
-        .hero-btn {
+        .hero-cta {
             background: #17a2b8;
             color: #ffffff;
             padding: 14px 28px;
@@ -249,13 +277,17 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            transition: background 0.2s;
+            transition: background 0.25s ease, transform 0.25s ease;
             align-self: flex-start;
             white-space: nowrap;
         }
 
-        .hero-btn:hover { background: #138496; }
+        .slide-btn:hover .hero-cta {
+            background: #138496;
+            transform: translateX(4px);
+        }
 
+        /* Dots */
         .hero-dots {
             position: absolute;
             bottom: 24px;
@@ -263,7 +295,7 @@
             transform: translateX(-50%);
             display: flex;
             gap: 10px;
-            z-index: 3;
+            z-index: 6;
         }
 
         .hero-dots button {
@@ -274,22 +306,40 @@
             background: transparent;
             cursor: pointer;
             padding: 0;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .hero-dots button.active {
             background: #17a2b8;
             border-color: #17a2b8;
-            width: 26px;
+            width: 30px;
             border-radius: 6px;
         }
 
+        .swipe-hint {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-weight: 700;
+            z-index: 6;
+            pointer-events: none;
+            opacity: 0.7;
+            transition: opacity 0.5s ease;
+        }
+
+        .swipe-hint.hidden { opacity: 0; }
+
         /* ============================================================
-           STACKED CARDS — Vertical scroll stack effect
+           STACKED CARDS — Closer + Image Slideshow inside each
            ============================================================ */
         .stack-section {
             background: #f7f9fc;
-            padding: 60px 20px 40px;
+            padding: 40px 20px 20px;
         }
 
         .stack-inner {
@@ -299,7 +349,7 @@
 
         .stack-head {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 26px;
         }
 
         .stack-label {
@@ -320,25 +370,25 @@
             line-height: 1.2;
         }
 
-        /* Each card wrapper creates scroll space */
+        /* Very small gap between stacked cards */
         .stack-item {
             position: relative;
-            height: 100vh;
+            height: 82vh;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
+            padding-top: 10px;
         }
 
-        /* The sticky card that stays while scrolling */
         .stack-card {
             position: sticky;
-            top: 100px;
+            top: 90px;
             width: 100%;
             max-width: 900px;
-            height: 480px;
+            height: 460px;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 25px 70px rgba(26, 43, 71, 0.25);
+            box-shadow: 0 20px 55px rgba(26, 43, 71, 0.22);
             display: grid;
             grid-template-columns: 1fr 1fr;
             background: #ffffff;
@@ -346,93 +396,110 @@
             will-change: transform;
         }
 
-        /* Every next card sits ON TOP (higher z-index) */
         .stack-item:nth-child(2) .stack-card { z-index: 1; }
         .stack-item:nth-child(3) .stack-card { z-index: 2; }
         .stack-item:nth-child(4) .stack-card { z-index: 3; }
         .stack-item:nth-child(5) .stack-card { z-index: 4; }
 
-        /* Image side */
+        /* Image side with its own mini slideshow */
         .stack-img {
             position: relative;
-            background-size: cover;
-            background-position: center;
             overflow: hidden;
+            background: #e8f6f8;
         }
 
-        /* Card 1 - Real Notes */
-        .stack-item:nth-child(2) .stack-img {
-            background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1200&q=80');
+        .stack-img-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
         }
-        /* Card 2 - Smart Search */
-        .stack-item:nth-child(3) .stack-img {
-            background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1200&q=80');
-        }
-        /* Card 3 - Built-in Scanner */
-        .stack-item:nth-child(4) .stack-img {
-            background-image: url('https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1200&q=80');
-        }
-        /* Card 4 - CTA to Browse */
-        .stack-item:nth-child(5) .stack-img {
-            background-image: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1200&q=80');
-        }
+
+        .stack-img-bg.active { opacity: 1; }
 
         .stack-img::after {
             content: '';
             position: absolute;
             inset: 0;
             background: linear-gradient(135deg, rgba(23, 162, 184, 0.15), rgba(26, 43, 71, 0.35));
+            z-index: 1;
+            pointer-events: none;
         }
 
         .stack-img-number {
             position: absolute;
-            top: 24px;
-            left: 24px;
+            top: 20px;
+            left: 20px;
             background: rgba(255, 255, 255, 0.9);
             color: #1a2b47;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 800;
-            padding: 6px 14px;
-            border-radius: 20px;
+            padding: 5px 12px;
+            border-radius: 18px;
             letter-spacing: 0.06em;
-            z-index: 2;
+            z-index: 3;
         }
 
-        /* Content side */
+        /* Mini dot indicators inside card image */
+        .stack-img-dots {
+            position: absolute;
+            bottom: 14px;
+            right: 14px;
+            display: flex;
+            gap: 5px;
+            z-index: 3;
+        }
+
+        .stack-img-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .stack-img-dots span.active {
+            background: #ffffff;
+            width: 16px;
+            border-radius: 3px;
+        }
+
         .stack-content {
-            padding: 50px 50px;
+            padding: 40px 40px;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
         .stack-icon {
-            width: 56px;
-            height: 56px;
+            width: 52px;
+            height: 52px;
             background: #e8f6f8;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #17a2b8;
-            font-size: 1.4rem;
-            margin-bottom: 22px;
+            font-size: 1.3rem;
+            margin-bottom: 18px;
         }
 
         .stack-content h3 {
-            font-size: clamp(1.4rem, 2.4vw, 1.8rem);
+            font-size: clamp(1.25rem, 2.2vw, 1.6rem);
             font-weight: 800;
             color: #1a2b47;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             letter-spacing: -0.02em;
             line-height: 1.2;
         }
 
         .stack-content p {
             color: #6b7c93;
-            font-size: 0.95rem;
-            line-height: 1.7;
-            margin-bottom: 24px;
+            font-size: 0.9rem;
+            line-height: 1.65;
+            margin-bottom: 20px;
         }
 
         .stack-content .stack-link {
@@ -441,63 +508,60 @@
             gap: 8px;
             color: #17a2b8;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             align-self: flex-start;
-            transition: gap 0.2s;
+            transition: gap 0.25s ease;
         }
 
-        .stack-content .stack-link:hover {
-            gap: 14px;
-        }
+        .stack-content .stack-link:hover { gap: 14px; }
 
-        /* Pinned spacer at end so last card doesn't overlap footer */
-        .stack-end-spacer {
-            height: 100vh;
-        }
-
-        /* Small screens: switch to normal scroll stack */
+        /* Mobile: stack vertically */
         @media (max-width: 800px) {
             .stack-item {
                 height: auto;
-                min-height: 100vh;
-                padding: 40px 0;
+                min-height: auto;
+                padding: 6px 0;
             }
             .stack-card {
                 grid-template-columns: 1fr;
                 height: auto;
-                min-height: 520px;
+                min-height: 440px;
+                position: relative;
+                top: 0;
             }
             .stack-img {
-                height: 220px;
+                height: 200px;
+                position: relative;
             }
-            .stack-content {
-                padding: 30px 26px;
-            }
-            .stack-content h3 { font-size: 1.3rem; }
+            .stack-content { padding: 24px 22px; }
+            .stack-content h3 { font-size: 1.15rem; }
+            .stack-content p { font-size: 0.85rem; margin-bottom: 16px; }
         }
 
         @media (max-width: 560px) {
+            .stack-section { padding: 30px 14px 10px; }
+            .stack-head { margin-bottom: 18px; }
             .stack-card {
                 border-radius: 14px;
-                min-height: 460px;
+                min-height: 380px;
             }
-            .stack-img { height: 180px; }
-            .stack-content { padding: 24px 20px; }
+            .stack-img { height: 170px; }
+            .stack-content { padding: 20px 18px; }
             .stack-icon {
-                width: 48px;
-                height: 48px;
-                font-size: 1.2rem;
-                margin-bottom: 16px;
+                width: 44px;
+                height: 44px;
+                font-size: 1.1rem;
+                margin-bottom: 14px;
             }
-            .stack-content h3 { font-size: 1.15rem; }
-            .stack-content p { font-size: 0.88rem; margin-bottom: 18px; }
+            .stack-content h3 { font-size: 1.05rem; }
+            .stack-content p { font-size: 0.82rem; margin-bottom: 14px; }
         }
 
         /* ============================================================
            TOOLS
            ============================================================ */
         .tools {
-            padding: 70px 20px;
+            padding: 60px 20px;
             background: #ffffff;
         }
 
@@ -539,10 +603,13 @@
             padding: 18px;
             border: 1px solid #e5e8ed;
             border-radius: 6px;
-            transition: border-color 0.2s;
+            transition: border-color 0.25s ease, transform 0.25s ease;
         }
 
-        .tool:hover { border-color: #17a2b8; }
+        .tool:hover {
+            border-color: #17a2b8;
+            transform: translateY(-2px);
+        }
 
         .tool i {
             color: #17a2b8;
@@ -632,7 +699,7 @@
         .footer-col ul li a {
             color: #6b7c93;
             font-size: 0.88rem;
-            transition: color 0.2s;
+            transition: color 0.25s ease;
         }
 
         .footer-col ul li a:hover { color: #17a2b8; }
@@ -661,7 +728,7 @@
             justify-content: center;
             color: #6b7c93;
             font-size: 0.85rem;
-            transition: all 0.2s;
+            transition: all 0.25s ease;
         }
 
         .footer-socials a:hover {
@@ -675,13 +742,10 @@
         @media (max-width: 1000px) {
             .tools-grid { grid-template-columns: repeat(2, 1fr); }
             .footer-top { grid-template-columns: 1fr 1fr; }
-            .menu a { padding: 8px 10px; font-size: 0.82rem; }
         }
 
         @media (max-width: 860px) {
             .hero { height: 560px; }
-            .menu a { padding: 8px 8px; font-size: 0.8rem; }
-            .btn-quote { padding: 10px 16px; font-size: 0.8rem; }
         }
 
         @media (max-width: 720px) {
@@ -712,10 +776,7 @@
         }
 
         @media (max-width: 560px) {
-            .topbar-inner {
-                gap: 12px;
-                font-size: 0.75rem;
-            }
+            .topbar-inner { gap: 12px; font-size: 0.75rem; }
             .topbar-inner span:nth-child(3) { display: none; }
             .tools-grid { grid-template-columns: 1fr; }
             .footer-top { grid-template-columns: 1fr; gap: 24px; }
@@ -723,16 +784,15 @@
             .hero { height: 480px; }
             .hero h1 { margin-bottom: 14px; }
             .hero p { margin-bottom: 20px; }
-            .hero-btn { padding: 12px 22px; font-size: 0.85rem; }
+            .hero-cta { padding: 12px 22px; font-size: 0.85rem; }
             .hero-dots { bottom: 16px; }
             .hero-dots button { width: 8px; height: 8px; }
-            .hero-dots button.active { width: 22px; }
+            .hero-dots button.active { width: 24px; }
+            .swipe-hint { bottom: 44px; font-size: 0.6rem; }
             .cta-inner { flex-direction: column; text-align: center; }
             .cta h3 { font-size: 1.2rem; }
             .btn-quote span { display: none; }
             .section-head h2 { font-size: 1.5rem; }
-            .stack-section { padding: 40px 16px 20px; }
-            .stack-head { margin-bottom: 24px; }
         }
 
         @media (max-width: 400px) {
@@ -780,56 +840,96 @@
         </div>
     </nav>
 
-    <!-- HERO SLIDER -->
+    <!-- HERO SLIDER — each slide has 3 rotating images -->
     <section class="hero" id="heroSlider">
+
+        <!-- Slide 1 -->
         <div class="slide s1 active">
-            <div class="hero-inner">
-                <h1>See <span class="accent">Uploaded</span><br>Notes</h1>
-                <p>Browse thousands of notes, past papers, and study materials shared by students like you.</p>
-                <a href="/browse/" class="hero-btn">
-                    Browse Notes <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
+            <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1600&q=80');"></div>
+            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=1600&q=80');"></div>
+            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1600&q=80');"></div>
+            <div class="slide-overlay"></div>
+            <a href="/browse/" class="slide-btn">
+                <div class="hero-inner">
+                    <h1>See <span class="accent">Uploaded</span><br>Notes</h1>
+                    <p>Browse thousands of notes, past papers, and study materials shared by students like you.</p>
+                    <span class="hero-cta">
+                        Browse Notes <i class="fas fa-arrow-right"></i>
+                    </span>
+                </div>
+            </a>
         </div>
 
+        <!-- Slide 2 -->
         <div class="slide s2">
-            <div class="hero-inner">
-                <h1>Upload Your<br><span class="accent">Own</span> Notes</h1>
-                <p>Share what you know with the community. Upload notes in seconds — no sign-up required.</p>
-                <a href="/upload/" class="hero-btn">
-                    Upload Now <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
+            <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=1600&q=80');"></div>
+            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1600&q=80');"></div>
+            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1600&q=80');"></div>
+            <div class="slide-overlay"></div>
+            <a href="/upload/" class="slide-btn">
+                <div class="hero-inner">
+                    <h1>Upload Your<br><span class="accent">Own</span> Notes</h1>
+                    <p>Share what you know with the community. Upload notes in seconds — no sign-up required.</p>
+                    <span class="hero-cta">
+                        Upload Now <i class="fas fa-arrow-right"></i>
+                    </span>
+                </div>
+            </a>
         </div>
 
+        <!-- Slide 3 -->
         <div class="slide s3">
-            <div class="hero-inner">
-                <h1>Smart <span class="accent">Calculator</span><br>For Students</h1>
-                <p>GPA, scientific, and basic calculators — everything you need in one place.</p>
-                <a href="/calculator/" class="hero-btn">
-                    Open Calculator <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
+            <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1600&q=80');"></div>
+            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1600&q=80');"></div>
+            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?w=1600&q=80');"></div>
+            <div class="slide-overlay"></div>
+            <a href="/calculator/" class="slide-btn">
+                <div class="hero-inner">
+                    <h1>Smart <span class="accent">Calculator</span><br>For Students</h1>
+                    <p>GPA, scientific, and basic calculators — everything you need in one place.</p>
+                    <span class="hero-cta">
+                        Open Calculator <i class="fas fa-arrow-right"></i>
+                    </span>
+                </div>
+            </a>
         </div>
 
+        <!-- Slide 4 -->
         <div class="slide s4">
-            <div class="hero-inner">
-                <h1>Turn Pages Into<br><span class="accent">Clean</span> PDFs</h1>
-                <p>Scan handwritten notes and turn them into clean, shareable PDF documents instantly.</p>
-                <a href="/scanner/" class="hero-btn">
-                    Open Scanner <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
+            <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1600&q=80');"></div>
+            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=1600&q=80');"></div>
+            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1568224275-4b4bf2d55f8f?w=1600&q=80');"></div>
+            <div class="slide-overlay"></div>
+            <a href="/scanner/" class="slide-btn">
+                <div class="hero-inner">
+                    <h1>Turn Pages Into<br><span class="accent">Clean</span> PDFs</h1>
+                    <p>Scan handwritten notes and turn them into clean, shareable PDF documents instantly.</p>
+                    <span class="hero-cta">
+                        Open Scanner <i class="fas fa-arrow-right"></i>
+                    </span>
+                </div>
+            </a>
         </div>
 
+        <!-- Slide 5 -->
         <div class="slide s5">
-            <div class="hero-inner">
-                <h1>About <span class="accent">Student</span><br>Hub</h1>
-                <p>Learn more about the platform, the creator, and the free Creative Commons tools we love.</p>
-                <a href="/about/" class="hero-btn">
-                    Learn More <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
+            <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1600&q=80');"></div>
+            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&q=80');"></div>
+            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1543269865-cbf427effbad?w=1600&q=80');"></div>
+            <div class="slide-overlay"></div>
+            <a href="/about/" class="slide-btn">
+                <div class="hero-inner">
+                    <h1>About <span class="accent">Student</span><br>Hub</h1>
+                    <p>Learn more about the platform, the creator, and the free Creative Commons tools we love.</p>
+                    <span class="hero-cta">
+                        Learn More <i class="fas fa-arrow-right"></i>
+                    </span>
+                </div>
+            </a>
+        </div>
+
+        <div class="swipe-hint" id="swipeHint">
+            <i class="fas fa-arrows-left-right"></i> Swipe to navigate
         </div>
 
         <div class="hero-dots" id="heroDots">
@@ -841,10 +941,7 @@
         </div>
     </section>
 
-    <!-- ============================================================
-         STACKED CARDS SECTION — Everything a student needs
-         Each card stacks on top of previous when scrolling
-         ============================================================ -->
+    <!-- STACKED CARDS — Closer + Image Slideshow inside each -->
     <section class="stack-section">
         <div class="stack-inner">
             <div class="stack-head">
@@ -852,70 +949,86 @@
                 <h2>Everything a student needs</h2>
             </div>
 
-            <!-- Card 1 — Real Notes -->
+            <!-- Card 1 -->
             <div class="stack-item">
                 <div class="stack-card">
                     <div class="stack-img">
+                        <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1000&q=80');"></div>
+                        <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1000&q=80');"></div>
+                        <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1000&q=80');"></div>
                         <span class="stack-img-number">01</span>
+                        <div class="stack-img-dots">
+                            <span class="active"></span><span></span><span></span>
+                        </div>
                     </div>
                     <div class="stack-content">
                         <div class="stack-icon"><i class="fas fa-file-alt"></i></div>
                         <h3>Real Notes from Real Students</h3>
                         <p>PDFs, slides, and handwritten scans from students in your course. Every note is verified by the community and ready to download in one click.</p>
-                        <a href="/browse/" class="stack-link">
-                            Browse Notes <i class="fas fa-arrow-right"></i>
-                        </a>
+                        <a href="/browse/" class="stack-link">Browse Notes <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
 
-            <!-- Card 2 — Smart Search -->
+            <!-- Card 2 -->
             <div class="stack-item">
                 <div class="stack-card">
                     <div class="stack-img">
+                        <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1000&q=80');"></div>
+                        <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1000&q=80');"></div>
+                        <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1550399105-c4db5fb85c18?w=1000&q=80');"></div>
                         <span class="stack-img-number">02</span>
+                        <div class="stack-img-dots">
+                            <span class="active"></span><span></span><span></span>
+                        </div>
                     </div>
                     <div class="stack-content">
                         <div class="stack-icon"><i class="fas fa-search"></i></div>
                         <h3>Smart Search by Module</h3>
                         <p>Type a module code or course name and get instant results. No scrolling through endless folders — the search understands what you're looking for.</p>
-                        <a href="/browse/" class="stack-link">
-                            Try Search <i class="fas fa-arrow-right"></i>
-                        </a>
+                        <a href="/browse/" class="stack-link">Try Search <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
 
-            <!-- Card 3 — Built-in Scanner -->
+            <!-- Card 3 -->
             <div class="stack-item">
                 <div class="stack-card">
                     <div class="stack-img">
+                        <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1000&q=80');"></div>
+                        <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1568224275-4b4bf2d55f8f?w=1000&q=80');"></div>
+                        <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=1000&q=80');"></div>
                         <span class="stack-img-number">03</span>
+                        <div class="stack-img-dots">
+                            <span class="active"></span><span></span><span></span>
+                        </div>
                     </div>
                     <div class="stack-content">
                         <div class="stack-icon"><i class="fas fa-camera-retro"></i></div>
                         <h3>Built-in Document Scanner</h3>
                         <p>Turn your phone into a document scanner. Auto-crop, enhance, and save straight to PDF — everything runs in the browser, no apps to install.</p>
-                        <a href="/scanner/" class="stack-link">
-                            Open Scanner <i class="fas fa-arrow-right"></i>
-                        </a>
+                        <a href="/scanner/" class="stack-link">Open Scanner <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
 
-            <!-- Card 4 — Community CTA -->
+            <!-- Card 4 -->
             <div class="stack-item">
                 <div class="stack-card">
                     <div class="stack-img">
+                        <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1000&q=80');"></div>
+                        <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1543269865-cbf427effbad?w=1000&q=80');"></div>
+                        <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1000&q=80');"></div>
                         <span class="stack-img-number">04</span>
+                        <div class="stack-img-dots">
+                            <span class="active"></span><span></span><span></span>
+                        </div>
                     </div>
                     <div class="stack-content">
                         <div class="stack-icon"><i class="fas fa-users"></i></div>
                         <h3>Built by the Student Community</h3>
                         <p>Every note, every paper, every scan — shared by students like you. Contribute your own notes and help the next student ace their exams.</p>
-                        <a href="/upload/" class="stack-link">
-                            Upload Yours <i class="fas fa-arrow-right"></i>
-                        </a>
+                        <a href="/upload/" class="stack-link">Upload Yours <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -933,31 +1046,19 @@
             <div class="tools-grid">
                 <a href="https://twarvis-pdf-50le.onrender.com" target="_blank" rel="noopener" class="tool">
                     <i class="fas fa-file-pdf"></i>
-                    <span>
-                        <strong>PDF Maker</strong>
-                        <small>create & edit PDFs</small>
-                    </span>
+                    <span><strong>PDF Maker</strong><small>create & edit PDFs</small></span>
                 </a>
                 <a href="https://indext.oneapp.dev" target="_blank" rel="noopener" class="tool">
                     <i class="fas fa-code"></i>
-                    <span>
-                        <strong>Code Convert</strong>
-                        <small>file extension tools</small>
-                    </span>
+                    <span><strong>Code Convert</strong><small>file extension tools</small></span>
                 </a>
                 <a href="https://soma.dit.ac.tz/auth/login" target="_blank" rel="noopener" class="tool">
                     <i class="fas fa-university"></i>
-                    <span>
-                        <strong>Soma Portal</strong>
-                        <small>DIT student portal</small>
-                    </span>
+                    <span><strong>Soma Portal</strong><small>DIT student portal</small></span>
                 </a>
                 <a href="https://movieboxapp.in" target="_blank" rel="noopener" class="tool">
                     <i class="fas fa-film"></i>
-                    <span>
-                        <strong>MovieBox</strong>
-                        <small>movies & shows</small>
-                    </span>
+                    <span><strong>MovieBox</strong><small>movies & shows</small></span>
                 </a>
             </div>
         </div>
@@ -970,9 +1071,7 @@
                 <h3>Have notes to share?</h3>
                 <p>Upload them in seconds — help the next student out.</p>
             </div>
-            <a href="/upload/" class="btn-quote">
-                Upload Now <i class="fas fa-arrow-right"></i>
-            </a>
+            <a href="/upload/" class="btn-quote">Upload Now <i class="fas fa-arrow-right"></i></a>
         </div>
     </section>
 
@@ -1011,7 +1110,7 @@
             <div class="footer-bottom">
                 <p>© 2026 Student Hub. All rights reserved.</p>
                 <div class="footer-socials">
-                    <a href="https://www.instagram.com/twarvis_?igsh=aXF5Yz0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                     <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
                     <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
                 </div>
@@ -1021,113 +1120,227 @@
 
     <script>
         // ============================================================
-        // HERO AUTO SLIDER — 3 seconds
+        // HERO SLIDER — Auto + Swipe + Rotating background images
         // ============================================================
         (function () {
+            const hero = document.getElementById('heroSlider');
             const slides = document.querySelectorAll('.slide');
             const dots = document.querySelectorAll('#heroDots button');
+            const swipeHint = document.getElementById('swipeHint');
+            const total = slides.length;
+
             let current = 0;
             let timer = null;
-            const INTERVAL = 3000;
+            let startX = 0, startY = 0;
+            let isDragging = false, moved = false;
 
+            const SLIDE_INTERVAL = 5500;      // hero slide change
+            const BG_INTERVAL = 3500;          // background image change per slide
+
+            // ============================
+            // Slide switching
+            // ============================
             function goTo(index) {
                 slides.forEach(s => s.classList.remove('active'));
                 dots.forEach(d => d.classList.remove('active'));
-                current = index;
+                current = (index + total) % total;
                 slides[current].classList.add('active');
                 dots[current].classList.add('active');
             }
 
-            function next() {
-                goTo((current + 1) % slides.length);
-            }
+            function next() { goTo(current + 1); }
+            function prev() { goTo(current - 1); }
 
             function start() {
                 stop();
-                timer = setInterval(next, INTERVAL);
+                timer = setInterval(next, SLIDE_INTERVAL);
             }
 
             function stop() {
                 if (timer) clearInterval(timer);
+                timer = null;
             }
 
+            // Dots
             dots.forEach((dot, i) => {
-                dot.addEventListener('click', () => {
+                dot.addEventListener('click', (e) => {
+                    e.stopPropagation();
                     goTo(i);
                     start();
                 });
             });
 
-            const heroEl = document.getElementById('heroSlider');
-            heroEl.addEventListener('mouseenter', stop);
-            heroEl.addEventListener('mouseleave', start);
+            // Hover pause
+            hero.addEventListener('mouseenter', stop);
+            hero.addEventListener('mouseleave', () => {
+                if (!isDragging) start();
+            });
 
+            // Tab hidden pause
             document.addEventListener('visibilitychange', () => {
                 if (document.hidden) stop();
                 else start();
             });
 
+            // ============================
+            // Background image rotation (inside each slide)
+            // ============================
+            const slidesBgs = []; // [[el,el,el], ...]
+            slides.forEach((slide) => {
+                slidesBgs.push(slide.querySelectorAll('.slide-bg'));
+            });
+
+            let bgIndex = 0;
+            setInterval(() => {
+                slidesBgs.forEach((bgs) => {
+                    if (bgs.length === 0) return;
+                    bgs.forEach(b => b.classList.remove('active'));
+                    bgIndex = (bgIndex) % bgs.length;
+                    bgs[bgIndex].classList.add('active');
+                });
+                bgIndex++;
+            }, BG_INTERVAL);
+
+            // ============================
+            // Stack card image rotation
+            // ============================
+            const stackCards = document.querySelectorAll('.stack-card');
+            stackCards.forEach((card) => {
+                const bgs = card.querySelectorAll('.stack-img-bg');
+                const dots = card.querySelectorAll('.stack-img-dots span');
+                if (bgs.length === 0) return;
+
+                let idx = 0;
+                setInterval(() => {
+                    bgs.forEach(b => b.classList.remove('active'));
+                    dots.forEach(d => d.classList.remove('active'));
+                    idx = (idx + 1) % bgs.length;
+                    bgs[idx].classList.add('active');
+                    if (dots[idx]) dots[idx].classList.add('active');
+                }, 3000 + Math.random() * 1200); // slight stagger between cards
+            });
+
+            // ============================
+            // Swipe
+            // ============================
+            const SWIPE_THRESHOLD = 50;
+
+            function onDragStart(x, y) {
+                startX = x; startY = y;
+                isDragging = true; moved = false;
+                stop();
+            }
+
+            function onDragMove(x, y) {
+                if (!isDragging) return;
+                const dx = x - startX, dy = y - startY;
+                if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) moved = true;
+            }
+
+            function onDragEnd(x, y) {
+                if (!isDragging) return;
+                const dx = x - startX, dy = y - startY;
+                isDragging = false;
+
+                if (Math.abs(dy) > Math.abs(dx)) { start(); return; }
+                if (Math.abs(dx) > SWIPE_THRESHOLD && moved) {
+                    if (dx < 0) next(); else prev();
+                    hideHint();
+                }
+                start();
+            }
+
+            hero.addEventListener('touchstart', (e) => {
+                const t = e.touches[0];
+                onDragStart(t.clientX, t.clientY);
+            }, { passive: true });
+
+            hero.addEventListener('touchmove', (e) => {
+                const t = e.touches[0];
+                onDragMove(t.clientX, t.clientY);
+            }, { passive: true });
+
+            hero.addEventListener('touchend', (e) => {
+                const t = e.changedTouches[0];
+                onDragEnd(t.clientX, t.clientY);
+            });
+
+            hero.addEventListener('mousedown', (e) => {
+                if (e.target.closest('a') || e.target.closest('button')) return;
+                onDragStart(e.clientX, e.clientY);
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (isDragging) onDragMove(e.clientX, e.clientY);
+            });
+
+            window.addEventListener('mouseup', (e) => {
+                if (isDragging) onDragEnd(e.clientX, e.clientY);
+            });
+
+            hero.querySelectorAll('.slide-btn').forEach((link) => {
+                link.addEventListener('click', (e) => {
+                    if (moved) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        moved = false;
+                    }
+                });
+            });
+
+            function hideHint() {
+                if (swipeHint) swipeHint.classList.add('hidden');
+            }
+
+            setTimeout(hideHint, 8000);
+
             start();
         })();
 
         // ============================================================
-        // STACKED CARDS — Scale down cards as user scrolls
+        // STACKED CARDS — subtle scale on scroll
         // ============================================================
         (function () {
             const items = document.querySelectorAll('.stack-item');
             if (!items.length) return;
 
             function updateStack() {
-                items.forEach((item, index) => {
+                items.forEach((item) => {
                     const card = item.querySelector('.stack-card');
                     if (!card) return;
 
                     const rect = item.getBoundingClientRect();
-                    const windowH = window.innerHeight;
-
-                    // How much has this item scrolled past top?
                     const scrolledPast = Math.max(0, -rect.top);
                     const itemHeight = item.offsetHeight;
-
-                    // Progress from 0 (just entered) to 1 (scrolled past)
                     const progress = Math.min(1, scrolledPast / itemHeight);
 
-                    // Scale down slightly and darken as it moves up
-                    const scale = 1 - progress * 0.06;
-                    const translateY = progress * -20;
+                    const scale = 1 - progress * 0.05;
+                    const translateY = progress * -16;
 
                     card.style.transform = `scale(${scale}) translateY(${translateY}px)`;
-
-                    // Next card should be higher opacity as it comes in
-                    const nextItem = items[index + 1];
-                    if (nextItem) {
-                        const nextRect = nextItem.getBoundingClientRect();
-                        const nextProgress = Math.max(0, Math.min(1, (windowH - nextRect.top) / windowH));
-                        const nextCard = nextItem.querySelector('.stack-card');
-                        if (nextCard) {
-                            nextCard.style.opacity = Math.max(0.85, nextProgress);
-                        }
-                    }
                 });
-
                 requestAnimationFrame(updateStack);
             }
 
-            // Only run on desktop (larger screens)
             if (window.innerWidth > 800) {
                 updateStack();
             }
 
-            // Re-init on resize
             let resizeTimer;
             window.addEventListener('resize', () => {
                 clearTimeout(resizeTimer);
                 resizeTimer = setTimeout(() => {
                     if (window.innerWidth > 800) {
-                        updateStack();
+                        updateUpdate();
                     }
                 }, 200);
             });
+
+            function updateUpdate() {
+                if (window.innerWidth > 800) {
+                    updateStack();
+                }
+            }
         })();
     </script>
 
