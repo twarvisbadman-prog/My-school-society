@@ -1,1090 +1,472 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Browse Notes | Student Hub</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        html, body {
-            overflow-x: hidden;
-            width: 100%;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: #ffffff;
-            color: #2c3e50;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        a { text-decoration: none; color: inherit; }
-        ul { list-style: none; }
-
-        /* ============================================================
-           TOP BAR
-           ============================================================ */
-        .topbar {
-            background: #1a2b47;
-            color: #ffffff;
-            font-size: 0.82rem;
-            padding: 8px 0;
-        }
-
-        .topbar-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            text-align: center;
-        }
-
-        .topbar-inner span {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #cdd6e4;
-            white-space: nowrap;
-        }
-
-        .topbar-inner span i {
-            color: #17a2b8;
-            font-size: 0.78rem;
-        }
-
-        /* ============================================================
-           MAIN NAV
-           ============================================================ */
-        .mainnav {
-            background: #ffffff;
-            border-bottom: 1px solid #e5e8ed;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            width: 100%;
-        }
-
-        .mainnav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 14px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 800;
-            font-size: 1.3rem;
-            color: #1a2b47;
-            letter-spacing: -0.02em;
-            flex-shrink: 0;
-        }
-
-        .logo-mark {
-            width: 38px;
-            height: 38px;
-            background: #17a2b8;
-            border-radius: 50% 50% 50% 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            font-size: 1rem;
-            transform: rotate(-45deg);
-            flex-shrink: 0;
-        }
-
-        .logo-mark i { transform: rotate(45deg); }
-        .logo-text span { color: #17a2b8; }
-
-        .menu {
-            display: flex;
-            align-items: center;
-            gap: 2px;
-            flex-wrap: wrap;
-            justify-content: center;
-            flex: 1;
-            min-width: 0;
-        }
-
-        .menu a {
-            padding: 8px 12px;
-            font-size: 0.86rem;
-            font-weight: 600;
-            color: #2c3e50;
-            border-radius: 4px;
-            white-space: nowrap;
-            transition: color 0.25s ease, background 0.25s ease;
-        }
-
-        .menu a:hover { color: #17a2b8; background: #f0f8fa; }
-        .menu a.active { color: #17a2b8; background: #f0f8fa; }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-shrink: 0;
-        }
-
-        .btn-quote {
-            background: #17a2b8;
-            color: #ffffff;
-            padding: 11px 22px;
-            border-radius: 3px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.25s ease;
-            white-space: nowrap;
-        }
-
-        .btn-quote:hover { background: #138496; }
-
-        /* ============================================================
-           BROWSE HERO — Compact banner
-           ============================================================ */
-        .browse-hero {
-            background: linear-gradient(135deg, #1a2b47 0%, #0f1b2e 100%);
-            color: #ffffff;
-            padding: 60px 20px 50px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .browse-hero::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(circle at 20% 30%, rgba(23, 162, 184, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(23, 162, 184, 0.10) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        .browse-hero-inner {
-            max-width: 900px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        .browse-label {
-            color: #17a2b8;
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            display: block;
-        }
-
-        .browse-hero h1 {
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
-            font-weight: 900;
-            line-height: 1.15;
-            letter-spacing: -0.02em;
-            margin-bottom: 14px;
-        }
-
-        .browse-hero h1 .accent {
-            color: #ff5a5f;
-            text-decoration: underline;
-            text-decoration-color: #ff5a5f;
-            text-underline-offset: 6px;
-            text-decoration-thickness: 4px;
-        }
-
-        .browse-hero p {
-            color: #cdd6e4;
-            font-size: clamp(0.92rem, 1.4vw, 1.05rem);
-            max-width: 560px;
-            margin: 0 auto 28px;
-            line-height: 1.7;
-        }
-
-        /* Search bar */
-        .search-bar {
-            max-width: 560px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            background: #ffffff;
-            border-radius: 4px;
-            overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.20);
-        }
-
-        .search-bar i {
-            padding: 0 4px 0 18px;
-            color: #8492a6;
-            font-size: 0.95rem;
-        }
-
-        .search-bar input {
-            flex: 1;
-            padding: 14px 14px;
-            border: none;
-            outline: none;
-            font-size: 0.92rem;
-            font-family: inherit;
-            color: #2c3e50;
-            background: transparent;
-        }
-
-        .search-bar input::placeholder {
-            color: #a8b3c4;
-        }
-
-        .search-bar button {
-            padding: 14px 24px;
-            background: #17a2b8;
-            color: #ffffff;
-            border: none;
-            font-weight: 700;
-            font-size: 0.85rem;
-            cursor: pointer;
-            font-family: inherit;
-            transition: background 0.25s ease;
-        }
-
-        .search-bar button:hover { background: #138496; }
-
-        /* ============================================================
-           STATS
-           ============================================================ */
-        .stats-bar {
-            background: #f7f9fc;
-            border-bottom: 1px solid #e5e8ed;
-            padding: 16px 20px;
-        }
-
-        .stats-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            gap: 24px;
-            flex-wrap: wrap;
-            justify-content: center;
-            font-size: 0.85rem;
-            color: #6b7c93;
-        }
-
-        .stats-inner span {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-        }
-
-        .stats-inner span i {
-            color: #17a2b8;
-            font-size: 0.85rem;
-        }
-
-        .stats-inner strong {
-            color: #1a2b47;
-            font-weight: 800;
-        }
-
-        /* ============================================================
-           DOC LIST
-           ============================================================ */
-        .browse-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 40px 20px 60px;
-        }
-
-        .doc-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        /* Card layout — image left, details right */
-        .doc-card {
-            display: grid;
-            grid-template-columns: 260px 1fr;
-            background: #ffffff;
-            border: 1px solid #e5e8ed;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
-        }
-
-        .doc-card:hover {
-            border-color: #17a2b8;
-            box-shadow: 0 12px 30px rgba(26, 43, 71, 0.10);
-            transform: translateY(-2px);
-        }
-
-        /* Image side with mini slideshow */
-        .doc-img {
-            position: relative;
-            min-height: 200px;
-            overflow: hidden;
-            background: #e8f6f8;
-        }
-
-        .doc-img-bg {
-            position: absolute;
-            inset: 0;
-            background-size: cover;
-            background-position: center;
-            opacity: 0;
-            transition: opacity 1.2s ease-in-out;
-        }
-
-        .doc-img-bg.active { opacity: 1; }
-
-        .doc-img::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(23, 162, 184, 0.20), rgba(26, 43, 71, 0.30));
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        /* File type badge */
-        .doc-img-badge {
-            position: absolute;
-            top: 14px;
-            left: 14px;
-            background: rgba(255, 255, 255, 0.95);
-            color: #1a2b47;
-            font-size: 0.7rem;
-            font-weight: 800;
-            padding: 5px 10px;
-            border-radius: 16px;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            z-index: 3;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .doc-img-badge i { color: #17a2b8; font-size: 0.7rem; }
-
-        /* Privacy badge */
-        .doc-privacy-badge {
-            position: absolute;
-            top: 14px;
-            right: 14px;
-            font-size: 0.65rem;
-            font-weight: 800;
-            padding: 4px 10px;
-            border-radius: 12px;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            z-index: 3;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .doc-privacy-badge.public {
-            background: rgba(34, 197, 94, 0.95);
-            color: #ffffff;
-        }
-
-        .doc-privacy-badge.private {
-            background: rgba(249, 115, 22, 0.95);
-            color: #ffffff;
-        }
-
-        /* Mini dots */
-        .doc-img-dots {
-            position: absolute;
-            bottom: 12px;
-            left: 14px;
-            display: flex;
-            gap: 5px;
-            z-index: 3;
-        }
-
-        .doc-img-dots span {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            transition: all 0.3s ease;
-        }
-
-        .doc-img-dots span.active {
-            background: #ffffff;
-            width: 16px;
-            border-radius: 3px;
-        }
-
-        /* Content side */
-        .doc-body {
-            padding: 22px 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            min-width: 0;
-        }
-
-        .doc-module {
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: #1a2b47;
-            letter-spacing: -0.01em;
-            line-height: 1.3;
-            word-break: break-word;
-        }
-
-        .doc-module .lock-icon {
-            color: #f97316;
-            font-size: 0.85rem;
-            margin-right: 6px;
-        }
-
-        .doc-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 14px;
-            font-size: 0.82rem;
-            color: #6b7c93;
-            font-weight: 600;
-        }
-
-        .doc-meta span {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .doc-meta span i {
-            color: #17a2b8;
-            font-size: 0.78rem;
-        }
-
-        .doc-meta .course { color: #d4a017; }
-        .doc-meta .course i { color: #d4a017; }
-
-        .doc-description {
-            color: #6b7c93;
-            font-size: 0.88rem;
-            line-height: 1.6;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            margin-top: 2px;
-        }
-
-        .doc-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: auto;
-            padding-top: 6px;
-        }
-
-        .doc-info {
-            display: flex;
-            gap: 14px;
-            font-size: 0.75rem;
-            color: #a8b3c4;
-            font-weight: 600;
-        }
-
-        .doc-info span {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .doc-info i {
-            font-size: 0.72rem;
-        }
-
-        .doc-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-view {
-            padding: 8px 16px;
-            background: rgba(23, 162, 184, 0.10);
-            color: #17a2b8;
-            border: 1px solid rgba(23, 162, 184, 0.30);
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            font-family: inherit;
-        }
-
-        .btn-view:hover {
-            background: #17a2b8;
-            color: #ffffff;
-            border-color: #17a2b8;
-        }
-
-        .btn-download {
-            padding: 8px 16px;
-            background: #17a2b8;
-            color: #ffffff;
-            border: 1px solid #17a2b8;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            font-family: inherit;
-        }
-
-        .btn-download:hover {
-            background: #138496;
-            border-color: #138496;
-            transform: translateY(-1px);
-        }
-
-        /* ============================================================
-           EMPTY STATE
-           ============================================================ */
-        .empty-state {
-            text-align: center;
-            padding: 80px 20px;
-        }
-
-        .empty-icon {
-            font-size: 3.5rem;
-            color: #e5e8ed;
-            margin-bottom: 16px;
-        }
-
-        .empty-state h3 {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #1a2b47;
-            margin-bottom: 8px;
-        }
-
-        .empty-state p {
-            color: #8492a6;
-            font-size: 0.92rem;
-            margin-bottom: 20px;
-        }
-
-        .empty-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 24px;
-            background: #17a2b8;
-            color: #ffffff;
-            border-radius: 4px;
-            font-weight: 700;
-            font-size: 0.88rem;
-            transition: background 0.25s ease;
-        }
-
-        .empty-btn:hover { background: #138496; }
-
-        /* ============================================================
-           CTA
-           ============================================================ */
-        .cta {
-            background: #1a2b47;
-            padding: 50px 20px;
-        }
-
-        .cta-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 24px;
-            flex-wrap: wrap;
-        }
-
-        .cta h3 {
-            color: #ffffff;
-            font-size: 1.4rem;
-            font-weight: 800;
-            margin-bottom: 4px;
-        }
-
-        .cta p { color: #cdd6e4; font-size: 0.92rem; }
-
-        /* ============================================================
-           FOOTER
-           ============================================================ */
-        footer {
-            background: #f7f9fc;
-            padding: 50px 20px 24px;
-            border-top: 1px solid #e5e8ed;
-        }
-
-        .footer-inner { max-width: 1200px; margin: 0 auto; }
-
-        .footer-top {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 30px;
-        }
-
-        .footer-brand p {
-            color: #6b7c93;
-            font-size: 0.88rem;
-            margin-top: 14px;
-            max-width: 320px;
-            line-height: 1.7;
-        }
-
-        .footer-col h4 {
-            font-size: 0.82rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #1a2b47;
-            margin-bottom: 14px;
-        }
-
-        .footer-col ul li { margin-bottom: 8px; }
-
-        .footer-col ul li a {
-            color: #6b7c93;
-            font-size: 0.88rem;
-            transition: color 0.25s ease;
-        }
-
-        .footer-col ul li a:hover { color: #17a2b8; }
-
-        .footer-bottom {
-            border-top: 1px solid #e5e8ed;
-            padding-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-
-        .footer-bottom p { color: #8492a6; font-size: 0.83rem; }
-
-        .footer-socials { display: flex; gap: 8px; }
-
-        .footer-socials a {
-            width: 34px;
-            height: 34px;
-            border: 1px solid #e5e8ed;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6b7c93;
-            font-size: 0.85rem;
-            transition: all 0.25s ease;
-        }
-
-        .footer-socials a:hover {
-            border-color: #17a2b8;
-            color: #17a2b8;
-        }
-
-        /* ============================================================
-           RESPONSIVE
-           ============================================================ */
-        @media (max-width: 900px) {
-            .footer-top { grid-template-columns: 1fr 1fr; }
-            .doc-card {
-                grid-template-columns: 220px 1fr;
-            }
-        }
-
-        @media (max-width: 720px) {
-            .mainnav-inner {
-                flex-wrap: wrap;
-                padding: 12px 16px;
-                gap: 12px;
-            }
-            .logo { font-size: 1.15rem; }
-            .logo-mark { width: 34px; height: 34px; font-size: 0.9rem; }
-            .menu {
-                order: 3;
-                flex-basis: 100%;
-                justify-content: flex-start;
-                overflow-x: auto;
-                padding-bottom: 4px;
-                scrollbar-width: none;
-                gap: 0;
-            }
-            .menu::-webkit-scrollbar { display: none; }
-            .menu a {
-                padding: 8px 12px;
-                font-size: 0.82rem;
-                flex-shrink: 0;
-            }
-            .browse-hero { padding: 50px 18px 40px; }
-            .footer-top { gap: 26px; }
-
-            /* Mobile: image on top of card */
-            .doc-card {
-                grid-template-columns: 1fr;
-            }
-            .doc-img {
-                min-height: 200px;
-            }
-        }
-
-        @media (max-width: 560px) {
-            .topbar-inner { gap: 12px; font-size: 0.75rem; }
-            .topbar-inner span:nth-child(3) { display: none; }
-            .browse-hero { padding: 40px 16px 34px; }
-            .browse-hero h1 { font-size: 1.5rem; }
-            .browse-hero p { font-size: 0.88rem; }
-            .browse-container { padding: 24px 14px 50px; }
-            .doc-body { padding: 18px 18px; }
-            .doc-module { font-size: 1rem; }
-            .doc-description { font-size: 0.82rem; }
-            .search-bar input { padding: 12px 12px; font-size: 0.88rem; }
-            .search-bar button { padding: 12px 16px; font-size: 0.78rem; }
-            .search-bar i { padding: 0 3px 0 14px; }
-            .footer-top { grid-template-columns: 1fr; gap: 24px; }
-            .cta-inner { flex-direction: column; text-align: center; }
-            .cta h3 { font-size: 1.2rem; }
-            .btn-quote span { display: none; }
-            .doc-actions { width: 100%; }
-            .btn-view, .btn-download {
-                flex: 1;
-                justify-content: center;
-            }
-        }
-
-        @media (max-width: 400px) {
-            .logo-text { font-size: 1rem; }
-            .topbar-inner span:nth-child(2) { display: none; }
-            .browse-hero h1 { font-size: 1.3rem; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Browse Notes | Student Hub</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+    --bg:#080b18;
+    --panel:#111831;
+    --panel2:#182344;
+    --text:#eef2ff;
+    --muted:#9ca8c8;
+    --red:#ff4d5a;
+    --blue:#70a8ff;
+    --green:#43d392;
+    --gold:#ffd166;
+    --line:#293454;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{overflow-x:hidden;scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;overflow-x:hidden;width:100%;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+button{font-family:inherit}
+
+/* TOP BAR */
+.topbar{background:#05070f;color:var(--text);font-size:.82rem;padding:8px 0;border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;text-align:center}
+.topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:var(--muted);white-space:nowrap}
+.topbar-inner span i{color:var(--red);font-size:.78rem}
+
+/* NAV */
+.mainnav{background:rgba(8,11,24,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:100;width:100%}
+.mainnav-inner{max-width:1200px;margin:0 auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.2rem;color:var(--text);letter-spacing:-.02em;flex-shrink:0}
+.logo-mark{width:38px;height:38px;background:linear-gradient(135deg,var(--red),#ff7b62);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;flex-shrink:0;box-shadow:0 4px 15px rgba(255,77,90,.35)}
+.logo-text span{color:var(--red)}
+.menu{display:flex;align-items:center;gap:2px;flex-wrap:wrap;justify-content:center;flex:1;min-width:0}
+.menu a{padding:8px 11px;font-size:.84rem;font-weight:600;color:var(--muted);border-radius:8px;white-space:nowrap;transition:all .25s ease}
+.menu a:hover{color:var(--text);background:var(--panel2)}
+.menu a.active{color:var(--text);background:var(--panel2);box-shadow:inset 0 0 0 1px var(--line)}
+.menu a.course-link{color:var(--red)}
+.menu a.course-link i{font-size:.75rem;margin-right:5px}
+.menu a.hack-link{color:var(--blue)}
+.menu a.hack-link i{font-size:.75rem;margin-right:5px}
+.nav-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.btn-quote{background:var(--red);color:#fff;padding:10px 20px;border-radius:10px;font-weight:700;font-size:.85rem;display:inline-flex;align-items:center;gap:8px;transition:all .25s ease;white-space:nowrap;box-shadow:0 4px 15px rgba(255,77,90,.3)}
+.btn-quote:hover{background:#ff2f3e;transform:translateY(-1px);box-shadow:0 8px 22px rgba(255,77,90,.45)}
+
+/* HERO */
+.browse-hero{padding:60px 20px 50px;text-align:center;position:relative;overflow:hidden;background:radial-gradient(circle at 20% 30%,rgba(255,77,90,.12) 0%,transparent 55%),radial-gradient(circle at 80% 70%,rgba(112,168,255,.12) 0%,transparent 55%);border-bottom:1px solid var(--line)}
+.browse-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1}
+.browse-label{color:var(--red);font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px;display:block}
+.browse-hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;line-height:1.15;letter-spacing:-.025em;margin-bottom:14px;color:var(--text)}
+.browse-hero h1 .accent{color:var(--red);text-decoration:underline;text-decoration-color:var(--red);text-underline-offset:6px;text-decoration-thickness:4px}
+.browse-hero p{color:var(--muted);font-size:clamp(.92rem,1.4vw,1.05rem);max-width:560px;margin:0 auto 28px;line-height:1.7}
+
+/* SEARCH */
+.search-bar{max-width:560px;margin:0 auto;display:flex;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 15px 40px rgba(0,0,0,.4);transition:all .25s}
+.search-bar:focus-within{border-color:var(--blue);box-shadow:0 15px 40px rgba(0,0,0,.5),0 0 0 3px rgba(112,168,255,.15)}
+.search-bar i{padding:0 4px 0 18px;color:var(--muted);font-size:.95rem}
+.search-bar input{flex:1;padding:14px 14px;border:none;outline:none;font-size:.92rem;font-family:inherit;color:var(--text);background:transparent}
+.search-bar input::placeholder{color:#5a6a8f}
+.search-bar button{padding:14px 24px;background:var(--red);color:#fff;border:none;font-weight:700;font-size:.85rem;cursor:pointer;transition:background .25s}
+.search-bar button:hover{background:#ff2f3e}
+
+/* STATS BAR */
+.stats-bar{background:var(--panel);border-bottom:1px solid var(--line);padding:16px 20px}
+.stats-inner{max-width:1200px;margin:0 auto;display:flex;gap:24px;flex-wrap:wrap;justify-content:center;font-size:.85rem;color:var(--muted)}
+.stats-inner span{display:inline-flex;align-items:center;gap:8px;font-weight:600}
+.stats-inner span i{color:var(--red);font-size:.85rem}
+.stats-inner strong{color:var(--text);font-weight:800}
+
+/* BROWSE LIST */
+.browse-container{max-width:1000px;margin:0 auto;padding:40px 20px 60px}
+.doc-list{display:flex;flex-direction:column;gap:16px}
+
+.doc-card{display:grid;grid-template-columns:260px 1fr;background:rgba(15,21,43,.95);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:all .25s ease}
+.doc-card:hover{border-color:rgba(255,77,90,.5);box-shadow:0 12px 30px rgba(0,0,0,.5);transform:translateY(-2px)}
+
+.doc-img{position:relative;min-height:200px;overflow:hidden;background:#0a1228}
+.doc-img-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.2s ease-in-out}
+.doc-img-bg.active{opacity:1}
+.doc-img::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,77,90,.20),rgba(8,11,24,.55));z-index:1;pointer-events:none}
+
+.doc-img-badge{position:absolute;top:14px;left:14px;background:rgba(8,11,24,.92);color:var(--text);font-size:.68rem;font-weight:800;padding:5px 10px;border-radius:16px;letter-spacing:.05em;text-transform:uppercase;z-index:3;display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line)}
+.doc-img-badge i{color:var(--red);font-size:.7rem}
+
+.doc-privacy-badge{position:absolute;top:14px;right:14px;font-size:.64rem;font-weight:800;padding:4px 10px;border-radius:12px;letter-spacing:.04em;text-transform:uppercase;z-index:3;display:inline-flex;align-items:center;gap:4px}
+.doc-privacy-badge.public{background:rgba(67,211,146,.95);color:#052e1c}
+.doc-privacy-badge.private{background:rgba(255,209,102,.95);color:#3a2a05}
+
+.doc-img-dots{position:absolute;bottom:12px;left:14px;display:flex;gap:5px;z-index:3}
+.doc-img-dots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5);transition:all .3s ease}
+.doc-img-dots span.active{background:var(--red);width:16px;border-radius:3px}
+
+.doc-body{padding:22px 24px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.doc-module{font-size:1.1rem;font-weight:800;color:var(--text);letter-spacing:-.01em;line-height:1.3;word-break:break-word}
+.doc-module .lock-icon{color:var(--gold);font-size:.85rem;margin-right:6px}
+
+.doc-meta{display:flex;flex-wrap:wrap;gap:14px;font-size:.82rem;color:var(--muted);font-weight:600}
+.doc-meta span{display:inline-flex;align-items:center;gap:5px}
+.doc-meta span i{color:var(--blue);font-size:.78rem}
+.doc-meta .course{color:var(--gold)}
+.doc-meta .course i{color:var(--gold)}
+
+.doc-description{color:var(--muted);font-size:.88rem;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:2px}
+
+.doc-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
+.doc-info{display:flex;gap:14px;font-size:.75rem;color:#5a6a8f;font-weight:600}
+.doc-info span{display:inline-flex;align-items:center;gap:4px}
+.doc-info i{font-size:.72rem;color:var(--muted)}
+
+.doc-actions{display:flex;gap:8px}
+.btn-view{padding:8px 16px;background:rgba(112,168,255,.10);color:var(--blue);border:1px solid rgba(112,168,255,.30);border-radius:8px;font-size:.75rem;font-weight:700;display:inline-flex;align-items:center;gap:6px;cursor:pointer;transition:all .25s;font-family:inherit}
+.btn-view:hover{background:var(--blue);color:#061224;border-color:var(--blue)}
+.btn-download{padding:8px 16px;background:var(--red);color:#fff;border:1px solid var(--red);border-radius:8px;font-size:.75rem;font-weight:700;display:inline-flex;align-items:center;gap:6px;cursor:pointer;transition:all .25s;font-family:inherit;box-shadow:0 4px 12px rgba(255,77,90,.30)}
+.btn-download:hover{background:#ff2f3e;border-color:#ff2f3e;transform:translateY(-1px);box-shadow:0 6px 18px rgba(255,77,90,.5)}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:80px 20px}
+.empty-icon{font-size:3.5rem;color:var(--line);margin-bottom:16px}
+.empty-state h3{font-size:1.2rem;font-weight:800;color:var(--text);margin-bottom:8px}
+.empty-state p{color:var(--muted);font-size:.92rem;margin-bottom:20px}
+.empty-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--red);color:#fff;border-radius:10px;font-weight:700;font-size:.88rem;transition:all .25s;box-shadow:0 6px 20px rgba(255,77,90,.30)}
+.empty-btn:hover{background:#ff2f3e;transform:translateY(-2px);box-shadow:0 10px 28px rgba(255,77,90,.45)}
+
+/* CTA */
+.cta{background:linear-gradient(135deg,#0f1730,#0a1228);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:50px 20px}
+.cta-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.cta h3{color:var(--text);font-size:1.4rem;font-weight:800;margin-bottom:4px}
+.cta p{color:var(--muted);font-size:.92rem}
+
+/* FOOTER */
+footer{background:#05070f;padding:50px 20px 24px;border-top:1px solid var(--line)}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:30px}
+.footer-brand p{color:var(--muted);font-size:.88rem;margin-top:14px;max-width:320px;line-height:1.7}
+.footer-col h4{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text);margin-bottom:14px}
+.footer-col ul li{margin-bottom:8px}
+.footer-col ul li a{color:var(--muted);font-size:.88rem;transition:color .25s ease}
+.footer-col ul li a:hover{color:var(--red)}
+.footer-bottom{border-top:1px solid var(--line);padding-top:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.footer-bottom p{color:var(--muted);font-size:.83rem}
+.footer-socials{display:flex;gap:8px}
+.footer-socials a{width:34px;height:34px;border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.85rem;transition:all .25s;background:var(--panel)}
+.footer-socials a:hover{border-color:var(--red);color:var(--red)}
+
+/* RESPONSIVE */
+@media (max-width:900px){
+    .footer-top{grid-template-columns:1fr 1fr}
+    .doc-card{grid-template-columns:220px 1fr}
+}
+@media (max-width:720px){
+    .mainnav-inner{flex-wrap:wrap;padding:12px 16px;gap:12px}
+    .logo{font-size:1.05rem}
+    .logo-mark{width:34px;height:34px;font-size:.9rem}
+    .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0}
+    .menu::-webkit-scrollbar{display:none}
+    .menu a{padding:8px 12px;font-size:.8rem;flex-shrink:0}
+    .browse-hero{padding:50px 18px 40px}
+    .footer-top{gap:26px}
+    .doc-card{grid-template-columns:1fr}
+    .doc-img{min-height:200px}
+}
+@media (max-width:560px){
+    .topbar-inner{gap:12px;font-size:.72rem}
+    .topbar-inner span:nth-child(3){display:none}
+    .browse-hero{padding:40px 16px 34px}
+    .browse-hero h1{font-size:1.5rem}
+    .browse-hero p{font-size:.88rem}
+    .browse-container{padding:24px 14px 50px}
+    .doc-body{padding:18px 18px}
+    .doc-module{font-size:1rem}
+    .doc-description{font-size:.82rem}
+    .search-bar input{padding:12px 12px;font-size:.88rem}
+    .search-bar button{padding:12px 16px;font-size:.78rem}
+    .search-bar i{padding:0 3px 0 14px}
+    .footer-top{grid-template-columns:1fr;gap:24px}
+    .cta-inner{flex-direction:column;text-align:center}
+    .cta h3{font-size:1.2rem}
+    .btn-quote span{display:none}
+    .doc-actions{width:100%}
+    .btn-view,.btn-download{flex:1;justify-content:center}
+}
+@media (max-width:400px){
+    .logo-text{font-size:.95rem}
+    .topbar-inner span:nth-child(2){display:none}
+    .browse-hero h1{font-size:1.3rem}
+}
+@media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}
+</style>
 </head>
 <body>
 
-    <!-- TOP BAR -->
-    <div class="topbar">
-        <div class="topbar-inner">
-            <span><i class="fas fa-phone"></i> +255 740 706 007</span>
-            <span><i class="fas fa-envelope"></i> twarvis@studenthub.com</span>
-            <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
-        </div>
+<!-- TOP BAR -->
+<div class="topbar">
+    <div class="topbar-inner">
+        <span><i class="fas fa-phone"></i> +255 740 706 007</span>
+        <span><i class="fas fa-envelope"></i> twarvis@studenthub.com</span>
+        <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
     </div>
+</div>
 
-    <!-- MAIN NAV -->
-    <nav class="mainnav">
-        <div class="mainnav-inner">
-            <a href="/" class="logo">
-                <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
-                <span class="logo-text">Student<span>Hub</span></span>
+<!-- NAV -->
+<nav class="mainnav">
+    <div class="mainnav-inner">
+        <a href="/" class="logo">
+            <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
+            <span class="logo-text">Student<span>Hub</span></span>
+        </a>
+
+        <div class="menu">
+            <a href="/">Home</a>
+            <a href="/browse/" class="active">Browse</a>
+            <a href="/upload/">Upload</a>
+            <a href="/calculator/">Calculator</a>
+            <a href="/scanner/">Scanner</a>
+            <a href="/free_course/" class="course-link"><i class="fas fa-book-open"></i>Free Courses</a>
+            <a href="/hackerthon/" class="hack-link"><i class="fas fa-code"></i>Hackathon</a>
+            <a href="/about/">About</a>
+        </div>
+
+        <div class="nav-right">
+            <a href="/upload/" class="btn-quote">
+                <span>Upload File</span> <i class="fas fa-arrow-right"></i>
             </a>
-
-            <div class="menu">
-                <a href="/">Home</a>
-                <a href="/browse/" class="active">Browse</a>
-                <a href="/upload/">Upload</a>
-                <a href="/calculator/">Calculator</a>
-                <a href="/scanner/">Scanner</a>
-                <a href="/about/">About</a>
-            </div>
-
-            <div class="nav-right">
-                <a href="/upload/" class="btn-quote">
-                    <span>Upload File</span> <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- BROWSE HERO -->
-    <section class="browse-hero">
-        <div class="browse-hero-inner">
-            <span class="browse-label">All Notes & Papers</span>
-            <h1>Browse <span class="accent">Study</span> Materials</h1>
-            <p>Search notes, past papers, and study documents shared by students from universities across Tanzania.</p>
-
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Search by module, course, keyword..." autocomplete="off">
-                <button type="button" onclick="filterDocs()">Search</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- STATS -->
-    <div class="stats-bar">
-        <div class="stats-inner">
-            <span><i class="fas fa-file"></i> <strong id="totalCount">{{ notes|length }}</strong> Total</span>
-            <span><i class="fas fa-sticky-note"></i> <strong id="notesCount">0</strong> Notes</span>
-            <span><i class="fas fa-file-alt"></i> <strong id="papersCount">0</strong> Papers</span>
         </div>
     </div>
+</nav>
 
-    <!-- BROWSE CONTAINER -->
-    <div class="browse-container">
-        <div class="doc-list" id="docList">
-            {% if notes %}
-                {% for note in notes %}
-                    <div class="doc-card"
-                         data-search="{{ note.module|default:''|lower }} {{ note.course|default:''|lower }} {{ note.description|default:''|lower }} {{ note.university|default:''|lower }} {{ note.file_type|default:''|lower }}"
-                         data-file-type="{{ note.file_type }}"
-                         data-privacy="{{ note.privacy }}">
+<!-- HERO -->
+<section class="browse-hero">
+    <div class="browse-hero-inner">
+        <span class="browse-label">All Notes &amp; Papers</span>
+        <h1>Browse <span class="accent">Study</span> Materials</h1>
+        <p>Search notes, past papers, and study documents shared by students from universities across Tanzania.</p>
 
-                        <!-- Image with mini slideshow (3 rotating images) -->
-                        <div class="doc-img">
-                            {% if note.file_type == 'pastpaper' %}
-                                <div class="doc-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80');"></div>
-                                <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=800&q=80');"></div>
-                                <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1550399105-c4db5fb85c18?w=800&q=80');"></div>
-                            {% else %}
-                                <div class="doc-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&q=80');"></div>
-                                <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80');"></div>
-                                <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&q=80');"></div>
-                            {% endif %}
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search by module, course, keyword..." autocomplete="off">
+            <button type="button" onclick="filterDocs()">Search</button>
+        </div>
+    </div>
+</section>
 
-                            <span class="doc-img-badge">
-                                <i class="fas fa-{% if note.file_type == 'pastpaper' %}file-alt{% else %}sticky-note{% endif %}"></i>
-                                {{ note.file_type|default:"notes"|title }}
-                            </span>
+<!-- STATS -->
+<div class="stats-bar">
+    <div class="stats-inner">
+        <span><i class="fas fa-file"></i> <strong id="totalCount">{{ notes|length }}</strong> Total</span>
+        <span><i class="fas fa-sticky-note"></i> <strong id="notesCount">0</strong> Notes</span>
+        <span><i class="fas fa-file-alt"></i> <strong id="papersCount">0</strong> Papers</span>
+    </div>
+</div>
 
+<!-- LIST -->
+<div class="browse-container">
+    <div class="doc-list" id="docList">
+        {% if notes %}
+            {% for note in notes %}
+                <div class="doc-card"
+                     data-search="{{ note.module|default:''|lower }} {{ note.course|default:''|lower }} {{ note.description|default:''|lower }} {{ note.university|default:''|lower }} {{ note.file_type|default:''|lower }}"
+                     data-file-type="{{ note.file_type }}"
+                     data-privacy="{{ note.privacy }}">
+
+                    <div class="doc-img">
+                        {% if note.file_type == 'pastpaper' %}
+                            <div class="doc-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80');"></div>
+                            <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=800&q=80');"></div>
+                            <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1550399105-c4db5fb85c18?w=800&q=80');"></div>
+                        {% else %}
+                            <div class="doc-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&q=80');"></div>
+                            <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80');"></div>
+                            <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&q=80');"></div>
+                        {% endif %}
+
+                        <span class="doc-img-badge">
+                            <i class="fas fa-{% if note.file_type == 'pastpaper' %}file-alt{% else %}sticky-note{% endif %}"></i>
+                            {{ note.file_type|default:"notes"|title }}
+                        </span>
+
+                        {% if note.privacy == 'private' %}
+                            <span class="doc-privacy-badge private"><i class="fas fa-lock"></i> Private</span>
+                        {% else %}
+                            <span class="doc-privacy-badge public"><i class="fas fa-globe"></i> Public</span>
+                        {% endif %}
+
+                        <div class="doc-img-dots">
+                            <span class="active"></span><span></span><span></span>
+                        </div>
+                    </div>
+
+                    <div class="doc-body">
+                        <div class="doc-module">
                             {% if note.privacy == 'private' %}
-                                <span class="doc-privacy-badge private"><i class="fas fa-lock"></i> Private</span>
-                            {% else %}
-                                <span class="doc-privacy-badge public"><i class="fas fa-globe"></i> Public</span>
+                                <i class="fas fa-lock lock-icon"></i>
                             {% endif %}
-
-                            <div class="doc-img-dots">
-                                <span class="active"></span><span></span><span></span>
-                            </div>
+                            {{ note.module|default:"Untitled" }}
                         </div>
 
-                        <!-- Details -->
-                        <div class="doc-body">
-                            <div class="doc-module">
-                                {% if note.privacy == 'private' %}
-                                    <i class="fas fa-lock lock-icon"></i>
-                                {% endif %}
-                                {{ note.module|default:"Untitled" }}
+                        <div class="doc-meta">
+                            <span class="course"><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
+                            <span><i class="fas fa-university"></i> {{ note.university|default:"Not specified" }}</span>
+                        </div>
+
+                        {% if note.description %}
+                            <div class="doc-description">{{ note.description|truncatechars:140 }}</div>
+                        {% endif %}
+
+                        <div class="doc-footer">
+                            <div class="doc-info">
+                                <span><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
+                                <span><i class="fas fa-file"></i> {{ note.file_size|default:0|filesizeformat }}</span>
                             </div>
 
-                            <div class="doc-meta">
-                                <span class="course"><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
-                                <span><i class="fas fa-university"></i> {{ note.university|default:"Not specified" }}</span>
-                            </div>
-
-                            {% if note.description %}
-                                <div class="doc-description">{{ note.description|truncatechars:140 }}</div>
-                            {% endif %}
-
-                            <div class="doc-footer">
-                                <div class="doc-info">
-                                    <span><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
-                                    <span><i class="fas fa-file"></i> {{ note.file_size|default:0|filesizeformat }}</span>
-                                </div>
-
-                                <div class="doc-actions">
-                                    {% if note.can_view_inline %}
-                                        <a href="/view/{{ note.id }}/" class="btn-view">
-                                            <i class="fas fa-eye"></i> View
-                                        </a>
-                                    {% endif %}
-                                    <a href="/download/{{ note.id }}/" class="btn-download" download>
-                                        <i class="fas fa-download"></i> Download
+                            <div class="doc-actions">
+                                {% if note.can_view_inline %}
+                                    <a href="/view/{{ note.id }}/" class="btn-view">
+                                        <i class="fas fa-eye"></i> View
                                     </a>
-                                </div>
+                                {% endif %}
+                                <a href="/download/{{ note.id }}/" class="btn-download" download>
+                                    <i class="fas fa-download"></i> Download
+                                </a>
                             </div>
                         </div>
                     </div>
-                {% endfor %}
-            {% else %}
-                <div class="empty-state">
-                    <div class="empty-icon"><i class="fas fa-book-open"></i></div>
-                    <h3>No files yet</h3>
-                    <p>Be the first to share your study materials with fellow students.</p>
-                    <a href="/upload/" class="empty-btn">
-                        <i class="fas fa-cloud-upload-alt"></i> Upload Now
-                    </a>
                 </div>
-            {% endif %}
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon"><i class="fas fa-book-open"></i></div>
+                <h3>No files yet</h3>
+                <p>Be the first to share your study materials with fellow students.</p>
+                <a href="/upload/" class="empty-btn">
+                    <i class="fas fa-cloud-upload-alt"></i> Upload Now
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- CTA -->
+<section class="cta">
+    <div class="cta-inner">
+        <div>
+            <h3>Have notes to share?</h3>
+            <p>Upload them in seconds — help the next student out.</p>
+        </div>
+        <a href="/upload/" class="btn-quote">Upload Now <i class="fas fa-arrow-right"></i></a>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <a href="/" class="logo">
+                    <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
+                    <span class="logo-text">Student<span>Hub</span></span>
+                </a>
+                <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Pages</h4>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/browse/">Browse</a></li>
+                    <li><a href="/upload/">Upload</a></li>
+                    <li><a href="/free_course/">Free Courses</a></li>
+                    <li><a href="/hackerthon/">Hackathon</a></li>
+                    <li><a href="/about/">About</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Tools</h4>
+                <ul>
+                    <li><a href="/calculator/">Calculator</a></li>
+                    <li><a href="/scanner/">Scanner</a></li>
+                    <li><a href="/upload/">PDF Maker</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 Student Hub. All rights reserved.</p>
+            <div class="footer-socials">
+                <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+                <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+            </div>
         </div>
     </div>
+</footer>
 
-    <!-- CTA -->
-    <section class="cta">
-        <div class="cta-inner">
-            <div>
-                <h3>Have notes to share?</h3>
-                <p>Upload them in seconds — help the next student out.</p>
-            </div>
-            <a href="/upload/" class="btn-quote">Upload Now <i class="fas fa-arrow-right"></i></a>
-        </div>
-    </section>
+<script>
+// CARD IMAGE ROTATION
+(function(){
+    const cards=document.querySelectorAll('.doc-card');
+    cards.forEach((card,cardIdx)=>{
+        const bgs=card.querySelectorAll('.doc-img-bg');
+        const dots=card.querySelectorAll('.doc-img-dots span');
+        if(bgs.length===0)return;
+        let idx=0;
+        const delay=3000+(cardIdx%3)*400+Math.random()*800;
+        setInterval(()=>{
+            bgs.forEach(b=>b.classList.remove('active'));
+            dots.forEach(d=>d.classList.remove('active'));
+            idx=(idx+1)%bgs.length;
+            bgs[idx].classList.add('active');
+            if(dots[idx])dots[idx].classList.add('active');
+        },delay);
+    });
+})();
 
-    <!-- FOOTER -->
-    <footer>
-        <div class="footer-inner">
-            <div class="footer-top">
-                <div class="footer-brand">
-                    <a href="/" class="logo">
-                        <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
-                        <span class="logo-text">Student<span>Hub</span></span>
-                    </a>
-                    <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Pages</h4>
-                    <ul>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/browse/">Browse</a></li>
-                        <li><a href="/upload/">Upload</a></li>
-                        <li><a href="/about/">About</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Tools</h4>
-                    <ul>
-                        <li><a href="/calculator/">Calculator</a></li>
-                        <li><a href="/scanner/">Scanner</a></li>
-                        <li><a href="/upload/">PDF Maker</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <p>© 2026 Student Hub. All rights reserved.</p>
-                <div class="footer-socials">
-                    <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // ============================================================
-        // DOC CARD IMAGE ROTATION (3 images per card)
-        // ============================================================
-        (function () {
-            const cards = document.querySelectorAll('.doc-card');
-
-            cards.forEach((card, cardIdx) => {
-                const bgs = card.querySelectorAll('.doc-img-bg');
-                const dots = card.querySelectorAll('.doc-img-dots span');
-                if (bgs.length === 0) return;
-
-                let idx = 0;
-                // Stagger delays so cards don't all change at same time
-                const delay = 3000 + (cardIdx % 3) * 400 + Math.random() * 800;
-
-                setInterval(() => {
-                    bgs.forEach(b => b.classList.remove('active'));
-                    dots.forEach(d => d.classList.remove('active'));
-
-                    idx = (idx + 1) % bgs.length;
-                    bgs[idx].classList.add('active');
-                    if (dots[idx]) dots[idx].classList.add('active');
-                }, delay);
-            });
-        })();
-
-        // ============================================================
-        // LIVE SEARCH — Filter cards as you type
-        // ============================================================
-        function filterDocs() {
-            const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
-            const cards = document.querySelectorAll('.doc-card');
-            let visible = 0;
-            let notes = 0;
-            let papers = 0;
-
-            cards.forEach(card => {
-                const data = (card.dataset.search || '').toLowerCase();
-
-                if (!q || data.includes(q)) {
-                    card.style.display = '';
-                    visible++;
-
-                    if (card.dataset.fileType === 'notes') notes++;
-                    else if (card.dataset.fileType === 'pastpaper') papers++;
-                    else notes++;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-
-            document.getElementById('totalCount').textContent = visible;
-            document.getElementById('notesCount').textContent = notes;
-            document.getElementById('papersCount').textContent = papers;
+// LIVE SEARCH
+function filterDocs(){
+    const q=(document.getElementById('searchInput').value||'').trim().toLowerCase();
+    const cards=document.querySelectorAll('.doc-card');
+    let visible=0,notes=0,papers=0;
+    cards.forEach(card=>{
+        const data=(card.dataset.search||'').toLowerCase();
+        if(!q||data.indexOf(q)!==-1){
+            card.style.display='';
+            visible++;
+            if(card.dataset.fileType==='pastpaper')papers++;
+            else notes++;
+        }else{
+            card.style.display='none';
         }
+    });
+    document.getElementById('totalCount').textContent=visible;
+    document.getElementById('notesCount').textContent=notes;
+    document.getElementById('papersCount').textContent=papers;
+}
+const searchInput=document.getElementById('searchInput');
+if(searchInput){
+    let debounce;
+    searchInput.addEventListener('input',()=>{
+        clearTimeout(debounce);
+        debounce=setTimeout(filterDocs,150);
+    });
+    searchInput.addEventListener('keypress',(e)=>{
+        if(e.key==='Enter'){e.preventDefault();filterDocs()}
+    });
+}
 
-        // Live search on input
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            let debounce;
-            searchInput.addEventListener('input', () => {
-                clearTimeout(debounce);
-                debounce = setTimeout(filterDocs, 150);
-            });
-
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    filterDocs();
-                }
-            });
-        }
-
-        // ============================================================
-        // INITIAL COUNTS
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', () => {
-            const cards = document.querySelectorAll('.doc-card');
-            let notes = 0, papers = 0;
-            cards.forEach(c => {
-                if (c.dataset.fileType === 'notes') notes++;
-                else if (c.dataset.fileType === 'pastpaper') papers++;
-                else notes++;
-            });
-            document.getElementById('notesCount').textContent = notes;
-            document.getElementById('papersCount').textContent = papers;
-        });
-    </script>
+// INITIAL COUNTS
+document.addEventListener('DOMContentLoaded',()=>{
+    const cards=document.querySelectorAll('.doc-card');
+    let notes=0,papers=0;
+    cards.forEach(c=>{
+        if(c.dataset.fileType==='pastpaper')papers++;
+        else notes++;
+    });
+    document.getElementById('notesCount').textContent=notes;
+    document.getElementById('papersCount').textContent=papers;
+});
+</script>
 
 </body>
 </html>
