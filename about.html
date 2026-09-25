@@ -1,1382 +1,589 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About | Student Hub</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        html, body {
-            overflow-x: hidden;
-            width: 100%;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: #ffffff;
-            color: #2c3e50;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        a { text-decoration: none; color: inherit; }
-        ul { list-style: none; }
-
-        /* ============================================================
-           TOP BAR
-           ============================================================ */
-        .topbar {
-            background: #1a2b47;
-            color: #ffffff;
-            font-size: 0.82rem;
-            padding: 8px 0;
-        }
-
-        .topbar-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            text-align: center;
-        }
-
-        .topbar-inner span {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #cdd6e4;
-            white-space: nowrap;
-        }
-
-        .topbar-inner span i {
-            color: #17a2b8;
-            font-size: 0.78rem;
-        }
-
-        /* ============================================================
-           MAIN NAV
-           ============================================================ */
-        .mainnav {
-            background: #ffffff;
-            border-bottom: 1px solid #e5e8ed;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            width: 100%;
-        }
-
-        .mainnav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 14px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 800;
-            font-size: 1.3rem;
-            color: #1a2b47;
-            letter-spacing: -0.02em;
-            flex-shrink: 0;
-        }
-
-        .logo-mark {
-            width: 38px;
-            height: 38px;
-            background: #17a2b8;
-            border-radius: 50% 50% 50% 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            font-size: 1rem;
-            transform: rotate(-45deg);
-            flex-shrink: 0;
-        }
-
-        .logo-mark i { transform: rotate(45deg); }
-        .logo-text span { color: #17a2b8; }
-
-        .menu {
-            display: flex;
-            align-items: center;
-            gap: 2px;
-            flex-wrap: wrap;
-            justify-content: center;
-            flex: 1;
-            min-width: 0;
-        }
-
-        .menu a {
-            padding: 8px 12px;
-            font-size: 0.86rem;
-            font-weight: 600;
-            color: #2c3e50;
-            border-radius: 4px;
-            white-space: nowrap;
-            transition: color 0.25s ease, background 0.25s ease;
-        }
-
-        .menu a:hover { color: #17a2b8; background: #f0f8fa; }
-        .menu a.active { color: #17a2b8; background: #f0f8fa; }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-shrink: 0;
-        }
-
-        .btn-quote {
-            background: #17a2b8;
-            color: #ffffff;
-            padding: 11px 22px;
-            border-radius: 3px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.25s ease;
-            white-space: nowrap;
-        }
-
-        .btn-quote:hover { background: #138496; }
-
-        /* ============================================================
-           ABOUT HERO
-           ============================================================ */
-        .about-hero {
-            background: linear-gradient(135deg, #1a2b47 0%, #0f1b2e 100%);
-            color: #ffffff;
-            padding: 90px 20px 70px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .about-hero::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(circle at 25% 35%, rgba(23, 162, 184, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 75% 65%, rgba(23, 162, 184, 0.10) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        .about-hero-inner {
-            max-width: 820px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        .about-label {
-            color: #17a2b8;
-            font-size: 0.82rem;
-            font-weight: 700;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            margin-bottom: 14px;
-            display: block;
-        }
-
-        .about-hero h1 {
-            font-size: clamp(2rem, 5vw, 3.4rem);
-            font-weight: 900;
-            line-height: 1.1;
-            letter-spacing: -0.025em;
-            margin-bottom: 20px;
-        }
-
-        .about-hero h1 .accent {
-            color: #ff5a5f;
-            text-decoration: underline;
-            text-decoration-color: #ff5a5f;
-            text-underline-offset: 8px;
-            text-decoration-thickness: 5px;
-        }
-
-        .about-hero p {
-            color: #cdd6e4;
-            font-size: clamp(1rem, 1.6vw, 1.15rem);
-            max-width: 620px;
-            margin: 0 auto;
-            line-height: 1.75;
-        }
-
-        /* ============================================================
-           CONTAINER
-           ============================================================ */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 70px 20px;
-        }
-
-        .container.tight {
-            padding: 60px 20px;
-        }
-
-        /* Section heads */
-        .section-head {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .section-label {
-            color: #17a2b8;
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            display: block;
-        }
-
-        .section-head h2 {
-            font-size: clamp(1.6rem, 3.2vw, 2.3rem);
-            font-weight: 800;
-            color: #1a2b47;
-            letter-spacing: -0.02em;
-            line-height: 1.2;
-            margin-bottom: 14px;
-        }
-
-        .section-head p {
-            color: #6b7c93;
-            font-size: 0.98rem;
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.7;
-        }
-
-        /* ============================================================
-           ABOUT THE WEBSITE
-           ============================================================ */
-        .intro-section {
-            background: #f7f9fc;
-        }
-
-        .intro-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-        }
-
-        .intro-text h2 {
-            font-size: clamp(1.6rem, 3vw, 2.1rem);
-            font-weight: 800;
-            color: #1a2b47;
-            letter-spacing: -0.02em;
-            line-height: 1.2;
-            margin-bottom: 20px;
-        }
-
-        .intro-text h2 .accent {
-            color: #17a2b8;
-        }
-
-        .intro-text p {
-            color: #6b7c93;
-            font-size: 0.98rem;
-            line-height: 1.8;
-            margin-bottom: 16px;
-        }
-
-        .intro-text p:last-child { margin-bottom: 0; }
-
-        .intro-text strong {
-            color: #1a2b47;
-            font-weight: 700;
-        }
-
-        .intro-image {
-            position: relative;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 25px 60px rgba(26, 43, 71, 0.15);
-            aspect-ratio: 4/3;
-            background: #e8f6f8;
-        }
-
-        .intro-image-bg {
-            position: absolute;
-            inset: 0;
-            background-size: cover;
-            background-position: center;
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out;
-        }
-
-        .intro-image-bg.active { opacity: 1; }
-
-        /* Feature list */
-        .feature-list {
-            display: grid;
-            gap: 12px;
-            margin-top: 26px;
-        }
-
-        .feature-list li {
-            display: flex;
-            align-items: flex-start;
-            gap: 14px;
-            padding: 14px 18px;
-            background: #ffffff;
-            border: 1px solid #e5e8ed;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            color: #6b7c93;
-            line-height: 1.55;
-            transition: all 0.25s ease;
-        }
-
-        .feature-list li:hover {
-            border-color: #17a2b8;
-            transform: translateX(4px);
-            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.08);
-        }
-
-        .feature-list li i {
-            color: #17a2b8;
-            font-size: 1rem;
-            margin-top: 2px;
-            flex-shrink: 0;
-            width: 20px;
-            text-align: center;
-        }
-
-        .feature-list li strong {
-            color: #1a2b47;
-            font-weight: 700;
-        }
-
-        /* ============================================================
-           CREATOR SECTION
-           ============================================================ */
-        .creator-section {
-            background: #ffffff;
-        }
-
-        .creator-card {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            gap: 36px;
-            align-items: center;
-            background: #f7f9fc;
-            border: 1px solid #e5e8ed;
-            border-radius: 10px;
-            padding: 44px 40px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .creator-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(to bottom, #17a2b8, #138496);
-        }
-
-        .creator-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            background: linear-gradient(135deg, #1a2b47, #17a2b8);
-            color: #ffffff;
-            border: 4px solid #ffffff;
-            box-shadow: 0 12px 30px rgba(26, 43, 71, 0.20);
-            flex-shrink: 0;
-        }
-
-        .creator-info h3 {
-            font-size: clamp(1.4rem, 2.6vw, 1.8rem);
-            font-weight: 800;
-            color: #1a2b47;
-            margin-bottom: 6px;
-            letter-spacing: -0.02em;
-        }
-
-        .creator-info .role {
-            color: #17a2b8;
-            font-size: 0.85rem;
-            font-weight: 700;
-            letter-spacing: 0.10em;
-            text-transform: uppercase;
-            margin-bottom: 16px;
-        }
-
-        .creator-info p {
-            color: #6b7c93;
-            font-size: 0.96rem;
-            line-height: 1.75;
-        }
-
-        .creator-info p strong {
-            color: #1a2b47;
-            font-weight: 700;
-        }
-
-        .social-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 22px;
-        }
-
-        .social-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            transition: all 0.25s ease;
-            border: 1px solid transparent;
-        }
-
-        .social-btn i { font-size: 0.9rem; }
-
-        .social-btn.whatsapp {
-            background: rgba(37, 211, 102, 0.10);
-            color: #1a8a4d;
-            border-color: rgba(37, 211, 102, 0.30);
-        }
-        .social-btn.whatsapp i { color: #25D366; }
-        .social-btn.whatsapp:hover {
-            background: #25D366;
-            color: #ffffff;
-            border-color: #25D366;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.30);
-        }
-        .social-btn.whatsapp:hover i { color: #ffffff; }
-
-        .social-btn.instagram {
-            background: rgba(225, 48, 108, 0.08);
-            color: #c13584;
-            border-color: rgba(225, 48, 108, 0.25);
-        }
-        .social-btn.instagram i { color: #e4405f; }
-        .social-btn.instagram:hover {
-            background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-            color: #ffffff;
-            border-color: #dc2743;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(225, 48, 108, 0.30);
-        }
-        .social-btn.instagram:hover i { color: #ffffff; }
-
-        .social-btn.tiktok {
-            background: #f0f0f0;
-            color: #1a2b47;
-            border-color: #e5e8ed;
-        }
-        .social-btn.tiktok i { color: #1a2b47; }
-        .social-btn.tiktok:hover {
-            background: #000000;
-            color: #ffffff;
-            border-color: #000000;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.20);
-        }
-        .social-btn.tiktok:hover i { color: #ffffff; }
-
-        /* ============================================================
-           PROJECTS
-           ============================================================ */
-        .projects-section {
-            background: #f7f9fc;
-        }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 24px;
-        }
-
-        .project-card {
-            background: #ffffff;
-            border: 1px solid #e5e8ed;
-            border-radius: 10px;
-            overflow: hidden;
-            transition: all 0.30s ease;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .project-card:hover {
-            border-color: #17a2b8;
-            transform: translateY(-6px);
-            box-shadow: 0 20px 45px rgba(26, 43, 71, 0.12);
-        }
-
-        .project-image {
-            position: relative;
-            height: 180px;
-            overflow: hidden;
-            background: linear-gradient(135deg, #1a2b47, #17a2b8);
-        }
-
-        .project-image-bg {
-            position: absolute;
-            inset: 0;
-            background-size: cover;
-            background-position: center;
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out;
-        }
-
-        .project-image-bg.active { opacity: 1; }
-
-        .project-image::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(23, 162, 184, 0.55), rgba(26, 43, 71, 0.65));
-            pointer-events: none;
-        }
-
-        .project-icon {
-            position: absolute;
-            top: 24px;
-            left: 24px;
-            width: 56px;
-            height: 56px;
-            border-radius: 12px;
-            background: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: #17a2b8;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-            z-index: 2;
-        }
-
-        .project-body {
-            padding: 26px 26px 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            flex: 1;
-        }
-
-        .project-body h3 {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #1a2b47;
-            letter-spacing: -0.01em;
-        }
-
-        .project-url {
-            font-size: 0.78rem;
-            color: #17a2b8;
-            font-weight: 600;
-            word-break: break-all;
-        }
-
-        .project-body p {
-            color: #6b7c93;
-            font-size: 0.9rem;
-            line-height: 1.65;
-            flex: 1;
-        }
-
-        .project-features {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 4px;
-        }
-
-        .project-features span {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            background: #f0f8fa;
-            color: #17a2b8;
-            font-size: 0.7rem;
-            font-weight: 700;
-            border: 1px solid rgba(23, 162, 184, 0.20);
-        }
-
-        .project-features span i { font-size: 0.65rem; }
-
-        .project-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px 20px;
-            background: #17a2b8;
-            color: #ffffff;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            transition: all 0.25s ease;
-            margin-top: 8px;
-        }
-
-        .project-btn:hover {
-            background: #138496;
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(23, 162, 184, 0.30);
-        }
-
-        /* ============================================================
-           CREATIVE COMMONS
-           ============================================================ */
-        .cc-section {
-            background: #ffffff;
-        }
-
-        .cc-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 18px;
-        }
-
-        .cc-card {
-            background: #ffffff;
-            border: 1px solid #e5e8ed;
-            border-radius: 8px;
-            padding: 22px 22px 20px;
-            transition: all 0.25s ease;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .cc-card:hover {
-            border-color: #17a2b8;
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(26, 43, 71, 0.08);
-        }
-
-        .cc-head {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .cc-icon {
-            width: 46px;
-            height: 46px;
-            border-radius: 10px;
-            background: #f0f8fa;
-            color: #17a2b8;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-
-        .cc-head-text h4 {
-            font-size: 0.98rem;
-            font-weight: 800;
-            color: #1a2b47;
-            margin-bottom: 2px;
-        }
-
-        .cc-head-text span {
-            font-size: 0.72rem;
-            color: #8492a6;
-            font-weight: 600;
-            letter-spacing: 0.02em;
-        }
-
-        .cc-desc {
-            color: #6b7c93;
-            font-size: 0.85rem;
-            line-height: 1.6;
-            flex: 1;
-        }
-
-        .cc-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 3px 10px;
-            border-radius: 20px;
-            background: #f0f8fa;
-            color: #17a2b8;
-            font-size: 0.68rem;
-            font-weight: 700;
-            letter-spacing: 0.03em;
-            align-self: flex-start;
-            border: 1px solid rgba(23, 162, 184, 0.20);
-        }
-
-        .cc-tag i { font-size: 0.65rem; }
-
-        .cc-visit {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #17a2b8;
-            font-size: 0.82rem;
-            font-weight: 700;
-            transition: gap 0.25s ease;
-        }
-
-        .cc-visit:hover { gap: 14px; }
-
-        .cc-note {
-            margin-top: 30px;
-            background: #f7f9fc;
-            border: 1px solid #e5e8ed;
-            border-left: 4px solid #17a2b8;
-            border-radius: 6px;
-            padding: 18px 22px;
-            color: #6b7c93;
-            font-size: 0.88rem;
-            line-height: 1.7;
-            display: flex;
-            gap: 14px;
-            align-items: flex-start;
-        }
-
-        .cc-note i {
-            color: #17a2b8;
-            font-size: 1.1rem;
-            margin-top: 2px;
-            flex-shrink: 0;
-        }
-
-        .cc-note strong { color: #1a2b47; font-weight: 700; }
-
-        .cc-note a {
-            color: #17a2b8;
-            font-weight: 600;
-            border-bottom: 1px dotted rgba(23, 162, 184, 0.4);
-        }
-
-        .cc-note a:hover {
-            color: #138496;
-            border-bottom-color: #138496;
-        }
-
-        /* ============================================================
-           CTA
-           ============================================================ */
-        .cta {
-            background: #1a2b47;
-            padding: 60px 20px;
-        }
-
-        .cta-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 24px;
-            flex-wrap: wrap;
-        }
-
-        .cta h3 {
-            color: #ffffff;
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin-bottom: 6px;
-            letter-spacing: -0.01em;
-        }
-
-        .cta p {
-            color: #cdd6e4;
-            font-size: 0.95rem;
-        }
-
-        /* ============================================================
-           FOOTER
-           ============================================================ */
-        footer {
-            background: #f7f9fc;
-            padding: 60px 20px 26px;
-            border-top: 1px solid #e5e8ed;
-        }
-
-        .footer-inner { max-width: 1200px; margin: 0 auto; }
-
-        .footer-top {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 34px;
-        }
-
-        .footer-brand p {
-            color: #6b7c93;
-            font-size: 0.88rem;
-            margin-top: 14px;
-            max-width: 320px;
-            line-height: 1.7;
-        }
-
-        .footer-col h4 {
-            font-size: 0.82rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #1a2b47;
-            margin-bottom: 14px;
-        }
-
-        .footer-col ul li { margin-bottom: 8px; }
-
-        .footer-col ul li a {
-            color: #6b7c93;
-            font-size: 0.88rem;
-            transition: color 0.25s ease;
-        }
-
-        .footer-col ul li a:hover { color: #17a2b8; }
-
-        .footer-bottom {
-            border-top: 1px solid #e5e8ed;
-            padding-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-
-        .footer-bottom p { color: #8492a6; font-size: 0.83rem; }
-
-        .footer-socials { display: flex; gap: 8px; }
-
-        .footer-socials a {
-            width: 34px;
-            height: 34px;
-            border: 1px solid #e5e8ed;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6b7c93;
-            font-size: 0.85rem;
-            transition: all 0.25s ease;
-        }
-
-        .footer-socials a:hover {
-            border-color: #17a2b8;
-            color: #17a2b8;
-        }
-
-        /* ============================================================
-           RESPONSIVE
-           ============================================================ */
-        @media (max-width: 900px) {
-            .intro-grid {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-            .intro-image {
-                order: -1;
-            }
-            .creator-card {
-                grid-template-columns: 1fr;
-                text-align: center;
-                padding: 36px 26px;
-            }
-            .creator-card::before {
-                width: 100%;
-                height: 4px;
-                background: linear-gradient(to right, #17a2b8, #138496);
-            }
-            .creator-avatar {
-                margin: 0 auto;
-            }
-            .social-row { justify-content: center; }
-            .footer-top { grid-template-columns: 1fr 1fr; }
-        }
-
-        @media (max-width: 720px) {
-            .mainnav-inner {
-                flex-wrap: wrap;
-                padding: 12px 16px;
-                gap: 12px;
-            }
-            .logo { font-size: 1.15rem; }
-            .logo-mark { width: 34px; height: 34px; font-size: 0.9rem; }
-            .menu {
-                order: 3;
-                flex-basis: 100%;
-                justify-content: flex-start;
-                overflow-x: auto;
-                padding-bottom: 4px;
-                scrollbar-width: none;
-                gap: 0;
-            }
-            .menu::-webkit-scrollbar { display: none; }
-            .menu a {
-                padding: 8px 12px;
-                font-size: 0.82rem;
-                flex-shrink: 0;
-            }
-            .about-hero { padding: 60px 18px 50px; }
-            .container { padding: 50px 16px; }
-            .container.tight { padding: 44px 16px; }
-            .creator-card { padding: 30px 22px; }
-            .footer-top { gap: 26px; }
-            .cta-inner { flex-direction: column; text-align: center; }
-        }
-
-        @media (max-width: 560px) {
-            .topbar-inner { gap: 12px; font-size: 0.75rem; }
-            .topbar-inner span:nth-child(3) { display: none; }
-            .creator-avatar { width: 100px; height: 100px; font-size: 2.4rem; }
-            .footer-top { grid-template-columns: 1fr; gap: 24px; }
-            .btn-quote span { display: none; }
-            .section-head h2 { font-size: 1.5rem; }
-            .cta h3 { font-size: 1.25rem; }
-        }
-
-        @media (max-width: 400px) {
-            .logo-text { font-size: 1rem; }
-            .topbar-inner span:nth-child(2) { display: none; }
-            .about-hero h1 { font-size: 1.6rem; }
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>About | Student Hub</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<style>
+:root{
+    --bg:#080b18;
+    --panel:#111831;
+    --panel2:#182344;
+    --text:#eef2ff;
+    --muted:#9ca8c8;
+    --red:#ff4d5a;
+    --blue:#70a8ff;
+    --green:#43d392;
+    --gold:#ffd166;
+    --line:#293454;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{overflow-x:hidden;scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;overflow-x:hidden;width:100%;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+button{font-family:inherit}
+
+/* TOP BAR */
+.topbar{background:#05070f;color:var(--text);font-size:.82rem;padding:8px 0;border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;text-align:center}
+.topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:var(--muted);white-space:nowrap}
+.topbar-inner span i{color:var(--red);font-size:.78rem}
+
+/* NAV */
+.mainnav{background:rgba(8,11,24,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:100;width:100%}
+.mainnav-inner{max-width:1200px;margin:0 auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.2rem;color:var(--text);letter-spacing:-.02em;flex-shrink:0}
+.logo-mark{width:38px;height:38px;background:linear-gradient(135deg,var(--red),#ff7b62);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;flex-shrink:0;box-shadow:0 4px 15px rgba(255,77,90,.35)}
+.logo-text span{color:var(--red)}
+.menu{display:flex;align-items:center;gap:2px;flex-wrap:wrap;justify-content:center;flex:1;min-width:0}
+.menu a{padding:8px 11px;font-size:.84rem;font-weight:600;color:var(--muted);border-radius:8px;white-space:nowrap;transition:all .25s ease}
+.menu a:hover{color:var(--text);background:var(--panel2)}
+.menu a.active{color:var(--text);background:var(--panel2);box-shadow:inset 0 0 0 1px var(--line)}
+.menu a.course-link{color:var(--red)}
+.menu a.course-link i{font-size:.75rem;margin-right:5px}
+.menu a.hack-link{color:var(--blue)}
+.menu a.hack-link i{font-size:.75rem;margin-right:5px}
+.nav-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.btn-quote{background:var(--red);color:#fff;padding:10px 20px;border-radius:10px;font-weight:700;font-size:.85rem;display:inline-flex;align-items:center;gap:8px;transition:all .25s ease;white-space:nowrap;box-shadow:0 4px 15px rgba(255,77,90,.3)}
+.btn-quote:hover{background:#ff2f3e;transform:translateY(-1px);box-shadow:0 8px 22px rgba(255,77,90,.45)}
+
+/* HERO */
+.about-hero{padding:80px 20px 70px;text-align:center;position:relative;overflow:hidden;background:radial-gradient(circle at 25% 35%,rgba(255,77,90,.12) 0%,transparent 55%),radial-gradient(circle at 75% 65%,rgba(112,168,255,.12) 0%,transparent 55%);border-bottom:1px solid var(--line)}
+.about-hero-inner{max-width:820px;margin:0 auto;position:relative;z-index:1}
+.about-label{color:var(--red);font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px;display:block}
+.about-hero h1{font-size:clamp(2rem,5vw,3.4rem);font-weight:900;line-height:1.1;letter-spacing:-.025em;margin-bottom:20px;color:var(--text)}
+.about-hero h1 .accent{color:var(--red);text-decoration:underline;text-decoration-color:var(--red);text-underline-offset:8px;text-decoration-thickness:5px}
+.about-hero p{color:var(--muted);font-size:clamp(1rem,1.6vw,1.15rem);max-width:620px;margin:0 auto;line-height:1.75}
+
+/* CONTAINER */
+.container{max-width:1100px;margin:0 auto;padding:70px 20px}
+.container.tight{padding:60px 20px}
+
+.section-head{text-align:center;margin-bottom:50px}
+.section-label{color:var(--red);font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px;display:block}
+.section-head h2{font-size:clamp(1.6rem,3.2vw,2.3rem);font-weight:900;color:var(--text);letter-spacing:-.025em;line-height:1.2;margin-bottom:14px}
+.section-head p{color:var(--muted);font-size:.98rem;max-width:600px;margin:0 auto;line-height:1.7}
+
+/* INTRO SECTION */
+.intro-section{background:radial-gradient(circle at 50% 0%,rgba(112,168,255,.05) 0%,transparent 60%);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.intro-text h2{font-size:clamp(1.6rem,3vw,2.1rem);font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2;margin-bottom:20px}
+.intro-text h2 .accent{color:var(--red)}
+.intro-text p{color:var(--muted);font-size:.98rem;line-height:1.8;margin-bottom:16px}
+.intro-text p:last-child{margin-bottom:0}
+.intro-text strong{color:var(--text);font-weight:700}
+
+.intro-image{position:relative;border-radius:20px;overflow:hidden;box-shadow:0 25px 60px rgba(0,0,0,.5);aspect-ratio:4/3;background:#0a1228;border:1px solid var(--line)}
+.intro-image::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,77,90,.15),rgba(8,11,24,.4));pointer-events:none}
+.intro-image-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.5s ease-in-out}
+.intro-image-bg.active{opacity:1}
+
+.feature-list{display:grid;gap:12px;margin-top:26px}
+.feature-list li{display:flex;align-items:flex-start;gap:14px;padding:14px 18px;background:rgba(15,21,43,.95);border:1px solid var(--line);border-radius:12px;font-size:.9rem;color:var(--muted);line-height:1.55;transition:all .25s ease}
+.feature-list li:hover{border-color:rgba(255,77,90,.5);transform:translateX(4px);box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.feature-list li i{color:var(--red);font-size:1rem;margin-top:2px;flex-shrink:0;width:20px;text-align:center}
+.feature-list li strong{color:var(--text);font-weight:700}
+
+/* CREATOR */
+.creator-section{padding:70px 20px}
+.creator-card{display:grid;grid-template-columns:auto 1fr;gap:36px;align-items:center;background:rgba(15,21,43,.95);border:1px solid var(--line);border-radius:20px;padding:44px 40px;position:relative;overflow:hidden}
+.creator-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(to bottom,var(--red),#ff7b62)}
+.creator-avatar{width:120px;height:120px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:3rem;background:linear-gradient(135deg,var(--red),#ff7b62);color:#fff;border:4px solid var(--panel);box-shadow:0 12px 30px rgba(255,77,90,.4);flex-shrink:0}
+.creator-info h3{font-size:clamp(1.4rem,2.6vw,1.8rem);font-weight:800;color:var(--text);margin-bottom:6px;letter-spacing:-.02em}
+.creator-info .role{color:var(--red);font-size:.85rem;font-weight:700;letter-spacing:.10em;text-transform:uppercase;margin-bottom:16px}
+.creator-info p{color:var(--muted);font-size:.96rem;line-height:1.75}
+.creator-info p strong{color:var(--text);font-weight:700}
+
+.social-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.social-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;font-size:.85rem;font-weight:700;transition:all .25s ease;border:1px solid transparent}
+.social-btn i{font-size:.9rem}
+.social-btn.whatsapp{background:rgba(37,211,102,.10);color:#4ade80;border-color:rgba(37,211,102,.30)}
+.social-btn.whatsapp i{color:#25D366}
+.social-btn.whatsapp:hover{background:#25D366;color:#fff;border-color:#25D366;transform:translateY(-2px);box-shadow:0 8px 20px rgba(37,211,102,.4)}
+.social-btn.whatsapp:hover i{color:#fff}
+.social-btn.instagram{background:rgba(225,48,108,.10);color:#f472b6;border-color:rgba(225,48,108,.30)}
+.social-btn.instagram i{color:#e4405f}
+.social-btn.instagram:hover{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;border-color:#dc2743;transform:translateY(-2px);box-shadow:0 8px 20px rgba(225,48,108,.4)}
+.social-btn.instagram:hover i{color:#fff}
+.social-btn.tiktok{background:var(--panel2);color:var(--text);border-color:var(--line)}
+.social-btn.tiktok i{color:var(--text)}
+.social-btn.tiktok:hover{background:#000;color:#fff;border-color:#000;transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.4)}
+.social-btn.tiktok:hover i{color:#fff}
+
+/* PROJECTS */
+.projects-section{background:radial-gradient(circle at 50% 0%,rgba(255,77,90,.05) 0%,transparent 60%);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:70px 20px}
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}
+.project-card{background:rgba(15,21,43,.95);border:1px solid var(--line);border-radius:20px;overflow:hidden;transition:all .3s ease;display:flex;flex-direction:column}
+.project-card:hover{border-color:rgba(255,77,90,.5);transform:translateY(-6px);box-shadow:0 20px 45px rgba(0,0,0,.5)}
+.project-image{position:relative;height:180px;overflow:hidden;background:#0a1228}
+.project-image-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.5s ease-in-out}
+.project-image-bg.active{opacity:1}
+.project-image::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,77,90,.35),rgba(8,11,24,.7));pointer-events:none}
+.project-icon{position:absolute;top:24px;left:24px;width:56px;height:56px;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--red);box-shadow:0 8px 20px rgba(0,0,0,.4);z-index:2}
+.project-body{padding:26px 26px 24px;display:flex;flex-direction:column;gap:12px;flex:1}
+.project-body h3{font-size:1.2rem;font-weight:800;color:var(--text);letter-spacing:-.01em}
+.project-url{font-size:.78rem;color:var(--red);font-weight:600;word-break:break-all;font-family:'JetBrains Mono',monospace}
+.project-body p{color:var(--muted);font-size:.9rem;line-height:1.65;flex:1}
+.project-features{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.project-features span{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;background:rgba(255,77,90,.10);color:var(--red);font-size:.7rem;font-weight:700;border:1px solid rgba(255,77,90,.25)}
+.project-features span i{font-size:.65rem}
+.project-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;background:var(--red);color:#fff;border-radius:10px;font-size:.85rem;font-weight:700;transition:all .25s ease;margin-top:8px;box-shadow:0 6px 20px rgba(255,77,90,.30)}
+.project-btn:hover{background:#ff2f3e;transform:translateY(-1px);box-shadow:0 8px 22px rgba(255,77,90,.5)}
+
+/* CREATIVE COMMONS */
+.cc-section{padding:70px 20px}
+.cc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.cc-card{background:rgba(15,21,43,.95);border:1px solid var(--line);border-radius:16px;padding:22px 22px 20px;transition:all .25s ease;display:flex;flex-direction:column;gap:12px}
+.cc-card:hover{border-color:rgba(112,168,255,.5);transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.cc-head{display:flex;align-items:center;gap:12px}
+.cc-icon{width:46px;height:46px;border-radius:12px;background:rgba(112,168,255,.12);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.cc-head-text h4{font-size:.98rem;font-weight:800;color:var(--text);margin-bottom:2px}
+.cc-head-text span{font-size:.72rem;color:var(--muted);font-weight:600;letter-spacing:.02em}
+.cc-desc{color:var(--muted);font-size:.85rem;line-height:1.6;flex:1}
+.cc-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;background:rgba(112,168,255,.10);color:var(--blue);font-size:.68rem;font-weight:700;letter-spacing:.03em;align-self:flex-start;border:1px solid rgba(112,168,255,.25)}
+.cc-tag i{font-size:.65rem}
+.cc-visit{display:inline-flex;align-items:center;gap:8px;color:var(--blue);font-size:.82rem;font-weight:700;transition:gap .25s ease}
+.cc-visit:hover{gap:14px}
+
+.cc-note{margin-top:30px;background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--red);border-radius:10px;padding:18px 22px;color:var(--muted);font-size:.88rem;line-height:1.7;display:flex;gap:14px;align-items:flex-start}
+.cc-note i{color:var(--red);font-size:1.1rem;margin-top:2px;flex-shrink:0}
+.cc-note strong{color:var(--text);font-weight:700}
+.cc-note a{color:var(--red);font-weight:600;border-bottom:1px dotted rgba(255,77,90,.4)}
+.cc-note a:hover{color:#ff2f3e;border-bottom-color:#ff2f3e}
+
+/* CTA */
+.cta{background:linear-gradient(135deg,#0f1730,#0a1228);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:60px 20px}
+.cta-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.cta h3{color:var(--text);font-size:1.5rem;font-weight:800;margin-bottom:6px;letter-spacing:-.01em}
+.cta p{color:var(--muted);font-size:.95rem}
+
+/* FOOTER */
+footer{background:#05070f;padding:50px 20px 24px;border-top:1px solid var(--line)}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:34px}
+.footer-brand p{color:var(--muted);font-size:.88rem;margin-top:14px;max-width:320px;line-height:1.7}
+.footer-col h4{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text);margin-bottom:14px}
+.footer-col ul li{margin-bottom:8px}
+.footer-col ul li a{color:var(--muted);font-size:.88rem;transition:color .25s ease}
+.footer-col ul li a:hover{color:var(--red)}
+.footer-bottom{border-top:1px solid var(--line);padding-top:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.footer-bottom p{color:var(--muted);font-size:.83rem}
+.footer-socials{display:flex;gap:8px}
+.footer-socials a{width:34px;height:34px;border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.85rem;transition:all .25s ease;background:var(--panel)}
+.footer-socials a:hover{border-color:var(--red);color:var(--red)}
+
+/* RESPONSIVE */
+@media (max-width:900px){
+    .intro-grid{grid-template-columns:1fr;gap:40px}
+    .intro-image{order:-1}
+    .creator-card{grid-template-columns:1fr;text-align:center;padding:36px 26px}
+    .creator-card::before{width:100%;height:4px;background:linear-gradient(to right,var(--red),#ff7b62)}
+    .creator-avatar{margin:0 auto}
+    .social-row{justify-content:center}
+    .footer-top{grid-template-columns:1fr 1fr}
+}
+@media (max-width:720px){
+    .mainnav-inner{flex-wrap:wrap;padding:12px 16px;gap:12px}
+    .logo{font-size:1.05rem}
+    .logo-mark{width:34px;height:34px;font-size:.9rem}
+    .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0}
+    .menu::-webkit-scrollbar{display:none}
+    .menu a{padding:8px 12px;font-size:.8rem;flex-shrink:0}
+    .about-hero{padding:60px 18px 50px}
+    .container{padding:50px 16px}
+    .container.tight{padding:44px 16px}
+    .creator-section,.projects-section,.cc-section{padding:50px 16px}
+    .creator-card{padding:30px 22px}
+    .footer-top{gap:26px}
+    .cta-inner{flex-direction:column;text-align:center}
+}
+@media (max-width:560px){
+    .topbar-inner{gap:12px;font-size:.72rem}
+    .topbar-inner span:nth-child(3){display:none}
+    .creator-avatar{width:100px;height:100px;font-size:2.4rem}
+    .footer-top{grid-template-columns:1fr;gap:24px}
+    .btn-quote span{display:none}
+    .section-head h2{font-size:1.5rem}
+    .cta h3{font-size:1.25rem}
+    .creator-info h3{font-size:1.3rem}
+}
+@media (max-width:400px){
+    .logo-text{font-size:.95rem}
+    .topbar-inner span:nth-child(2){display:none}
+    .about-hero h1{font-size:1.6rem}
+}
+@media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}
+</style>
 </head>
 <body>
 
-    <!-- TOP BAR -->
-    <div class="topbar">
-        <div class="topbar-inner">
-            <span><i class="fas fa-phone"></i> +255 740 706 007</span>
-            <span><i class="fas fa-envelope"></i> Twarvistech@gmail.com</span>
-            <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
+<!-- TOP BAR -->
+<div class="topbar">
+    <div class="topbar-inner">
+        <span><i class="fas fa-phone"></i> +255 740 706 007</span>
+        <span><i class="fas fa-envelope"></i> Twarvistech@gmail.com</span>
+        <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
+    </div>
+</div>
+
+<!-- NAV -->
+<nav class="mainnav">
+    <div class="mainnav-inner">
+        <a href="/" class="logo">
+            <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
+            <span class="logo-text">Student<span>Hub</span></span>
+        </a>
+
+        <div class="menu">
+            <a href="/">Home</a>
+            <a href="/browse/">Browse</a>
+            <a href="/upload/">Upload</a>
+            <a href="/calculator/">Calculator</a>
+            <a href="/scanner/">Scanner</a>
+            <a href="/free_course/" class="course-link"><i class="fas fa-book-open"></i>Free Courses</a>
+            <a href="/hackerthon/" class="hack-link"><i class="fas fa-code"></i>Hackathon</a>
+            <a href="/about/" class="active">About</a>
+        </div>
+
+        <div class="nav-right">
+            <a href="/upload/" class="btn-quote">
+                <span>Upload File</span> <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
     </div>
+</nav>
 
-    <!-- MAIN NAV -->
-    <nav class="mainnav">
-        <div class="mainnav-inner">
-            <a href="/" class="logo">
-                <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
-                <span class="logo-text">Student<span>Hub</span></span>
-            </a>
+<!-- HERO -->
+<section class="about-hero">
+    <div class="about-hero-inner">
+        <span class="about-label">Get to know us</span>
+        <h1>About <span class="accent">Student</span> Hub</h1>
+        <p>Everything you need to know about the platform, the creator, and the free tools we love. Built in Tanzania, for students everywhere.</p>
+    </div>
+</section>
 
-            <div class="menu">
-                <a href="/">Home</a>
-                <a href="/browse/">Browse</a>
-                <a href="/upload/">Upload</a>
-                <a href="/calculator/">Calculator</a>
-                <a href="/scanner/">Scanner</a>
-                <a href="/about/" class="active">About</a>
+<!-- WHAT IS STUDENT HUB -->
+<section class="intro-section">
+    <div class="container">
+        <div class="intro-grid">
+            <div class="intro-text">
+                <span class="section-label" style="text-align:left;display:block;margin-bottom:12px;">What is Student Hub?</span>
+                <h2>A free platform for <span class="accent">sharing notes</span></h2>
+                <p>
+                    <strong>Student Hub</strong> is a free, student-built platform made to help learners
+                    share, discover, and organize study materials — all in one calm, distraction-free space.
+                </p>
+                <p>
+                    It was born from a simple idea: <em>someone already took this note</em> — so why not share it?
+                    Whether you're revising for exams, catching up on a missed lecture, or looking for past papers,
+                    Student Hub connects you with what other students have already uploaded.
+                </p>
+
+                <ul class="feature-list">
+                    <li><i class="fas fa-cloud-upload-alt"></i><span><strong>Upload notes &amp; papers</strong> — share PDFs, slides, docs, images and archives in seconds.</span></li>
+                    <li><i class="fas fa-eye"></i><span><strong>See uploaded notes</strong> — browse everything other students have shared.</span></li>
+                    <li><i class="fas fa-search"></i><span><strong>Smart search</strong> — find files fast by module, course code, or keyword.</span></li>
+                    <li><i class="fas fa-camera-retro"></i><span><strong>Built-in scanner</strong> — photograph handwritten pages and turn them into clean PDFs.</span></li>
+                    <li><i class="fas fa-lock"></i><span><strong>Private mode</strong> — protect sensitive files with a 4-digit passcode.</span></li>
+                    <li><i class="fas fa-mobile-screen"></i><span><strong>Works everywhere</strong> — fully responsive on phone, tablet, and desktop.</span></li>
+                </ul>
             </div>
 
-            <div class="nav-right">
-                <a href="/upload/" class="btn-quote">
-                    <span>Upload File</span> <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- ABOUT HERO -->
-    <section class="about-hero">
-        <div class="about-hero-inner">
-            <span class="about-label">Get to know us</span>
-            <h1>About <span class="accent">Student</span> Hub</h1>
-            <p>Everything you need to know about the platform, the creator, and the free tools we love. Built in Tanzania, for students everywhere.</p>
-        </div>
-    </section>
-
-    <!-- ABOUT THE WEBSITE -->
-    <section class="intro-section">
-        <div class="container">
-            <div class="intro-grid">
-                <div class="intro-text">
-                    <span class="section-label" style="text-align:left;display:block;margin-bottom:12px;">What is Student Hub?</span>
-                    <h2>A free platform for <span class="accent">sharing notes</span></h2>
-                    <p>
-                        <strong>Student Hub</strong> is a free, student-built platform made to help learners
-                        share, discover, and organize study materials — all in one calm, distraction-free space.
-                    </p>
-                    <p>
-                        It was born from a simple idea: <em>someone already took this note</em> — so why not share it?
-                        Whether you're revising for exams, catching up on a missed lecture, or looking for past papers,
-                        Student Hub connects you with what other students have already uploaded.
-                    </p>
-
-                    <ul class="feature-list">
-                        <li>
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <span><strong>Upload notes &amp; papers</strong> — share PDFs, slides, docs, images and archives in seconds.</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-eye"></i>
-                            <span><strong>See uploaded notes</strong> — browse everything other students have shared.</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-search"></i>
-                            <span><strong>Smart search</strong> — find files fast by module, course code, or keyword.</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-camera-retro"></i>
-                            <span><strong>Built-in scanner</strong> — photograph handwritten pages and turn them into clean PDFs.</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-lock"></i>
-                            <span><strong>Private mode</strong> — protect sensitive files with a 4-digit passcode.</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-mobile-screen"></i>
-                            <span><strong>Works everywhere</strong> — fully responsive on phone, tablet, and desktop.</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="intro-image">
-                    <div class="intro-image-bg active" style="background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&q=80');"></div>
-                    <div class="intro-image-bg" style="background-image: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1200&q=80');"></div>
-                    <div class="intro-image-bg" style="background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1200&q=80');"></div>
-                </div>
+            <div class="intro-image">
+                <div class="intro-image-bg active" style="background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&q=80');"></div>
+                <div class="intro-image-bg" style="background-image: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1200&q=80');"></div>
+                <div class="intro-image-bg" style="background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1200&q=80');"></div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- ABOUT THE CREATOR -->
-    <section class="creator-section">
-        <div class="container">
-            <div class="section-head">
-                <span class="section-label">The person behind it</span>
-                <h2>About the Creator</h2>
-            </div>
-
-            <div class="creator-card">
-                <div class="creator-avatar">
-                    <i class="fas fa-code"></i>
-                </div>
-                <div class="creator-info">
-                    <h3>Twarvis</h3>
-                    <div class="role">Student Developer &amp; Founder</div>
-                    <p>
-                        Hi! I'm <strong>Twarvis</strong> — a student who got tired of losing notes and
-                        scrambling for past papers. I built Student Hub to make sharing study material
-                        effortless, beautiful, and free for everyone. Every pixel, animation, and line of
-                        code here was crafted with care (and a lot of late-night coding sessions).
-                    </p>
-                    <div class="social-row">
-                        <a href="https://wa.me/255740706007?text=Hello%20Twarvis%2C%20I%20saw%20your%20Student%20Hub" class="social-btn whatsapp" target="_blank" rel="noopener">
-                            <i class="fab fa-whatsapp"></i> WhatsApp
-                        </a>
-                        <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" class="social-btn instagram" target="_blank" rel="noopener">
-                            <i class="fab fa-instagram"></i> Instagram
-                        </a>
-                        <a href="https://www.tiktok.com/@twarvis" class="social-btn tiktok" target="_blank" rel="noopener">
-                            <i class="fab fa-tiktok"></i> TikTok
-                        </a>
-                    </div>
-                </div>
-            </div>
+<!-- CREATOR -->
+<section class="creator-section">
+    <div class="container">
+        <div class="section-head">
+            <span class="section-label">The person behind it</span>
+            <h2>About the Creator</h2>
         </div>
-    </section>
 
-    <!-- MY OTHER PROJECTS -->
-    <section class="projects-section">
-        <div class="container">
-            <div class="section-head">
-                <span class="section-label">More from me</span>
-                <h2>My Other Projects</h2>
-                <p>Besides Student Hub, I also build other tools that students and creators can use for free.</p>
+        <div class="creator-card">
+            <div class="creator-avatar">
+                <i class="fas fa-code"></i>
             </div>
-
-            <div class="projects-grid">
-
-                <div class="project-card">
-                    <div class="project-image">
-                        <div class="project-image-bg active" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1000&q=80');"></div>
-                        <div class="project-image-bg" style="background-image: url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1000&q=80');"></div>
-                        <div class="project-icon"><i class="fas fa-shield-halved"></i></div>
-                    </div>
-                    <div class="project-body">
-                        <h3>CyberCraft</h3>
-                        <div class="project-url">cybercraft.twarvistech.workers.dev</div>
-                        <p>A cyber-security toolkit and playground for students learning ethical hacking, cryptography, and safe browsing — built with a sleek, hacker-inspired interface.</p>
-                        <div class="project-features">
-                            <span><i class="fas fa-lock"></i> Security Tools</span>
-                            <span><i class="fas fa-terminal"></i> Terminal UI</span>
-                            <span><i class="fas fa-code"></i> Open Source</span>
-                        </div>
-                        <a href="https://cybercraft.twarvistech.workers.dev/" class="project-btn" target="_blank" rel="noopener">
-                            Visit CyberCraft <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <div class="project-image">
-                        <div class="project-image-bg active" style="background-image: url('https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1000&q=80');"></div>
-                        <div class="project-image-bg" style="background-image: url('https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=1000&q=80');"></div>
-                        <div class="project-icon"><i class="fas fa-file-pdf"></i></div>
-                    </div>
-                    <div class="project-body">
-                        <h3>PDF Scanner &amp; Maker</h3>
-                        <div class="project-url">twarvisscanner.twarvistech.workers.dev</div>
-                        <p>Scan documents with your phone camera, crop and straighten them, then save as clean PDFs — or build new PDFs from scratch. Everything runs in the browser.</p>
-                        <div class="project-features">
-                            <span><i class="fas fa-camera"></i> Scan</span>
-                            <span><i class="fas fa-crop"></i> Crop &amp; Edit</span>
-                            <span><i class="fas fa-file-export"></i> Export PDF</span>
-                        </div>
-                        <a href="https://twarvisscanner.twarvistech.workers.dev/" class="project-btn" target="_blank" rel="noopener">
-                            Visit Scanner <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- CREATIVE COMMONS -->
-    <section class="cc-section">
-        <div class="container">
-            <div class="section-head">
-                <span class="section-label">Free &amp; open resources</span>
-                <h2>Creative Commons Websites We Love</h2>
-                <p>These websites offer free, openly-licensed content — perfect for students who want to learn, remix, and share legally.</p>
-            </div>
-
-            <div class="cc-grid">
-
-                <div class="cc-card">
-                    <div class="cc-head">
-                        <div class="cc-icon"><i class="fas fa-wikipedia-w"></i></div>
-                        <div class="cc-head-text">
-                            <h4>Wikipedia</h4>
-                            <span>wikipedia.org</span>
-                        </div>
-                    </div>
-                    <div class="cc-desc">The world's largest free encyclopedia — every article is CC BY-SA licensed and editable by anyone.</div>
-                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-SA</span>
-                    <a href="https://www.wikipedia.org" class="cc-visit" target="_blank" rel="noopener">Visit Wikipedia <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="cc-card">
-                    <div class="cc-head">
-                        <div class="cc-icon"><i class="fas fa-image"></i></div>
-                        <div class="cc-head-text">
-                            <h4>Unsplash</h4>
-                            <span>unsplash.com</span>
-                        </div>
-                    </div>
-                    <div class="cc-desc">Beautiful, high-resolution photos you can use freely for projects, presentations and websites.</div>
-                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC0</span>
-                    <a href="https://unsplash.com" class="cc-visit" target="_blank" rel="noopener">Visit Unsplash <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="cc-card">
-                    <div class="cc-head">
-                        <div class="cc-icon"><i class="fas fa-book-open"></i></div>
-                        <div class="cc-head-text">
-                            <h4>OpenStax</h4>
-                            <span>openstax.org</span>
-                        </div>
-                    </div>
-                    <div class="cc-desc">Free, peer-reviewed, openly-licensed textbooks for university courses — perfect for students.</div>
-                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY</span>
-                    <a href="https://openstax.org" class="cc-visit" target="_blank" rel="noopener">Visit OpenStax <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="cc-card">
-                    <div class="cc-head">
-                        <div class="cc-icon"><i class="fas fa-brain"></i></div>
-                        <div class="cc-head-text">
-                            <h4>Khan Academy</h4>
-                            <span>khanacademy.org</span>
-                        </div>
-                    </div>
-                    <div class="cc-desc">Free lessons and practice for math, science, computing and more — mostly CC BY-NC-SA.</div>
-                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-NC-SA</span>
-                    <a href="https://www.khanacademy.org" class="cc-visit" target="_blank" rel="noopener">Visit Khan Academy <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="cc-card">
-                    <div class="cc-head">
-                        <div class="cc-icon"><i class="fas fa-file-lines"></i></div>
-                        <div class="cc-head-text">
-                            <h4>Project Gutenberg</h4>
-                            <span>gutenberg.org</span>
-                        </div>
-                    </div>
-                    <div class="cc-desc">Over 70,000 free eBooks — classic literature, reference works and more, all openly licensed.</div>
-                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> Public Domain</span>
-                    <a href="https://www.gutenberg.org" class="cc-visit" target="_blank" rel="noopener">Visit Gutenberg <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="cc-card">
-                    <div class="cc-head">
-                        <div class="cc-icon"><i class="fas fa-music"></i></div>
-                        <div class="cc-head-text">
-                            <h4>Free Music Archive</h4>
-                            <span>freemusicarchive.org</span>
-                        </div>
-                    </div>
-                    <div class="cc-desc">Curated, legal, free music under Creative Commons — great for projects and videos.</div>
-                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC Licensed</span>
-                    <a href="https://freemusicarchive.org" class="cc-visit" target="_blank" rel="noopener">Visit FMA <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="cc-card">
-                    <div class="cc-head">
-                        <div class="cc-icon"><i class="fas fa-palette"></i></div>
-                        <div class="cc-head-text">
-                            <h4>Openverse</h4>
-                            <span>openverse.org</span>
-                        </div>
-                    </div>
-                    <div class="cc-desc">Search over 800 million openly-licensed images and audio from one place — by WordPress.</div>
-                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC Search</span>
-                    <a href="https://openverse.org" class="cc-visit" target="_blank" rel="noopener">Visit Openverse <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="cc-card">
-                    <div class="cc-head">
-                        <div class="cc-icon"><i class="fas fa-flask"></i></div>
-                        <div class="cc-head-text">
-                            <h4>MIT OpenCourseWare</h4>
-                            <span>ocw.mit.edu</span>
-                        </div>
-                    </div>
-                    <div class="cc-desc">Free lecture notes, exams and videos from actual MIT courses — CC BY-NC-SA.</div>
-                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-NC-SA</span>
-                    <a href="https://ocw.mit.edu" class="cc-visit" target="_blank" rel="noopener">Visit MIT OCW <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-            </div>
-
-            <div class="cc-note">
-                <i class="fas fa-circle-info"></i>
-                <span>
-                    <strong>About Creative Commons:</strong> CC licenses let creators share their work
-                    legally while keeping some rights. Always check the specific license (BY, BY-SA, BY-NC, CC0)
-                    before reusing content — especially for commercial use. Learn more at
-                    <a href="https://creativecommons.org/licenses/" target="_blank" rel="noopener">creativecommons.org/licenses</a>.
-                </span>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="cta">
-        <div class="cta-inner">
-            <div>
-                <h3>Have notes to share?</h3>
-                <p>Upload them in seconds — help the next student out.</p>
-            </div>
-            <a href="/upload/" class="btn-quote">Upload Now <i class="fas fa-arrow-right"></i></a>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer>
-        <div class="footer-inner">
-            <div class="footer-top">
-                <div class="footer-brand">
-                    <a href="/" class="logo">
-                        <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
-                        <span class="logo-text">Student<span>Hub</span></span>
+            <div class="creator-info">
+                <h3>Twarvis</h3>
+                <div class="role">Student Developer &amp; Founder</div>
+                <p>
+                    Hi! I'm <strong>Twarvis</strong> — a student who got tired of losing notes and
+                    scrambling for past papers. I built Student Hub to make sharing study material
+                    effortless, beautiful, and free for everyone. Every pixel, animation, and line of
+                    code here was crafted with care (and a lot of late-night coding sessions).
+                </p>
+                <div class="social-row">
+                    <a href="https://wa.me/255740706007?text=Hello%20Twarvis%2C%20I%20saw%20your%20Student%20Hub" class="social-btn whatsapp" target="_blank" rel="noopener">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
                     </a>
-                    <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Pages</h4>
-                    <ul>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/browse/">Browse</a></li>
-                        <li><a href="/upload/">Upload</a></li>
-                        <li><a href="/about/">About</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Tools</h4>
-                    <ul>
-                        <li><a href="/calculator/">Calculator</a></li>
-                        <li><a href="/scanner/">Scanner</a></li>
-                        <li><a href="/upload/">PDF Maker</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <p>© 2026 Student Hub. All rights reserved.</p>
-                <div class="footer-socials">
-                    <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" class="social-btn instagram" target="_blank" rel="noopener">
+                        <i class="fab fa-instagram"></i> Instagram
+                    </a>
+                    <a href="https://www.tiktok.com/@twarvis" class="social-btn tiktok" target="_blank" rel="noopener">
+                        <i class="fab fa-tiktok"></i> TikTok
+                    </a>
                 </div>
             </div>
         </div>
-    </footer>
+    </div>
+</section>
 
-    <script>
-        // ============================================================
-        // Image rotations — smooth soft transitions
-        // ============================================================
+<!-- PROJECTS -->
+<section class="projects-section">
+    <div class="container" style="padding:0;">
+        <div class="section-head">
+            <span class="section-label">More from me</span>
+            <h2>My Other Projects</h2>
+            <p>Besides Student Hub, I also build other tools that students and creators can use for free.</p>
+        </div>
 
-        // Intro image (right side of "What is Student Hub?")
-        (function () {
-            const bgs = document.querySelectorAll('.intro-image-bg');
-            if (!bgs.length) return;
-            let i = 0;
-            setInterval(() => {
-                bgs.forEach(b => b.classList.remove('active'));
-                i = (i + 1) % bgs.length;
-                bgs[i].classList.add('active');
-            }, 4000);
-        })();
+        <div class="projects-grid">
+            <div class="project-card">
+                <div class="project-image">
+                    <div class="project-image-bg active" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1000&q=80');"></div>
+                    <div class="project-image-bg" style="background-image: url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1000&q=80');"></div>
+                    <div class="project-icon"><i class="fas fa-shield-halved"></i></div>
+                </div>
+                <div class="project-body">
+                    <h3>CyberCraft</h3>
+                    <div class="project-url">cybercraft.twarvistech.workers.dev</div>
+                    <p>A cyber-security toolkit and playground for students learning ethical hacking, cryptography, and safe browsing — built with a sleek, hacker-inspired interface.</p>
+                    <div class="project-features">
+                        <span><i class="fas fa-lock"></i> Security Tools</span>
+                        <span><i class="fas fa-terminal"></i> Terminal UI</span>
+                        <span><i class="fas fa-code"></i> Open Source</span>
+                    </div>
+                    <a href="https://cybercraft.twarvistech.workers.dev/" class="project-btn" target="_blank" rel="noopener">
+                        Visit CyberCraft <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
 
-        // Project cards
-        document.querySelectorAll('.project-image').forEach((img) => {
-            const bgs = img.querySelectorAll('.project-image-bg');
-            if (!bgs.length) return;
-            let i = 0;
-            const delay = 4000 + Math.random() * 1500;
-            setInterval(() => {
-                bgs.forEach(b => b.classList.remove('active'));
-                i = (i + 1) % bgs.length;
-                bgs[i].classList.add('active');
-            }, delay);
-        });
+            <div class="project-card">
+                <div class="project-image">
+                    <div class="project-image-bg active" style="background-image: url('https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1000&q=80');"></div>
+                    <div class="project-image-bg" style="background-image: url('https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=1000&q=80');"></div>
+                    <div class="project-icon"><i class="fas fa-file-pdf"></i></div>
+                </div>
+                <div class="project-body">
+                    <h3>PDF Scanner &amp; Maker</h3>
+                    <div class="project-url">twarvisscanner.twarvistech.workers.dev</div>
+                    <p>Scan documents with your phone camera, crop and straighten them, then save as clean PDFs — or build new PDFs from scratch. Everything runs in the browser.</p>
+                    <div class="project-features">
+                        <span><i class="fas fa-camera"></i> Scan</span>
+                        <span><i class="fas fa-crop"></i> Crop &amp; Edit</span>
+                        <span><i class="fas fa-file-export"></i> Export PDF</span>
+                    </div>
+                    <a href="https://twarvisscanner.twarvistech.workers.dev/" class="project-btn" target="_blank" rel="noopener">
+                        Visit Scanner <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-        console.log('✦ Student Hub — About Page (Avada-style) ✦');
-    </script>
+<!-- CREATIVE COMMONS -->
+<section class="cc-section">
+    <div class="container" style="padding:0;">
+        <div class="section-head">
+            <span class="section-label">Free &amp; open resources</span>
+            <h2>Creative Commons Websites We Love</h2>
+            <p>These websites offer free, openly-licensed content — perfect for students who want to learn, remix, and share legally.</p>
+        </div>
 
+        <div class="cc-grid">
+            <div class="cc-card">
+                <div class="cc-head">
+                    <div class="cc-icon"><i class="fas fa-wikipedia-w"></i></div>
+                    <div class="cc-head-text"><h4>Wikipedia</h4><span>wikipedia.org</span></div>
+                </div>
+                <div class="cc-desc">The world's largest free encyclopedia — every article is CC BY-SA licensed and editable by anyone.</div>
+                <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-SA</span>
+                <a href="https://www.wikipedia.org" class="cc-visit" target="_blank" rel="noopener">Visit Wikipedia <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="cc-card">
+                <div class="cc-head">
+                    <div class="cc-icon"><i class="fas fa-image"></i></div>
+                    <div class="cc-head-text"><h4>Unsplash</h4><span>unsplash.com</span></div>
+                </div>
+                <div class="cc-desc">Beautiful, high-resolution photos you can use freely for projects, presentations and websites.</div>
+                <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC0</span>
+                <a href="https://unsplash.com" class="cc-visit" target="_blank" rel="noopener">Visit Unsplash <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="cc-card">
+                <div class="cc-head">
+                    <div class="cc-icon"><i class="fas fa-book-open"></i></div>
+                    <div class="cc-head-text"><h4>OpenStax</h4><span>openstax.org</span></div>
+                </div>
+                <div class="cc-desc">Free, peer-reviewed, openly-licensed textbooks for university courses — perfect for students.</div>
+                <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY</span>
+                <a href="https://openstax.org" class="cc-visit" target="_blank" rel="noopener">Visit OpenStax <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="cc-card">
+                <div class="cc-head">
+                    <div class="cc-icon"><i class="fas fa-brain"></i></div>
+                    <div class="cc-head-text"><h4>Khan Academy</h4><span>khanacademy.org</span></div>
+                </div>
+                <div class="cc-desc">Free lessons and practice for math, science, computing and more — mostly CC BY-NC-SA.</div>
+                <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-NC-SA</span>
+                <a href="https://www.khanacademy.org" class="cc-visit" target="_blank" rel="noopener">Visit Khan Academy <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="cc-card">
+                <div class="cc-head">
+                    <div class="cc-icon"><i class="fas fa-file-lines"></i></div>
+                    <div class="cc-head-text"><h4>Project Gutenberg</h4><span>gutenberg.org</span></div>
+                </div>
+                <div class="cc-desc">Over 70,000 free eBooks — classic literature, reference works and more, all openly licensed.</div>
+                <span class="cc-tag"><i class="fab fa-creative-commons"></i> Public Domain</span>
+                <a href="https://www.gutenberg.org" class="cc-visit" target="_blank" rel="noopener">Visit Gutenberg <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="cc-card">
+                <div class="cc-head">
+                    <div class="cc-icon"><i class="fas fa-music"></i></div>
+                    <div class="cc-head-text"><h4>Free Music Archive</h4><span>freemusicarchive.org</span></div>
+                </div>
+                <div class="cc-desc">Curated, legal, free music under Creative Commons — great for projects and videos.</div>
+                <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC Licensed</span>
+                <a href="https://freemusicarchive.org" class="cc-visit" target="_blank" rel="noopener">Visit FMA <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="cc-card">
+                <div class="cc-head">
+                    <div class="cc-icon"><i class="fas fa-palette"></i></div>
+                    <div class="cc-head-text"><h4>Openverse</h4><span>openverse.org</span></div>
+                </div>
+                <div class="cc-desc">Search over 800 million openly-licensed images and audio from one place — by WordPress.</div>
+                <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC Search</span>
+                <a href="https://openverse.org" class="cc-visit" target="_blank" rel="noopener">Visit Openverse <i class="fas fa-arrow-right"></i></a>
+            </div>
+
+            <div class="cc-card">
+                <div class="cc-head">
+                    <div class="cc-icon"><i class="fas fa-flask"></i></div>
+                    <div class="cc-head-text"><h4>MIT OpenCourseWare</h4><span>ocw.mit.edu</span></div>
+                </div>
+                <div class="cc-desc">Free lecture notes, exams and videos from actual MIT courses — CC BY-NC-SA.</div>
+                <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-NC-SA</span>
+                <a href="https://ocw.mit.edu" class="cc-visit" target="_blank" rel="noopener">Visit MIT OCW <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+
+        <div class="cc-note">
+            <i class="fas fa-circle-info"></i>
+            <span>
+                <strong>About Creative Commons:</strong> CC licenses let creators share their work
+                legally while keeping some rights. Always check the specific license (BY, BY-SA, BY-NC, CC0)
+                before reusing content — especially for commercial use. Learn more at
+                <a href="https://creativecommons.org/licenses/" target="_blank" rel="noopener">creativecommons.org/licenses</a>.
+            </span>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+    <div class="cta-inner">
+        <div>
+            <h3>Have notes to share?</h3>
+            <p>Upload them in seconds — help the next student out.</p>
+        </div>
+        <a href="/upload/" class="btn-quote">Upload Now <i class="fas fa-arrow-right"></i></a>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <a href="/" class="logo">
+                    <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
+                    <span class="logo-text">Student<span>Hub</span></span>
+                </a>
+                <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Pages</h4>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/browse/">Browse</a></li>
+                    <li><a href="/upload/">Upload</a></li>
+                    <li><a href="/free_course/">Free Courses</a></li>
+                    <li><a href="/hackerthon/">Hackathon</a></li>
+                    <li><a href="/about/">About</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Tools</h4>
+                <ul>
+                    <li><a href="/calculator/">Calculator</a></li>
+                    <li><a href="/scanner/">Scanner</a></li>
+                    <li><a href="/upload/">PDF Maker</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 Student Hub. All rights reserved.</p>
+            <div class="footer-socials">
+                <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+                <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+// INTRO IMAGE ROTATION
+(function(){
+    var bgs=document.querySelectorAll('.intro-image-bg');
+    if(!bgs.length)return;
+    var i=0;
+    setInterval(function(){
+        bgs.forEach(function(b){b.classList.remove('active')});
+        i=(i+1)%bgs.length;
+        bgs[i].classList.add('active');
+    },4000);
+})();
+
+// PROJECT CARD IMAGE ROTATION
+document.querySelectorAll('.project-image').forEach(function(img){
+    var bgs=img.querySelectorAll('.project-image-bg');
+    if(!bgs.length)return;
+    var i=0;
+    var delay=4000+Math.random()*1500;
+    setInterval(function(){
+        bgs.forEach(function(b){b.classList.remove('active')});
+        i=(i+1)%bgs.length;
+        bgs[i].classList.add('active');
+    },delay);
+});
+
+console.log('✦ Student Hub — About (dark theme) ✦');
+</script>
 </body>
 </html>
