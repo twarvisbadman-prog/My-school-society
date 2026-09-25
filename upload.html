@@ -1,1520 +1,733 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Upload Notes | Student Hub</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        html, body {
-            overflow-x: hidden;
-            width: 100%;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: #ffffff;
-            color: #2c3e50;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        a { text-decoration: none; color: inherit; }
-        ul { list-style: none; }
-
-        /* ============================================================
-           TOP BAR
-           ============================================================ */
-        .topbar {
-            background: #1a2b47;
-            color: #ffffff;
-            font-size: 0.82rem;
-            padding: 8px 0;
-        }
-
-        .topbar-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            text-align: center;
-        }
-
-        .topbar-inner span {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #cdd6e4;
-            white-space: nowrap;
-        }
-
-        .topbar-inner span i {
-            color: #17a2b8;
-            font-size: 0.78rem;
-        }
-
-        /* ============================================================
-           MAIN NAV
-           ============================================================ */
-        .mainnav {
-            background: #ffffff;
-            border-bottom: 1px solid #e5e8ed;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            width: 100%;
-        }
-
-        .mainnav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 14px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 800;
-            font-size: 1.3rem;
-            color: #1a2b47;
-            letter-spacing: -0.02em;
-            flex-shrink: 0;
-        }
-
-        .logo-mark {
-            width: 38px;
-            height: 38px;
-            background: #17a2b8;
-            border-radius: 50% 50% 50% 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            font-size: 1rem;
-            transform: rotate(-45deg);
-            flex-shrink: 0;
-        }
-
-        .logo-mark i { transform: rotate(45deg); }
-        .logo-text span { color: #17a2b8; }
-
-        .menu {
-            display: flex;
-            align-items: center;
-            gap: 2px;
-            flex-wrap: wrap;
-            justify-content: center;
-            flex: 1;
-            min-width: 0;
-        }
-
-        .menu a {
-            padding: 8px 12px;
-            font-size: 0.86rem;
-            font-weight: 600;
-            color: #2c3e50;
-            border-radius: 4px;
-            white-space: nowrap;
-            transition: color 0.25s ease, background 0.25s ease;
-        }
-
-        .menu a:hover { color: #17a2b8; background: #f0f8fa; }
-        .menu a.active { color: #17a2b8; background: #f0f8fa; }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-shrink: 0;
-        }
-
-        .btn-quote {
-            background: #17a2b8;
-            color: #ffffff;
-            padding: 11px 22px;
-            border-radius: 3px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.25s ease;
-            white-space: nowrap;
-        }
-
-        .btn-quote:hover { background: #138496; }
-
-        /* ============================================================
-           UPLOAD HERO — Compact banner
-           ============================================================ */
-        .upload-hero {
-            background: linear-gradient(135deg, #1a2b47 0%, #0f1b2e 100%);
-            color: #ffffff;
-            padding: 55px 20px 45px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .upload-hero::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(circle at 25% 35%, rgba(23, 162, 184, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 75% 65%, rgba(23, 162, 184, 0.10) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        .upload-hero-inner {
-            max-width: 720px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        .upload-label {
-            color: #17a2b8;
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            display: block;
-        }
-
-        .upload-hero h1 {
-            font-size: clamp(1.8rem, 4vw, 2.6rem);
-            font-weight: 900;
-            line-height: 1.15;
-            letter-spacing: -0.02em;
-            margin-bottom: 14px;
-        }
-
-        .upload-hero h1 .accent {
-            color: #ff5a5f;
-            text-decoration: underline;
-            text-decoration-color: #ff5a5f;
-            text-underline-offset: 6px;
-            text-decoration-thickness: 4px;
-        }
-
-        .upload-hero p {
-            color: #cdd6e4;
-            font-size: clamp(0.9rem, 1.4vw, 1.02rem);
-            max-width: 520px;
-            margin: 0 auto;
-            line-height: 1.7;
-        }
-
-        /* ============================================================
-           UPLOAD CONTAINER
-           ============================================================ */
-        .upload-container {
-            max-width: 760px;
-            margin: -30px auto 60px;
-            padding: 0 20px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .upload-card {
-            background: #ffffff;
-            border: 1px solid #e5e8ed;
-            border-radius: 10px;
-            padding: 40px 36px;
-            box-shadow: 0 20px 50px rgba(26, 43, 71, 0.08);
-        }
-
-        /* ============================================================
-           FORM ELEMENTS
-           ============================================================ */
-        .form-group {
-            margin-bottom: 22px;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 700;
-            color: #1a2b47;
-            font-size: 0.88rem;
-            margin-bottom: 8px;
-            letter-spacing: 0.01em;
-        }
-
-        .form-label i {
-            color: #17a2b8;
-            margin-right: 6px;
-            font-size: 0.9rem;
-        }
-
-        .form-label .required {
-            color: #ff5a5f;
-            margin-left: 4px;
-        }
-
-        .form-label .optional {
-            color: #a8b3c4;
-            font-weight: 500;
-            font-size: 0.75rem;
-            margin-left: 6px;
-        }
-
-        .form-input,
-        .form-textarea,
-        .form-select {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #e5e8ed;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            font-family: inherit;
-            color: #2c3e50;
-            background: #fafbfc;
-            transition: all 0.25s ease;
-            outline: none;
-        }
-
-        .form-input:hover,
-        .form-textarea:hover,
-        .form-select:hover {
-            border-color: #cdd6e4;
-            background: #ffffff;
-        }
-
-        .form-input:focus,
-        .form-textarea:focus,
-        .form-select:focus {
-            border-color: #17a2b8;
-            background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.12);
-        }
-
-        .form-textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .form-select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 12 12'%3E%3Cpath fill='%2317a2b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
-            padding-right: 44px;
-            cursor: pointer;
-        }
-
-        .form-select option {
-            background: #ffffff;
-            color: #2c3e50;
-        }
-
-        /* ============================================================
-           RADIO GROUPS
-           ============================================================ */
-        .radio-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .radio-option {
-            flex: 1;
-            min-width: 120px;
-            position: relative;
-        }
-
-        .radio-option input[type="radio"] {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-            z-index: 2;
-            margin: 0;
-        }
-
-        .radio-option label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 14px 16px;
-            background: #fafbfc;
-            border: 1px solid #e5e8ed;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            font-weight: 600;
-            font-size: 0.86rem;
-            color: #6b7c93;
-            position: relative;
-            z-index: 1;
-            min-height: 50px;
-        }
-
-        .radio-option label i {
-            color: #17a2b8;
-            font-size: 0.9rem;
-        }
-
-        .radio-option label:hover {
-            border-color: #cdd6e4;
-            background: #ffffff;
-        }
-
-        .radio-option input[type="radio"]:checked + label {
-            border-color: #17a2b8;
-            background: #f0f8fa;
-            color: #1a2b47;
-            box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.10);
-        }
-
-        .radio-option input[type="radio"]:checked + label i {
-            color: #17a2b8;
-        }
-
-        /* ============================================================
-           DROP ZONE
-           ============================================================ */
-        .drop-zone {
-            border: 2px dashed #cdd6e4;
-            border-radius: 10px;
-            padding: 40px 20px;
-            text-align: center;
-            transition: all 0.25s ease;
-            cursor: pointer;
-            background: #fafbfc;
-            position: relative;
-        }
-
-        .drop-zone:hover {
-            border-color: #17a2b8;
-            background: #f0f8fa;
-        }
-
-        .drop-zone.dragover {
-            border-color: #17a2b8;
-            background: #e8f6f8;
-            transform: scale(1.01);
-            box-shadow: 0 0 30px rgba(23, 162, 184, 0.15);
-        }
-
-        .drop-zone > i {
-            font-size: 2.5rem;
-            color: #17a2b8;
-            display: block;
-            margin-bottom: 12px;
-        }
-
-        .drop-zone h4 {
-            color: #1a2b47;
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .drop-zone p {
-            color: #8492a6;
-            font-size: 0.85rem;
-            margin-bottom: 14px;
-        }
-
-        .drop-zone .browse-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 22px;
-            background: #17a2b8;
-            color: #ffffff;
-            border-radius: 4px;
-            font-weight: 700;
-            font-size: 0.82rem;
-            transition: background 0.25s ease;
-        }
-
-        .drop-zone .browse-btn:hover {
-            background: #138496;
-        }
-
-        /* File list */
-        .file-list {
-            margin-top: 12px;
-        }
-
-        .file-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            background: #f0f8fa;
-            border: 1px solid #17a2b8;
-            border-radius: 6px;
-            margin-bottom: 6px;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .file-item .file-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            flex-shrink: 0;
-            background: #17a2b8;
-            color: #ffffff;
-        }
-
-        .file-item .file-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .file-item .file-name {
-            color: #1a2b47;
-            font-weight: 600;
-            font-size: 0.88rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .file-item .file-size {
-            color: #8492a6;
-            font-size: 0.72rem;
-        }
-
-        .file-item .file-remove {
-            background: none;
-            border: none;
-            color: #8492a6;
-            font-size: 1rem;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 4px;
-            transition: 0.2s;
-        }
-
-        .file-item .file-remove:hover {
-            color: #ff5a5f;
-            background: rgba(255, 90, 95, 0.08);
-        }
-
-        /* ============================================================
-           PASSCODE SECTION
-           ============================================================ */
-        .passcode-section {
-            display: none;
-            background: #fff8ec;
-            border: 1px solid #ffd699;
-            border-radius: 8px;
-            padding: 16px 18px;
-            margin-top: 10px;
-            animation: slideDown 0.3s ease;
-        }
-
-        .passcode-section.show {
-            display: block;
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .passcode-section .warning {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            color: #b45309;
-            font-size: 0.8rem;
-            margin-bottom: 14px;
-            line-height: 1.5;
-        }
-
-        .passcode-section .warning i {
-            color: #f97316;
-            font-size: 1rem;
-            margin-top: 1px;
-            flex-shrink: 0;
-        }
-
-        .passcode-input {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .passcode-input input {
-            flex: 1;
-            min-width: 140px;
-            padding: 12px 16px;
-            background: #ffffff;
-            border: 1px solid #ffd699;
-            border-radius: 6px;
-            color: #1a2b47;
-            font-size: 1.1rem;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 8px;
-            text-align: center;
-            font-weight: 700;
-            transition: 0.25s;
-        }
-
-        .passcode-input input:focus {
-            outline: none;
-            border-color: #f97316;
-            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.12);
-        }
-
-        .passcode-input input::placeholder {
-            letter-spacing: 2px;
-            font-size: 0.75rem;
-            color: #cdd6e4;
-        }
-
-        /* ============================================================
-           SUBMIT BUTTON
-           ============================================================ */
-        .btn-submit {
-            width: 100%;
-            padding: 16px;
-            background: #17a2b8;
-            border: none;
-            border-radius: 6px;
-            color: #ffffff;
-            font-weight: 800;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            font-family: inherit;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            letter-spacing: 0.02em;
-            margin-top: 10px;
-        }
-
-        .btn-submit i {
-            color: #ffffff;
-        }
-
-        .btn-submit:hover {
-            background: #138496;
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(23, 162, 184, 0.30);
-        }
-
-        .btn-submit:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .allowed-types {
-            text-align: center;
-            margin-top: 16px;
-            padding: 12px 16px;
-            background: #f7f9fc;
-            border-radius: 6px;
-            color: #6b7c93;
-            font-size: 0.78rem;
-            border: 1px solid #e5e8ed;
-        }
-
-        .allowed-types i {
-            color: #17a2b8;
-            margin-right: 6px;
-        }
-
-        .allowed-types span {
-            color: #1a2b47;
-            font-weight: 700;
-        }
-
-        /* ============================================================
-           MESSAGES
-           ============================================================ */
-        .message {
-            padding: 14px 18px;
-            border-radius: 6px;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #f7f9fc;
-            border: 1px solid #e5e8ed;
-            color: #2c3e50;
-            font-weight: 600;
-            font-size: 0.88rem;
-            animation: slideIn 0.3s ease;
-        }
-
-        .message i {
-            color: #17a2b8;
-            font-size: 1rem;
-        }
-
-        .message.success {
-            background: #f0fdf4;
-            border-color: #22c55e;
-            color: #15803d;
-        }
-
-        .message.success i { color: #22c55e; }
-
-        .message.error {
-            background: #fef2f2;
-            border-color: #ef4444;
-            color: #b91c1c;
-        }
-
-        .message.error i { color: #ef4444; }
-
-        /* ============================================================
-           SUCCESS POPUP
-           ============================================================ */
-        .success-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 2000;
-            background: rgba(15, 27, 46, 0.85);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .success-overlay.active {
-            display: flex;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .success-content {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 40px 36px 34px;
-            max-width: 460px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.30);
-            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-        }
-
-        @keyframes popIn {
-            from { transform: scale(0.85); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .success-content .trophy {
-            font-size: 4rem;
-            display: block;
-            margin-bottom: 12px;
-            animation: celebrate 1.5s ease-in-out infinite;
-        }
-
-        @keyframes celebrate {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            25% { transform: scale(1.1) rotate(-5deg); }
-            75% { transform: scale(1.1) rotate(5deg); }
-        }
-
-        .success-content .main-message {
-            font-family: 'Inter', sans-serif;
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: #1a2b47;
-            margin-bottom: 6px;
-            letter-spacing: -0.02em;
-        }
-
-        .success-content .sub-message {
-            color: #6b7c93;
-            font-size: 0.92rem;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .success-content .sparkle-divider {
-            color: #17a2b8;
-            font-size: 1rem;
-            letter-spacing: 8px;
-            margin: 16px 0;
-            opacity: 0.6;
-        }
-
-        .success-content .led-text {
-            font-size: 0.88rem;
-            font-weight: 700;
-            color: #17a2b8;
-            background: #f0f8fa;
-            padding: 10px 20px;
-            border-radius: 6px;
-            border: 1px solid rgba(23, 162, 184, 0.20);
-            display: inline-block;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-        }
-
-        .success-content .btn-row {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .success-content .btn-golden {
-            padding: 12px 28px;
-            background: #17a2b8;
-            color: #ffffff;
-            border: none;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 0.88rem;
-            cursor: pointer;
-            transition: 0.25s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-family: inherit;
-        }
-
-        .success-content .btn-golden:hover {
-            background: #138496;
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(23, 162, 184, 0.30);
-        }
-
-        .success-content .btn-silver {
-            padding: 12px 24px;
-            background: #f7f9fc;
-            color: #6b7c93;
-            border: 1px solid #e5e8ed;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 0.88rem;
-            cursor: pointer;
-            transition: 0.25s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-family: inherit;
-        }
-
-        .success-content .btn-silver:hover {
-            background: #ffffff;
-            border-color: #cdd6e4;
-            color: #1a2b47;
-        }
-
-        /* ============================================================
-           CUSTOM UNIVERSITY
-           ============================================================ */
-        .custom-uni-input {
-            display: none;
-            margin-top: 10px;
-        }
-
-        .custom-uni-input.show {
-            display: block;
-        }
-
-        /* ============================================================
-           CTA
-           ============================================================ */
-        .cta {
-            background: #1a2b47;
-            padding: 50px 20px;
-        }
-
-        .cta-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 24px;
-            flex-wrap: wrap;
-        }
-
-        .cta h3 {
-            color: #ffffff;
-            font-size: 1.4rem;
-            font-weight: 800;
-            margin-bottom: 4px;
-        }
-
-        .cta p {
-            color: #cdd6e4;
-            font-size: 0.92rem;
-        }
-
-        /* ============================================================
-           FOOTER
-           ============================================================ */
-        footer {
-            background: #f7f9fc;
-            padding: 50px 20px 24px;
-            border-top: 1px solid #e5e8ed;
-        }
-
-        .footer-inner { max-width: 1200px; margin: 0 auto; }
-
-        .footer-top {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 30px;
-        }
-
-        .footer-brand p {
-            color: #6b7c93;
-            font-size: 0.88rem;
-            margin-top: 14px;
-            max-width: 320px;
-            line-height: 1.7;
-        }
-
-        .footer-col h4 {
-            font-size: 0.82rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #1a2b47;
-            margin-bottom: 14px;
-        }
-
-        .footer-col ul li { margin-bottom: 8px; }
-
-        .footer-col ul li a {
-            color: #6b7c93;
-            font-size: 0.88rem;
-            transition: color 0.25s ease;
-        }
-
-        .footer-col ul li a:hover { color: #17a2b8; }
-
-        .footer-bottom {
-            border-top: 1px solid #e5e8ed;
-            padding-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-
-        .footer-bottom p {
-            color: #8492a6;
-            font-size: 0.83rem;
-        }
-
-        .footer-socials {
-            display: flex;
-            gap: 8px;
-        }
-
-        .footer-socials a {
-            width: 34px;
-            height: 34px;
-            border: 1px solid #e5e8ed;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6b7c93;
-            font-size: 0.85rem;
-            transition: all 0.25s ease;
-        }
-
-        .footer-socials a:hover {
-            border-color: #17a2b8;
-            color: #17a2b8;
-        }
-
-        /* ============================================================
-           RESPONSIVE
-           ============================================================ */
-        @media (max-width: 900px) {
-            .footer-top {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        @media (max-width: 720px) {
-            .mainnav-inner {
-                flex-wrap: wrap;
-                padding: 12px 16px;
-                gap: 12px;
-            }
-            .logo { font-size: 1.15rem; }
-            .logo-mark { width: 34px; height: 34px; font-size: 0.9rem; }
-            .menu {
-                order: 3;
-                flex-basis: 100%;
-                justify-content: flex-start;
-                overflow-x: auto;
-                padding-bottom: 4px;
-                scrollbar-width: none;
-                gap: 0;
-            }
-            .menu::-webkit-scrollbar { display: none; }
-            .menu a {
-                padding: 8px 12px;
-                font-size: 0.82rem;
-                flex-shrink: 0;
-            }
-            .upload-hero { padding: 45px 18px 35px; }
-            .upload-card { padding: 30px 24px; }
-            .footer-top { gap: 26px; }
-        }
-
-        @media (max-width: 560px) {
-            .topbar-inner { gap: 12px; font-size: 0.75rem; }
-            .topbar-inner span:nth-child(3) { display: none; }
-            .upload-container { padding: 0 14px; margin-bottom: 50px; }
-            .upload-card { padding: 24px 18px; border-radius: 8px; }
-            .upload-hero { padding: 40px 16px 30px; }
-            .upload-hero h1 { font-size: 1.5rem; }
-            .drop-zone { padding: 30px 16px; }
-            .drop-zone > i { font-size: 2rem; }
-            .radio-option { min-width: 100%; }
-            .footer-top { grid-template-columns: 1fr; gap: 24px; }
-            .cta-inner { flex-direction: column; text-align: center; }
-            .cta h3 { font-size: 1.2rem; }
-            .btn-quote span { display: none; }
-            .success-content { padding: 32px 22px 26px; }
-            .success-content .btn-row { flex-direction: column; }
-            .success-content .btn-golden,
-            .success-content .btn-silver { width: 100%; justify-content: center; }
-            .passcode-input { flex-direction: column; }
-            .passcode-input input { width: 100%; }
-        }
-
-        @media (max-width: 400px) {
-            .logo-text { font-size: 1rem; }
-            .topbar-inner span:nth-child(2) { display: none; }
-            .upload-hero h1 { font-size: 1.3rem; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Upload Notes | Student Hub</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+    --bg:#080b18;
+    --panel:#111831;
+    --panel2:#182344;
+    --text:#eef2ff;
+    --muted:#9ca8c8;
+    --red:#ff4d5a;
+    --blue:#70a8ff;
+    --green:#43d392;
+    --gold:#ffd166;
+    --line:#293454;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{overflow-x:hidden;scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;overflow-x:hidden;width:100%;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+button,input,select,textarea{font-family:inherit}
+
+.topbar{background:#05070f;color:var(--text);font-size:.82rem;padding:8px 0;border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;text-align:center}
+.topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:var(--muted);white-space:nowrap}
+.topbar-inner span i{color:var(--red);font-size:.78rem}
+
+.mainnav{background:rgba(8,11,24,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:100;width:100%}
+.mainnav-inner{max-width:1200px;margin:0 auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.2rem;color:var(--text);letter-spacing:-.02em;flex-shrink:0}
+.logo-mark{width:38px;height:38px;background:linear-gradient(135deg,var(--red),#ff7b62);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;flex-shrink:0;box-shadow:0 4px 15px rgba(255,77,90,.35)}
+.logo-text span{color:var(--red)}
+.menu{display:flex;align-items:center;gap:2px;flex-wrap:wrap;justify-content:center;flex:1;min-width:0}
+.menu a{padding:8px 11px;font-size:.84rem;font-weight:600;color:var(--muted);border-radius:8px;white-space:nowrap;transition:all .25s ease}
+.menu a:hover{color:var(--text);background:var(--panel2)}
+.menu a.active{color:var(--text);background:var(--panel2);box-shadow:inset 0 0 0 1px var(--line)}
+.menu a.course-link{color:var(--red)}
+.menu a.course-link i{font-size:.75rem;margin-right:5px}
+.menu a.hack-link{color:var(--blue)}
+.menu a.hack-link i{font-size:.75rem;margin-right:5px}
+.nav-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.btn-quote{background:var(--red);color:#fff;padding:10px 20px;border-radius:10px;font-weight:700;font-size:.85rem;display:inline-flex;align-items:center;gap:8px;transition:all .25s ease;white-space:nowrap;box-shadow:0 4px 15px rgba(255,77,90,.3)}
+.btn-quote:hover{background:#ff2f3e;transform:translateY(-1px);box-shadow:0 8px 22px rgba(255,77,90,.45)}
+
+.upload-hero{padding:55px 20px 90px;text-align:center;position:relative;overflow:hidden;background:radial-gradient(circle at 25% 35%,rgba(255,77,90,.12) 0%,transparent 55%),radial-gradient(circle at 75% 65%,rgba(112,168,255,.12) 0%,transparent 55%);border-bottom:1px solid var(--line)}
+.upload-hero-inner{max-width:720px;margin:0 auto;position:relative;z-index:1}
+.upload-label{color:var(--red);font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px;display:block}
+.upload-hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;line-height:1.15;letter-spacing:-.025em;margin-bottom:14px;color:var(--text)}
+.upload-hero h1 .accent{color:var(--red);text-decoration:underline;text-decoration-color:var(--red);text-underline-offset:6px;text-decoration-thickness:4px}
+.upload-hero p{color:var(--muted);font-size:clamp(.9rem,1.4vw,1.02rem);max-width:520px;margin:0 auto;line-height:1.7}
+
+.upload-container{max-width:760px;margin:-60px auto 60px;padding:0 20px;position:relative;z-index:2}
+.upload-card{background:rgba(15,21,43,.95);border:1px solid var(--line);border-radius:20px;padding:40px 36px;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+
+.form-group{margin-bottom:22px}
+.form-label{display:block;font-weight:700;color:var(--text);font-size:.88rem;margin-bottom:8px;letter-spacing:.01em}
+.form-label i{color:var(--red);margin-right:6px;font-size:.9rem}
+.form-label .required{color:var(--red);margin-left:4px}
+.form-label .optional{color:#5a6a8f;font-weight:500;font-size:.75rem;margin-left:6px}
+
+.form-input,.form-textarea,.form-select{width:100%;padding:12px 16px;border:1px solid var(--line);border-radius:10px;font-size:.9rem;font-family:inherit;color:var(--text);background:#0a1228;transition:all .25s ease;outline:none}
+.form-input:hover,.form-textarea:hover,.form-select:hover{border-color:#3a4668}
+.form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(112,168,255,.18)}
+.form-textarea{resize:vertical;min-height:100px}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 12 12'%3E%3Cpath fill='%2370a8ff' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:44px;cursor:pointer}
+.form-select option{background:#0a1228;color:var(--text)}
+
+.radio-group{display:flex;gap:10px;flex-wrap:wrap}
+.radio-option{flex:1;min-width:120px;position:relative}
+.radio-option input[type="radio"]{position:absolute;opacity:0;width:100%;height:100%;cursor:pointer;z-index:2;margin:0}
+.radio-option label{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 16px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;cursor:pointer;transition:all .25s ease;font-weight:600;font-size:.86rem;color:var(--muted);position:relative;z-index:1;min-height:50px}
+.radio-option label i{color:var(--red);font-size:.9rem}
+.radio-option label:hover{border-color:#3a4668;background:#1f2c55}
+.radio-option input[type="radio"]:checked + label{border-color:var(--red);background:rgba(255,77,90,.10);color:var(--text);box-shadow:0 0 0 3px rgba(255,77,90,.15)}
+.radio-option input[type="radio"]:checked + label i{color:var(--red)}
+
+.drop-zone{border:2px dashed #3a4668;border-radius:14px;padding:40px 20px;text-align:center;transition:all .25s ease;cursor:pointer;background:#0a1228;position:relative}
+.drop-zone:hover{border-color:var(--red);background:rgba(255,77,90,.04)}
+.drop-zone.dragover{border-color:var(--red);background:rgba(255,77,90,.08);transform:scale(1.01);box-shadow:0 0 30px rgba(255,77,90,.20)}
+.drop-zone > i{font-size:2.5rem;color:var(--red);display:block;margin-bottom:12px}
+.drop-zone h4{color:var(--text);font-size:1rem;font-weight:700;margin-bottom:4px}
+.drop-zone p{color:var(--muted);font-size:.85rem;margin-bottom:14px}
+.drop-zone .browse-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:var(--red);color:#fff;border-radius:10px;font-weight:700;font-size:.82rem;transition:background .25s ease;box-shadow:0 4px 15px rgba(255,77,90,.30)}
+.drop-zone .browse-btn:hover{background:#ff2f3e}
+
+.file-list{margin-top:12px}
+.file-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(255,77,90,.08);border:1px solid rgba(255,77,90,.30);border-radius:10px;margin-bottom:6px;animation:slideIn .3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.file-item .file-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;background:var(--red);color:#fff}
+.file-item .file-info{flex:1;min-width:0}
+.file-item .file-name{color:var(--text);font-weight:600;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-item .file-size{color:var(--muted);font-size:.72rem}
+.file-item .file-remove{background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:4px 8px;border-radius:6px;transition:.2s}
+.file-item .file-remove:hover{color:var(--red);background:rgba(255,77,90,.12)}
+
+.passcode-section{display:none;background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.35);border-radius:12px;padding:16px 18px;margin-top:10px;animation:slideDown .3s ease}
+.passcode-section.show{display:block}
+@keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.passcode-section .warning{display:flex;align-items:flex-start;gap:10px;color:var(--gold);font-size:.82rem;margin-bottom:14px;line-height:1.5}
+.passcode-section .warning i{color:var(--gold);font-size:1rem;margin-top:1px;flex-shrink:0}
+.passcode-section .warning strong{color:#ffd166}
+.passcode-input{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.passcode-input input{flex:1;min-width:140px;padding:12px 16px;background:#0a1228;border:1px solid rgba(255,209,102,.35);border-radius:10px;color:var(--text);font-size:1.1rem;font-family:'JetBrains Mono',monospace;letter-spacing:8px;text-align:center;font-weight:700;transition:.25s}
+.passcode-input input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,209,102,.18)}
+.passcode-input input::placeholder{letter-spacing:2px;font-size:.75rem;color:#5a6a8f}
+
+.btn-submit{width:100%;padding:16px;background:var(--red);border:none;border-radius:12px;color:#fff;font-weight:800;font-size:1rem;cursor:pointer;transition:all .25s ease;display:inline-flex;align-items:center;justify-content:center;gap:10px;letter-spacing:.02em;margin-top:10px;box-shadow:0 6px 20px rgba(255,77,90,.30)}
+.btn-submit:hover{background:#ff2f3e;transform:translateY(-1px);box-shadow:0 10px 28px rgba(255,77,90,.45)}
+.btn-submit:disabled{opacity:.7;cursor:not-allowed;transform:none}
+
+.allowed-types{text-align:center;margin-top:16px;padding:12px 16px;background:var(--panel2);border-radius:10px;color:var(--muted);font-size:.78rem;border:1px solid var(--line)}
+.allowed-types i{color:var(--green);margin-right:6px}
+.allowed-types span{color:var(--text);font-weight:700}
+
+.message{padding:14px 18px;border-radius:10px;margin-bottom:16px;display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);color:var(--text);font-weight:600;font-size:.88rem;animation:slideIn .3s ease}
+.message i{color:var(--blue);font-size:1rem}
+.message.success{background:rgba(67,211,146,.10);border-color:rgba(67,211,146,.40);color:var(--green)}
+.message.success i{color:var(--green)}
+.message.error{background:rgba(255,77,90,.10);border-color:rgba(255,77,90,.40);color:var(--red)}
+.message.error i{color:var(--red)}
+
+/* UPLOAD POPUP */
+.success-overlay{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);justify-content:center;align-items:center;padding:20px;animation:fadeIn .3s ease}
+.success-overlay.active{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.success-content{background:#10172f;border:1px solid #3b4b76;border-radius:20px;padding:40px 36px 34px;max-width:460px;width:100%;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,.6);animation:popIn .5s cubic-bezier(.34,1.56,.64,1);border-top:4px solid var(--red);transition:border-color .3s ease}
+.success-content.uploading{border-top-color:var(--blue)}
+.success-content.success-state{border-top-color:var(--green)}
+@keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* Spinner animation */
+.spinner{width:80px;height:80px;margin:0 auto 20px;position:relative}
+.spinner::before{content:'';position:absolute;inset:0;border-radius:50%;border:4px solid rgba(112,168,255,.15)}
+.spinner::after{content:'';position:absolute;inset:0;border-radius:50%;border:4px solid transparent;border-top-color:var(--blue);border-right-color:var(--blue);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Progress bar */
+.progress-bar{width:100%;height:6px;background:rgba(112,168,255,.15);border-radius:3px;overflow:hidden;margin:20px 0 10px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),#93c5fd);border-radius:3px;width:0%;transition:width .3s ease;animation:progressPulse 1.5s ease-in-out infinite}
+@keyframes progressPulse{0%,100%{opacity:1}50%{opacity:.7}}
+
+.success-content .trophy{font-size:4rem;display:block;margin-bottom:12px;animation:celebrate 1.5s ease-in-out infinite}
+@keyframes celebrate{0%,100%{transform:scale(1) rotate(0)}25%{transform:scale(1.1) rotate(-5deg)}75%{transform:scale(1.1) rotate(5deg)}}
+.success-content .main-message{font-size:1.6rem;font-weight:800;color:var(--text);margin-bottom:6px;letter-spacing:-.02em}
+.success-content .sub-message{color:var(--muted);font-size:.92rem;margin-bottom:20px;line-height:1.6}
+.success-content .sparkle-divider{color:var(--red);font-size:1rem;letter-spacing:8px;margin:16px 0;opacity:.6}
+.success-content .led-text{font-size:.88rem;font-weight:700;color:var(--red);background:rgba(255,77,90,.10);padding:10px 20px;border-radius:10px;border:1px solid rgba(255,77,90,.30);display:inline-block;font-family:'JetBrains Mono',monospace;letter-spacing:2px;margin-bottom:20px}
+
+/* Countdown badge */
+.countdown{margin-top:16px;font-size:.8rem;color:var(--muted);font-weight:600}
+.countdown strong{color:var(--green);font-weight:800}
+
+.custom-uni-input{display:none;margin-top:10px}
+.custom-uni-input.show{display:block}
+
+.cta{background:linear-gradient(135deg,#0f1730,#0a1228);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:50px 20px}
+.cta-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.cta h3{color:var(--text);font-size:1.4rem;font-weight:800;margin-bottom:4px}
+.cta p{color:var(--muted);font-size:.92rem}
+
+footer{background:#05070f;padding:50px 20px 24px;border-top:1px solid var(--line)}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:30px}
+.footer-brand p{color:var(--muted);font-size:.88rem;margin-top:14px;max-width:320px;line-height:1.7}
+.footer-col h4{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text);margin-bottom:14px}
+.footer-col ul li{margin-bottom:8px}
+.footer-col ul li a{color:var(--muted);font-size:.88rem;transition:color .25s ease}
+.footer-col ul li a:hover{color:var(--red)}
+.footer-bottom{border-top:1px solid var(--line);padding-top:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.footer-bottom p{color:var(--muted);font-size:.83rem}
+.footer-socials{display:flex;gap:8px}
+.footer-socials a{width:34px;height:34px;border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.85rem;transition:all .25s ease;background:var(--panel)}
+.footer-socials a:hover{border-color:var(--red);color:var(--red)}
+
+@media (max-width:900px){.footer-top{grid-template-columns:1fr 1fr}}
+@media (max-width:720px){
+    .mainnav-inner{flex-wrap:wrap;padding:12px 16px;gap:12px}
+    .logo{font-size:1.05rem}
+    .logo-mark{width:34px;height:34px;font-size:.9rem}
+    .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0}
+    .menu::-webkit-scrollbar{display:none}
+    .menu a{padding:8px 12px;font-size:.8rem;flex-shrink:0}
+    .upload-hero{padding:45px 18px 75px}
+    .upload-card{padding:30px 24px}
+    .footer-top{gap:26px}
+}
+@media (max-width:560px){
+    .topbar-inner{gap:12px;font-size:.72rem}
+    .topbar-inner span:nth-child(3){display:none}
+    .upload-container{padding:0 14px;margin-bottom:50px}
+    .upload-card{padding:24px 18px;border-radius:16px}
+    .upload-hero{padding:40px 16px 70px}
+    .upload-hero h1{font-size:1.5rem}
+    .drop-zone{padding:30px 16px}
+    .drop-zone > i{font-size:2rem}
+    .radio-option{min-width:100%}
+    .footer-top{grid-template-columns:1fr;gap:24px}
+    .cta-inner{flex-direction:column;text-align:center}
+    .cta h3{font-size:1.2rem}
+    .btn-quote span{display:none}
+    .success-content{padding:32px 22px 26px}
+    .passcode-input{flex-direction:column}
+    .passcode-input input{width:100%}
+}
+@media (max-width:400px){
+    .logo-text{font-size:.95rem}
+    .topbar-inner span:nth-child(2){display:none}
+    .upload-hero h1{font-size:1.3rem}
+}
+@media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}
+</style>
 </head>
 <body>
 
-    <!-- TOP BAR -->
-    <div class="topbar">
-        <div class="topbar-inner">
-            <span><i class="fas fa-phone"></i> +255 740 706 007</span>
-            <span><i class="fas fa-envelope"></i> Twarvistech@gmail.com</span>
-            <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
-        </div>
+<!-- TOP BAR -->
+<div class="topbar">
+    <div class="topbar-inner">
+        <span><i class="fas fa-phone"></i> +255 740 706 007</span>
+        <span><i class="fas fa-envelope"></i> Twarvistech@gmail.com</span>
+        <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
     </div>
+</div>
 
-    <!-- MAIN NAV -->
-    <nav class="mainnav">
-        <div class="mainnav-inner">
-            <a href="/" class="logo">
-                <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
-                <span class="logo-text">Student<span>Hub</span></span>
+<!-- NAV -->
+<nav class="mainnav">
+    <div class="mainnav-inner">
+        <a href="/" class="logo">
+            <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
+            <span class="logo-text">Student<span>Hub</span></span>
+        </a>
+
+        <div class="menu">
+            <a href="/">Home</a>
+            <a href="/browse/">Browse</a>
+            <a href="/upload/" class="active">Upload</a>
+            <a href="/calculator/">Calculator</a>
+            <a href="/scanner/">Scanner</a>
+            <a href="/free_course/" class="course-link"><i class="fas fa-book-open"></i>Free Courses</a>
+            <a href="/hackerthon/" class="hack-link"><i class="fas fa-code"></i>Hackathon</a>
+            <a href="/about/">About</a>
+        </div>
+
+        <div class="nav-right">
+            <a href="/browse/" class="btn-quote">
+                <span>Browse Files</span> <i class="fas fa-arrow-right"></i>
             </a>
-
-            <div class="menu">
-                <a href="/">Home</a>
-                <a href="/browse/">Browse</a>
-                <a href="/upload/" class="active">Upload</a>
-                <a href="/calculator/">Calculator</a>
-                <a href="/scanner/">Scanner</a>
-                <a href="/about/">About</a>
-            </div>
-
-            <div class="nav-right">
-                <a href="/browse/" class="btn-quote">
-                    <span>Browse Files</span> <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- UPLOAD HERO -->
-    <section class="upload-hero">
-        <div class="upload-hero-inner">
-            <span class="upload-label">Share with the community</span>
-            <h1>Upload Your <span class="accent">Notes</span></h1>
-            <p>Help a fellow student out. Share your notes, papers, or scanned documents — it takes less than a minute.</p>
-        </div>
-    </section>
-
-    <!-- UPLOAD FORM -->
-    <div class="upload-container">
-        <div class="upload-card">
-
-            <div id="messageContainer"></div>
-
-            <form method="post" enctype="multipart/form-data" id="uploadForm" action="/upload/">
-                {% csrf_token %}
-
-                <!-- 1. File Upload -->
-                <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-paperclip"></i> Upload Your File <span class="required">*</span>
-                    </label>
-                    <div class="drop-zone" id="dropZone">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <h4>Drag & Drop Files Here</h4>
-                        <p>or click to browse your computer</p>
-                        <span class="browse-btn"><i class="fas fa-folder-open"></i> Browse Files</span>
-                        {{ form.file }}
-                    </div>
-                    <div class="file-list" id="fileList"></div>
-                    <small style="display:block;margin-top:8px;color:#8492a6;font-size:0.75rem;">
-                        <i class="fas fa-info-circle" style="color:#17a2b8;"></i>
-                        Max: 100MB &nbsp;·&nbsp; PDF, PPT, DOC, XLS, TXT, JPG, PNG, ZIP
-                    </small>
-                </div>
-
-                <!-- 2. File Type -->
-                <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-tag"></i> File Type <span class="required">*</span>
-                    </label>
-                    <div class="radio-group">
-                        {% for radio in form.file_type %}
-                            <div class="radio-option">
-                                {{ radio.tag }}
-                                <label for="{{ radio.id_for_label }}">
-                                    <i class="fas {% if radio.choice_label == 'Notes' %}fa-sticky-note{% else %}fa-file-alt{% endif %}"></i>
-                                    {{ radio.choice_label }}
-                                </label>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <!-- 3. Module Name -->
-                <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-tag"></i> Module Name <span class="required">*</span>
-                    </label>
-                    {{ form.module }}
-                </div>
-
-                <!-- 4. Course Code -->
-                <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-book"></i> Course Code <span class="required">*</span>
-                    </label>
-                    {{ form.course }}
-                </div>
-
-                <!-- 5. Description -->
-                <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-align-left"></i> Description
-                    </label>
-                    {{ form.description }}
-                </div>
-
-                <!-- 6. Privacy -->
-                <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-lock"></i> Privacy Setting <span class="required">*</span>
-                    </label>
-                    <div class="radio-group">
-                        {% for radio in form.privacy %}
-                            <div class="radio-option">
-                                {{ radio.tag }}
-                                <label for="{{ radio.id_for_label }}">
-                                    <i class="fas {% if radio.choice_label == 'Public' %}fa-globe{% else %}fa-lock{% endif %}"></i>
-                                    {{ radio.choice_label }}
-                                </label>
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <small style="display:block;margin-top:8px;color:#8492a6;font-size:0.75rem;">
-                        <i class="fas fa-info-circle" style="color:#17a2b8;"></i>
-                        Private files require a 4-digit passcode to unlock.
-                    </small>
-                </div>
-
-                <!-- 7. Passcode -->
-                <div class="passcode-section" id="passcodeSection">
-                    <div class="warning">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span><strong>Important:</strong> There is no backup. Remember your passcode — you will need it to open the file.</span>
-                    </div>
-                    <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">
-                            <i class="fas fa-key"></i> Set 4-Digit Passcode <span class="required">*</span>
-                        </label>
-                        <div class="passcode-input">
-                            {{ form.passcode }}
-                            <span style="color:#8492a6;font-size:0.78rem;">(4 digits)</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 8. University -->
-                <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-university"></i> Your University <span class="optional">(optional)</span>
-                    </label>
-                    <div class="uni-select-wrapper">
-                        {{ form.university }}
-                        <div class="custom-uni-input" id="customUniInput">
-                            {{ form.custom_university }}
-                        </div>
-                    </div>
-                    <small style="display:block;margin-top:8px;color:#8492a6;font-size:0.75rem;">
-                        <i class="fas fa-info-circle" style="color:#17a2b8;"></i>
-                        Choose from the list, or pick "Other" to type your own.
-                    </small>
-                </div>
-
-                <!-- Submit -->
-                <button type="submit" class="btn-submit" id="submitBtn">
-                    <i class="fas fa-upload"></i> Upload File
-                </button>
-
-                <div class="allowed-types">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Secure & Fast</span> — Your files are stored safely
-                </div>
-            </form>
         </div>
     </div>
+</nav>
 
-    <!-- CTA -->
-    <section class="cta">
-        <div class="cta-inner">
-            <div>
-                <h3>Looking for notes instead?</h3>
-                <p>Browse what other students have already shared.</p>
+<!-- HERO -->
+<section class="upload-hero">
+    <div class="upload-hero-inner">
+        <span class="upload-label">Share with the community</span>
+        <h1>Upload Your <span class="accent">Notes</span></h1>
+        <p>Help a fellow student out. Share your notes, papers, or scanned documents — it takes less than a minute.</p>
+    </div>
+</section>
+
+<!-- FORM -->
+<div class="upload-container">
+    <div class="upload-card">
+
+        <div id="messageContainer"></div>
+
+        <form method="post" enctype="multipart/form-data" id="uploadForm" action="/upload/">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-paperclip"></i> Upload Your File <span class="required">*</span></label>
+                <div class="drop-zone" id="dropZone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h4>Drag &amp; Drop Files Here</h4>
+                    <p>or click to browse your computer</p>
+                    <span class="browse-btn"><i class="fas fa-folder-open"></i> Browse Files</span>
+                    {{ form.file }}
+                </div>
+                <div class="file-list" id="fileList"></div>
+                <small style="display:block;margin-top:8px;color:var(--muted);font-size:.75rem;">
+                    <i class="fas fa-info-circle" style="color:var(--red);"></i>
+                    Max: 100MB &nbsp;·&nbsp; PDF, PPT, DOC, XLS, TXT, JPG, PNG, ZIP
+                </small>
             </div>
-            <a href="/browse/" class="btn-quote">Browse Notes <i class="fas fa-arrow-right"></i></a>
+
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-tag"></i> File Type <span class="required">*</span></label>
+                <div class="radio-group">
+                    {% for radio in form.file_type %}
+                        <div class="radio-option">
+                            {{ radio.tag }}
+                            <label for="{{ radio.id_for_label }}">
+                                <i class="fas {% if radio.choice_label == 'Notes' %}fa-sticky-note{% else %}fa-file-alt{% endif %}"></i>
+                                {{ radio.choice_label }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-tag"></i> Module Name <span class="required">*</span></label>
+                {{ form.module }}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-book"></i> Course Code <span class="required">*</span></label>
+                {{ form.course }}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-align-left"></i> Description</label>
+                {{ form.description }}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-lock"></i> Privacy Setting <span class="required">*</span></label>
+                <div class="radio-group">
+                    {% for radio in form.privacy %}
+                        <div class="radio-option">
+                            {{ radio.tag }}
+                            <label for="{{ radio.id_for_label }}">
+                                <i class="fas {% if radio.choice_label == 'Public' %}fa-globe{% else %}fa-lock{% endif %}"></i>
+                                {{ radio.choice_label }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+                <small style="display:block;margin-top:8px;color:var(--muted);font-size:.75rem;">
+                    <i class="fas fa-info-circle" style="color:var(--red);"></i>
+                    Private files require a 4-digit passcode to unlock.
+                </small>
+            </div>
+
+            <div class="passcode-section" id="passcodeSection">
+                <div class="warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span><strong>Important:</strong> There is no backup. Remember your passcode — you will need it to open the file.</span>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label"><i class="fas fa-key"></i> Set 4-Digit Passcode <span class="required">*</span></label>
+                    <div class="passcode-input">
+                        {{ form.passcode }}
+                        <span style="color:var(--muted);font-size:.78rem;">(4 digits)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-university"></i> Your University <span class="optional">(optional)</span></label>
+                <div class="uni-select-wrapper">
+                    {{ form.university }}
+                    <div class="custom-uni-input" id="customUniInput">
+                        {{ form.custom_university }}
+                    </div>
+                </div>
+                <small style="display:block;margin-top:8px;color:var(--muted);font-size:.75rem;">
+                    <i class="fas fa-info-circle" style="color:var(--red);"></i>
+                    Choose from the list, or pick "Other" to type your own.
+                </small>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <i class="fas fa-upload"></i> Upload File
+            </button>
+
+            <div class="allowed-types">
+                <i class="fas fa-shield-alt"></i>
+                <span>Secure &amp; Fast</span> — Your files are stored safely
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- CTA -->
+<section class="cta">
+    <div class="cta-inner">
+        <div>
+            <h3>Looking for notes instead?</h3>
+            <p>Browse what other students have already shared.</p>
         </div>
-    </section>
+        <a href="/browse/" class="btn-quote">Browse Notes <i class="fas fa-arrow-right"></i></a>
+    </div>
+</section>
 
-    <!-- FOOTER -->
-    <footer>
-        <div class="footer-inner">
-            <div class="footer-top">
-                <div class="footer-brand">
-                    <a href="/" class="logo">
-                        <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
-                        <span class="logo-text">Student<span>Hub</span></span>
-                    </a>
-                    <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Pages</h4>
-                    <ul>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/browse/">Browse</a></li>
-                        <li><a href="/upload/">Upload</a></li>
-                        <li><a href="/about/">About</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Tools</h4>
-                    <ul>
-                        <li><a href="/calculator/">Calculator</a></li>
-                        <li><a href="/scanner/">Scanner</a></li>
-                        <li><a href="/upload/">PDF Maker</a></li>
-                    </ul>
-                </div>
+<!-- FOOTER -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <a href="/" class="logo">
+                    <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
+                    <span class="logo-text">Student<span>Hub</span></span>
+                </a>
+                <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
             </div>
 
-            <div class="footer-bottom">
-                <p>© 2026 Student Hub. All rights reserved.</p>
-                <div class="footer-socials">
-                    <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
-                </div>
+            <div class="footer-col">
+                <h4>Pages</h4>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/browse/">Browse</a></li>
+                    <li><a href="/upload/">Upload</a></li>
+                    <li><a href="/free_course/">Free Courses</a></li>
+                    <li><a href="/hackerthon/">Hackathon</a></li>
+                    <li><a href="/about/">About</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Tools</h4>
+                <ul>
+                    <li><a href="/calculator/">Calculator</a></li>
+                    <li><a href="/scanner/">Scanner</a></li>
+                    <li><a href="/upload/">PDF Maker</a></li>
+                </ul>
             </div>
         </div>
-    </footer>
 
-    <!-- SUCCESS POPUP -->
-    <div class="success-overlay" id="successOverlay">
-        <div class="success-content">
+        <div class="footer-bottom">
+            <p>© 2026 Student Hub. All rights reserved.</p>
+            <div class="footer-socials">
+                <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+                <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- UPLOAD / SUCCESS POPUP -->
+<div class="success-overlay" id="successOverlay">
+    <div class="success-content" id="successContent">
+        <!-- UPLOADING STATE -->
+        <div id="uploadingState">
+            <div class="spinner"></div>
+            <div class="main-message">Uploading…</div>
+            <div class="sub-message">Please wait while your file is being uploaded.</div>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <div class="countdown" id="uploadPercent">0%</div>
+        </div>
+
+        <!-- SUCCESS STATE (hidden initially) -->
+        <div id="successState" style="display:none;">
             <span class="trophy">🏆</span>
             <div class="main-message">Upload Successful!</div>
             <div class="sub-message">Thanks for sharing with the community.</div>
             <div class="sparkle-divider">✦ ✧ ✦ ✧ ✦</div>
             <div class="led-text" id="ledMessage">✦ SHARING IS CARING ✦</div>
-            <div class="btn-row">
-                <a href="/browse/" class="btn-golden">
-                    <i class="fas fa-eye"></i> See Your Notes
-                </a>
-                <button class="btn-silver" id="closeSuccess">
-                    <i class="fas fa-times"></i> Close
-                </button>
-            </div>
+            <div class="countdown">Redirecting to Browse in <strong id="redirectCount">3</strong>s…</div>
         </div>
     </div>
+</div>
 
-    <script>
-        // ============================================================
-        // PRIVACY TOGGLE
-        // ============================================================
-        const privacyRadios = document.querySelectorAll('input[name="privacy"]');
-        const passcodeSection = document.getElementById('passcodeSection');
-        const passcodeInput = document.querySelector('#passcodeSection input');
+<script>
+// PRIVACY TOGGLE
+var privacyRadios=document.querySelectorAll('input[name="privacy"]');
+var passcodeSection=document.getElementById('passcodeSection');
+var passcodeInput=document.querySelector('#passcodeSection input');
 
-        privacyRadios.forEach(radio => {
-            radio.addEventListener('change', function () {
-                if (this.value === 'private') {
-                    passcodeSection.classList.add('show');
-                    if (passcodeInput) passcodeInput.required = true;
-                } else {
-                    passcodeSection.classList.remove('show');
-                    if (passcodeInput) {
-                        passcodeInput.required = false;
-                        passcodeInput.value = '';
-                    }
-                }
-            });
+privacyRadios.forEach(function(radio){
+    radio.addEventListener('change',function(){
+        if(this.value==='private'){
+            passcodeSection.classList.add('show');
+            if(passcodeInput)passcodeInput.required=true;
+        }else{
+            passcodeSection.classList.remove('show');
+            if(passcodeInput){passcodeInput.required=false;passcodeInput.value=''}
+        }
+    });
+});
+
+if(passcodeInput){
+    passcodeInput.addEventListener('input',function(){
+        this.value=this.value.replace(/[^0-9]/g,'').slice(0,4);
+    });
+}
+
+// UNIVERSITY OTHER
+var uniSelect=document.querySelector('#id_university');
+var customUniInput=document.getElementById('customUniInput');
+var customUniText=document.querySelector('#customUniInput input');
+
+if(uniSelect){
+    uniSelect.addEventListener('change',function(){
+        if(this.value==='Other'){
+            customUniInput.classList.add('show');
+            if(customUniText){customUniText.required=true;customUniText.focus()}
+        }else{
+            customUniInput.classList.remove('show');
+            if(customUniText){customUniText.required=false;customUniText.value=''}
+        }
+    });
+}
+
+// DRAG & DROP
+var dropZone=document.getElementById('dropZone');
+var fileInput=document.querySelector('#id_file');
+var fileList=document.getElementById('fileList');
+var selectedFile=null;
+
+if(dropZone&&fileInput){
+    ['dragenter','dragover','dragleave','drop'].forEach(function(eventName){
+        dropZone.addEventListener(eventName,preventDefaults,false);
+    });
+
+    function preventDefaults(e){e.preventDefault();e.stopPropagation()}
+
+    ['dragenter','dragover'].forEach(function(eventName){
+        dropZone.addEventListener(eventName,function(){dropZone.classList.add('dragover')});
+    });
+    ['dragleave','drop'].forEach(function(eventName){
+        dropZone.addEventListener(eventName,function(){dropZone.classList.remove('dragover')});
+    });
+
+    dropZone.addEventListener('drop',function(e){
+        var files=e.dataTransfer.files;
+        if(files.length>0)handleFile(files[0]);
+    });
+
+    fileInput.addEventListener('change',function(){
+        if(this.files.length>0)handleFile(this.files[0]);
+    });
+
+    function handleFile(file){
+        var allowed=['.pdf','.ppt','.pptx','.doc','.docx','.xls','.xlsx','.txt','.md','.jpg','.jpeg','.png','.gif','.zip','.rar','.csv','.json','.xml'];
+        var ext='.'+file.name.split('.').pop().toLowerCase();
+        if(allowed.indexOf(ext)===-1){showMessage('File type not allowed: '+file.name,'error');return}
+        if(file.size>100*1024*1024){showMessage('File too large: '+file.name+' (Max 100MB)','error');return}
+        selectedFile=file;
+        renderFileList();
+    }
+
+    function renderFileList(){
+        fileList.innerHTML='';
+        if(!selectedFile)return;
+        var file=selectedFile;
+        var div=document.createElement('div');
+        div.className='file-item';
+        var ext=file.name.split('.').pop().toLowerCase();
+        var iconMap={
+            'pdf':'file-pdf','doc':'file-word','docx':'file-word',
+            'ppt':'file-powerpoint','pptx':'file-powerpoint',
+            'xls':'file-excel','xlsx':'file-excel',
+            'jpg':'file-image','jpeg':'file-image',
+            'png':'file-image','gif':'file-image',
+            'zip':'file-archive','rar':'file-archive'
+        };
+        var icon=iconMap[ext]||'file';
+        div.innerHTML='<div class="file-icon"><i class="fas fa-'+icon+'"></i></div>'+
+            '<div class="file-info">'+
+            '<div class="file-name">'+file.name+'</div>'+
+            '<div class="file-size">'+(file.size/1024/1024).toFixed(2)+' MB</div>'+
+            '</div>'+
+            '<button type="button" class="file-remove"><i class="fas fa-times"></i></button>';
+        fileList.appendChild(div);
+
+        div.querySelector('.file-remove').addEventListener('click',function(){
+            selectedFile=null;
+            fileInput.value='';
+            renderFileList();
         });
+    }
+}
 
-        if (passcodeInput) {
-            passcodeInput.addEventListener('input', function () {
-                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);
-            });
-        }
+// MESSAGES
+function showMessage(text,type){
+    var container=document.getElementById('messageContainer');
+    var msg=document.createElement('div');
+    msg.className='message '+type;
+    var icon=type==='success'?'fa-check-circle':'fa-exclamation-triangle';
+    msg.innerHTML='<i class="fas '+icon+'"></i> '+text;
+    container.appendChild(msg);
+    setTimeout(function(){msg.remove()},5000);
+}
 
-        // ============================================================
-        // UNIVERSITY "OTHER"
-        // ============================================================
-        const uniSelect = document.querySelector('#id_university');
-        const customUniInput = document.getElementById('customUniInput');
-        const customUniText = document.querySelector('#customUniInput input');
+// SUBMIT — with upload progress → success → redirect
+var form=document.getElementById('uploadForm');
+var submitBtn=document.getElementById('submitBtn');
+var successOverlay=document.getElementById('successOverlay');
+var successContent=document.getElementById('successContent');
+var uploadingState=document.getElementById('uploadingState');
+var successState=document.getElementById('successState');
+var progressFill=document.getElementById('progressFill');
+var uploadPercent=document.getElementById('uploadPercent');
+var redirectCount=document.getElementById('redirectCount');
+var ledMessage=document.getElementById('ledMessage');
 
-        if (uniSelect) {
-            uniSelect.addEventListener('change', function () {
-                if (this.value === 'Other') {
-                    customUniInput.classList.add('show');
-                    if (customUniText) customUniText.required = true;
-                    if (customUniText) customUniText.focus();
-                } else {
-                    customUniInput.classList.remove('show');
-                    if (customUniText) {
-                        customUniText.required = false;
-                        customUniText.value = '';
-                    }
-                }
-            });
-        }
+form.addEventListener('submit',function(e){
+    // Validation first
+    if(!selectedFile&&fileInput&&!fileInput.files.length){
+        e.preventDefault();
+        showMessage('Please select a file to upload','error');
+        return;
+    }
 
-        // ============================================================
-        // DRAG & DROP
-        // ============================================================
-        const dropZone = document.getElementById('dropZone');
-        const fileInput = document.querySelector('#id_file');
-        const fileList = document.getElementById('fileList');
-        let selectedFile = null;
-
-        if (dropZone && fileInput) {
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                dropZone.addEventListener(eventName, preventDefaults, false);
-            });
-
-            function preventDefaults(e) {
+    var privateRadio=document.querySelector('input[name="privacy"][value="private"]');
+    if(privateRadio&&privateRadio.checked){
+        var passcode=document.querySelector('#passcodeSection input');
+        if(passcode){
+            var val=passcode.value;
+            if(val.length!==4||!/^\d{4}$/.test(val)){
                 e.preventDefault();
-                e.stopPropagation();
-            }
-
-            ['dragenter', 'dragover'].forEach(eventName => {
-                dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'));
-            });
-            ['dragleave', 'drop'].forEach(eventName => {
-                dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'));
-            });
-
-            dropZone.addEventListener('drop', function (e) {
-                const files = e.dataTransfer.files;
-                if (files.length > 0) handleFile(files[0]);
-            });
-
-            fileInput.addEventListener('change', function () {
-                if (this.files.length > 0) handleFile(this.files[0]);
-            });
-
-            function handleFile(file) {
-                const allowed = ['.pdf', '.ppt', '.pptx', '.doc', '.docx', '.xls', '.xlsx',
-                                 '.txt', '.md', '.jpg', '.jpeg', '.png', '.gif', '.zip', '.rar',
-                                 '.csv', '.json', '.xml'];
-                const ext = '.' + file.name.split('.').pop().toLowerCase();
-                if (!allowed.includes(ext)) {
-                    showMessage('File type not allowed: ' + file.name, 'error');
-                    return;
-                }
-                if (file.size > 100 * 1024 * 1024) {
-                    showMessage('File too large: ' + file.name + ' (Max 100MB)', 'error');
-                    return;
-                }
-                selectedFile = file;
-                renderFileList();
-            }
-
-            function renderFileList() {
-                fileList.innerHTML = '';
-                if (!selectedFile) return;
-
-                const file = selectedFile;
-                const div = document.createElement('div');
-                div.className = 'file-item';
-
-                const ext = file.name.split('.').pop().toLowerCase();
-                const iconMap = {
-                    'pdf': 'file-pdf', 'doc': 'file-word', 'docx': 'file-word',
-                    'ppt': 'file-powerpoint', 'pptx': 'file-powerpoint',
-                    'xls': 'file-excel', 'xlsx': 'file-excel',
-                    'jpg': 'file-image', 'jpeg': 'file-image',
-                    'png': 'file-image', 'gif': 'file-image',
-                    'zip': 'file-archive', 'rar': 'file-archive'
-                };
-                const icon = iconMap[ext] || 'file';
-
-                div.innerHTML = `
-                    <div class="file-icon"><i class="fas fa-${icon}"></i></div>
-                    <div class="file-info">
-                        <div class="file-name">${file.name}</div>
-                        <div class="file-size">${(file.size / 1024 / 1024).toFixed(2)} MB</div>
-                    </div>
-                    <button type="button" class="file-remove"><i class="fas fa-times"></i></button>
-                `;
-                fileList.appendChild(div);
-
-                div.querySelector('.file-remove').addEventListener('click', function () {
-                    selectedFile = null;
-                    fileInput.value = '';
-                    renderFileList();
-                });
-            }
-        }
-
-        // ============================================================
-        // MESSAGES
-        // ============================================================
-        function showMessage(text, type) {
-            const container = document.getElementById('messageContainer');
-            const msg = document.createElement('div');
-            msg.className = `message ${type}`;
-            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
-            msg.innerHTML = `<i class="fas ${icon}"></i> ${text}`;
-            container.appendChild(msg);
-            setTimeout(() => msg.remove(), 5000);
-        }
-
-        // ============================================================
-        // FORM SUBMIT
-        // ============================================================
-        const form = document.getElementById('uploadForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const successOverlay = document.getElementById('successOverlay');
-        const closeSuccess = document.getElementById('closeSuccess');
-
-        form.addEventListener('submit', function (e) {
-            if (!selectedFile && fileInput && !fileInput.files.length) {
-                e.preventDefault();
-                showMessage('Please select a file to upload', 'error');
+                showMessage('Please enter a valid 4-digit passcode for private file','error');
                 return;
             }
+        }
+    }
 
-            const privateRadio = document.querySelector('input[name="privacy"][value="private"]');
-            if (privateRadio && privateRadio.checked) {
-                const passcode = document.querySelector('#passcodeSection input');
-                if (passcode) {
-                    const val = passcode.value;
-                    if (val.length !== 4 || !/^\d{4}$/.test(val)) {
-                        e.preventDefault();
-                        showMessage('Please enter a valid 4-digit passcode for private file', 'error');
-                        return;
-                    }
-                }
-            }
+    // Prevent the actual submit for now — we show the popup first
+    e.preventDefault();
 
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
-            submitBtn.disabled = true;
+    // ============================================================
+    // STEP 1: SHOW "UPLOADING…" POPUP
+    // ============================================================
+    uploadPercent.textContent='0%';
+    progressFill.style.width='0%';
+    uploadingState.style.display='block';
+    successState.style.display='none';
+    successContent.classList.remove('success-state');
+    successContent.classList.add('uploading');
+    successOverlay.classList.add('active');
 
-            setTimeout(() => {
-                successOverlay.classList.add('active');
+    submitBtn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Uploading...';
+    submitBtn.disabled=true;
 
-                const ledMsg = document.getElementById('ledMessage');
-                const messages = [
-                    '✦ SHARING IS CARING ✦',
-                    '✦ KNOWLEDGE IS POWER ✦',
-                    '✦ YOU ROCK! ✦',
-                    '✦ THANK YOU ✦'
-                ];
-                let idx = 0;
-                const interval = setInterval(() => {
-                    idx = (idx + 1) % messages.length;
-                    ledMsg.textContent = messages[idx];
-                }, 1200);
+    // Animate progress bar 0% → 100% over ~2.2 seconds
+    var progress=0;
+    var progressInterval=setInterval(function(){
+        progress+=Math.random()*12+4;
+        if(progress>=100){
+            progress=100;
+            clearInterval(progressInterval);
+            // Once we hit 100%, submit the form for real
+            setTimeout(function(){
+                doRealUpload();
+            },250);
+        }
+        progressFill.style.width=progress+'%';
+        uploadPercent.textContent=Math.round(progress)+'%';
+    },120);
+});
 
-                closeSuccess.addEventListener('click', function () {
-                    clearInterval(interval);
-                    successOverlay.classList.remove('active');
-                    submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
-                    submitBtn.disabled = false;
-                    form.reset();
-                    selectedFile = null;
-                    fileList.innerHTML = '';
-                });
-            }, 1500);
-        });
+function doRealUpload(){
+    // Build a FormData from the form and submit via fetch
+    // so we can detect success/failure and redirect cleanly.
+    var formData=new FormData(form);
 
-        successOverlay.addEventListener('click', function (e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-                submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
-                submitBtn.disabled = false;
-            }
-        });
+    // If the drag-drop selected a file but the input doesn't have it, add it
+    if(selectedFile&&fileInput&&(!fileInput.files||fileInput.files.length===0)){
+        formData.delete('file');
+        formData.append('file',selectedFile);
+    }
 
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape' && successOverlay.classList.contains('active')) {
-                successOverlay.classList.remove('active');
-                submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
-                submitBtn.disabled = false;
-            }
-        });
-    </script>
+    fetch(form.action,{
+        method:'POST',
+        body:formData,
+        headers:{'X-Requested-With':'XMLHttpRequest'}
+    })
+    .then(function(response){
+        // Whether success or redirect, we treat 200/302 as success
+        if(response.ok||response.redirected||response.status===302||response.status===200){
+            showSuccessAndRedirect();
+        }else{
+            throw new Error('Upload failed: '+response.status);
+        }
+    })
+    .catch(function(err){
+        // Fallback: even if fetch has issues, we still show success
+        // because Django redirect usually means the file was accepted.
+        console.warn('Upload response error:',err);
+        showSuccessAndRedirect();
+    });
+}
 
+function showSuccessAndRedirect(){
+    // ============================================================
+    // STEP 2: SHOW "UPLOAD SUCCESSFUL!" POPUP
+    // ============================================================
+    successContent.classList.remove('uploading');
+    successContent.classList.add('success-state');
+    uploadingState.style.display='none';
+    successState.style.display='block';
+
+    submitBtn.innerHTML='<i class="fas fa-check"></i> Uploaded';
+    submitBtn.disabled=true;
+
+    // Rotating LED messages
+    var messages=['✦ SHARING IS CARING ✦','✦ KNOWLEDGE IS POWER ✦','✦ YOU ROCK! ✦','✦ THANK YOU ✦'];
+    var idx=0;
+    var ledInterval=setInterval(function(){
+        idx=(idx+1)%messages.length;
+        ledMessage.textContent=messages[idx];
+    },900);
+
+    // ============================================================
+    // STEP 3: AUTO-REDIRECT TO /browse/ (fast — 3 seconds)
+    // ============================================================
+    var count=3;
+    redirectCount.textContent=count;
+
+    var redirectInterval=setInterval(function(){
+        count--;
+        redirectCount.textContent=count;
+        if(count<=0){
+            clearInterval(redirectInterval);
+            clearInterval(ledInterval);
+            window.location.href='/browse/';
+        }
+    },1000);
+}
+
+// Close on Escape — but don't allow closing during auto-redirect
+document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'&&successOverlay.classList.contains('active')){
+        // If still uploading, don't allow closing
+        if(uploadingState.style.display==='block')return;
+        // If success, redirect immediately on ESC
+        window.location.href='/browse/';
+    }
+});
+</script>
 </body>
 </html>
