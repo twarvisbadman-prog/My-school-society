@@ -51,7 +51,6 @@ SUPABASE_URL = env(
     "SUPABASE_URL",
     "https://hnszltswipxiqurkwydm.supabase.co"
 )
-# The publishable key IS the anon JWT token — that's what supabase-py expects
 SUPABASE_KEY = env(
     "SUPABASE_KEY",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhuc3psdHN3aXB4aXF1cmt3eWRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTEyODcsImV4cCI6MjA5MzEyNzI4N30.JsSgMXE9JMqJAAZd-riwrr-D-5MURL6WCfuNTrAtoWU"
@@ -379,6 +378,7 @@ def get_passcode_html(file_id, filename, error=None):
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Passcode Required | Twarvis School</title>
+    <link rel="icon" type="image/png" href="/apple-touch-icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -621,6 +621,70 @@ def get_passcode_html(file_id, filename, error=None):
 </body>
 </html>
 '''
+
+# ============================================================
+# SERVE ROOT FILES (apple-touch-icon.png, logo.png, etc.)
+# ============================================================
+def serve_root_file(request, filename):
+    """Serve any file directly from the project root directory."""
+    # Security: block path traversal
+    safe_name = os.path.basename(filename)
+    if safe_name != filename or ".." in safe_name or safe_name.startswith("."):
+        return HttpResponse("Not found", status=404)
+
+    file_path = os.path.join(BASE_DIR, safe_name)
+    if not os.path.exists(file_path):
+        return HttpResponse("Not found", status=404)
+
+    # Map file extension to content type
+    ext = os.path.splitext(safe_name)[1].lower()
+    content_types = {
+        ".png": "image/png",
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".gif": "image/gif",
+        ".svg": "image/svg+xml",
+        ".webp": "image/webp",
+        ".ico": "image/x-icon",
+        ".css": "text/css",
+        ".js": "application/javascript",
+        ".json": "application/json",
+        ".txt": "text/plain",
+        ".xml": "application/xml",
+        ".pdf": "application/pdf",
+        ".woff": "font/woff",
+        ".woff2": "font/woff2",
+    }
+    content_type = content_types.get(ext, "application/octet-stream")
+
+    try:
+        with open(file_path, "rb") as f:
+            data = f.read()
+        response = HttpResponse(data, content_type=content_type)
+        response["Cache-Control"] = "public, max-age=2592000"  # 30 days
+        return response
+    except Exception as e:
+        print(f"Error serving {safe_name}: {e}")
+        return HttpResponse("Error", status=500)
+
+
+# ============================================================
+# FAVICON
+# ============================================================
+def favicon_view(request):
+    """Serve apple-touch-icon.png as the site favicon."""
+    icon_path = os.path.join(BASE_DIR, "apple-touch-icon.png")
+    if os.path.exists(icon_path):
+        try:
+            with open(icon_path, "rb") as f:
+                data = f.read()
+            response = HttpResponse(data, content_type="image/png")
+            response["Cache-Control"] = "public, max-age=2592000"
+            return response
+        except Exception as e:
+            print(f"Favicon error: {e}")
+    return HttpResponse(status=204)
+
 
 # ============================================================
 # VIEWS
@@ -983,6 +1047,7 @@ def scanner_view(request):
             <head>
                 <title>Scanner | Twarvis School</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <link rel="icon" type="image/png" href="/apple-touch-icon.png">
                 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
                 <style>
@@ -1089,6 +1154,13 @@ urlpatterns = [
     path(f"{SECRET_ADMIN_PATH}/", admin_dashboard, name="admin_dashboard"),
     path(f"{SECRET_ADMIN_PATH}/settings/", admin_settings, name="admin_settings"),
     
+    # ========== ICON / FAVICON / ROOT FILES ==========
+    path("apple-touch-icon.png", serve_root_file, {"filename": "apple-touch-icon.png"}, name="apple_icon"),
+    path("apple-touch-icon-precomposed.png", serve_root_file, {"filename": "apple-touch-icon.png"}),
+    path("favicon.ico", favicon_view, name="favicon"),
+    path("favicon.png", favicon_view, name="favicon_png"),
+    
+    # ========== MAIN PAGES ==========
     path("upload/", upload_view),
     path("browse/", browse_view),
     path("view/<int:id>/", view_file),
@@ -1120,7 +1192,8 @@ urlpatterns = [
     path("scanner.html", scanner_view, name="scanner"),
     path("scanner/", scanner_view, name="scanner_alt"),
     
-    path("favicon.ico", favicon),
+    # ========== GENERIC ROOT FILE SERVER (must be LAST) ==========
+    path("<str:filename>", serve_root_file, name="root_file"),
 ]
 
 application = get_wsgi_application()
