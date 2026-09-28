@@ -4,226 +4,711 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Student Hub | Share Notes, Find Notes</title>
-<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+<link rel="icon" type="image/png" href="/apple-touch-icon.png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 <style>
 :root{
-    --bg:#080b18;
-    --panel:#111831;
-    --panel2:#182344;
-    --text:#eef2ff;
-    --muted:#9ca8c8;
-    --red:#ff4d5a;
-    --blue:#70a8ff;
-    --green:#43d392;
-    --gold:#ffd166;
-    --line:#293454;
+    /* Theme 1 · Warm SaaS */
+    --bg:#fafaf9;
+    --surface:#ffffff;
+    --alt:#f5f5f4;
+    --border:#e7e5e4;
+    --border-strong:#d6d3d1;
+    --ink:#1c1917;
+    --text-2:#44403c;
+    --text-3:#57534e;
+    --accent:#c2410c;
+    --accent-bright:#ea580c;
+    --accent-pink:#db2777;
+    --accent-dim:#fff1e8;
+    --grad:linear-gradient(120deg,#ea580c,#db2777);
+    --grad-cta:linear-gradient(120deg,#c2410c,#be185d);
+    --grad-cta-hover:linear-gradient(120deg,#9a3412,#9d174d);
+    --success:#15803d;
+    --radius-sm:10px;
+    --radius-md:14px;
+    --radius-lg:20px;
+    --radius-xl:28px;
+    --shadow-sm:0 1px 2px rgba(28,25,23,.06);
+    --shadow-md:0 10px 28px -12px rgba(28,25,23,.18);
+    --shadow-lg:0 28px 64px -20px rgba(28,25,23,.22);
+    --shadow-cta:0 8px 22px -8px rgba(219,39,119,.5);
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html{overflow-x:hidden;scroll-behavior:smooth}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;overflow-x:hidden;width:100%;-webkit-font-smoothing:antialiased;min-height:100vh}
+*{margin:0;padding:0;box-sizing:border-box}
+html{
+    scroll-behavior:smooth;
+    -webkit-text-size-adjust:100%;
+    -webkit-tap-highlight-color:transparent;
+}
+html,body{
+    overflow-x:hidden;
+    width:100%;
+}
+body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+    font-size:16px;
+    min-height:100vh;
+    min-height:100dvh;
+}
 a{color:inherit;text-decoration:none}
-ul{list-style:none}
 button{font-family:inherit}
+ul{list-style:none}
+img{
+    max-width:100%;
+    height:auto;
+    display:block;
+}
 
-/* TOP BAR */
-.topbar{background:#05070f;color:var(--text);font-size:.82rem;padding:8px 0;border-bottom:1px solid var(--line)}
-.topbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;text-align:center}
-.topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:var(--muted);white-space:nowrap}
-.topbar-inner span i{color:var(--red);font-size:.78rem}
+/* ═══════════════════════════════════════════════════════════
+   GLOBAL CONTAINER — Fit kwenye kila screen
+   ═══════════════════════════════════════════════════════════ */
+.container{
+    width:100%;
+    max-width:100%;
+    margin:0 auto;
+    padding:0 20px;
+}
+@media (min-width:640px){
+    .container{max-width:640px;padding:0 24px}
+}
+@media (min-width:768px){
+    .container{max-width:720px;padding:0 32px}
+}
+@media (min-width:1024px){
+    .container{max-width:960px;padding:0 40px}
+}
+@media (min-width:1280px){
+    .container{max-width:1140px;padding:0 40px}
+}
+@media (min-width:1536px){
+    .container{max-width:1280px;padding:0 48px}
+}
 
-/* MAIN NAV */
-.mainnav{background:rgba(8,11,24,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:100;width:100%}
-.mainnav-inner{max-width:1200px;margin:0 auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:20px}
-.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.2rem;color:var(--text);letter-spacing:-.02em;flex-shrink:0}
-.logo-mark{width:38px;height:38px;background:linear-gradient(135deg,var(--red),#ff7b62);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;flex-shrink:0;box-shadow:0 4px 15px rgba(255,77,90,.35)}
-.logo-text span{color:var(--red)}
-.menu{display:flex;align-items:center;gap:2px;flex-wrap:wrap;justify-content:center;flex:1;min-width:0}
-.menu a{padding:8px 11px;font-size:.84rem;font-weight:600;color:var(--muted);border-radius:8px;white-space:nowrap;transition:all .25s ease}
-.menu a:hover{color:var(--text);background:var(--panel2)}
-.menu a.active{color:var(--text);background:var(--panel2);box-shadow:inset 0 0 0 1px var(--line)}
-.menu a.course-link{color:var(--red)}
-.menu a.course-link i{font-size:.75rem;margin-right:5px}
-.menu a.hack-link{color:var(--blue)}
-.menu a.hack-link i{font-size:.75rem;margin-right:5px}
-.nav-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
-.btn-quote{background:var(--red);color:#fff;padding:10px 20px;border-radius:10px;font-weight:700;font-size:.85rem;display:inline-flex;align-items:center;gap:8px;transition:all .25s ease;white-space:nowrap;box-shadow:0 4px 15px rgba(255,77,90,.3)}
-.btn-quote:hover{background:#ff2f3e;transform:translateY(-1px);box-shadow:0 8px 22px rgba(255,77,90,.45)}
+/* ═══════════════════════════════════════════════════════════
+   TOP BAR
+   ═══════════════════════════════════════════════════════════ */
+.topbar{
+    background:var(--ink);
+    color:#f5f5f4;
+    font-size:clamp(11.5px,1.3vw,12.5px);
+    padding:9px 16px;
+    text-align:center;
+}
+.topbar-inner{
+    display:flex;justify-content:center;align-items:center;
+    gap:clamp(12px,2vw,24px);flex-wrap:wrap;
+}
+.topbar-inner span{
+    display:inline-flex;align-items:center;gap:7px;
+    color:#a8a29e;
+}
+.topbar-inner span i{color:var(--accent-bright);font-size:11px}
 
-/* HERO SLIDER */
-.hero{position:relative;height:640px;overflow:hidden;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:pan-y}
-.hero:active{cursor:grabbing}
-.slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity 1.4s cubic-bezier(.4,0,.2,1),visibility 1.4s cubic-bezier(.4,0,.2,1),transform 1.4s cubic-bezier(.4,0,.2,1);transform:scale(1.04);pointer-events:none;overflow:hidden}
-.slide.active{opacity:1;visibility:visible;transform:scale(1);pointer-events:auto}
-.slide-bg{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;transition:opacity 1.6s ease-in-out}
-.slide-bg.active{opacity:1}
-.slide-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(8,11,24,.92) 0%,rgba(8,11,24,.60) 50%,rgba(8,11,24,.88) 100%);z-index:1}
-.slide-btn{display:block;width:100%;height:100%;cursor:pointer;color:inherit;text-decoration:none;position:relative;z-index:2}
-.hero-inner{max-width:1200px;margin:0 auto;padding:0 20px;position:relative;z-index:3;height:100%;display:flex;flex-direction:column;justify-content:center;width:100%}
-.hero h1{color:var(--text);font-size:clamp(2rem,5vw,4rem);font-weight:900;line-height:1.05;letter-spacing:-.02em;margin-bottom:20px;max-width:800px}
-.hero h1 .accent{color:var(--red);text-decoration:underline;text-decoration-color:var(--red);text-underline-offset:6px;text-decoration-thickness:4px}
-.hero p{color:#c5cde2;font-size:clamp(.95rem,1.5vw,1.1rem);line-height:1.7;max-width:560px;margin-bottom:28px}
-.hero-cta{background:var(--red);color:#fff;padding:14px 28px;border-radius:10px;font-weight:700;font-size:.92rem;display:inline-flex;align-items:center;gap:10px;transition:all .25s ease;align-self:flex-start;white-space:nowrap;box-shadow:0 6px 20px rgba(255,77,90,.30)}
-.slide-btn:hover .hero-cta{background:#ff2f3e;transform:translateX(4px);box-shadow:0 10px 28px rgba(255,77,90,.45)}
-.hero-dots{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:6}
-.hero-dots button{width:10px;height:10px;border-radius:50%;border:2px solid rgba(255,255,255,.5);background:transparent;cursor:pointer;padding:0;transition:all .4s cubic-bezier(.4,0,.2,1)}
-.hero-dots button.active{background:var(--red);border-color:var(--red);width:30px;border-radius:6px}
-.swipe-hint{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.6);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;font-weight:700;z-index:6;pointer-events:none;opacity:.7;transition:opacity .5s ease}
-.swipe-hint.hidden{opacity:0}
+/* ═══════════════════════════════════════════════════════════
+   NAV
+   ═══════════════════════════════════════════════════════════ */
+.nav{
+    background:rgba(250,250,249,.85);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--border);
+    position:sticky;top:0;z-index:100;
+    padding:12px 0;
+}
+.nav-inner{
+    display:flex;justify-content:space-between;align-items:center;gap:16px;
+}
 
-/* STACK SECTION */
-.stack-section{background:radial-gradient(circle at 50% 0%,rgba(112,168,255,.05) 0%,transparent 60%);padding:40px 20px 20px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.stack-inner{max-width:1100px;margin:0 auto}
-.stack-head{text-align:center;margin-bottom:26px}
-.stack-label{color:var(--red);font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;display:block}
-.stack-head h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:900;color:var(--text);letter-spacing:-.025em;line-height:1.2}
-.stack-item{position:relative;height:82vh;display:flex;align-items:flex-start;justify-content:center;padding-top:10px}
-.stack-card{position:sticky;top:90px;width:100%;max-width:900px;height:460px;border-radius:20px;overflow:hidden;box-shadow:0 20px 55px rgba(0,0,0,.5);display:grid;grid-template-columns:1fr 1fr;background:rgba(15,21,43,.95);border:1px solid var(--line);transform-origin:center top;will-change:transform}
-.stack-item:nth-child(2) .stack-card{z-index:1}
-.stack-item:nth-child(3) .stack-card{z-index:2}
-.stack-item:nth-child(4) .stack-card{z-index:3}
-.stack-item:nth-child(5) .stack-card{z-index:4}
-.stack-img{position:relative;overflow:hidden;background:#0a1228}
-.stack-img-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.2s ease-in-out}
-.stack-img-bg.active{opacity:1}
-.stack-img::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,77,90,.20),rgba(8,11,24,.55));z-index:1;pointer-events:none}
-.stack-img-number{position:absolute;top:20px;left:20px;background:rgba(8,11,24,.85);color:var(--red);font-size:.75rem;font-weight:800;padding:5px 12px;border-radius:18px;letter-spacing:.06em;z-index:3;border:1px solid rgba(255,77,90,.4)}
-.stack-img-dots{position:absolute;bottom:14px;right:14px;display:flex;gap:5px;z-index:3}
-.stack-img-dots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);transition:all .3s ease}
-.stack-img-dots span.active{background:var(--red);width:16px;border-radius:3px}
-.stack-content{padding:40px 40px;display:flex;flex-direction:column;justify-content:center}
-.stack-icon{width:52px;height:52px;background:rgba(255,77,90,.12);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--red);font-size:1.3rem;margin-bottom:18px}
-.stack-content h3{font-size:clamp(1.25rem,2.2vw,1.6rem);font-weight:800;color:var(--text);margin-bottom:12px;letter-spacing:-.02em;line-height:1.2}
-.stack-content p{color:var(--muted);font-size:.9rem;line-height:1.65;margin-bottom:20px}
-.stack-content .stack-link{display:inline-flex;align-items:center;gap:8px;color:var(--red);font-weight:700;font-size:.88rem;align-self:flex-start;transition:gap .25s ease}
-.stack-content .stack-link:hover{gap:14px}
+/* ═══════════════════════════════════════════════════════════
+   LOGO — Picha yako
+   ═══════════════════════════════════════════════════════════ */
+.logo{
+    display:flex;align-items:center;gap:10px;
+    font-weight:800;
+    font-size:clamp(15px,1.6vw,18px);
+    letter-spacing:-.02em;
+    flex-shrink:0;
+}
+.logo-img{
+    width:clamp(32px,3.6vw,40px);
+    height:clamp(32px,3.6vw,40px);
+    border-radius:11px;
+    object-fit:cover;
+    object-position:center;
+    flex-shrink:0;
+    box-shadow:0 6px 16px -6px rgba(219,39,119,.4);
+    display:block;
+    background:#fff;
+}
+.logo-text span{
+    background:var(--grad);
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;
+}
 
-/* EXPLORE SECTION */
-.explore{padding:80px 20px;background:radial-gradient(circle at 20% 20%,rgba(112,168,255,.06) 0%,transparent 55%),radial-gradient(circle at 80% 70%,rgba(255,77,90,.06) 0%,transparent 55%);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.explore-inner{max-width:1100px;margin:0 auto}
-.explore-head{text-align:center;margin-bottom:44px}
-.explore-label{color:var(--red);font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:12px}
-.explore-head h2{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:900;color:var(--text);letter-spacing:-.025em;margin-bottom:12px}
-.explore-head h2 .accent{color:var(--red);text-decoration:underline;text-decoration-color:var(--red);text-underline-offset:6px;text-decoration-thickness:4px}
-.explore-head p{color:var(--muted);font-size:.95rem;max-width:520px;margin:0 auto}
-.explore-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
-.explore-card{display:flex;flex-direction:column;gap:18px;background:rgba(15,21,43,.95);border:1px solid var(--line);border-radius:20px;padding:32px 28px;transition:all .3s ease;position:relative;overflow:hidden}
-.explore-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--red),transparent);opacity:0;transition:opacity .3s}
-.explore-card:hover{border-color:rgba(255,77,90,.5);transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.menu{
+    display:flex;align-items:center;gap:2px;
+    flex-wrap:wrap;justify-content:center;
+    flex:1;min-width:0;
+}
+.menu a{
+    padding:8px 11px;
+    font-size:clamp(13px,1.4vw,14px);
+    font-weight:500;
+    color:var(--text-2);
+    border-radius:8px;
+    white-space:nowrap;
+    transition:all .15s;
+}
+.menu a:hover{background:var(--alt);color:var(--ink)}
+.menu a.active{background:var(--accent-dim);color:var(--accent);font-weight:600}
+.menu a.course-link{
+    color:var(--accent);font-weight:600;
+    display:inline-flex;align-items:center;gap:6px;
+}
+.menu a.course-link i{font-size:12px}
+.menu a.hack-link{
+    color:var(--accent-pink);font-weight:600;
+    display:inline-flex;align-items:center;gap:6px;
+}
+.menu a.hack-link i{font-size:12px}
+.nav-cta{
+    background:var(--grad-cta);
+    color:#fff;
+    padding:10px 18px;
+    border-radius:999px;
+    font-size:clamp(13px,1.4vw,14px);
+    font-weight:600;
+    display:inline-flex;align-items:center;gap:8px;
+    box-shadow:var(--shadow-cta);
+    transition:all .15s;
+    white-space:nowrap;
+    flex-shrink:0;
+}
+.nav-cta:hover{
+    background:var(--grad-cta-hover);
+    transform:translateY(-1px);
+    box-shadow:0 12px 28px -8px rgba(219,39,119,.6);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════════════════════ */
+.hero{
+    padding:clamp(50px,8vw,90px) 0 clamp(70px,10vw,120px);
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+}
+.hero::before{
+    content:'';
+    position:absolute;
+    left:0;right:0;bottom:0;height:55%;
+    background:radial-gradient(circle at 50% 100%,#fdf2f8 0%,#fff1e8 40%,transparent 75%);
+    pointer-events:none;
+}
+.hero-inner{
+    position:relative;z-index:1;
+    max-width:800px;margin:0 auto;
+}
+.hero-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:7px 16px;border-radius:999px;
+    background:var(--surface);border:1px solid var(--border);
+    font-size:clamp(12px,1.3vw,13px);
+    font-weight:500;color:var(--text-3);
+    margin-bottom:24px;
+    box-shadow:var(--shadow-sm);
+}
+.hero-eyebrow .dot{
+    width:8px;height:8px;
+    background:var(--accent-bright);
+    border-radius:50%;
+    animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{
+    0%,100%{opacity:1;transform:scale(1)}
+    50%{opacity:.6;transform:scale(1.2)}
+}
+.hero h1{
+    font-size:clamp(32px,5.5vw,64px);
+    font-weight:800;
+    letter-spacing:-.04em;
+    line-height:1.05;
+    margin-bottom:22px;
+    color:var(--ink);
+    text-wrap:balance;
+}
+.hero h1 em{
+    font-style:normal;
+    background:var(--grad);
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;
+}
+.hero-lede{
+    font-size:clamp(15.5px,1.7vw,19px);
+    color:var(--text-2);
+    max-width:560px;
+    margin:0 auto 32px;
+    line-height:1.55;
+}
+.hero-btns{
+    display:flex;gap:12px;justify-content:center;
+    flex-wrap:wrap;margin-bottom:40px;
+}
+.btn{
+    display:inline-flex;align-items:center;gap:9px;
+    height:clamp(46px,5vw,52px);
+    padding:0 clamp(20px,2.2vw,28px);
+    border-radius:999px;
+    font-size:clamp(14px,1.5vw,16px);
+    font-weight:600;
+    text-decoration:none;
+    cursor:pointer;border:none;
+    transition:all .18s ease;
+    white-space:nowrap;
+}
+.btn-primary{
+    background:var(--grad-cta);
+    color:#fff;
+    box-shadow:var(--shadow-cta);
+}
+.btn-primary:hover{
+    background:var(--grad-cta-hover);
+    transform:translateY(-2px);
+    box-shadow:0 14px 32px -8px rgba(219,39,119,.6);
+}
+.btn-secondary{
+    background:var(--surface);
+    color:var(--ink);
+    border:1px solid var(--border-strong);
+    box-shadow:var(--shadow-sm);
+}
+.btn-secondary:hover{
+    border-color:var(--text-3);
+    background:var(--alt);
+    transform:translateY(-2px);
+}
+
+/* SEARCH BAR */
+.search-wrap{
+    max-width:min(620px,100%);
+    margin:0 auto 44px;
+}
+.search-box{
+    display:flex;align-items:center;
+    padding:8px 8px 8px 20px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-xl);
+    box-shadow:var(--shadow-lg);
+    transition:border-color .2s;
+}
+.search-box:focus-within{border-color:var(--accent-bright)}
+.search-box i{color:var(--text-3);font-size:15px}
+.search-box input{
+    flex:1;border:none;outline:none;
+    padding:14px 12px;
+    font:inherit;
+    font-size:clamp(14px,1.5vw,15.5px);
+    background:transparent;color:var(--ink);
+    min-width:0;
+}
+.search-box input::placeholder{color:var(--text-3)}
+.search-box button{
+    padding:clamp(11px,1.4vw,13px) clamp(18px,2vw,24px);
+    background:var(--grad-cta);
+    color:#fff;border:none;
+    border-radius:999px;
+    font-size:clamp(13px,1.4vw,14px);
+    font-weight:600;
+    cursor:pointer;transition:opacity .15s;
+    white-space:nowrap;
+    flex-shrink:0;
+}
+.search-box button:hover{opacity:.92}
+
+/* HERO STATS */
+.hero-stats{
+    display:flex;justify-content:center;
+    gap:clamp(20px,4vw,44px);flex-wrap:wrap;
+}
+.hero-stat{display:flex;flex-direction:column;align-items:center;gap:4px}
+.hero-stat-num{
+    font-size:clamp(20px,2.6vw,26px);
+    font-weight:800;letter-spacing:-.03em;
+    background:var(--grad);
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;
+}
+.hero-stat-label{
+    font-size:clamp(11.5px,1.2vw,12.5px);
+    color:var(--text-3);
+    font-weight:500;letter-spacing:.02em;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SECTIONS
+   ═══════════════════════════════════════════════════════════ */
+.section{
+    padding:clamp(50px,7vw,80px) 0;
+    background:var(--surface);
+    border-top:1px solid var(--border);
+}
+.section-alt{background:var(--bg)}
+.section-head{text-align:center;margin-bottom:clamp(36px,5vw,56px)}
+.section-eyebrow{
+    display:inline-block;
+    font-size:clamp(12px,1.3vw,13px);
+    font-weight:700;
+    letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:14px;
+}
+.section-head h2{
+    font-size:clamp(24px,3.6vw,42px);
+    font-weight:800;letter-spacing:-.03em;
+    line-height:1.1;margin-bottom:16px;
+    text-wrap:balance;
+}
+.section-head p{
+    color:var(--text-2);
+    font-size:clamp(15px,1.7vw,17px);
+    max-width:520px;margin:0 auto;
+    line-height:1.55;
+}
+.section-head h2 em{
+    font-style:normal;
+    background:var(--grad);
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;
+}
+
+/* FEATURES */
+.features-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));
+    gap:clamp(12px,1.6vw,18px);
+}
+.feature{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:clamp(20px,2.4vw,28px);
+    box-shadow:var(--shadow-sm);
+    transition:all .22s ease;
+}
+.feature:hover{
+    border-color:#fed7c3;
+    box-shadow:var(--shadow-md);
+    transform:translateY(-3px);
+}
+.feature-icon{
+    width:clamp(44px,5vw,52px);
+    height:clamp(44px,5vw,52px);
+    border-radius:14px;
+    background:var(--accent-dim);
+    color:var(--accent);
+    display:grid;place-items:center;
+    font-size:clamp(18px,2.1vw,22px);
+    margin-bottom:16px;
+}
+.feature:nth-child(2) .feature-icon{background:#fce7f3;color:var(--accent-pink)}
+.feature:nth-child(3) .feature-icon{background:#dcfce7;color:var(--success)}
+.feature:nth-child(4) .feature-icon{background:#dbeafe;color:#2563eb}
+.feature:nth-child(5) .feature-icon{background:#fef3c7;color:#b45309}
+.feature:nth-child(6) .feature-icon{background:#f3e8ff;color:#7c3aed}
+.feature h3{
+    font-size:clamp(16px,1.8vw,18px);
+    font-weight:700;
+    letter-spacing:-.01em;margin-bottom:8px;
+}
+.feature p{
+    color:var(--text-2);
+    font-size:clamp(14px,1.5vw,15px);
+    line-height:1.6;
+}
+
+/* EXPLORE */
+.explore-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));
+    gap:clamp(16px,2vw,20px);
+}
+.explore-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-xl);
+    padding:clamp(26px,3.2vw,36px);
+    display:flex;flex-direction:column;gap:16px;
+    box-shadow:var(--shadow-sm);
+    transition:all .25s ease;
+    position:relative;overflow:hidden;
+}
+.explore-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:4px;
+    background:var(--grad);
+    opacity:0;transition:opacity .3s;
+}
+.explore-card:hover{
+    border-color:#fed7c3;
+    box-shadow:var(--shadow-lg);
+    transform:translateY(-4px);
+}
 .explore-card:hover::before{opacity:1}
-.explore-card:last-child::before{background:linear-gradient(90deg,transparent,var(--blue),transparent)}
-.explore-card:last-child:hover{border-color:rgba(112,168,255,.5)}
-.explore-icon{width:60px;height:60px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
-.explore-icon.free{background:rgba(255,77,90,.12);color:var(--red);box-shadow:0 6px 20px rgba(255,77,90,.20)}
-.explore-icon.hack{background:rgba(112,168,255,.12);color:var(--blue);box-shadow:0 6px 20px rgba(112,168,255,.20)}
-.explore-body{display:flex;flex-direction:column;gap:10px;flex:1}
-.explore-tag{font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;align-self:flex-start;padding:4px 12px;border-radius:50px}
-.explore-tag.free{color:var(--red);background:rgba(255,77,90,.10);border:1px solid rgba(255,77,90,.30)}
-.explore-tag.hack{color:var(--blue);background:rgba(112,168,255,.10);border:1px solid rgba(112,168,255,.30)}
-.explore-card h3{font-size:1.35rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.2}
-.explore-card p{color:var(--muted);font-size:.9rem;line-height:1.65;flex:1}
-.explore-cta{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;color:var(--red);margin-top:4px;transition:gap .25s ease}
-.explore-card:last-child .explore-cta{color:var(--blue)}
+.explore-icon{
+    width:clamp(52px,6vw,64px);
+    height:clamp(52px,6vw,64px);
+    border-radius:16px;
+    display:grid;place-items:center;
+    font-size:clamp(22px,2.5vw,26px);
+}
+.explore-icon.courses{
+    background:var(--accent-dim);color:var(--accent);
+    box-shadow:0 8px 20px -8px rgba(194,65,12,.3);
+}
+.explore-icon.hack{
+    background:#fce7f3;color:var(--accent-pink);
+    box-shadow:0 8px 20px -8px rgba(219,39,119,.3);
+}
+.explore-tag{
+    display:inline-block;
+    padding:5px 12px;border-radius:999px;
+    font-size:clamp(10.5px,1.1vw,11.5px);
+    font-weight:700;
+    letter-spacing:.1em;text-transform:uppercase;
+    align-self:flex-start;
+}
+.explore-tag.courses{background:var(--accent-dim);color:var(--accent)}
+.explore-tag.hack{background:#fce7f3;color:var(--accent-pink)}
+.explore-card h3{
+    font-size:clamp(20px,2.4vw,26px);
+    font-weight:800;
+    letter-spacing:-.025em;line-height:1.15;
+}
+.explore-card p{
+    color:var(--text-2);
+    font-size:clamp(14.5px,1.5vw,15.5px);
+    line-height:1.6;flex:1;
+}
+.explore-cta{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:clamp(14px,1.5vw,15px);
+    font-weight:600;
+    color:var(--accent);margin-top:4px;
+    transition:gap .2s;
+}
+.explore-card:last-child .explore-cta{color:var(--accent-pink)}
 .explore-card:hover .explore-cta{gap:14px}
 
-/* TOOLS */
-.tools{padding:70px 20px}
-.tools-inner{max-width:1100px;margin:0 auto}
-.section-head{text-align:center;margin-bottom:32px}
-.section-label{color:var(--red);font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;display:block}
-.section-head h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:900;color:var(--text);letter-spacing:-.025em;line-height:1.2}
-.tools-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.tool{display:flex;align-items:center;gap:12px;padding:18px;background:rgba(15,21,43,.95);border:1px solid var(--line);border-radius:14px;transition:all .25s ease}
-.tool:hover{border-color:var(--red);transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,.4)}
-.tool i{color:var(--red);font-size:1.3rem;width:28px;text-align:center;flex-shrink:0}
-.tool strong{display:block;color:var(--text);font-size:.9rem;font-weight:700;margin-bottom:2px}
-.tool small{color:var(--muted);font-size:.76rem}
+/* CTA BLOCK */
+.cta-section{padding:clamp(30px,4vw,40px) 0 clamp(60px,7vw,80px);background:var(--bg)}
+.cta-block{
+    background:var(--ink);
+    border-radius:clamp(24px,3vw,36px);
+    padding:clamp(50px,7vw,80px) clamp(24px,3vw,40px);
+    text-align:center;color:#fff;
+    position:relative;overflow:hidden;
+}
+.cta-block::before{
+    content:'';
+    position:absolute;left:0;right:0;bottom:0;height:60%;
+    background:radial-gradient(circle at 50% 100%,#be185d 0%,transparent 70%);
+    opacity:.5;pointer-events:none;
+}
+.cta-block-inner{
+    position:relative;z-index:1;
+    max-width:600px;margin:0 auto;
+}
+.cta-kicker{
+    font-size:clamp(14px,1.5vw,16px);
+    font-weight:600;
+    color:#fdba8c;margin-bottom:16px;
+    display:inline-block;
+}
+.cta-block h2{
+    font-size:clamp(26px,4vw,50px);
+    font-weight:800;letter-spacing:-.035em;
+    line-height:1.05;margin-bottom:18px;
+    text-wrap:balance;
+}
+.cta-block h2 em{
+    font-style:normal;
+    background:linear-gradient(120deg,#fdba8c,#f9a8d4);
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;
+}
+.cta-block p{
+    color:#d6d3d1;
+    font-size:clamp(15px,1.7vw,18px);
+    line-height:1.5;margin-bottom:28px;
+}
+.cta-block .btn{
+    background:#fff;color:var(--ink);
+    height:clamp(50px,5.5vw,56px);
+    padding:0 clamp(24px,3vw,32px);
+    font-size:clamp(15px,1.6vw,17px);
+    box-shadow:0 12px 32px -10px rgba(0,0,0,.5);
+}
+.cta-block .btn:hover{background:var(--alt);transform:translateY(-2px)}
 
-/* CTA */
-.cta{background:linear-gradient(135deg,#0f1730,#0a1228);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:60px 20px}
-.cta-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
-.cta h3{color:var(--text);font-size:1.5rem;font-weight:800;margin-bottom:6px}
-.cta p{color:var(--muted);font-size:.95rem}
+/* TOOLS */
+.tools-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));
+    gap:14px;
+}
+.tool{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    padding:clamp(16px,2vw,20px);
+    display:flex;align-items:center;gap:14px;
+    box-shadow:var(--shadow-sm);
+    transition:all .2s ease;
+}
+.tool:hover{
+    border-color:#fed7c3;
+    box-shadow:var(--shadow-md);
+    transform:translateY(-2px);
+}
+.tool-icon{
+    width:clamp(40px,4.5vw,44px);
+    height:clamp(40px,4.5vw,44px);
+    border-radius:12px;
+    background:var(--accent-dim);
+    color:var(--accent);
+    display:grid;place-items:center;
+    font-size:clamp(16px,1.9vw,18px);
+    flex-shrink:0;
+}
+.tool:nth-child(2) .tool-icon{background:#fce7f3;color:var(--accent-pink)}
+.tool:nth-child(3) .tool-icon{background:#dcfce7;color:var(--success)}
+.tool:nth-child(4) .tool-icon{background:#fef3c7;color:#b45309}
+.tool-body{min-width:0}
+.tool-body strong{
+    display:block;
+    font-size:clamp(14px,1.5vw,15px);
+    font-weight:700;color:var(--ink);
+    margin-bottom:2px;letter-spacing:-.01em;
+}
+.tool-body small{
+    color:var(--text-3);
+    font-size:clamp(12px,1.3vw,13px);
+}
 
 /* FOOTER */
-footer{background:#05070f;padding:50px 20px 24px;border-top:1px solid var(--line)}
-.footer-inner{max-width:1200px;margin:0 auto}
-.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:30px}
-.footer-brand p{color:var(--muted);font-size:.88rem;margin-top:14px;max-width:320px;line-height:1.7}
-.footer-col h4{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text);margin-bottom:14px}
-.footer-col ul li{margin-bottom:8px}
-.footer-col ul li a{color:var(--muted);font-size:.88rem;transition:color .25s ease}
-.footer-col ul li a:hover{color:var(--red)}
-.footer-bottom{border-top:1px solid var(--line);padding-top:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-.footer-bottom p{color:var(--muted);font-size:.83rem}
-.footer-socials{display:flex;gap:8px}
-.footer-socials a{width:34px;height:34px;border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.85rem;transition:all .25s ease;background:var(--panel)}
-.footer-socials a:hover{border-color:var(--red);color:var(--red)}
+footer{
+    background:var(--ink);
+    color:#a8a29e;
+    padding:clamp(44px,5vw,60px) 0 28px;
+}
+.footer-top{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));
+    gap:clamp(28px,4vw,48px);
+    margin-bottom:40px;
+}
+.footer-brand-logo{
+    display:flex;align-items:center;gap:10px;
+    font-weight:800;
+    font-size:clamp(17px,1.9vw,19px);
+    color:#fff;letter-spacing:-.02em;
+    margin-bottom:14px;
+}
+.footer-brand-logo .logo-img{
+    box-shadow:0 4px 12px -4px rgba(219,39,119,.5);
+}
+.footer-brand-logo span{
+    background:var(--grad);
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;
+}
+.footer-brand p{
+    font-size:clamp(14px,1.5vw,14.5px);
+    line-height:1.7;
+    color:#a8a29e;max-width:340px;
+}
+.footer-col h4{
+    font-size:clamp(11.5px,1.2vw,12.5px);
+    font-weight:700;
+    letter-spacing:.12em;text-transform:uppercase;
+    color:#fff;margin-bottom:16px;
+}
+.footer-col ul li{margin-bottom:10px}
+.footer-col ul li a{
+    color:#a8a29e;
+    font-size:clamp(14px,1.5vw,14.5px);
+    transition:color .15s;
+}
+.footer-col ul li a:hover{color:#fdba8c}
+.footer-bottom{
+    border-top:1px solid #292524;
+    padding-top:24px;
+    display:flex;justify-content:space-between;
+    align-items:center;gap:16px;flex-wrap:wrap;
+}
+.footer-bottom p{
+    font-size:clamp(12.5px,1.3vw,13.5px);
+    color:#78716c;
+}
+.footer-socials{display:flex;gap:10px}
+.footer-socials a{
+    width:clamp(34px,3.8vw,38px);
+    height:clamp(34px,3.8vw,38px);
+    border-radius:10px;
+    background:#1c1917;
+    border:1px solid #292524;
+    display:grid;place-items:center;
+    color:#a8a29e;
+    font-size:clamp(14px,1.5vw,15px);
+    transition:all .18s;
+}
+.footer-socials a:hover{
+    background:var(--grad-cta);
+    color:#fff;border-color:transparent;
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px -6px rgba(219,39,119,.5);
+}
 
-/* RESPONSIVE */
-@media (max-width:1000px){
-    .tools-grid{grid-template-columns:repeat(2,1fr)}
-    .footer-top{grid-template-columns:1fr 1fr}
-}
-@media (max-width:900px){
-    .explore-grid{grid-template-columns:1fr}
-    .footer-top{grid-template-columns:1fr 1fr}
-}
-@media (max-width:860px){.hero{height:560px}}
-@media (max-width:800px){
-    .stack-item{height:auto;min-height:auto;padding:6px 0}
-    .stack-card{grid-template-columns:1fr;height:auto;min-height:440px;position:relative;top:0}
-    .stack-img{height:200px;position:relative}
-    .stack-content{padding:24px 22px}
-    .stack-content h3{font-size:1.15rem}
-    .stack-content p{font-size:.85rem;margin-bottom:16px}
-}
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — Mobile adjustments
+   ═══════════════════════════════════════════════════════════ */
 @media (max-width:720px){
-    .mainnav-inner{flex-wrap:wrap;padding:12px 16px;gap:12px}
-    .logo{font-size:1.05rem}
-    .logo-mark{width:34px;height:34px;font-size:.9rem}
-    .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0}
+    .nav-inner{flex-wrap:wrap;gap:12px;padding:0 16px}
+    .menu{
+        order:3;flex-basis:100%;
+        justify-content:flex-start;
+        overflow-x:auto;
+        padding-bottom:4px;
+        scrollbar-width:none;
+        gap:0;
+        margin:0 -16px;
+        padding-left:16px;
+        padding-right:16px;
+    }
     .menu::-webkit-scrollbar{display:none}
-    .menu a{padding:8px 12px;font-size:.8rem;flex-shrink:0}
-    .hero{height:520px}
-    .footer-top{gap:26px}
-    .cta-inner{flex-direction:column;text-align:center}
-    .explore{padding:60px 18px}
-    .explore-card{padding:26px 22px}
+    .menu a{padding:8px 11px;font-size:13px;flex-shrink:0}
+    .nav-cta{padding:9px 16px;font-size:13px}
+    .nav-cta span{display:none}
+    .hero-btns{gap:10px}
+    .btn{width:100%;justify-content:center}
+    .hero-btns .btn{flex:1 1 auto;width:auto;min-width:140px}
+    .search-box{padding:6px 6px 6px 16px}
+    .search-box input{padding:12px 10px;font-size:14px}
+    .search-box button{padding:11px 18px;font-size:13px}
 }
-@media (max-width:560px){
-    .topbar-inner{gap:12px;font-size:.72rem}
+@media (max-width:480px){
     .topbar-inner span:nth-child(3){display:none}
-    .tools-grid{grid-template-columns:1fr}
-    .footer-top{grid-template-columns:1fr;gap:24px}
-    .tools{padding:50px 16px}
-    .hero{height:480px}
-    .hero h1{margin-bottom:14px}
-    .hero p{margin-bottom:20px}
-    .hero-cta{padding:12px 22px;font-size:.85rem}
-    .hero-dots{bottom:16px}
-    .hero-dots button{width:8px;height:8px}
-    .hero-dots button.active{width:24px}
-    .swipe-hint{bottom:44px;font-size:.6rem}
-    .btn-quote span{display:none}
-    .stack-card{border-radius:16px;min-height:380px}
-    .stack-img{height:170px}
-    .stack-content{padding:20px 18px}
-    .stack-icon{width:44px;height:44px;font-size:1.1rem;margin-bottom:14px}
-    .stack-content h3{font-size:1.05rem}
-    .stack-content p{font-size:.82rem;margin-bottom:14px}
-}
-@media (max-width:400px){
-    .logo-text{font-size:.95rem}
-    .topbar-inner span:nth-child(2){display:none}
-    .hero h1{font-size:1.7rem}
-    .hero p{font-size:.85rem}
-    .hero{height:440px}
-}
-@media (prefers-reduced-motion:reduce){
-    *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+    .logo-img{width:32px;height:32px;border-radius:9px}
+    .hero-stats{gap:24px}
+    .cta-block{border-radius:24px;padding:44px 22px}
 }
 </style>
 </head>
@@ -233,17 +718,17 @@ footer{background:#05070f;padding:50px 20px 24px;border-top:1px solid var(--line
 <div class="topbar">
     <div class="topbar-inner">
         <span><i class="fas fa-phone"></i> +255 740 706 007</span>
-        <span><i class="fas fa-envelope"></i> twarvis@studenthub.com</span>
+        <span><i class="fas fa-envelope"></i> Twarvistech@gmail.com</span>
         <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
     </div>
 </div>
 
-<!-- MAIN NAV -->
-<nav class="mainnav">
-    <div class="mainnav-inner">
+<!-- NAV -->
+<nav class="nav">
+    <div class="container nav-inner">
         <a href="/" class="logo">
-            <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
-            <span class="logo-text">Student<span>Hub</span></span>
+            <img src="/apple-touch-icon.png" alt="Student Hub" class="logo-img" />
+            <div class="logo-text">Student<span>Hub</span></div>
         </a>
 
         <div class="menu">
@@ -257,265 +742,210 @@ footer{background:#05070f;padding:50px 20px 24px;border-top:1px solid var(--line
             <a href="/about/">About</a>
         </div>
 
-        <div class="nav-right">
-            <a href="/upload/" class="btn-quote">
-                <span>Upload File</span> <i class="fas fa-arrow-right"></i>
-            </a>
-        </div>
+        <a href="/upload/" class="nav-cta">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <span>Upload File</span>
+        </a>
     </div>
 </nav>
 
-<!-- HERO SLIDER -->
-<section class="hero" id="heroSlider">
+<!-- HERO -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-inner">
+            <span class="hero-eyebrow">
+                <span class="dot"></span>
+                Built by students, for students
+            </span>
 
-    <div class="slide s1 active">
-        <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1600&q=80');"></div>
-        <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=1600&q=80');"></div>
-        <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1600&q=80');"></div>
-        <div class="slide-overlay"></div>
-        <a href="/browse/" class="slide-btn">
-            <div class="hero-inner">
-                <h1>See <span class="accent">Uploaded</span><br>Notes</h1>
-                <p>Browse thousands of notes, past papers, and study materials shared by students like you.</p>
-                <span class="hero-cta">Browse Notes <i class="fas fa-arrow-right"></i></span>
+            <h1>
+                Share notes.<br>
+                Learn <em>together</em>.
+            </h1>
+
+            <p class="hero-lede">
+                The free platform where students upload, discover, and organize study materials — past papers, notes, slides, and more. Built in Tanzania.
+            </p>
+
+            <div class="hero-btns">
+                <a href="/browse/" class="btn btn-primary">
+                    <i class="fas fa-eye"></i> Browse Notes
+                </a>
+                <a href="/upload/" class="btn btn-secondary">
+                    <i class="fas fa-cloud-upload-alt"></i> Upload a File
+                </a>
             </div>
-        </a>
-    </div>
 
-    <div class="slide s2">
-        <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=1600&q=80');"></div>
-        <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1600&q=80');"></div>
-        <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1600&q=80');"></div>
-        <div class="slide-overlay"></div>
-        <a href="/upload/" class="slide-btn">
-            <div class="hero-inner">
-                <h1>Upload Your<br><span class="accent">Own</span> Notes</h1>
-                <p>Share what you know with the community. Upload notes in seconds — no sign-up required.</p>
-                <span class="hero-cta">Upload Now <i class="fas fa-arrow-right"></i></span>
+            <div class="search-wrap">
+                <form class="search-box" action="/browse/" method="get">
+                    <i class="fas fa-search"></i>
+                    <input type="text" name="q" placeholder="Search notes, courses, or module codes…" />
+                    <button type="submit">Search</button>
+                </form>
             </div>
-        </a>
-    </div>
 
-    <div class="slide s3">
-        <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1600&q=80');"></div>
-        <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1600&q=80');"></div>
-        <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?w=1600&q=80');"></div>
-        <div class="slide-overlay"></div>
-        <a href="/calculator/" class="slide-btn">
-            <div class="hero-inner">
-                <h1>Smart <span class="accent">Calculator</span><br>For Students</h1>
-                <p>GPA, scientific, and basic calculators — everything you need in one place.</p>
-                <span class="hero-cta">Open Calculator <i class="fas fa-arrow-right"></i></span>
-            </div>
-        </a>
-    </div>
-
-    <div class="slide s4">
-        <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1600&q=80');"></div>
-        <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=1600&q=80');"></div>
-        <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1568224275-4b4bf2d55f8f?w=1600&q=80');"></div>
-        <div class="slide-overlay"></div>
-        <a href="/scanner/" class="slide-btn">
-            <div class="hero-inner">
-                <h1>Turn Pages Into<br><span class="accent">Clean</span> PDFs</h1>
-                <p>Scan handwritten notes and turn them into clean, shareable PDF documents instantly.</p>
-                <span class="hero-cta">Open Scanner <i class="fas fa-arrow-right"></i></span>
-            </div>
-        </a>
-    </div>
-
-    <div class="slide s5">
-        <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1600&q=80');"></div>
-        <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&q=80');"></div>
-        <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1543269865-cbf427effbad?w=1600&q=80');"></div>
-        <div class="slide-overlay"></div>
-        <a href="/free_course/" class="slide-btn">
-            <div class="hero-inner">
-                <h1>Learn With<br><span class="accent">Free</span> Courses</h1>
-                <p>Project-based lessons, 50 modules, and 10 capstone labs — 100% free, forever.</p>
-                <span class="hero-cta">Start Learning <i class="fas fa-arrow-right"></i></span>
-            </div>
-        </a>
-    </div>
-
-    <div class="swipe-hint" id="swipeHint">
-        <i class="fas fa-arrows-left-right"></i> Swipe to navigate
-    </div>
-
-    <div class="hero-dots" id="heroDots">
-        <button class="active" data-slide="0" aria-label="Slide 1"></button>
-        <button data-slide="1" aria-label="Slide 2"></button>
-        <button data-slide="2" aria-label="Slide 3"></button>
-        <button data-slide="3" aria-label="Slide 4"></button>
-        <button data-slide="4" aria-label="Slide 5"></button>
-    </div>
-</section>
-
-<!-- STACKED CARDS -->
-<section class="stack-section">
-    <div class="stack-inner">
-        <div class="stack-head">
-            <span class="stack-label">What's inside</span>
-            <h2>Everything a student needs</h2>
-        </div>
-
-        <div class="stack-item">
-            <div class="stack-card">
-                <div class="stack-img">
-                    <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1000&q=80');"></div>
-                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1000&q=80');"></div>
-                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1000&q=80');"></div>
-                    <span class="stack-img-number">01</span>
-                    <div class="stack-img-dots"><span class="active"></span><span></span><span></span></div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="hero-stat-num">10K+</span>
+                    <span class="hero-stat-label">Notes shared</span>
                 </div>
-                <div class="stack-content">
-                    <div class="stack-icon"><i class="fas fa-file-alt"></i></div>
-                    <h3>Real Notes from Real Students</h3>
-                    <p>PDFs, slides, and handwritten scans from students in your course. Every note is verified by the community and ready to download in one click.</p>
-                    <a href="/browse/" class="stack-link">Browse Notes <i class="fas fa-arrow-right"></i></a>
+                <div class="hero-stat">
+                    <span class="hero-stat-num">5K+</span>
+                    <span class="hero-stat-label">Active students</span>
                 </div>
-            </div>
-        </div>
-
-        <div class="stack-item">
-            <div class="stack-card">
-                <div class="stack-img">
-                    <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1000&q=80');"></div>
-                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1000&q=80');"></div>
-                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1550399105-c4db5fb85c18?w=1000&q=80');"></div>
-                    <span class="stack-img-number">02</span>
-                    <div class="stack-img-dots"><span class="active"></span><span></span><span></span></div>
+                <div class="hero-stat">
+                    <span class="hero-stat-num">50+</span>
+                    <span class="hero-stat-label">Universities</span>
                 </div>
-                <div class="stack-content">
-                    <div class="stack-icon"><i class="fas fa-search"></i></div>
-                    <h3>Smart Search by Module</h3>
-                    <p>Type a module code or course name and get instant results. No scrolling through endless folders — the search understands what you're looking for.</p>
-                    <a href="/browse/" class="stack-link">Try Search <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-
-        <div class="stack-item">
-            <div class="stack-card">
-                <div class="stack-img">
-                    <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1000&q=80');"></div>
-                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1568224275-4b4bf2d55f8f?w=1000&q=80');"></div>
-                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=1000&q=80');"></div>
-                    <span class="stack-img-number">03</span>
-                    <div class="stack-img-dots"><span class="active"></span><span></span><span></span></div>
-                </div>
-                <div class="stack-content">
-                    <div class="stack-icon"><i class="fas fa-camera-retro"></i></div>
-                    <h3>Built-in Document Scanner</h3>
-                    <p>Turn your phone into a document scanner. Auto-crop, enhance, and save straight to PDF — everything runs in the browser, no apps to install.</p>
-                    <a href="/scanner/" class="stack-link">Open Scanner <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </div>
-
-        <div class="stack-item">
-            <div class="stack-card">
-                <div class="stack-img">
-                    <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1000&q=80');"></div>
-                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1543269865-cbf427effbad?w=1000&q=80');"></div>
-                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1000&q=80');"></div>
-                    <span class="stack-img-number">04</span>
-                    <div class="stack-img-dots"><span class="active"></span><span></span><span></span></div>
-                </div>
-                <div class="stack-content">
-                    <div class="stack-icon"><i class="fas fa-users"></i></div>
-                    <h3>Built by the Student Community</h3>
-                    <p>Every note, every paper, every scan — shared by students like you. Contribute your own notes and help the next student ace their exams.</p>
-                    <a href="/upload/" class="stack-link">Upload Yours <i class="fas fa-arrow-right"></i></a>
+                <div class="hero-stat">
+                    <span class="hero-stat-num">100%</span>
+                    <span class="hero-stat-label">Free forever</span>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- EXPLORE SECTION (Free Courses + Hackathon) -->
-<section class="explore">
-    <div class="explore-inner">
-        <div class="explore-head">
-            <span class="explore-label">More from Student Hub</span>
-            <h2>Explore our <span class="accent">programs</span></h2>
+<!-- FEATURES -->
+<section class="section">
+    <div class="container">
+        <div class="section-head">
+            <span class="section-eyebrow">What you can do</span>
+            <h2>Everything you need to <em>study smarter</em></h2>
+            <p>Simple, powerful tools made for real student life — no signup walls, no paywalls.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                <h3>Upload anything</h3>
+                <p>PDFs, slides, docs, images, archives — share in seconds with drag &amp; drop.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-search"></i></div>
+                <h3>Smart search</h3>
+                <p>Find files fast by module, course code, or keyword. No endless scrolling.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-lock"></i></div>
+                <h3>Private mode</h3>
+                <p>Protect sensitive uploads with a 4-digit passcode. Only people you trust can open them.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-camera-retro"></i></div>
+                <h3>Built-in scanner</h3>
+                <p>Photograph handwritten pages and turn them into clean PDFs right in your browser.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-calculator"></i></div>
+                <h3>GPA &amp; calculators</h3>
+                <p>Weighted GPA, scientific functions, quadratic and simultaneous solvers — free.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-mobile-screen"></i></div>
+                <h3>Works everywhere</h3>
+                <p>Fully responsive on phone, tablet, and desktop. No app download required.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- EXPLORE -->
+<section class="section section-alt">
+    <div class="container">
+        <div class="section-head">
+            <span class="section-eyebrow">More from Student Hub</span>
+            <h2>Explore our <em>programs</em></h2>
             <p>Free courses to level up your skills, and a hackathon to prove them.</p>
         </div>
 
         <div class="explore-grid">
             <a href="/free_course/" class="explore-card">
-                <div class="explore-icon free"><i class="fas fa-graduation-cap"></i></div>
-                <div class="explore-body">
-                    <span class="explore-tag free">Free courses</span>
-                    <h3>Learn HTML, CSS &amp; more</h3>
-                    <p>Professional, project-based lessons with 50 modules and 10 real capstone labs. Track your progress as you go — 100% free.</p>
-                    <span class="explore-cta">Start learning <i class="fas fa-arrow-right"></i></span>
-                </div>
+                <div class="explore-icon courses"><i class="fas fa-graduation-cap"></i></div>
+                <span class="explore-tag courses">Free courses</span>
+                <h3>Learn HTML, CSS &amp; more</h3>
+                <p>Professional, project-based lessons with 50 modules and 10 real capstone labs. Track your progress as you go — 100% free.</p>
+                <span class="explore-cta">Start learning <i class="fas fa-arrow-right"></i></span>
             </a>
 
             <a href="/hackerthon/" class="explore-card">
                 <div class="explore-icon hack"><i class="fas fa-code"></i></div>
-                <div class="explore-body">
-                    <span class="explore-tag hack">Hackathon</span>
-                    <h3>Build. Compete. Win.</h3>
-                    <p>Join our coding challenges, team up with other students, and showcase your skills. Prizes, certificates, and real experience.</p>
-                    <span class="explore-cta">Join hackathon <i class="fas fa-arrow-right"></i></span>
-                </div>
+                <span class="explore-tag hack">Hackathon</span>
+                <h3>Build. Compete. Win.</h3>
+                <p>Join our coding challenges, team up with other students, and showcase your skills. Prizes, certificates, and real experience.</p>
+                <span class="explore-cta">Join hackathon <i class="fas fa-arrow-right"></i></span>
             </a>
+        </div>
+    </div>
+</section>
+
+<!-- CTA BLOCK -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-block">
+            <div class="cta-block-inner">
+                <span class="cta-kicker">Help the next student</span>
+                <h2>Have notes to <em>share</em>?</h2>
+                <p>Upload them in seconds — a single file could help hundreds of students succeed.</p>
+                <a href="/upload/" class="btn btn-primary">
+                    <i class="fas fa-cloud-upload-alt"></i> Upload Now
+                </a>
+            </div>
         </div>
     </div>
 </section>
 
 <!-- TOOLS -->
-<section class="tools">
-    <div class="tools-inner">
+<section class="section">
+    <div class="container">
         <div class="section-head">
-            <span class="section-label">More tools</span>
+            <span class="section-eyebrow">More tools</span>
             <h2>Free resources we recommend</h2>
         </div>
 
         <div class="tools-grid">
             <a href="https://twarvis-pdf-50le.onrender.com" target="_blank" rel="noopener" class="tool">
-                <i class="fas fa-file-pdf"></i>
-                <span><strong>PDF Maker</strong><small>create &amp; edit PDFs</small></span>
+                <div class="tool-icon"><i class="fas fa-file-pdf"></i></div>
+                <div class="tool-body">
+                    <strong>PDF Maker</strong>
+                    <small>Create &amp; edit PDFs</small>
+                </div>
             </a>
             <a href="https://indext.oneapp.dev" target="_blank" rel="noopener" class="tool">
-                <i class="fas fa-code"></i>
-                <span><strong>Code Convert</strong><small>file extension tools</small></span>
+                <div class="tool-icon"><i class="fas fa-code"></i></div>
+                <div class="tool-body">
+                    <strong>Code Convert</strong>
+                    <small>File extension tools</small>
+                </div>
             </a>
             <a href="https://soma.dit.ac.tz/auth/login" target="_blank" rel="noopener" class="tool">
-                <i class="fas fa-university"></i>
-                <span><strong>Soma Portal</strong><small>DIT student portal</small></span>
+                <div class="tool-icon"><i class="fas fa-university"></i></div>
+                <div class="tool-body">
+                    <strong>Soma Portal</strong>
+                    <small>DIT student portal</small>
+                </div>
             </a>
             <a href="https://movieboxapp.in" target="_blank" rel="noopener" class="tool">
-                <i class="fas fa-film"></i>
-                <span><strong>MovieBox</strong><small>movies &amp; shows</small></span>
+                <div class="tool-icon"><i class="fas fa-film"></i></div>
+                <div class="tool-body">
+                    <strong>MovieBox</strong>
+                    <small>Movies &amp; shows</small>
+                </div>
             </a>
         </div>
-    </div>
-</section>
-
-<!-- CTA -->
-<section class="cta">
-    <div class="cta-inner">
-        <div>
-            <h3>Have notes to share?</h3>
-            <p>Upload them in seconds — help the next student out.</p>
-        </div>
-        <a href="/upload/" class="btn-quote">Upload Now <i class="fas fa-arrow-right"></i></a>
     </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-    <div class="footer-inner">
+    <div class="container">
         <div class="footer-top">
             <div class="footer-brand">
-                <a href="/" class="logo">
-                    <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
-                    <span class="logo-text">Student<span>Hub</span></span>
-                </a>
-                <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
+                <div class="footer-brand-logo">
+                    <img src="/apple-touch-icon.png" alt="Student Hub" class="logo-img" />
+                    <div>Student<span>Hub</span></div>
+                </div>
+                <p>A free, student-built platform for sharing notes and past papers. Made in Tanzania with care.</p>
             </div>
 
             <div class="footer-col">
@@ -541,136 +971,15 @@ footer{background:#05070f;padding:50px 20px 24px;border-top:1px solid var(--line
         </div>
 
         <div class="footer-bottom">
-            <p>© 2026 Student Hub. All rights reserved.</p>
+            <p>© 2026 Student Hub · All rights reserved</p>
             <div class="footer-socials">
-                <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
-                <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
-                <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                <a href="https://wa.me/255740706007" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
             </div>
         </div>
     </div>
 </footer>
-
-<script>
-// HERO SLIDER
-(function(){
-    const hero=document.getElementById('heroSlider');
-    const slides=document.querySelectorAll('.slide');
-    const dots=document.querySelectorAll('#heroDots button');
-    const swipeHint=document.getElementById('swipeHint');
-    const total=slides.length;
-    let current=0,timer=null;
-    let startX=0,startY=0,isDragging=false,moved=false;
-    const SLIDE_INTERVAL=5500;
-    const BG_INTERVAL=3500;
-
-    function goTo(index){
-        slides.forEach(s=>s.classList.remove('active'));
-        dots.forEach(d=>d.classList.remove('active'));
-        current=(index+total)%total;
-        slides[current].classList.add('active');
-        dots[current].classList.add('active');
-    }
-    function next(){goTo(current+1)}
-    function prev(){goTo(current-1)}
-    function start(){stop();timer=setInterval(next,SLIDE_INTERVAL)}
-    function stop(){if(timer)clearInterval(timer);timer=null}
-
-    dots.forEach((dot,i)=>{
-        dot.addEventListener('click',(e)=>{
-            e.stopPropagation();
-            goTo(i);
-            start();
-        });
-    });
-
-    hero.addEventListener('mouseenter',stop);
-    hero.addEventListener('mouseleave',()=>{if(!isDragging)start()});
-    document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();else start()});
-
-    const slidesBgs=[];
-    slides.forEach(s=>slidesBgs.push(s.querySelectorAll('.slide-bg')));
-    let bgIndex=0;
-    setInterval(()=>{
-        slidesBgs.forEach(bgs=>{
-            if(bgs.length===0)return;
-            bgs.forEach(b=>b.classList.remove('active'));
-            bgIndex=bgIndex%bgs.length;
-            bgs[bgIndex].classList.add('active');
-        });
-        bgIndex++;
-    },BG_INTERVAL);
-
-    // Stack card image rotation
-    document.querySelectorAll('.stack-card').forEach(card=>{
-        const bgs=card.querySelectorAll('.stack-img-bg');
-        const dots=card.querySelectorAll('.stack-img-dots span');
-        if(!bgs.length)return;
-        let idx=0;
-        setInterval(()=>{
-            bgs.forEach(b=>b.classList.remove('active'));
-            dots.forEach(d=>d.classList.remove('active'));
-            idx=(idx+1)%bgs.length;
-            bgs[idx].classList.add('active');
-            if(dots[idx])dots[idx].classList.add('active');
-        },3000+Math.random()*1200);
-    });
-
-    // Swipe
-    const SWIPE_THRESHOLD=50;
-    function onDragStart(x,y){startX=x;startY=y;isDragging=true;moved=false;stop()}
-    function onDragMove(x,y){if(!isDragging)return;const dx=x-startX,dy=y-startY;if(Math.abs(dx)>10&&Math.abs(dx)>Math.abs(dy))moved=true}
-    function onDragEnd(x,y){
-        if(!isDragging)return;
-        const dx=x-startX,dy=y-startY;
-        isDragging=false;
-        if(Math.abs(dy)>Math.abs(dx)){start();return}
-        if(Math.abs(dx)>SWIPE_THRESHOLD&&moved){
-            if(dx<0)next();else prev();
-            hideHint();
-        }
-        start();
-    }
-
-    hero.addEventListener('touchstart',e=>{const t=e.touches[0];onDragStart(t.clientX,t.clientY)},{passive:true});
-    hero.addEventListener('touchmove',e=>{const t=e.touches[0];onDragMove(t.clientX,t.clientY)},{passive:true});
-    hero.addEventListener('touchend',e=>{const t=e.changedTouches[0];onDragEnd(t.clientX,t.clientY)});
-    hero.addEventListener('mousedown',e=>{if(e.target.closest('a')||e.target.closest('button'))return;onDragStart(e.clientX,e.clientY)});
-    window.addEventListener('mousemove',e=>{if(isDragging)onDragMove(e.clientX,e.clientY)});
-    window.addEventListener('mouseup',e=>{if(isDragging)onDragEnd(e.clientX,e.clientY)});
-
-    hero.querySelectorAll('.slide-btn').forEach(link=>{
-        link.addEventListener('click',e=>{
-            if(moved){e.preventDefault();e.stopPropagation();moved=false}
-        });
-    });
-
-    function hideHint(){if(swipeHint)swipeHint.classList.add('hidden')}
-    setTimeout(hideHint,8000);
-    start();
-})();
-
-// STACKED CARDS SCALE ON SCROLL
-(function(){
-    const items=document.querySelectorAll('.stack-item');
-    if(!items.length)return;
-    function updateStack(){
-        items.forEach(item=>{
-            const card=item.querySelector('.stack-card');
-            if(!card)return;
-            const rect=item.getBoundingClientRect();
-            const scrolledPast=Math.max(0,-rect.top);
-            const itemHeight=item.offsetHeight;
-            const progress=Math.min(1,scrolledPast/itemHeight);
-            const scale=1-progress*0.05;
-            const translateY=progress*-16;
-            card.style.transform=`scale(${scale}) translateY(${translateY}px)`;
-        });
-        if(window.innerWidth>800)requestAnimationFrame(updateStack);
-    }
-    if(window.innerWidth>800)updateStack();
-})();
-</script>
 
 </body>
 </html>
