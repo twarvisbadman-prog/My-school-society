@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Under Maintenance | Student Hub</title>
+<title>Free Courses — Under Maintenance | Student Hub</title>
 <link rel="icon" href="/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -12,6 +12,7 @@
 :root{
   --bg:#080b18;--panel:#111831;--panel2:#182344;--text:#eef2ff;--muted:#9ca8c8;
   --red:#ff4d5a;--blue:#70a8ff;--green:#43d392;--gold:#ffd166;--line:#293454;
+  --purple:#a78bfa;--cyan:#22d3ee;--orange:#fb923c;--pink:#f472b6;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -28,162 +29,196 @@ body{
 
 /* TOP BAR */
 .topbar{background:#05070f;color:var(--text);font-size:.82rem;padding:8px 0;border-bottom:1px solid var(--line)}
-.topbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;text-align:center}
+.topbar-inner{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;text-align:center}
 .topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:var(--muted);white-space:nowrap}
 .topbar-inner span i{color:var(--red);font-size:.78rem}
 
 /* NAV */
 .mainnav{background:rgba(8,11,24,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:100;width:100%}
 .mainnav-inner{max-width:1280px;margin:0 auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:20px}
-.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;color:var(--text);letter-spacing:-.02em;flex-shrink:0}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;color:var(--text);letter-spacing:-.02em;flex-shrink:0;text-decoration:none}
 .logo-mark{width:36px;height:36px;background:linear-gradient(135deg,var(--red),#ff7b62);border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.95rem;flex-shrink:0;box-shadow:0 4px 15px rgba(255,77,90,.35)}
 .logo-text span{color:var(--red)}
 .menu{display:flex;align-items:center;gap:2px;flex-wrap:wrap;justify-content:center;flex:1;min-width:0}
-.menu a{padding:8px 11px;font-size:.84rem;font-weight:600;color:var(--muted);border-radius:8px;white-space:nowrap;transition:all .25s ease}
+.menu a{padding:8px 11px;font-size:.84rem;font-weight:600;color:var(--muted);border-radius:8px;white-space:nowrap;transition:all .25s ease;text-decoration:none}
 .menu a:hover{color:var(--text);background:var(--panel2)}
 .menu a.active{color:var(--text);background:var(--panel2);box-shadow:inset 0 0 0 1px var(--line)}
 .menu a.course-link{color:var(--red)}
 .menu a.hack-link{color:var(--blue)}
 .menu a.course-link i,.menu a.hack-link i{font-size:.75rem;margin-right:5px}
 .nav-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
-.btn-quote{background:var(--red);color:#fff;padding:10px 20px;border-radius:10px;font-weight:700;font-size:.85rem;display:inline-flex;align-items:center;gap:8px;transition:all .25s ease;white-space:nowrap;box-shadow:0 4px 15px rgba(255,77,90,.3)}
+.btn-quote{background:var(--red);color:#fff;padding:10px 20px;border-radius:10px;font-weight:700;font-size:.85rem;display:inline-flex;align-items:center;gap:8px;transition:all .25s ease;white-space:nowrap;box-shadow:0 4px 15px rgba(255,77,90,.3);text-decoration:none}
 .btn-quote:hover{background:#ff2f3e;transform:translateY(-1px);box-shadow:0 8px 22px rgba(255,77,90,.45)}
 
 /* MAIN */
 .wrap{
   flex:1;
-  display:flex;align-items:center;justify-content:center;
-  padding:60px 20px 80px;
+  max-width:1280px;
+  margin:0 auto;
+  padding:50px 20px 80px;
+  width:100%;
 }
 
-.card{
-  max-width:560px;width:100%;
-  background:rgba(15,21,43,.95);
-  border:1px solid var(--line);
-  border-radius:24px;
-  padding:52px 40px 44px;
-  text-align:center;
-  box-shadow:0 25px 70px rgba(0,0,0,.5);
-  border-top:4px solid var(--gold);
-  animation:pop .6s cubic-bezier(.34,1.56,.64,1);
-  position:relative;
-  overflow:hidden;
-}
-@keyframes pop{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
-
-.card::before{
-  content:'';
-  position:absolute;top:-60px;right:-60px;
-  width:160px;height:160px;
-  background:radial-gradient(circle, rgba(255,209,102,.15), transparent 70%);
-  border-radius:50%;
-  pointer-events:none;
-}
-.card::after{
-  content:'';
-  position:absolute;bottom:-80px;left:-80px;
-  width:200px;height:200px;
-  background:radial-gradient(circle, rgba(255,77,90,.10), transparent 70%);
-  border-radius:50%;
-  pointer-events:none;
-}
-
-.badge{
+/* HERO */
+.hero{text-align:center;margin-bottom:40px}
+.hero .badge{
   display:inline-flex;align-items:center;gap:8px;
   background:rgba(255,209,102,.10);
   border:1px solid rgba(255,209,102,.35);
   color:var(--gold);
   font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
-  padding:7px 16px;border-radius:50px;margin-bottom:24px;
-  position:relative;z-index:1;
+  padding:7px 16px;border-radius:50px;margin-bottom:20px;
 }
-.badge .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:blink 1.5s ease-in-out infinite}
+.hero .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:blink 1.5s ease-in-out infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 
-.icon-wrap{
-  width:110px;height:110px;margin:0 auto 26px;
-  border-radius:50%;
-  background:radial-gradient(circle at 30% 30%, rgba(255,209,102,.28), rgba(255,209,102,.05));
-  display:grid;place-items:center;
-  color:var(--gold);font-size:2.8rem;
-  border:2px solid rgba(255,209,102,.35);
-  box-shadow:0 0 50px rgba(255,209,102,.20), inset 0 0 30px rgba(255,209,102,.05);
-  position:relative;z-index:1;
-  animation:spin 12s linear infinite;
+.hero h1{
+  font-size:clamp(1.8rem,4.5vw,2.6rem);
+  font-weight:900;letter-spacing:-.025em;
+  margin-bottom:14px;line-height:1.15;
 }
-@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
-.icon-wrap i{animation:spinRev 12s linear infinite}
-@keyframes spinRev{0%{transform:rotate(0)}100%{transform:rotate(-360deg)}}
-
-h1{
-  font-size:clamp(1.55rem,4.5vw,2rem);
-  font-weight:900;letter-spacing:-.02em;
-  margin-bottom:16px;color:var(--text);
-  line-height:1.15;
-  position:relative;z-index:1;
-}
-h1 .accent{
+.hero h1 .accent{
   color:var(--gold);
   text-decoration:underline;text-decoration-color:var(--gold);
   text-underline-offset:8px;text-decoration-thickness:5px;
 }
+.hero p{
+  color:var(--muted);font-size:1rem;line-height:1.7;
+  max-width:620px;margin:0 auto;
+}
+.hero p strong{color:var(--text)}
 
-.lead{
-  color:var(--muted);font-size:.98rem;line-height:1.75;
-  max-width:420px;margin:0 auto 10px;
-  position:relative;z-index:1;
-}
-.lead strong{color:var(--text);font-weight:700}
-
-.divider{
-  height:1px;
-  background:linear-gradient(90deg,transparent,var(--line),transparent);
-  margin:28px 0 22px;
-  position:relative;z-index:1;
+/* TRACKS GRID */
+.tracks-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+  margin-top:20px;
 }
 
-.meta{
-  display:flex;justify-content:center;gap:24px;flex-wrap:wrap;
-  font-size:.78rem;color:var(--muted);
-  position:relative;z-index:1;
+.track{
+  position:relative;
+  background:rgba(15,21,43,.95);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:28px 24px 26px;
+  text-decoration:none;
+  color:inherit;
+  display:flex;flex-direction:column;
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+  overflow:hidden;
+  cursor:pointer;
+  min-height:260px;
 }
-.meta span{display:inline-flex;align-items:center;gap:7px;font-weight:600}
-.meta i{color:var(--blue);font-size:.78rem}
+.track::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--accent-color),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.track:hover{
+  transform:translateY(-6px);
+  border-color:var(--accent-color);
+  box-shadow:0 20px 50px rgba(0,0,0,.5), 0 0 0 1px var(--accent-color);
+}
+.track:hover::before{opacity:1}
 
-.cta-row{
-  display:flex;gap:12px;justify-content:center;flex-wrap:wrap;
-  margin-top:30px;position:relative;z-index:1;
+.track-icon{
+  width:64px;height:64px;
+  border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.7rem;
+  margin-bottom:18px;
+  flex-shrink:0;
+  background:var(--accent-bg);
+  color:var(--accent-color);
+  box-shadow:0 6px 20px var(--accent-glow);
+  transition:transform .3s;
 }
-.btn{
-  padding:14px 26px;border-radius:12px;font-weight:800;font-size:.9rem;
-  cursor:pointer;border:none;transition:.25s;
-  display:inline-flex;align-items:center;gap:9px;
-  text-decoration:none;font-family:inherit;
-}
-.btn-primary{
-  background:var(--red);color:#fff;
-  box-shadow:0 6px 20px rgba(255,77,90,.35);
-}
-.btn-primary:hover{background:#ff2f3e;transform:translateY(-2px);box-shadow:0 10px 28px rgba(255,77,90,.5)}
-.btn-ghost{
-  background:transparent;color:var(--text);border:1px solid var(--line);
-}
-.btn-ghost:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-2px)}
+.track:hover .track-icon{transform:scale(1.08) rotate(-4deg)}
 
-.notify-note{
-  margin-top:22px;
-  font-size:.78rem;color:var(--muted);
-  position:relative;z-index:1;
+.track h3{
+  font-size:1.15rem;
+  font-weight:800;
+  letter-spacing:-.01em;
+  margin-bottom:8px;
+  color:var(--text);
+  line-height:1.25;
 }
-.notify-note a{color:var(--red);font-weight:700}
-.notify-note a:hover{text-decoration:underline}
+.track .track-desc{
+  color:var(--muted);
+  font-size:.86rem;
+  line-height:1.6;
+  margin-bottom:16px;
+  flex:1;
+}
+
+.track-meta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:auto;
+  padding-top:14px;
+  border-top:1px solid var(--line);
+}
+
+.track-status{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--gold);
+  background:rgba(255,209,102,.08);
+  border:1px solid rgba(255,209,102,.30);
+  padding:4px 10px;
+  border-radius:50px;
+}
+.track-status .dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--gold);
+  animation:blink 1.5s ease-in-out infinite;
+}
+
+.track-arrow{
+  color:var(--accent-color);
+  font-size:.85rem;
+  font-weight:700;
+  display:inline-flex;align-items:center;gap:6px;
+  transition:gap .25s;
+}
+.track:hover .track-arrow{gap:12px}
+
+/* Per-track accent colors */
+.track.github{--accent-color:#a78bfa;--accent-bg:rgba(167,139,250,.12);--accent-glow:rgba(167,139,250,.20)}
+.track.htmlcss{--accent-color:#ff4d5a;--accent-bg:rgba(255,77,90,.12);--accent-glow:rgba(255,77,90,.20)}
+.track.python{--accent-color:#43d392;--accent-bg:rgba(67,211,146,.12);--accent-glow:rgba(67,211,146,.20)}
+.track.english{--accent-color:#70a8ff;--accent-bg:rgba(112,168,255,.12);--accent-glow:rgba(112,168,255,.20)}
+.track.kiswahili{--accent-color:#22d3ee;--accent-bg:rgba(34,211,238,.12);--accent-glow:rgba(34,211,238,.20)}
+
+/* NOTICE */
+.notice{
+  margin-top:40px;
+  background:rgba(255,209,102,.06);
+  border:1px solid rgba(255,209,102,.25);
+  border-left:4px solid var(--gold);
+  border-radius:12px;
+  padding:20px 24px;
+  display:flex;align-items:flex-start;gap:14px;
+}
+.notice i{
+  color:var(--gold);
+  font-size:1.15rem;
+  margin-top:2px;
+  flex-shrink:0;
+}
+.notice-text{color:#f5e0b3;font-size:.9rem;line-height:1.7}
+.notice-text strong{color:var(--gold);display:block;margin-bottom:4px;font-size:.95rem}
 
 /* FOOTER */
 footer{background:#05070f;padding:26px 20px;border-top:1px solid var(--line);position:relative;z-index:1}
 .footer-inner{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
 .footer-inner p{color:var(--muted);font-size:.82rem}
 .footer-socials{display:flex;gap:8px}
-.footer-socials a{width:34px;height:34px;border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.85rem;transition:all .25s ease;background:var(--panel)}
+.footer-socials a{width:34px;height:34px;border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.85rem;transition:all .25s ease;background:var(--panel);text-decoration:none}
 .footer-socials a:hover{border-color:var(--red);color:var(--red)}
 
 @media(max-width:720px){
@@ -193,15 +228,15 @@ footer{background:#05070f;padding:26px 20px;border-top:1px solid var(--line);pos
   .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0}
   .menu::-webkit-scrollbar{display:none}
   .menu a{padding:8px 12px;font-size:.8rem;flex-shrink:0}
-  .wrap{padding:40px 16px 60px}
-  .card{padding:40px 24px 34px;border-radius:20px}
-  .icon-wrap{width:90px;height:90px;font-size:2.3rem}
+  .wrap{padding:35px 16px 60px}
+  .tracks-grid{grid-template-columns:1fr;gap:14px}
+  .track{padding:22px 20px;min-height:auto}
 }
 @media(max-width:480px){
   .topbar-inner span:nth-child(3){display:none}
   .btn-quote span{display:none}
-  .cta-row .btn{flex:1;justify-content:center}
   .footer-inner{flex-direction:column;text-align:center}
+  .hero h1{font-size:1.6rem}
 }
 </style>
 </head>
@@ -244,46 +279,92 @@ footer{background:#05070f;padding:26px 20px;border-top:1px solid var(--line);pos
 
   <!-- MAIN -->
   <div class="wrap">
-    <div class="card">
 
-      <div class="icon-wrap">
-        <i class="fas fa-gear"></i>
-      </div>
-
+    <div class="hero">
       <span class="badge"><span class="dot"></span> System Under Maintenance</span>
+      <h1>Learn anything, <span class="accent">at your pace</span>.</h1>
+      <p>Five complete learning tracks — <strong>GitHub</strong>, <strong>HTML &amp; CSS</strong>, <strong>Python</strong>, <strong>English</strong>, and <strong>Kiswahili</strong>. All coming soon with real lessons, projects, and interactive labs.</p>
+    </div>
 
-      <h1>We're upgrading the <span class="accent">course</span>.</h1>
+    <!-- TRACKS GRID -->
+    <div class="tracks-grid">
 
-      <p class="lead">
-        The <strong>Free Courses</strong> section is currently being rebuilt with new lessons,
-        real projects, and interactive labs.
-      </p>
-      <p class="lead">
-        Please check back soon — it will be better than ever.
-      </p>
+      <!-- GITHUB -->
+      <a href="/free_course/github/" class="track github">
+        <div class="track-icon">
+          <i class="fab fa-github"></i>
+        </div>
+        <h3>Learn GitHub</h3>
+        <p class="track-desc">Version control, repositories, branches, pull requests, and collaboration workflows used by every professional developer.</p>
+        <div class="track-meta">
+          <span class="track-status"><span class="dot"></span> Coming soon</span>
+          <span class="track-arrow">Explore <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </a>
 
-      <div class="divider"></div>
+      <!-- HTML & CSS -->
+      <a href="/free_course/html-css/" class="track htmlcss">
+        <div class="track-icon">
+          <i class="fas fa-code"></i>
+        </div>
+        <h3>Learn HTML &amp; CSS</h3>
+        <p class="track-desc">Build real websites from scratch — semantic HTML, modern CSS, flexbox, grid, dark/light themes, and responsive design.</p>
+        <div class="track-meta">
+          <span class="track-status"><span class="dot"></span> Coming soon</span>
+          <span class="track-arrow">Explore <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </a>
 
-      <div class="meta">
-        <span><i class="fas fa-clock"></i> Coming soon</span>
-        <span><i class="fas fa-tools"></i> Update in progress</span>
-        <span><i class="fas fa-shield-halved"></i> All data safe</span>
-      </div>
+      <!-- PYTHON -->
+      <a href="/free_course/python/" class="track python">
+        <div class="track-icon">
+          <i class="fab fa-python"></i>
+        </div>
+        <h3>Learn Python</h3>
+        <p class="track-desc">From variables and loops to functions, files, and real projects. The friendliest programming language for beginners.</p>
+        <div class="track-meta">
+          <span class="track-status"><span class="dot"></span> Coming soon</span>
+          <span class="track-arrow">Explore <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </a>
 
-      <div class="cta-row">
-        <a href="/browse/" class="btn btn-primary">
-          <i class="fas fa-eye"></i> Browse Notes
-        </a>
-        <a href="/" class="btn btn-ghost">
-          <i class="fas fa-home"></i> Back Home
-        </a>
-      </div>
+      <!-- ENGLISH -->
+      <a href="/free_course/english/" class="track english">
+        <div class="track-icon">
+          <i class="fas fa-language"></i>
+        </div>
+        <h3>Learn English</h3>
+        <p class="track-desc">Grammar, vocabulary, pronunciation, and real conversations. Build confidence speaking and writing English.</p>
+        <div class="track-meta">
+          <span class="track-status"><span class="dot"></span> Coming soon</span>
+          <span class="track-arrow">Explore <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </a>
 
-      <p class="notify-note">
-        Need updates? <a href="https://wa.me/255740706007" target="_blank" rel="noopener">Message us on WhatsApp</a>
-      </p>
+      <!-- KISWAHILI -->
+      <a href="/free_course/kiswahili/" class="track kiswahili">
+        <div class="track-icon">
+          <i class="fas fa-book"></i>
+        </div>
+        <h3>Learn Kiswahili</h3>
+        <p class="track-desc">Master Tanzania's national language — greetings, grammar, everyday phrases, and cultural context.</p>
+        <div class="track-meta">
+          <span class="track-status"><span class="dot"></span> Coming soon</span>
+          <span class="track-arrow">Explore <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </a>
 
     </div>
+
+    <!-- NOTICE -->
+    <div class="notice">
+      <i class="fas fa-circle-info"></i>
+      <div class="notice-text">
+        <strong>Currently under maintenance</strong>
+        We're building each of these tracks with real lessons, interactive code editors, and hands-on projects. Click any track to see its individual status, or check back soon.
+      </div>
+    </div>
+
   </div>
 
   <!-- FOOTER -->
