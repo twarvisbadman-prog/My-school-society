@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Learn HTML & CSS — Deep Guided Course | Student Hub</title>
+<title>Under Maintenance | Student Hub</title>
 <link rel="icon" href="/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -15,17 +15,24 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.55;overflow-x:hidden}
-a{color:inherit;text-decoration:none}
-button,input,select,textarea{font-family:inherit}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);color:var(--text);
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  overflow-x:hidden;
+  position:relative;
+}
 #rain{position:fixed;inset:0;width:100%;height:100%;opacity:.06;z-index:0;pointer-events:none}
-.page{position:relative;z-index:1}
+.page{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh}
 
+/* TOP BAR */
 .topbar{background:#05070f;color:var(--text);font-size:.82rem;padding:8px 0;border-bottom:1px solid var(--line)}
-.topbar-inner{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;text-align:center}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;text-align:center}
 .topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:var(--muted);white-space:nowrap}
 .topbar-inner span i{color:var(--red);font-size:.78rem}
 
+/* NAV */
 .mainnav{background:rgba(8,11,24,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:100;width:100%}
 .mainnav-inner{max-width:1280px;margin:0 auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:20px}
 .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;color:var(--text);letter-spacing:-.02em;flex-shrink:0}
@@ -42,110 +49,159 @@ button,input,select,textarea{font-family:inherit}
 .btn-quote{background:var(--red);color:#fff;padding:10px 20px;border-radius:10px;font-weight:700;font-size:.85rem;display:inline-flex;align-items:center;gap:8px;transition:all .25s ease;white-space:nowrap;box-shadow:0 4px 15px rgba(255,77,90,.3)}
 .btn-quote:hover{background:#ff2f3e;transform:translateY(-1px);box-shadow:0 8px 22px rgba(255,77,90,.45)}
 
-.shell{max-width:1280px;margin:0 auto;padding:22px 20px 60px;display:grid;grid-template-columns:290px minmax(0,1fr);gap:22px;align-items:start}
-
-.side-panel{background:rgba(15,21,43,.95);border:1px solid var(--line);border-radius:16px;padding:18px;position:sticky;top:80px;max-height:calc(100vh - 100px);overflow-y:auto}
-.side-panel::-webkit-scrollbar{width:6px}
-.side-panel::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
-.side-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.side-head h3{font-size:.9rem;font-weight:800;letter-spacing:.02em}
-.side-head .mini-progress{font-size:.72rem;color:var(--green);font-weight:800}
-.side-progress{height:6px;background:#29314d;border-radius:20px;overflow:hidden;margin-bottom:14px}
-.side-progress .fill{height:100%;background:linear-gradient(90deg,var(--red),#ffad62);width:0;transition:.4s;border-radius:20px}
-.side-reset{width:100%;background:transparent;border:1px solid var(--line);color:var(--muted);font-size:.75rem;padding:8px;border-radius:8px;cursor:pointer;font-weight:600;margin-top:14px;transition:.2s}
-.side-reset:hover{color:var(--red);border-color:var(--red)}
-
-.side-module-title{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--red);padding:12px 4px 6px}
-.side-lesson{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;cursor:pointer;font-size:.82rem;color:var(--muted);transition:.15s;border-left:2px solid transparent}
-.side-lesson:hover{background:var(--panel2);color:var(--text)}
-.side-lesson.current{background:rgba(255,77,90,.1);color:var(--text);border-left-color:var(--red);font-weight:700}
-.side-lesson.done .num2{background:var(--green);color:#061b14;border-color:var(--green)}
-.side-lesson.locked{opacity:.4;cursor:not-allowed}
-.side-lesson.mission .num2{background:rgba(255,209,102,.15);color:var(--gold);border-color:var(--gold)}
-.side-lesson.mission.done .num2{background:var(--green);color:#061b14}
-.num2{width:22px;height:22px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);display:grid;place-items:center;font-size:.68rem;font-weight:800;flex-shrink:0;color:var(--muted)}
-.side-lesson.current .num2{background:var(--red);color:#fff;border-color:var(--red)}
-
-.stage{background:rgba(15,21,43,.95);border:1px solid var(--line);border-radius:16px;overflow:hidden}
-.stage-head{padding:20px 24px;border-bottom:1px solid var(--line);background:rgba(24,35,68,.5)}
-.crumb{color:var(--red);font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
-.stage-head h1{font-size:1.3rem;font-weight:800;letter-spacing:-.02em;margin-top:4px}
-.stage-head .mission-badge{display:inline-block;background:rgba(255,209,102,.15);color:var(--gold);font-size:.68rem;font-weight:800;letter-spacing:.12em;padding:3px 10px;border-radius:20px;margin-left:10px;text-transform:uppercase;border:1px solid rgba(255,209,102,.35)}
-
-.stage-body{padding:26px 26px 30px}
-.task-block{background:rgba(112,168,255,.06);border-left:3px solid var(--blue);padding:14px 16px;border-radius:0 10px 10px 0;margin-bottom:18px;font-size:.92rem;line-height:1.75;color:#d6e1f7}
-.task-block strong{color:var(--text)}
-.instruction{color:var(--muted);font-size:.94rem;line-height:1.8;margin-bottom:14px}
-.instruction strong{color:var(--text)}
-.instruction code{background:#080b18;border:1px solid var(--line);padding:2px 7px;border-radius:5px;color:#a1e8bd;font:12.5px 'JetBrains Mono',monospace}
-.task-block code{background:#080b18;border:1px solid var(--line);padding:2px 7px;border-radius:5px;color:#a1e8bd;font:12.5px 'JetBrains Mono',monospace}
-
-.example-box{background:#080b18;border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0 20px;overflow-x:auto}
-.example-box .lbl{color:var(--red);font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:8px}
-.example-box pre{color:#a1e8bd;font:13px/1.7 'JetBrains Mono',monospace;white-space:pre-wrap}
-
-.hint-toggle{background:transparent;border:1px dashed var(--line);color:var(--muted);padding:8px 14px;font-size:.78rem;border-radius:8px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:6px;margin-top:8px}
-.hint-toggle:hover{color:var(--gold);border-color:var(--gold)}
-.hint-box{display:none;background:rgba(255,209,102,.08);border-left:3px solid var(--gold);padding:12px 16px;border-radius:0 10px 10px 0;margin-top:10px;color:#f5e0b3;font-size:.85rem;line-height:1.7}
-.hint-box.open{display:block}
-.hint-box strong{color:var(--gold)}
-
-.workspace{margin-top:18px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#0a1228}
-.ws-header{background:#0a1228;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:8px}
-.ws-tabs{display:flex;gap:4px;background:#080b18;padding:4px;border-radius:9px}
-.ws-tab{padding:6px 14px;background:transparent;border:none;color:var(--muted);font-weight:700;font-size:.76rem;border-radius:6px;cursor:pointer;transition:.2s;font-family:'JetBrains Mono',monospace}
-.ws-tab.active{background:var(--panel2);color:var(--text);box-shadow:0 0 0 1px var(--line)}
-.ws-actions{display:flex;gap:6px;flex-wrap:wrap}
-.ws-action{padding:6px 12px;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:7px;font-size:.74rem;font-weight:700;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:6px}
-.ws-action:hover{background:#1f2c55;border-color:#3a4668}
-.ws-body{display:grid;grid-template-columns:1fr 1fr;min-height:340px}
-.ws-editor{background:#080b18;border-right:1px solid var(--line);position:relative}
-.ws-editor textarea{width:100%;height:100%;min-height:340px;background:#080b18;color:#a1e8bd;border:none;font:13px/1.7 'JetBrains Mono',monospace;padding:14px;resize:none;outline:none;tab-size:2;white-space:pre;overflow:auto}
-.ws-preview{background:#fff;min-height:340px}
-.ws-preview iframe{width:100%;height:100%;border:none;display:block;min-height:340px;background:#fff}
-
-.feedback{margin-top:20px;padding:16px 18px;border-radius:12px;display:none;align-items:flex-start;gap:12px;font-size:.9rem;line-height:1.7}
-.feedback.show{display:flex}
-.feedback.success{background:rgba(67,211,146,.08);border:1px solid rgba(67,211,146,.35);color:var(--green)}
-.feedback.success strong{color:#b6f5d4}
-.feedback.error{background:rgba(255,77,90,.08);border:1px solid rgba(255,77,90,.35);color:#ffb0b6}
-.feedback.error strong{color:#ffd0d4}
-.feedback i{font-size:1.2rem;margin-top:2px;flex-shrink:0}
-
-.stage-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:24px;flex-wrap:wrap;padding-top:20px;border-top:1px solid var(--line)}
-.btn{padding:12px 22px;border-radius:10px;font-weight:800;font-size:.88rem;cursor:pointer;border:none;transition:.2s;display:inline-flex;align-items:center;gap:8px;font-family:inherit}
-.btn-primary{background:var(--red);color:#fff;box-shadow:0 4px 15px rgba(255,77,90,.3)}
-.btn-primary:hover{background:#ff2f3e;transform:translateY(-1px)}
-.btn-primary:disabled{background:var(--panel2);color:var(--muted);cursor:not-allowed;box-shadow:none;transform:none}
-.btn-ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
-.btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
-.btn-ghost:disabled{opacity:.4;cursor:not-allowed}
-.btn-check{background:var(--blue);color:#061224;box-shadow:0 4px 15px rgba(112,168,255,.3)}
-.btn-check:hover{background:#8ab9ff;transform:translateY(-1px)}
-
-footer{background:#05070f;padding:40px 20px 20px;border-top:1px solid var(--line);position:relative;z-index:1;margin-top:40px}
-.footer-inner{max-width:1280px;margin:0 auto;text-align:center}
-.footer-inner p{color:var(--muted);font-size:.82rem}
-.footer-inner a{color:var(--red);font-weight:700}
-
-@media(max-width:960px){
-  .shell{grid-template-columns:1fr;padding:16px}
-  .side-panel{position:static;max-height:none}
-  .ws-body{grid-template-columns:1fr}
-  .ws-editor{border-right:none;border-bottom:1px solid var(--line)}
+/* MAIN */
+.wrap{
+  flex:1;
+  display:flex;align-items:center;justify-content:center;
+  padding:60px 20px 80px;
 }
+
+.card{
+  max-width:560px;width:100%;
+  background:rgba(15,21,43,.95);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:52px 40px 44px;
+  text-align:center;
+  box-shadow:0 25px 70px rgba(0,0,0,.5);
+  border-top:4px solid var(--gold);
+  animation:pop .6s cubic-bezier(.34,1.56,.64,1);
+  position:relative;
+  overflow:hidden;
+}
+@keyframes pop{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.card::before{
+  content:'';
+  position:absolute;top:-60px;right:-60px;
+  width:160px;height:160px;
+  background:radial-gradient(circle, rgba(255,209,102,.15), transparent 70%);
+  border-radius:50%;
+  pointer-events:none;
+}
+.card::after{
+  content:'';
+  position:absolute;bottom:-80px;left:-80px;
+  width:200px;height:200px;
+  background:radial-gradient(circle, rgba(255,77,90,.10), transparent 70%);
+  border-radius:50%;
+  pointer-events:none;
+}
+
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,209,102,.10);
+  border:1px solid rgba(255,209,102,.35);
+  color:var(--gold);
+  font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  padding:7px 16px;border-radius:50px;margin-bottom:24px;
+  position:relative;z-index:1;
+}
+.badge .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:blink 1.5s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+.icon-wrap{
+  width:110px;height:110px;margin:0 auto 26px;
+  border-radius:50%;
+  background:radial-gradient(circle at 30% 30%, rgba(255,209,102,.28), rgba(255,209,102,.05));
+  display:grid;place-items:center;
+  color:var(--gold);font-size:2.8rem;
+  border:2px solid rgba(255,209,102,.35);
+  box-shadow:0 0 50px rgba(255,209,102,.20), inset 0 0 30px rgba(255,209,102,.05);
+  position:relative;z-index:1;
+  animation:spin 12s linear infinite;
+}
+@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+.icon-wrap i{animation:spinRev 12s linear infinite}
+@keyframes spinRev{0%{transform:rotate(0)}100%{transform:rotate(-360deg)}}
+
+h1{
+  font-size:clamp(1.55rem,4.5vw,2rem);
+  font-weight:900;letter-spacing:-.02em;
+  margin-bottom:16px;color:var(--text);
+  line-height:1.15;
+  position:relative;z-index:1;
+}
+h1 .accent{
+  color:var(--gold);
+  text-decoration:underline;text-decoration-color:var(--gold);
+  text-underline-offset:8px;text-decoration-thickness:5px;
+}
+
+.lead{
+  color:var(--muted);font-size:.98rem;line-height:1.75;
+  max-width:420px;margin:0 auto 10px;
+  position:relative;z-index:1;
+}
+.lead strong{color:var(--text);font-weight:700}
+
+.divider{
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--line),transparent);
+  margin:28px 0 22px;
+  position:relative;z-index:1;
+}
+
+.meta{
+  display:flex;justify-content:center;gap:24px;flex-wrap:wrap;
+  font-size:.78rem;color:var(--muted);
+  position:relative;z-index:1;
+}
+.meta span{display:inline-flex;align-items:center;gap:7px;font-weight:600}
+.meta i{color:var(--blue);font-size:.78rem}
+
+.cta-row{
+  display:flex;gap:12px;justify-content:center;flex-wrap:wrap;
+  margin-top:30px;position:relative;z-index:1;
+}
+.btn{
+  padding:14px 26px;border-radius:12px;font-weight:800;font-size:.9rem;
+  cursor:pointer;border:none;transition:.25s;
+  display:inline-flex;align-items:center;gap:9px;
+  text-decoration:none;font-family:inherit;
+}
+.btn-primary{
+  background:var(--red);color:#fff;
+  box-shadow:0 6px 20px rgba(255,77,90,.35);
+}
+.btn-primary:hover{background:#ff2f3e;transform:translateY(-2px);box-shadow:0 10px 28px rgba(255,77,90,.5)}
+.btn-ghost{
+  background:transparent;color:var(--text);border:1px solid var(--line);
+}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-2px)}
+
+.notify-note{
+  margin-top:22px;
+  font-size:.78rem;color:var(--muted);
+  position:relative;z-index:1;
+}
+.notify-note a{color:var(--red);font-weight:700}
+.notify-note a:hover{text-decoration:underline}
+
+/* FOOTER */
+footer{background:#05070f;padding:26px 20px;border-top:1px solid var(--line);position:relative;z-index:1}
+.footer-inner{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.footer-inner p{color:var(--muted);font-size:.82rem}
+.footer-socials{display:flex;gap:8px}
+.footer-socials a{width:34px;height:34px;border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.85rem;transition:all .25s ease;background:var(--panel)}
+.footer-socials a:hover{border-color:var(--red);color:var(--red)}
+
 @media(max-width:720px){
   .mainnav-inner{flex-wrap:wrap;padding:12px 16px;gap:12px}
+  .logo{font-size:1.05rem}
+  .logo-mark{width:34px;height:34px;font-size:.9rem}
   .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0}
   .menu::-webkit-scrollbar{display:none}
   .menu a{padding:8px 12px;font-size:.8rem;flex-shrink:0}
-  .stage-body{padding:18px 16px 22px}
-  .stage-head{padding:16px 18px}
+  .wrap{padding:40px 16px 60px}
+  .card{padding:40px 24px 34px;border-radius:20px}
+  .icon-wrap{width:90px;height:90px;font-size:2.3rem}
 }
 @media(max-width:480px){
   .topbar-inner span:nth-child(3){display:none}
   .btn-quote span{display:none}
-  .stage-foot .btn{flex:1;justify-content:center}
+  .cta-row .btn{flex:1;justify-content:center}
+  .footer-inner{flex-direction:column;text-align:center}
 }
 </style>
 </head>
@@ -154,1124 +210,124 @@ footer{background:#05070f;padding:40px 20px 20px;border-top:1px solid var(--line
 
 <div class="page">
 
-<div class="topbar">
-  <div class="topbar-inner">
-    <span><i class="fas fa-phone"></i> +255 740 706 007</span>
-    <span><i class="fas fa-envelope"></i> Twarvistech@gmail.com</span>
-    <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
-  </div>
-</div>
-
-<nav class="mainnav">
-  <div class="mainnav-inner">
-    <a href="/" class="logo">
-      <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
-      <span class="logo-text">Student<span>Hub</span></span>
-    </a>
-    <div class="menu">
-      <a href="/">Home</a>
-      <a href="/browse/">Browse</a>
-      <a href="/upload/">Upload</a>
-      <a href="/calculator/">Calculator</a>
-      <a href="/scanner/">Scanner</a>
-      <a href="/free_course/" class="course-link active"><i class="fas fa-book-open"></i>Free Courses</a>
-      <a href="/hackerthon/" class="hack-link"><i class="fas fa-code"></i>Hackathon</a>
-      <a href="/about/">About</a>
-    </div>
-    <div class="nav-right">
-      <a href="/upload/" class="btn-quote"><span>Upload File</span> <i class="fas fa-arrow-right"></i></a>
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <span><i class="fas fa-phone"></i> +255 740 706 007</span>
+      <span><i class="fas fa-envelope"></i> Twarvistech@gmail.com</span>
+      <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
     </div>
   </div>
-</nav>
 
-<div class="shell">
-
-  <aside class="side-panel">
-    <div class="side-head">
-      <h3>Curriculum</h3>
-      <span class="mini-progress" id="miniProgress">0%</span>
-    </div>
-    <div class="side-progress"><div class="fill" id="sideFill"></div></div>
-    <div id="curriculum"></div>
-    <button class="side-reset" id="resetAll">Reset all progress</button>
-  </aside>
-
-  <main class="stage">
-    <div class="stage-head">
-      <div>
-        <div class="crumb" id="crumb">Chapter 1 · HTML Foundations</div>
-        <h1 id="stageTitle">Lesson 1 — Your first heading <span class="mission-badge" id="missionBadge" style="display:none">Mission</span></h1>
+  <!-- NAV -->
+  <nav class="mainnav">
+    <div class="mainnav-inner">
+      <a href="/" class="logo">
+        <span class="logo-mark"><i class="fas fa-graduation-cap"></i></span>
+        <span class="logo-text">Student<span>Hub</span></span>
+      </a>
+      <div class="menu">
+        <a href="/">Home</a>
+        <a href="/browse/">Browse</a>
+        <a href="/upload/">Upload</a>
+        <a href="/calculator/">Calculator</a>
+        <a href="/scanner/">Scanner</a>
+        <a href="/free_course/" class="course-link active"><i class="fas fa-book-open"></i>Free Courses</a>
+        <a href="/hackerthon/" class="hack-link"><i class="fas fa-code"></i>Hackathon</a>
+        <a href="/about/">About</a>
+      </div>
+      <div class="nav-right">
+        <a href="/upload/" class="btn-quote"><span>Upload File</span> <i class="fas fa-arrow-right"></i></a>
       </div>
     </div>
-    <div class="stage-body">
-      <div id="lessonContent"></div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="wrap">
+    <div class="card">
+
+      <div class="icon-wrap">
+        <i class="fas fa-gear"></i>
+      </div>
+
+      <span class="badge"><span class="dot"></span> System Under Maintenance</span>
+
+      <h1>We're upgrading the <span class="accent">course</span>.</h1>
+
+      <p class="lead">
+        The <strong>Free Courses</strong> section is currently being rebuilt with new lessons,
+        real projects, and interactive labs.
+      </p>
+      <p class="lead">
+        Please check back soon — it will be better than ever.
+      </p>
+
+      <div class="divider"></div>
+
+      <div class="meta">
+        <span><i class="fas fa-clock"></i> Coming soon</span>
+        <span><i class="fas fa-tools"></i> Update in progress</span>
+        <span><i class="fas fa-shield-halved"></i> All data safe</span>
+      </div>
+
+      <div class="cta-row">
+        <a href="/browse/" class="btn btn-primary">
+          <i class="fas fa-eye"></i> Browse Notes
+        </a>
+        <a href="/" class="btn btn-ghost">
+          <i class="fas fa-home"></i> Back Home
+        </a>
+      </div>
+
+      <p class="notify-note">
+        Need updates? <a href="https://wa.me/255740706007" target="_blank" rel="noopener">Message us on WhatsApp</a>
+      </p>
+
     </div>
-  </main>
-
-</div>
-
-<footer>
-  <div class="footer-inner">
-    <p>© 2026 Student Hub · <a href="/">Home</a> · <a href="/free_course/">Courses</a> · <a href="/hackerthon/">Hackathon</a></p>
   </div>
-</footer>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <p>© 2026 Student Hub · All rights reserved.</p>
+      <div class="footer-socials">
+        <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+        <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+      </div>
+    </div>
+  </footer>
 
 </div>
 
 <script>
-// ============================================================
-// DEEP COURSE — 40 lessons with real concepts and checks
-// ============================================================
-var lessons = [
-
-  // ═══════════════════════════════════════════════════════════
-  // CHAPTER 1 · HTML Foundations
-  // ═══════════════════════════════════════════════════════════
-  {
-    id:'c1l1', chapter:'Chapter 1 · HTML Foundations',
-    title:'Your first heading',
-    goal:'Learn what a heading is and how HTML tags work.',
-    task:'Write an <code>&lt;h1&gt;</code> heading. Put any title you like inside, e.g. "My First Page".',
-    example:'<h1>My First Page</h1>',
-    hint:'A tag is written as &lt;h1&gt;open&lt;/h1&gt;close. Everything in between is shown on the page. h1 means "heading level 1" — the biggest title.',
-    starter:'<!-- Write your heading below -->\n',
-    check:function(html){
-      var m=html.match(/<h1[^>]*>([\s\S]+?)<\/h1>/i);
-      if(!m) return {ok:false,msg:'I could not find an <h1>. Write one like <h1>My First Page</h1>.'};
-      if(!m[1].trim()) return {ok:false,msg:'Your h1 is empty. Put text inside it.'};
-      return {ok:true,msg:'Great! You created a real heading. The browser shows it as the biggest title on the page.'};
-    }
-  },
-  {
-    id:'c1l2', chapter:'Chapter 1 · HTML Foundations',
-    title:'Add a paragraph',
-    goal:'Learn how to write paragraphs of text.',
-    task:'Add a <code>&lt;p&gt;</code> paragraph below your heading.',
-    example:'<h1>My First Page</h1>\n<p>This page is about learning HTML step by step.</p>',
-    hint:'A paragraph uses &lt;p&gt;open&lt;/p&gt;close. Put one or more sentences inside.',
-    starter:'<h1>My First Page</h1>\n\n<!-- Add your paragraph -->\n',
-    check:function(html){
-      if(!/<h1[^>]*>[\s\S]+?<\/h1>/i.test(html)) return {ok:false,msg:'Keep your h1 heading, then add the paragraph below.'};
-      if(!/<p[^>]*>[\s\S]+?<\/p>/i.test(html)) return {ok:false,msg:'Add a paragraph: <p>Your text here</p>.'};
-      return {ok:true,msg:'Perfect! You have the two most common tags on the web: headings and paragraphs.'};
-    }
-  },
-  {
-    id:'c1l3', chapter:'Chapter 1 · HTML Foundations',
-    title:'Multiple paragraphs',
-    goal:'Learn that each <p> tag stacks on the page.',
-    task:'Add a <strong>second</strong> <code>&lt;p&gt;</code> below the first.',
-    example:'<p>First paragraph.</p>\n<p>Second paragraph.</p>',
-    hint:'Just write another pair of &lt;p&gt;...&lt;/p&gt;. HTML automatically adds space between them.',
-    starter:'<h1>My First Page</h1>\n<p>First paragraph.</p>\n\n<!-- Add a second paragraph -->\n',
-    check:function(html){
-      var m=html.match(/<p[^>]*>[\s\S]+?<\/p>/gi)||[];
-      if(m.length<2) return {ok:false,msg:'I only see '+m.length+' paragraph. Add one more.'};
-      return {ok:true,msg:'Great! Two paragraphs now stack vertically.'};
-    }
-  },
-  {
-    id:'c1l4', chapter:'Chapter 1 · HTML Foundations',
-    title:'Bold & emphasis',
-    goal:'Learn <strong> and <em> for important and emphasized text.',
-    task:'Add a <code>&lt;strong&gt;</code> around one word AND an <code>&lt;em&gt;</code> around another word inside your paragraphs.',
-    example:'<p>This is <strong>very important</strong>.</p>\n<p>I <em>really</em> like HTML.</p>',
-    hint:'strong = bold + importance. em = italic + emphasis. Both live inside a paragraph.',
-    starter:'<h1>My First Page</h1>\n<p>First paragraph.</p>\n<p>Second paragraph.</p>\n\n<!-- Add <strong> and <em> -->\n',
-    check:function(html){
-      if(!/<strong[^>]*>[\s\S]+?<\/strong>/i.test(html)) return {ok:false,msg:'Add a <strong>word</strong> inside a paragraph.'};
-      if(!/<em[^>]*>[\s\S]+?<\/em>/i.test(html)) return {ok:false,msg:'Add an <em>word</em> too.'};
-      return {ok:true,msg:'Excellent! strong makes text bold and important, em makes it italic and emphasized.'};
-    }
-  },
-  {
-    id:'c1l5', chapter:'Chapter 1 · HTML Foundations',
-    title:'Line breaks & horizontal rules',
-    goal:'Learn <br> for line breaks and <hr> for separators.',
-    task:'Use a <code>&lt;br&gt;</code> to break a line and an <code>&lt;hr&gt;</code> to add a horizontal separator.',
-    example:'<p>Line one<br>Line two</p>\n<hr>\n<p>New section below the line.</p>',
-    hint:'br and hr have no closing tags. They are "self-closing" (also written &lt;br /&gt;).',
-    starter:'<p>First line here.</p>\n\n<!-- Add a <br> and an <hr> -->\n',
-    check:function(html){
-      if(!/<br\s*\/?>/i.test(html)) return {ok:false,msg:'Add a <br> somewhere inside a paragraph.'};
-      if(!/<hr\s*\/?>/i.test(html)) return {ok:false,msg:'Add an <hr> to separate sections.'};
-      return {ok:true,msg:'Nice! br and hr are "void" elements — they have no content and no closing tag.'};
-    }
-  },
-  {
-    id:'c1l6', chapter:'Chapter 1 · HTML Foundations',
-    title:'Comments',
-    goal:'Learn how to write comments that don\'t appear on the page.',
-    task:'Add a comment using <code>&lt;!-- ... --&gt;</code> anywhere in your code.',
-    example:'<!-- This is a comment. It is hidden from users. -->\n<p>This text IS visible.</p>',
-    hint:'Comments start with &lt;!-- and end with --&gt;. They help you (and others) understand the code.',
-    starter:'<!-- Add a comment below this line -->\n<p>Some visible text.</p>\n',
-    check:function(html){
-      if(!/<!--[\s\S]+?-->/i.test(html)) return {ok:false,msg:'Add a comment like: <!-- my note -->.'};
-      return {ok:true,msg:'Perfect! Comments are invisible to users but priceless for you when you return to the code later.'};
-    }
-  },
-
-  // ═══════════════════════════════════════════════════════════
-  // CHAPTER 2 · Lists
-  // ═══════════════════════════════════════════════════════════
-  {
-    id:'c2l1', chapter:'Chapter 2 · Lists',
-    title:'Bullet list',
-    goal:'Learn to make a bullet list of items.',
-    task:'Create a <code>&lt;ul&gt;</code> unordered list with at least three <code>&lt;li&gt;</code> items.',
-    example:'<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>',
-    hint:'ul = unordered list. Each item is an li. Nest them: ul contains li items.',
-    starter:'<!-- Add your bullet list -->\n',
-    check:function(html){
-      if(!/<ul[^>]*>[\s\S]*?<\/ul>/i.test(html)) return {ok:false,msg:'I need a <ul>...</ul> list.'};
-      var items=html.match(/<li[^>]*>[\s\S]+?<\/li>/gi)||[];
-      if(items.length<3) return {ok:false,msg:'Add at least 3 <li> items. You have '+items.length+'.'};
-      return {ok:true,msg:'Great list! ul makes bullets, li is each item.'};
-    }
-  },
-  {
-    id:'c2l2', chapter:'Chapter 2 · Lists',
-    title:'Numbered list',
-    goal:'Learn the ordered list <ol>.',
-    task:'Create an <code>&lt;ol&gt;</code> with at least three <code>&lt;li&gt;</code> steps.',
-    example:'<ol>\n  <li>Learn HTML</li>\n  <li>Learn CSS</li>\n  <li>Learn JavaScript</li>\n</ol>',
-    hint:'ol is just like ul but shows numbers instead of bullets. Great for instructions.',
-    starter:'<!-- Add an ordered list -->\n',
-    check:function(html){
-      if(!/<ol[^>]*>[\s\S]*?<\/ol>/i.test(html)) return {ok:false,msg:'I need an <ol>...</ol>.'};
-      var items=html.match(/<li[^>]*>[\s\S]+?<\/li>/gi)||[];
-      if(items.length<3) return {ok:false,msg:'Add at least 3 <li> items inside.'};
-      return {ok:true,msg:'Correct! ol creates numbered steps.'};
-    }
-  },
-  {
-    id:'c2l3', chapter:'Chapter 2 · Lists',
-    title:'Nested lists',
-    goal:'Learn how to put a list inside another list.',
-    task:'Create a bullet list with at least two items, and put a nested <code>&lt;ul&gt;</code> with at least two more items inside one of them.',
-    example:'<ul>\n  <li>Fruits\n    <ul>\n      <li>Apple</li>\n      <li>Banana</li>\n    </ul>\n  </li>\n  <li>Vegetables</li>\n</ul>',
-    hint:'Put the nested ul INSIDE an li, right before that li\'s closing tag.',
-    starter:'<!-- Build a nested list -->\n<ul>\n  <li>Category</li>\n</ul>\n',
-    check:function(html){
-      var outer=html.match(/<ul[^>]*>[\s\S]*<\/ul>/i);
-      if(!outer) return {ok:false,msg:'Start with a <ul>.'};
-      // Nested = at least two ul tags
-      var allUls=html.match(/<ul[^>]*>/gi)||[];
-      if(allUls.length<2) return {ok:false,msg:'Add a nested <ul> inside one of your li items.'};
-      return {ok:true,msg:'Excellent! Nested lists let you build menus, file trees, and outlines.'};
-    }
-  },
-
-  // ═══════════════════════════════════════════════════════════
-  // CHAPTER 3 · Links & Media
-  // ═══════════════════════════════════════════════════════════
-  {
-    id:'c3l1', chapter:'Chapter 3 · Links & Media',
-    title:'Your first link',
-    goal:'Learn how to make text clickable.',
-    task:'Add an <code>&lt;a&gt;</code> tag linking to <code>https://example.com</code>.',
-    example:'<a href="https://example.com">Click here</a>',
-    hint:'a needs an href attribute. href is the destination. The text between the tags is what users click.',
-    starter:'<!-- Add your link -->\n',
-    check:function(html){
-      var m=html.match(/<a\s[^>]*href=["']([^"']+)["'][^>]*>([\s\S]+?)<\/a>/i);
-      if(!m) return {ok:false,msg:'Write <a href="https://example.com">Click me</a>.'};
-      if(!m[2].trim()) return {ok:false,msg:'The link needs clickable text.'};
-      return {ok:true,msg:'You made a link! The href is the URL, the text is what users click.'};
-    }
-  },
-  {
-    id:'c3l2', chapter:'Chapter 3 · Links & Media',
-    title:'Links with target',
-    goal:'Learn how to open links in a new tab.',
-    task:'Make a link that opens in a new tab using <code>target="_blank"</code> and <code>rel="noopener"</code>.',
-    example:'<a href="https://example.com" target="_blank" rel="noopener">Open in new tab</a>',
-    hint:'target="_blank" opens a new tab. rel="noopener" is a safety best practice to prevent the new page from controlling yours.',
-    starter:'<!-- Add a link that opens in a new tab -->\n',
-    check:function(html){
-      if(!/<a\s[^>]*target\s*=\s*["']_blank["']/i.test(html)) return {ok:false,msg:'Add target="_blank" to a link.'};
-      if(!/rel\s*=\s*["']noopener["']/i.test(html)) return {ok:false,msg:'Add rel="noopener" for security.'};
-      return {ok:true,msg:'Professional! Every external link should use target="_blank" rel="noopener".'};
-    }
-  },
-  {
-    id:'c3l3', chapter:'Chapter 3 · Links & Media',
-    title:'Add an image',
-    goal:'Learn how to show an image.',
-    task:'Add an <code>&lt;img&gt;</code> with both <code>src</code> and <code>alt</code>.',
-    example:'<img src="https://picsum.photos/400/250" alt="A random photo">',
-    hint:'img has no closing tag. src is the image URL, alt describes the image for screen readers and if the image fails to load.',
-    starter:'<!-- Add your image -->\n',
-    check:function(html){
-      var m=html.match(/<img\s[^>]*>/i);
-      if(!m) return {ok:false,msg:'Add an <img src="..." alt="...">.'};
-      if(!/src\s*=/.test(m[0])) return {ok:false,msg:'Add src="url" to your image.'};
-      if(!/alt\s*=/.test(m[0])) return {ok:false,msg:'Add alt="description" to your image.'};
-      return {ok:true,msg:'Perfect! Every image should have src (the file) and alt (description).'};
-    }
-  },
-  {
-    id:'c3l4', chapter:'Chapter 3 · Links & Media',
-    title:'Embed a video',
-    goal:'Learn how to put a video on your page with <video>.',
-    task:'Add a <code>&lt;video&gt;</code> element with <code>controls</code>, a <code>src</code>, and a <code>&lt;p&gt;</code> fallback inside. Use any public video URL.',
-    example:'<video controls width="400" src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4">\n  Your browser does not support video.\n</video>',
-    hint:'The controls attribute shows play/pause buttons. Always add fallback text inside for old browsers.',
-    starter:'<!-- Add a <video> element with controls -->\n',
-    check:function(html){
-      if(!/<video[\s\S]*?<\/video>/i.test(html)) return {ok:false,msg:'Add a <video>...</video> element.'};
-      if(!/<video[^>]*controls/i.test(html)) return {ok:false,msg:'Add the controls attribute to the video tag.'};
-      if(!/<video[^>]*src\s*=/i.test(html)) return {ok:false,msg:'Add a src="URL" attribute with a video file.'};
-      return {ok:true,msg:'Excellent! video is how browsers play video natively — no plugin needed.'};
-    }
-  },
-  {
-    id:'c3l5', chapter:'Chapter 3 · Links & Media',
-    title:'Audio player',
-    goal:'Learn how to embed audio with <audio>.',
-    task:'Add an <code>&lt;audio&gt;</code> element with <code>controls</code> and a <code>src</code>.',
-    example:'<audio controls src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>',
-    hint:'Just like video, but for sound. controls shows a play button.',
-    starter:'<!-- Add an <audio> element -->\n',
-    check:function(html){
-      if(!/<audio[\s\S]*?<\/audio>/i.test(html)) return {ok:false,msg:'Add an <audio>...</audio> element.'};
-      if(!/<audio[^>]*controls/i.test(html)) return {ok:false,msg:'Add controls to your audio tag.'};
-      return {ok:true,msg:'Nice! audio is used for podcasts, songs, and sound effects.'};
-    }
-  },
-
-  // ═══════════════════════════════════════════════════════════
-  // CHAPTER 4 · Tables
-  // ═══════════════════════════════════════════════════════════
-  {
-    id:'c4l1', chapter:'Chapter 4 · Tables',
-    title:'Basic table',
-    goal:'Learn the structure of an HTML table.',
-    task:'Build a <code>&lt;table&gt;</code> with at least two rows <code>&lt;tr&gt;</code> and cells <code>&lt;td&gt;</code>.',
-    example:'<table>\n  <tr><td>Name</td><td>Age</td></tr>\n  <tr><td>Ana</td><td>22</td></tr>\n</table>',
-    hint:'table holds rows. Each row is a tr. Each cell is a td.',
-    starter:'<!-- Add a table -->\n',
-    check:function(html){
-      if(!/<table[^>]*>[\s\S]*?<\/table>/i.test(html)) return {ok:false,msg:'Add a <table>...</table>.'};
-      var rows=html.match(/<tr[^>]*>[\s\S]*?<\/tr>/gi)||[];
-      if(rows.length<2) return {ok:false,msg:'Add at least 2 <tr> rows.'};
-      return {ok:true,msg:'Good! Tables organize data — not layout. Remember that rule.'};
-    }
-  },
-  {
-    id:'c4l2', chapter:'Chapter 4 · Tables',
-    title:'Table with header',
-    goal:'Learn <thead>, <th> and <tbody>.',
-    task:'Add a header row using <code>&lt;th&gt;</code> inside a <code>&lt;thead&gt;</code>, and body rows inside <code>&lt;tbody&gt;</code>.',
-    example:'<table>\n  <thead>\n    <tr><th>Name</th><th>Age</th></tr>\n  </thead>\n  <tbody>\n    <tr><td>Ana</td><td>22</td></tr>\n  </tbody>\n</table>',
-    hint:'thead holds header rows (th = header cell, bold by default). tbody holds data rows (td).',
-    starter:'<!-- Build a table with thead and tbody -->\n',
-    check:function(html){
-      if(!/<thead[^>]*>[\s\S]*?<\/thead>/i.test(html)) return {ok:false,msg:'Wrap the header row in <thead>...</thead>.'};
-      if(!/<th[^>]*>[\s\S]*?<\/th>/i.test(html)) return {ok:false,msg:'Use <th> for header cells (instead of td).'};
-      if(!/<tbody[^>]*>[\s\S]*?<\/tbody>/i.test(html)) return {ok:false,msg:'Wrap data rows in <tbody>...</tbody>.'};
-      return {ok:true,msg:'Professional table! thead + th + tbody is the correct way to structure tabular data.'};
-    }
-  },
-
-  // ═══════════════════════════════════════════════════════════
-  // CHAPTER 5 · Forms
-  // ═══════════════════════════════════════════════════════════
-  {
-    id:'c5l1', chapter:'Chapter 5 · Forms',
-    title:'Text input',
-    goal:'Learn how to create a text box.',
-    task:'Add an <code>&lt;input type="text"&gt;</code> with a <code>placeholder</code>.',
-    example:'<input type="text" placeholder="Type your name">',
-    hint:'input is self-closing. type="text" makes it a single-line text box. placeholder shows grey hint text inside.',
-    starter:'<!-- Add a text input -->\n',
-    check:function(html){
-      var m=html.match(/<input\s[^>]*>/i);
-      if(!m) return {ok:false,msg:'Add an <input> tag.'};
-      if(!/type\s*=\s*["']text["']/i.test(m[0])) return {ok:false,msg:'Set type="text" on your input.'};
-      return {ok:true,msg:'Nice! Inputs are how users type information into your page.'};
-    }
-  },
-  {
-    id:'c5l2', chapter:'Chapter 5 · Forms',
-    title:'Label wrapping',
-    goal:'Learn to make inputs accessible with labels.',
-    task:'Wrap your input in a <code>&lt;label&gt;</code> with descriptive text.',
-    example:'<label>Your name <input type="text"></label>',
-    hint:'label wrapping the input means clicking the text focuses the input. Screen readers read the label.',
-    starter:'<!-- Add a label wrapping an input -->\n',
-    check:function(html){
-      if(!/<label[^>]*>[\s\S]*?<input[\s\S]*?<\/label>/i.test(html)) return {ok:false,msg:'Wrap the input inside <label>...</label>.'};
-      return {ok:true,msg:'Perfect! Every input deserves a label.'};
-    }
-  },
-  {
-    id:'c5l3', chapter:'Chapter 5 · Forms',
-    title:'Email & password inputs',
-    goal:'Learn how input types change behavior.',
-    task:'Add an email input and a password input, each inside a label.',
-    example:'<label>Email <input type="email"></label>\n<label>Password <input type="password"></label>',
-    hint:'type="email" checks the format and shows @ on mobile keyboards. type="password" hides the characters.',
-    starter:'<!-- Build email + password inputs -->\n',
-    check:function(html){
-      if(!/<input[^>]*type\s*=\s*["']email["']/i.test(html)) return {ok:false,msg:'Add <input type="email">.'};
-      if(!/<input[^>]*type\s*=\s*["']password["']/i.test(html)) return {ok:false,msg:'Add <input type="password">.'};
-      return {ok:true,msg:'Great! Different input types give different behavior and validation for free.'};
-    }
-  },
-  {
-    id:'c5l4', chapter:'Chapter 5 · Forms',
-    title:'Checkboxes & radios',
-    goal:'Learn inputs that let users select.',
-    task:'Add two <code>type="checkbox"</code> inputs AND two <code>type="radio"</code> inputs (each with the same <code>name</code> for radios).',
-    example:'<label><input type="checkbox"> HTML</label>\n<label><input type="checkbox"> CSS</label>\n<label><input type="radio" name="level"> Beginner</label>\n<label><input type="radio" name="level"> Advanced</label>',
-    hint:'Checkboxes = multiple choices allowed. Radios with the same name = only one choice.',
-    starter:'<!-- Add checkboxes and radios -->\n',
-    check:function(html){
-      var cb=html.match(/<input[^>]*type\s*=\s*["']checkbox["'][^>]*>/gi)||[];
-      var rd=html.match(/<input[^>]*type\s*=\s*["']radio["'][^>]*>/gi)||[];
-      if(cb.length<2) return {ok:false,msg:'Add at least 2 checkboxes. You have '+cb.length+'.'};
-      if(rd.length<2) return {ok:false,msg:'Add at least 2 radio buttons (same name).'};
-      return {ok:true,msg:'Excellent! Checkboxes for multiple choice, radios for single choice.'};
-    }
-  },
-  {
-    id:'c5l5', chapter:'Chapter 5 · Forms',
-    title:'Dropdown select',
-    goal:'Learn how to make a dropdown menu.',
-    task:'Create a <code>&lt;select&gt;</code> with at least three <code>&lt;option&gt;</code> items.',
-    example:'<label>Country\n  <select>\n    <option>Tanzania</option>\n    <option>Kenya</option>\n    <option>Uganda</option>\n  </select>\n</label>',
-    hint:'select contains option elements. Each option is one choice.',
-    starter:'<!-- Build a select dropdown -->\n',
-    check:function(html){
-      if(!/<select[^>]*>[\s\S]*?<\/select>/i.test(html)) return {ok:false,msg:'Add a <select>...</select>.'};
-      var opts=html.match(/<option[^>]*>[\s\S]*?<\/option>/gi)||[];
-      if(opts.length<3) return {ok:false,msg:'Add at least 3 <option> items.'};
-      return {ok:true,msg:'Great! Selects are the dropdown menus on every checkout page.'};
-    }
-  },
-  {
-    id:'c5l6', chapter:'Chapter 5 · Forms',
-    title:'Textarea & submit',
-    goal:'Learn multiline input and the submit button.',
-    task:'Add a <code>&lt;textarea&gt;</code> with rows and a <code>&lt;button&gt;</code> with type submit.',
-    example:'<label>Message\n  <textarea rows="4" placeholder="Write a message..."></textarea>\n</label>\n<button type="submit">Send</button>',
-    hint:'textarea has an opening and closing tag (unlike input). It is for multi-line text. Button type="submit" submits the form.',
-    starter:'<!-- Add textarea + submit button -->\n',
-    check:function(html){
-      if(!/<textarea[^>]*>[\s\S]*?<\/textarea>/i.test(html)) return {ok:false,msg:'Add a <textarea>...</textarea>.'};
-      if(!/<button[^>]*>[\s\S]+?<\/button>/i.test(html)) return {ok:false,msg:'Add a <button>Submit</button>.'};
-      return {ok:true,msg:'You now have a full form: inputs, labels, checkbox, radio, select, textarea, and button.'};
-    }
-  },
-
-  // ═══════════════════════════════════════════════════════════
-  // CHAPTER 6 · Semantics
-  // ═══════════════════════════════════════════════════════════
-  {
-    id:'c6l1', chapter:'Chapter 6 · Semantics',
-    title:'Wrap in a div',
-    goal:'Learn the generic container.',
-    task:'Wrap some content in a <code>&lt;div&gt;</code>.',
-    example:'<div>\n  <h1>Title</h1>\n  <p>Content</p>\n</div>',
-    hint:'div is a box. It groups things so you can style them together later with CSS.',
-    starter:'<div>\n  <h1>My Page</h1>\n  <p>Some text.</p>\n</div>\n\n<!-- Now add a second div wrapping other content -->\n',
-    check:function(html){
-      if(!/<div[^>]*>[\s\S]*?<\/div>/i.test(html)) return {ok:false,msg:'Add a <div>...</div>.'};
-      return {ok:true,msg:'Great! Divs are the basic block building block of the web.'};
-    }
-  },
-  {
-    id:'c6l2', chapter:'Chapter 6 · Semantics',
-    title:'Header, main, footer',
-    goal:'Learn the tags that describe page regions.',
-    task:'Create a <code>&lt;header&gt;</code>, a <code>&lt;main&gt;</code>, and a <code>&lt;footer&gt;</code>.',
-    example:'<header><h1>My Site</h1></header>\n<main><p>Content here.</p></main>\n<footer><p>© 2026 Me</p></footer>',
-    hint:'header = top area with logo/nav. main = the primary content. footer = bottom area with copyright/links.',
-    starter:'<h1>My Site</h1>\n<p>Content.</p>\n',
-    check:function(html){
-      if(!/<header[^>]*>[\s\S]*?<\/header>/i.test(html)) return {ok:false,msg:'Add <header>...</header>.'};
-      if(!/<main[^>]*>[\s\S]*?<\/main>/i.test(html)) return {ok:false,msg:'Add <main>...</main>.'};
-      if(!/<footer[^>]*>[\s\S]*?<\/footer>/i.test(html)) return {ok:false,msg:'Add <footer>...</footer>.'};
-      return {ok:true,msg:'Excellent! Semantic tags describe what each region is — great for SEO and screen readers.'};
-    }
-  },
-  {
-    id:'c6l3', chapter:'Chapter 6 · Semantics',
-    title:'Article and section',
-    goal:'Learn <article> and <section> for content grouping.',
-    task:'Create an <code>&lt;article&gt;</code> containing an <code>&lt;h2&gt;</code> and a paragraph, plus a <code>&lt;section&gt;</code> with its own heading.',
-    example:'<article>\n  <h2>Article title</h2>\n  <p>Article body.</p>\n</article>\n<section>\n  <h2>Section title</h2>\n  <p>Section body.</p>\n</section>',
-    hint:'article = a self-contained piece (blog post, product). section = a thematic group of content with a heading.',
-    starter:'<!-- Add an <article> and a <section> -->\n',
-    check:function(html){
-      if(!/<article[^>]*>[\s\S]*?<\/article>/i.test(html)) return {ok:false,msg:'Add an <article>...</article>.'};
-      if(!/<section[^>]*>[\s\S]*?<\/section>/i.test(html)) return {ok:false,msg:'Add a <section>...</section>.'};
-      return {ok:true,msg:'Nice! article is for standalone content, section for grouped related content.'};
-    }
-  },
-
-  // ═══════════════════════════════════════════════════════════
-  // CHAPTER 7 · CSS Foundations
-  // ═══════════════════════════════════════════════════════════
-  {
-    id:'c7l1', chapter:'Chapter 7 · CSS Foundations',
-    title:'Color and background',
-    goal:'Learn your first CSS rule.',
-    task:'In CSS, style <code>body</code> with a background color AND style <code>h1</code> with a text color.',
-    example:'body { background: #111; color: white; }\nh1 { color: tomato; }',
-    hint:'CSS rule = selector { property: value; }. body is the whole page. h1 targets every heading.',
-    starter:'<h1>Hello CSS!</h1>\n<p>Change my colors.</p>\n',
-    cssCheck:true,
-    css_starter:'/* Style body and h1 */\n',
-    check:function(html,css){
-      if(!/body\s*\{[\s\S]*?background[^;}]*:[^;}]+/i.test(css)) return {ok:false,msg:'In CSS, give body a background: body { background: #111; }'};
-      if(!/h1\s*\{[\s\S]*?color[^;}]*:[^;}]+/i.test(css)) return {ok:false,msg:'Also style h1 with a color: h1 { color: tomato; }'};
-      return {ok:true,msg:'Your first real CSS! background sets the fill, color sets the text.'};
-    }
-  },
-  {
-    id:'c7l2', chapter:'Chapter 7 · CSS Foundations',
-    title:'Classes',
-    goal:'Learn how to style specific elements.',
-    task:'Give a paragraph <code>class="lead"</code> in HTML, then style <code>.lead</code> in CSS.',
-    example:'HTML: <p class="lead">Hi</p>\nCSS:  .lead { color: purple; font-size: 20px; }',
-    hint:'A class in CSS starts with a dot: .lead. In HTML you write class="lead".',
-    starter:'<p class="lead">Styled paragraph</p>\n',
-    cssCheck:true,
-    css_starter:'/* Style .lead */\n',
-    check:function(html,css){
-      if(!/class\s*=\s*["']lead["']/i.test(html)) return {ok:false,msg:'Give your paragraph class="lead".'};
-      if(!/\.lead\s*\{[\s\S]*?color\s*:[^;}]+/i.test(css)) return {ok:false,msg:'Style .lead { color: ...; } in CSS.'};
-      return {ok:true,msg:'Perfect! Classes let you reuse styles on many elements.'};
-    }
-  },
-  {
-    id:'c7l3', chapter:'Chapter 7 · CSS Foundations',
-    title:'CSS variables (custom properties)',
-    goal:'Learn how to store colors in variables.',
-    task:'Define a variable <code>--brand</code> in <code>:root</code> and use it in a style rule via <code>var(--brand)</code>.',
-    example:':root { --brand: tomato; }\nh1 { color: var(--brand); }',
-    hint:'A CSS variable starts with -- and is defined inside a selector (usually :root for global). Use var(--name) to reference it.',
-    starter:'<h1>Hello!</h1>\n',
-    cssCheck:true,
-    css_starter:'/* Define :root { --brand: ... } and use var(--brand) */\n',
-    check:function(html,css){
-      if(!/--brand\s*:/i.test(css)) return {ok:false,msg:'Define --brand inside :root. Example: :root { --brand: tomato; }'};
-      if(!/var\(\s*--brand\s*\)/i.test(css)) return {ok:false,msg:'Use the variable: color: var(--brand);'};
-      return {ok:true,msg:'Excellent! CSS variables are the modern way to reuse values and build themes.'};
-    }
-  },
-
-  // ═══════════════════════════════════════════════════════════
-  // CHAPTER 8 · Dark / Light Theme ⭐
-  // ═══════════════════════════════════════════════════════════
-  {
-    id:'c8l1', chapter:'Chapter 8 · Dark / Light Theme',
-    title:'Automatic dark mode',
-    goal:'Learn how to detect the user\'s system dark mode.',
-    task:'Add a <code>@media (prefers-color-scheme: dark)</code> block that changes the body background to black and text to white.',
-    example:'body { background: white; color: black; }\n\n@media (prefers-color-scheme: dark) {\n  body { background: #111; color: #f5f5f5; }\n}',
-    hint:'prefers-color-scheme detects the OS setting. Your browser switches automatically when the user toggles dark mode on their device.',
-    starter:'<h1>Try dark mode!</h1>\n<p>Change your OS theme or the browser dev tools theme.</p>\n',
-    cssCheck:true,
-    css_starter:'body { background: #fff; color: #111; }\n/* Add a @media (prefers-color-scheme: dark) block */\n',
-    check:function(html,css){
-      if(!/@media[^{]*prefers-color-scheme\s*:\s*dark/i.test(css)) return {ok:false,msg:'Add @media (prefers-color-scheme: dark) { ... }'};
-      return {ok:true,msg:'Pro-level! Your page now respects the user\'s system theme automatically.'};
-    }
-  },
-  {
-    id:'c8l2', chapter:'Chapter 8 · Dark / Light Theme',
-    title:'MANUAL theme switch',
-    goal:'Build a button that switches between dark and light theme.',
-    task:'Add a <code>&lt;button id="themeToggle"&gt;</code> in HTML. In JS, listen for its click and toggle a <code>.dark</code> class on <code>document.body</code>. In CSS, style <code>body.dark</code> with a dark background.',
-    example:'HTML: <button id="themeToggle">🌗 Toggle theme</button>\n\nCSS: body.dark { background: #0a0a0a; color: white; }\n\nJS:   document.getElementById("themeToggle").onclick = function(){\n        document.body.classList.toggle("dark");\n      };',
-    hint:'The JS line does three things: gets the button, listens for click, and toggles a class on body. The class then changes styles via CSS.',
-    starter:'<h1>Toggle theme</h1>\n<button id="themeToggle">Toggle theme</button>\n',
-    cssCheck:true,
-    css_starter:'body { background: #fff; color: #111; transition: 0.3s; }\n/* Add a body.dark rule */\n',
-    js_starter:'// Toggle the .dark class on body when the button is clicked\n',
-    check:function(html,css,js){
-      if(!/id\s*=\s*["']themeToggle["']/i.test(html)) return {ok:false,msg:'Add a <button id="themeToggle">...</button>.'};
-      if(!/body\.dark\s*\{/i.test(css)) return {ok:false,msg:'In CSS, add body.dark { background: #0a0a0a; color: white; }'};
-      if(!/classList\.toggle\(\s*["']dark["']/i.test(js) && !/classList\.add\(\s*["']dark["']/i.test(js)) return {ok:false,msg:'In JS, toggle .dark on document.body when the button is clicked.'};
-      return {ok:true,msg:'You built a real dark/light theme switcher — this is exactly how modern sites do it!'};
-    }
-  },
-
-  // ═══════════════════════════════════════════════════════════
-  // CHAPTER 9 · Box Model
-  // ═══════════════════════════════════════════════════════════
-  {
-    id:'c9l1', chapter:'Chapter 9 · Box Model',
-    title:'Padding vs margin',
-    goal:'Learn the difference between inside and outside spacing.',
-    task:'Give a paragraph <code>padding: 20px</code> and <code>margin: 20px</code>, plus a <code>background</code> so you can see it.',
-    example:'p {\n  background: #ffe0e0;\n  padding: 20px;\n  margin: 20px;\n}',
-    hint:'padding = space INSIDE the box (between text and its border). margin = space OUTSIDE (between this box and other elements).',
-    starter:'<p>Padding vs margin</p>\n<p>Another box</p>\n',
-    cssCheck:true,
-    css_starter:'/* Style p with padding, margin, background */\n',
-    check:function(html,css){
-      if(!/p\s*\{[\s\S]*?padding\s*:/i.test(css)) return {ok:false,msg:'Add padding: 20px to p.'};
-      if(!/p\s*\{[\s\S]*?margin\s*:/i.test(css)) return {ok:false,msg:'Add margin: 20px to p.'};
-      if(!/p\s*\{[\s\S]*?background/i.test(css)) return {ok:false,msg:'Add a background so you can see the padding.'};
-      return {ok:true,msg:'Perfect! Padding grows inside; margin pushes neighbors away.'};
-    }
-  },
-  {
-    id:'c9l2', chapter:'Chapter 9 · Box Model',
-    title:'Border & border-radius',
-    goal:'Learn how to add borders and rounded corners.',
-    task:'Give a div a border, a border-radius, and padding.',
-    example:'div {\n  border: 2px solid #333;\n  border-radius: 12px;\n  padding: 20px;\n}',
-    hint:'border: width style color. border-radius: how round the corners are. Higher = rounder.',
-    starter:'<div>Rounded box</div>\n',
-    cssCheck:true,
-    css_starter:'/* Give div a border and rounded corners */\n',
-    check:function(html,css){
-      if(!/div\s*\{[\s\S]*?border\s*:/i.test(css)) return {ok:false,msg:'Add a border to div: border: 2px solid #333;'};
-      if(!/div\s*\{[\s\S]*?border-radius\s*:/i.test(css)) return {ok:false,msg:'Add border-radius: 12px;'};
-      return {ok:true,msg:'Nice! Borders and radius are the backbone of modern UI design.'};
-    }
-  },
-
-  // ═══════════════════════════════════════════════════════════
-  // CHAPTER 10 · Hover & States ⭐
-  // ═══════════════════════════════════════════════════════════
-  {
-    id:'c10l1', chapter:'Chapter 10 · Hover & States',
-    title:'Hover effect',
-    goal:'Learn how to change styles when the user hovers.',
-    task:'Style a <code>button</code> with a background. Then add a <code>button:hover</code> rule that changes the background.',
-    example:'button { background: #ff4d5a; color: white; padding: 12px 24px; border: none; border-radius: 8px; }\nbutton:hover { background: #ff2f3e; }',
-    hint:':hover applies only while the mouse is over the element. It is written with a colon after the selector.',
-    starter:'<button>Hover me</button>\n',
-    cssCheck:true,
-    css_starter:'/* Style button and add button:hover */\n',
-    check:function(html,css){
-      if(!/button\s*\{[\s\S]*?background\s*:/i.test(css)) return {ok:false,msg:'Style the button with a background.'};
-      if(!/button\s*:\s*hover\s*\{/i.test(css)) return {ok:false,msg:'Add button:hover { ... } that changes the background.'};
-      return {ok:true,msg:'Great! Hover states make interfaces feel alive.'};
-    }
-  },
-  {
-    id:'c10l2', chapter:'Chapter 10 · Hover & States',
-    title:'Hover on cards',
-    goal:'Learn to combine hover with transform.',
-    task:'Create a <code>.card</code> with padding and a border. On <code>.card:hover</code>, use <code>transform: translateY(-6px)</code> to lift it.',
-    example:'.card { padding: 20px; border: 1px solid #ddd; border-radius: 12px; transition: 0.25s; }\n.card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }',
-    hint:'transform: translateY(-6px) moves the element 6px up. The transition makes it smooth.',
-    starter:'<div class="card">Hover this card</div>\n',
-    cssCheck:true,
-    css_starter:'/* Style .card and .card:hover */\n',
-    check:function(html,css){
-      if(!/\.card\s*\{/i.test(css)) return {ok:false,msg:'Add a .card { ... } rule.'};
-      if(!/\.card\s*:\s*hover\s*\{[\s\S]*?transform\s*:\s*translateY/i.test(css)) return {ok:false,msg:'Add .card:hover { transform: translateY(-6px); }'};
-      return {ok:true,msg:'Beautiful! This is the classic "card lift" hover effect you see everywhere.'};
-    }
-  },
-  {
-    id:'c10l3', chapter:'Chapter 10 · Hover & States',
-    title:'Focus states for accessibility',
-    goal:'Learn why focus matters for keyboard users.',
-    task:'Add a visible <code>:focus</code> style to a link or button (e.g. an outline).',
-    example:'button:focus { outline: 3px solid #70a8ff; outline-offset: 2px; }',
-    hint:'Focus styles appear when a user tabs to the element with a keyboard. Never remove them without replacing them with something better.',
-    starter:'<button>Tab to focus me</button>\n',
-    cssCheck:true,
-    css_starter:'/* Add a :focus rule */\n',
-    check:function(html,css){
-      if(!/:\s*focus\s*\{/i.test(css)) return {ok:false,msg:'Add a :focus rule — button:focus { outline: 3px solid #70a8ff; }'};
-      return {ok:true,msg:'Excellent! Focus states are how keyboard users navigate. Never remove them.'};
-    }
-  },
-  {
-    id:'c10l4', chapter:'Chapter 10 · Hover & States',
-    title:'Transitions',
-    goal:'Learn smooth animation with transitions.',
-    task:'Add a <code>transition</code> to a button that animates the background color change over 0.3s.',
-    example:'button { background: #ff4d5a; transition: background 0.3s ease; }\nbutton:hover { background: #ff2f3e; }',
-    hint:'transition: property duration timing-function. Try different durations to feel the difference.',
-    starter:'<button>Hover for smooth change</button>\n',
-    cssCheck:true,
-    css_starter:'/* Add transition to button */\n',
-    check:function(html,css){
-      if(!/transition\s*:/i.test(css)) return {ok:false,msg:'Add transition: background 0.3s ease; to a rule.'};
-      return {ok:true,msg:'Perfect! Transitions turn abrupt changes into smooth, delightful ones.'};
-    }
-  },
-
-  // ═══════════════════════════════════════════════════════════
-  // CHAPTER 11 · Typography
-  // ═══════════════════════════════════════════════════════════
-  {
-    id:'c11l1', chapter:'Chapter 11 · Typography',
-    title:'Font family & size',
-    goal:'Learn how to set fonts.',
-    task:'Style <code>body</code> with a font-family stack and a font-size.',
-    example:'body {\n  font-family: system-ui, Arial, sans-serif;\n  font-size: 18px;\n  line-height: 1.6;\n}',
-    hint:'Always list more than one font as a fallback. system-ui uses the OS default (fast and modern).',
-    starter:'<h1>Heading</h1>\n<p>Some text.</p>\n',
-    cssCheck:true,
-    css_starter:'/* Style body with font-family and font-size */\n',
-    check:function(html,css){
-      if(!/font-family\s*:/i.test(css)) return {ok:false,msg:'Add font-family to body.'};
-      if(!/font-size\s*:/i.test(css)) return {ok:false,msg:'Add font-size to body.'};
-      return {ok:true,msg:'Typography set! Font family and size are the foundation of readable text.'};
-    }
-  },
-  {
-    id:'c11l2', chapter:'Chapter 11 · Typography',
-    title:'Text alignment & weight',
-    goal:'Learn text-align and font-weight.',
-    task:'Center a heading with <code>text-align: center</code> and make it bold with <code>font-weight: 800</code>.',
-    example:'h1 {\n  text-align: center;\n  font-weight: 800;\n}',
-    hint:'text-align: left | center | right. font-weight: 400 (normal) | 700 (bold) | 900 (extra bold).',
-    starter:'<h1>Centered title</h1>\n',
-    cssCheck:true,
-    css_starter:'/* Style h1 */\n',
-    check:function(html,css){
-      if(!/h1\s*\{[\s\S]*?text-align\s*:/i.test(css)) return {ok:false,msg:'Add text-align to h1.'};
-      if(!/h1\s*\{[\s\S]*?font-weight\s*:/i.test(css)) return {ok:false,msg:'Add font-weight to h1.'};
-      return {ok:true,msg:'Nice! Alignment and weight control visual hierarchy.'};
-    }
-  },
-
-  // ═══════════════════════════════════════════════════════════
-  // CHAPTER 12 · Layout with Flexbox & Grid
-  // ═══════════════════════════════════════════════════════════
-  {
-    id:'c12l1', chapter:'Chapter 12 · Layout',
-    title:'Center with Flexbox',
-    goal:'Learn how to center content with flex.',
-    task:'Make <code>body</code> a flex container that centers its content in both directions.',
-    example:'body {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  min-height: 100vh;\n  margin: 0;\n}',
-    hint:'display:flex turns the element into a flex container. justify-content controls horizontal alignment. align-items controls vertical.',
-    starter:'<h1>Centered!</h1>\n',
-    cssCheck:true,
-    css_starter:'/* Use flexbox to center */\n',
-    check:function(html,css){
-      if(!/display\s*:\s*flex/i.test(css)) return {ok:false,msg:'Add display: flex;'};
-      if(!/justify-content\s*:\s*center/i.test(css)) return {ok:false,msg:'Add justify-content: center;'};
-      return {ok:true,msg:'Flexbox is one of the most important CSS tools. Well done!'};
-    }
-  },
-  {
-    id:'c12l2', chapter:'Chapter 12 · Layout',
-    title:'Flex row of cards',
-    goal:'Learn to lay out elements side-by-side.',
-    task:'Create a <code>.row</code> flex container with <code>gap</code>, containing three <code>.card</code> divs.',
-    example:'.row { display: flex; gap: 16px; }\n.card { flex: 1; padding: 20px; background: #f0f0f0; border-radius: 12px; }',
-    hint:'flex: 1 on a child makes it share space equally. gap adds spacing between flex items.',
-    starter:'<div class="row">\n  <div class="card">A</div>\n  <div class="card">B</div>\n  <div class="card">C</div>\n</div>\n',
-    cssCheck:true,
-    css_starter:'/* Style .row and .card */\n',
-    check:function(html,css){
-      if(!/\.row\s*\{[\s\S]*?display\s*:\s*flex/i.test(css)) return {ok:false,msg:'Add .row { display: flex; gap: 16px; }'};
-      if(!/\.card\s*\{[\s\S]*?flex\s*:/i.test(css)) return {ok:false,msg:'Add flex: 1 to .card so cards share the row.'};
-      return {ok:true,msg:'Excellent! Flex rows are how you build navs, toolbars, and card grids.'};
-    }
-  },
-  {
-    id:'c12l3', chapter:'Chapter 12 · Layout',
-    title:'Grid columns',
-    goal:'Learn CSS Grid.',
-    task:'Create a <code>.grid</code> with <code>display: grid</code> and <code>grid-template-columns: repeat(3, 1fr)</code> containing at least 3 items.',
-    example:'.grid {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 16px;\n}',
-    hint:'1fr means "one fraction of available space". repeat(3, 1fr) = three equal columns.',
-    starter:'<div class="grid">\n  <div>1</div><div>2</div><div>3</div>\n  <div>4</div><div>5</div><div>6</div>\n</div>\n',
-    cssCheck:true,
-    css_starter:'/* Style .grid */\n',
-    check:function(html,css){
-      if(!/display\s*:\s*grid/i.test(css)) return {ok:false,msg:'Add display: grid;'};
-      if(!/grid-template-columns\s*:/i.test(css)) return {ok:false,msg:'Add grid-template-columns: repeat(3, 1fr);'};
-      return {ok:true,msg:'Grid is the most powerful layout tool in CSS. You just used it!'};
-    }
-  },
-  {
-    id:'c12l4', chapter:'Chapter 12 · Layout',
-    title:'Responsive with media query',
-    goal:'Learn how to change layout on small screens.',
-    task:'Add a media query that turns a 3-column grid into 1 column below 600px.',
-    example:'@media (max-width: 600px) {\n  .grid { grid-template-columns: 1fr; }\n}',
-    hint:'max-width means "this applies when the screen is AT MOST this wide". Design mobile-first and scale up.',
-    starter:'<div class="grid"><div>A</div><div>B</div><div>C</div></div>\n',
-    cssCheck:true,
-    css_starter:'.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }\n/* Add a media query to make it 1 column on mobile */\n',
-    check:function(html,css){
-      if(!/@media[^{]*max-width[^{]*\{/i.test(css)) return {ok:false,msg:'Add @media (max-width: 600px) { ... }'};
-      return {ok:true,msg:'Responsive design unlocked! Media queries are essential for mobile.'};
-    }
-  },
-
-  // ═══════════════════════════════════════════════════════════
-  // CHAPTER 13 · MISSIONS (real projects)
-  // ═══════════════════════════════════════════════════════════
-  {
-    id:'m1', chapter:'Chapter 13 · Missions', mission:true,
-    title:'MISSION 1 — Profile card',
-    goal:'Build a personal profile card from scratch.',
-    task:'Create a profile card containing: an <code>&lt;img&gt;</code> with alt, an <code>&lt;h2&gt;</code> for a name, a <code>&lt;p&gt;</code> bio, and a <code>&lt;button&gt;</code> with a hover effect. The card should have padding, a border, and rounded corners.',
-    example:'<div class="card">\n  <img src="https://i.pravatar.cc/100" alt="Profile photo">\n  <h2>Your Name</h2>\n  <p>Short bio about you.</p>\n  <button>Contact</button>\n</div>',
-    hint:'Structure: one .card div holding an img, h2, p, and button. Style .card with padding, border, border-radius. Style the img to be a circle using border-radius: 50%.',
-    starter:'<!-- Build your profile card -->\n<div class="card">\n  <img src="https://i.pravatar.cc/100" alt="Profile">\n  <h2>Your Name</h2>\n  <p>Short bio.</p>\n  <button>Contact</button>\n</div>\n',
-    cssCheck:true,
-    css_starter:'/* Style your card */\n',
-    check:function(html,css){
-      if(!/<img[^>]*alt\s*=/i.test(html)) return {ok:false,msg:'Include an img with alt.'};
-      if(!/<h2[^>]*>[\s\S]+?<\/h2>/i.test(html)) return {ok:false,msg:'Add an h2 with the name.'};
-      if(!/<button[^>]*>[\s\S]+?<\/button>/i.test(html)) return {ok:false,msg:'Add a button.'};
-      if(!/\.card\s*\{[\s\S]*?padding/i.test(css)) return {ok:false,msg:'Style .card with padding.'};
-      if(!/\.card\s*\{[\s\S]*?border-radius/i.test(css)) return {ok:false,msg:'Give .card a border-radius.'};
-      if(!/:\s*hover\s*\{/i.test(css)) return {ok:false,msg:'Add a hover style somewhere (e.g. button:hover).'};
-      return {ok:true,msg:'🎉 Mission 1 complete! You built a real, styled profile card.'};
-    }
-  },
-  {
-    id:'m2', chapter:'Chapter 13 · Missions', mission:true,
-    title:'MISSION 2 — Dark/light theme site',
-    goal:'Build a page with a working theme switch button.',
-    task:'Create a page with a heading, a paragraph, and a button. When the button is clicked, toggle a <code>.dark</code> class on the body, which changes the background and text colors.',
-    example:'HTML: <h1>Welcome</h1><p>Click to switch theme</p><button id="themeToggle">Toggle theme</button>\nCSS: body { background: #fff; color: #111; transition: 0.3s; }\n     body.dark { background: #0a0a0a; color: #f5f5f5; }\nJS:   document.getElementById("themeToggle").onclick = function(){ document.body.classList.toggle("dark"); };',
-    hint:'Three parts: (1) HTML button with id, (2) CSS .dark rules, (3) JS click handler that toggles the class.',
-    starter:'<h1>Welcome</h1>\n<p>Click the button to switch theme.</p>\n<button id="themeToggle">Toggle theme</button>\n',
-    cssCheck:true,
-    css_starter:'body { background: #fff; color: #111; transition: 0.3s; padding: 24px; }\n/* Add body.dark */\n',
-    js_starter:'// Toggle the .dark class on body\n',
-    check:function(html,css,js){
-      if(!/id\s*=\s*["']themeToggle["']/i.test(html)) return {ok:false,msg:'Add <button id="themeToggle">.'};
-      if(!/body\.dark\s*\{/i.test(css)) return {ok:false,msg:'Add body.dark { background: #0a0a0a; color: #f5f5f5; }'};
-      if(!/classList\.toggle\(\s*["']dark["']/i.test(js)) return {ok:false,msg:'Toggle the .dark class in JS.'};
-      return {ok:true,msg:'🎉 Mission 2 complete! You built a real dark mode toggle.'};
-    }
-  },
-  {
-    id:'m3', chapter:'Chapter 13 · Missions', mission:true,
-    title:'MISSION 3 — Video page',
-    goal:'Build a page that showcases a video.',
-    task:'Create a page with a heading, a <code>&lt;video controls&gt;</code> element with a src, and a paragraph caption. Add a border-radius to the video and a max-width of 100% so it stays responsive.',
-    example:'<h1>My Video</h1>\n<video controls src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>\n<p>Watch this beautiful flower bloom.</p>',
-    hint:'Style video { max-width: 100%; border-radius: 12px; }. This makes it fit small screens and look polished.',
-    starter:'<h1>My Video</h1>\n<video controls src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>\n<p>Caption here.</p>\n',
-    cssCheck:true,
-    css_starter:'/* Style the video */\n',
-    check:function(html,css){
-      if(!/<video[^>]*controls/i.test(html)) return {ok:false,msg:'Add a <video controls> element.'};
-      if(!/<video[^>]*src\s*=/i.test(html)) return {ok:false,msg:'Add a src to the video.'};
-      if(!/video\s*\{[\s\S]*?max-width\s*:\s*100%/i.test(css)) return {ok:false,msg:'Add video { max-width: 100%; }'};
-      if(!/video\s*\{[\s\S]*?border-radius/i.test(css)) return {ok:false,msg:'Add border-radius to the video.'};
-      return {ok:true,msg:'🎉 Mission 3 complete! You built a responsive video page.'};
-    }
-  },
-  {
-    id:'m4', chapter:'Chapter 13 · Missions', mission:true,
-    title:'MISSION 4 — Product grid',
-    goal:'Build a responsive product grid.',
-    task:'Build a <code>.grid</code> container with <code>display:grid</code> and <code>grid-template-columns: repeat(auto-fit, minmax(200px, 1fr))</code>. Add at least 3 <code>.card</code> items with a title and price. Add hover lift and a media query for mobile.',
-    example:'.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }\n.card { padding: 20px; border: 1px solid #ddd; border-radius: 12px; transition: 0.25s; }\n.card:hover { transform: translateY(-6px); }',
-    hint:'auto-fit + minmax = responsive columns without media queries. But still add a mobile tweak.',
-    starter:'<div class="grid">\n  <div class="card"><h3>Item 1</h3><p>$10</p></div>\n  <div class="card"><h3>Item 2</h3><p>$20</p></div>\n  <div class="card"><h3>Item 3</h3><p>$30</p></div>\n</div>\n',
-    cssCheck:true,
-    css_starter:'/* Style .grid and .card */\n',
-    check:function(html,css){
-      if(!/display\s*:\s*grid/i.test(css)) return {ok:false,msg:'Add display: grid.'};
-      if(!/grid-template-columns\s*:\s*repeat\s*\(\s*auto-fit/i.test(css)) return {ok:false,msg:'Use repeat(auto-fit, minmax(200px, 1fr)).'};
-      if(!/\.card\s*:\s*hover/i.test(css)) return {ok:false,msg:'Add .card:hover { transform: translateY(-6px); }'};
-      if(!/@media[^{]*max-width/i.test(css)) return {ok:false,msg:'Add a media query for mobile.'};
-      return {ok:true,msg:'🎉 Mission 4 complete! You built a professional responsive product grid.'};
-    }
-  },
-  {
-    id:'m5', chapter:'Chapter 13 · Missions', mission:true,
-    title:'MISSION 5 — Complete landing page',
-    goal:'Put it all together: a full landing page.',
-    task:'Build a landing page with: a <code>&lt;header&gt;</code> containing an h1 and a nav with 3 links, a <code>&lt;main&gt;</code> with a hero section (heading + paragraph + button), a features grid (3 cards), and a <code>&lt;footer&gt;</code>. Use CSS variables for colors, flex/grid for layout, hover effects, and a media query. Include a theme toggle button (bonus).',
-    example:'Structure:\n<header><h1>Brand</h1><nav><a>Home</a><a>About</a><a>Contact</a></nav></header>\n<main>\n  <section class="hero"><h2>Big headline</h2><p>Subtext</p><button>Get started</button></section>\n  <section class="features">\n    <div class="card">Feature 1</div>\n    <div class="card">Feature 2</div>\n    <div class="card">Feature 3</div>\n  </section>\n</main>\n<footer><p>© 2026 Brand</p></footer>',
-    hint:'This is the final mission. Use everything you have learned. Structure first, then style.',
-    starter:'<!-- Build your full landing page -->\n<header>\n  <h1>Brand</h1>\n  <nav>\n    <a href="#">Home</a>\n    <a href="#">About</a>\n    <a href="#">Contact</a>\n  </nav>\n</header>\n\n<main>\n  <section class="hero">\n    <h2>Big headline</h2>\n    <p>Subtext here.</p>\n    <button>Get started</button>\n  </section>\n  <section class="features">\n    <div class="card">Feature 1</div>\n    <div class="card">Feature 2</div>\n    <div class="card">Feature 3</div>\n  </section>\n</main>\n\n<footer><p>© 2026 Brand</p></footer>\n',
-    cssCheck:true,
-    css_starter:':root { --brand: #ff4d5a; --bg: #fff; --text: #111; }\n/* Style everything */\n',
-    check:function(html,css){
-      if(!/<header[^>]*>[\s\S]*?<\/header>/i.test(html)) return {ok:false,msg:'Add a <header>.'};
-      if(!/<nav[^>]*>[\s\S]*?<\/nav>/i.test(html)) return {ok:false,msg:'Add a <nav> with links.'};
-      if(!/<main[^>]*>[\s\S]*?<\/main>/i.test(html)) return {ok:false,msg:'Add a <main>.'};
-      if(!/<footer[^>]*>[\s\S]*?<\/footer>/i.test(html)) return {ok:false,msg:'Add a <footer>.'};
-      if(!/display\s*:\s*(flex|grid)/i.test(css)) return {ok:false,msg:'Use flex or grid for layout.'};
-      if(!/:\s*hover\s*\{/i.test(css)) return {ok:false,msg:'Add a hover effect.'};
-      if(!/@media[^{]*max-width/i.test(css)) return {ok:false,msg:'Add a mobile media query.'};
-      return {ok:true,msg:'🎉🎉 MISSION 5 COMPLETE! You built a real, styled, responsive landing page from scratch. You are now a web developer.'};
-    }
-  }
-];
-
-// ============================================================
-// STATE
-// ============================================================
-var STORAGE_KEY='sh-course-progress-v2';
-var EDITOR_KEY ='sh-course-editor-v2';
-
-var progress=(function(){
-  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY))||{done:[],current:0}; }
-  catch(e){ return {done:[],current:0}; }
-})();
-var editorStore=(function(){
-  try{ return JSON.parse(localStorage.getItem(EDITOR_KEY))||{}; }
-  catch(e){ return {}; }
-})();
-
-function persistProgress(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(progress)); }
-function persistEditor(){ localStorage.setItem(EDITOR_KEY,JSON.stringify(editorStore)); }
-function $(id){ return document.getElementById(id); }
-
-function isUnlocked(idx){
-  if(idx<=progress.current) return true;
-  if(progress.done.indexOf(lessons[idx].id)!==-1) return true;
-  return false;
-}
-
-// ============================================================
-// SIDEBAR
-// ============================================================
-function renderSidebar(){
-  var html=''; var lastChapter='';
-  lessons.forEach(function(l,i){
-    if(l.chapter!==lastChapter){
-      html+='<div class="side-module-title">'+l.chapter+'</div>';
-      lastChapter=l.chapter;
-    }
-    var isDone=progress.done.indexOf(l.id)!==-1;
-    var isCur =progress.current===i;
-    var locked=!isUnlocked(i);
-    html+='<div class="side-lesson '+(isDone?'done ':'')+(isCur?'current ':'')+(locked?'locked ':'')+(l.mission?'mission':'')+'" data-idx="'+i+'" data-locked="'+locked+'">'+
-      '<span class="num2">'+(isDone?'✓':(l.mission?'★':(i+1)))+'</span>'+
-      '<span>'+l.title+'</span>'+
-    '</div>';
-  });
-  $('curriculum').innerHTML=html;
-
-  document.querySelectorAll('.side-lesson').forEach(function(el){
-    el.addEventListener('click',function(){
-      var idx=parseInt(el.dataset.idx,10);
-      if(el.dataset.locked==='true'){
-        alert('Complete the previous lesson first to unlock this one.');
-        return;
-      }
-      progress.current=idx;
-      persistProgress();
-      renderAll();
-    });
-  });
-
-  var pct=Math.round(progress.done.length/lessons.length*100);
-  $('miniProgress').textContent=pct+'%';
-  $('sideFill').style.width=pct+'%';
-}
-
-// ============================================================
-// STAGE
-// ============================================================
-function renderStage(){
-  var i=progress.current;
-  var l=lessons[i];
-  if(!l) return;
-
-  $('crumb').textContent=l.chapter;
-  $('stageTitle').textContent='Lesson '+(i+1)+' — '+l.title;
-  $('missionBadge').style.display=l.mission?'inline-block':'none';
-
-  var saved=editorStore[l.id]||{};
-  var htmlVal=typeof saved.html==='string'?saved.html:(l.starter||'');
-  var cssVal =typeof saved.css ==='string'?saved.css :(l.css_starter||'');
-  var jsVal  =typeof saved.js  ==='string'?saved.js  :(l.js_starter||'');
-
-  var content='';
-  content+='<div class="task-block"><strong>Goal:</strong> '+l.goal+'<br><strong>Your task:</strong> '+l.task+'</div>';
-  content+='<div class="example-box"><span class="lbl">Example</span><pre>'+escapeHtml(l.example)+'</pre></div>';
-  content+='<button class="hint-toggle" id="hintToggle"><i class="fas fa-lightbulb"></i> Show hint</button>';
-  content+='<div class="hint-box" id="hintBox">'+l.hint.replace(/\n/g,'<br>')+'</div>';
-
-  content+='<div class="workspace" id="ws">';
-  content+=  '<div class="ws-header">';
-  content+=    '<div class="ws-tabs">';
-  content+=      '<button class="ws-tab active" data-tab="html">HTML</button>';
-  if(l.cssCheck) content+='<button class="ws-tab" data-tab="css">CSS</button>';
-  if(l.js_starter!==undefined) content+='<button class="ws-tab" data-tab="js">JS</button>';
-  content+=    '</div>';
-  content+=    '<div class="ws-actions">';
-  content+=      '<button class="ws-action" data-action="reset"><i class="fas fa-rotate-left"></i> Reset</button>';
-  content+=    '</div>';
-  content+=  '</div>';
-  content+=  '<div class="ws-body">';
-  content+=    '<div class="ws-editor"><textarea id="editor" spellcheck="false"></textarea></div>';
-  content+=    '<div class="ws-preview"><iframe id="preview" title="Preview"></iframe></div>';
-  content+=  '</div>';
-  content+='</div>';
-
-  content+='<div class="feedback" id="feedback"></div>';
-
-  var isDone=progress.done.indexOf(l.id)!==-1;
-  content+='<div class="stage-foot">';
-  content+=  '<button class="btn btn-ghost" id="btnPrev"'+(i===0?' disabled':'')+'><i class="fas fa-arrow-left"></i> Previous</button>';
-  content+=  '<div style="display:flex;gap:8px;flex-wrap:wrap">';
-  content+=    '<button class="btn btn-check" id="btnCheck"><i class="fas fa-play"></i> Run &amp; Check</button>';
-  content+=    '<button class="btn btn-primary" id="btnNext"'+(isDone?'':' disabled')+'>Next <i class="fas fa-arrow-right"></i></button>';
-  content+=  '</div>';
-  content+='</div>';
-
-  $('lessonContent').innerHTML=content;
-
-  var tabs=document.querySelectorAll('.ws-tab');
-  var editor=$('editor');
-  var preview=$('preview');
-  var activeTab=saved.activeTab||'html';
-
-  function currentVal(){
-    if(activeTab==='html') return htmlVal;
-    if(activeTab==='css') return cssVal;
-    return jsVal;
-  }
-  function storeVal(){
-    htmlVal=(activeTab==='html')?editor.value:htmlVal;
-    cssVal =(activeTab==='css') ?editor.value:cssVal;
-    jsVal  =(activeTab==='js')  ?editor.value:jsVal;
-  }
-  function renderPreview(){
-    var bodyInner=htmlVal;
-    var bm=htmlVal.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-    if(bm) bodyInner=bm[1];
-    var doc='<!DOCTYPE html><html><head><meta charset="utf-8"><style>'+cssVal+'</style></head><body>'+bodyInner+'</body></html>';
-    preview.srcdoc=doc;
-    preview.onload=function(){
-      if(jsVal){ try{ preview.contentWindow.eval(jsVal); }catch(e){ console.warn(e); } }
-    };
-  }
-  function saveEditor(){
-    editorStore[l.id]={html:htmlVal,css:cssVal,js:jsVal,activeTab:activeTab};
-    persistEditor();
-  }
-  function setTab(tab){
-    storeVal();
-    activeTab=tab;
-    tabs.forEach(function(t){ t.classList.toggle('active',t.dataset.tab===tab); });
-    editor.value=currentVal();
-    saveEditor();
-    renderPreview();
-  }
-  tabs.forEach(function(t){ t.addEventListener('click',function(){ setTab(t.dataset.tab); }); });
-  editor.value=currentVal();
-
-  editor.addEventListener('input',function(){
-    storeVal(); saveEditor();
-    clearTimeout(editor._t);
-    editor._t=setTimeout(renderPreview,350);
-  });
-  editor.addEventListener('keydown',function(e){
-    if(e.key==='Tab'){
-      e.preventDefault();
-      var s=editor.selectionStart,en=editor.selectionEnd;
-      editor.value=editor.value.substring(0,s)+'  '+editor.value.substring(en);
-      editor.selectionStart=editor.selectionEnd=s+2;
-      storeVal(); saveEditor();
-    }
-  });
-
-  document.querySelectorAll('.ws-action').forEach(function(b){
-    b.addEventListener('click',function(){
-      if(b.dataset.action==='reset'){
-        if(!confirm('Reset the editor to the starter code?')) return;
-        htmlVal=l.starter||''; cssVal=l.css_starter||''; jsVal=l.js_starter||'';
-        editor.value=currentVal();
-        saveEditor();
-        renderPreview();
-      }
-    });
-  });
-
-  $('hintToggle').addEventListener('click',function(){
-    $('hintBox').classList.toggle('open');
-    this.innerHTML=$('hintBox').classList.contains('open')
-      ? '<i class="fas fa-lightbulb"></i> Hide hint'
-      : '<i class="fas fa-lightbulb"></i> Show hint';
-  });
-
-  $('btnCheck').addEventListener('click',function(){
-    storeVal();
-    var result=l.check(htmlVal,cssVal,jsVal);
-    var fb=$('feedback');
-    fb.className='feedback show '+(result.ok?'success':'error');
-    fb.innerHTML='<i class="fas '+(result.ok?'fa-check-circle':'fa-circle-exclamation')+'"></i><div><strong>'+(result.ok?'Correct!':'Not quite yet')+'</strong><br>'+result.msg+'</div>';
-    if(result.ok && progress.done.indexOf(l.id)===-1){
-      progress.done.push(l.id);
-      persistProgress();
-      renderSidebar();
-      $('btnNext').disabled=false;
-    }
-    renderPreview();
-  });
-
-  $('btnNext').addEventListener('click',function(){
-    if(progress.done.indexOf(l.id)===-1) return;
-    if(i<lessons.length-1){
-      progress.current=i+1;
-      persistProgress();
-      renderAll();
-      window.scrollTo({top:0,behavior:'smooth'});
-    } else {
-      alert('🎉 You completed every lesson and mission! Outstanding work.');
-    }
-  });
-  $('btnPrev').addEventListener('click',function(){
-    if(i>0){ progress.current=i-1; persistProgress(); renderAll(); }
-  });
-
-  renderPreview();
-}
-
-function escapeHtml(s){
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function renderAll(){ renderSidebar(); renderStage(); }
-
-document.getElementById('resetAll').addEventListener('click',function(){
-  if(!confirm('Erase all progress and start over from lesson 1?')) return;
-  progress={done:[],current:0};
-  editorStore={};
-  persistProgress(); persistEditor();
-  renderAll();
-});
-
 (function(){
-  var c=document.getElementById('rain'),ctx=c.getContext('2d');
-  var drops=[];
+  var c = document.getElementById('rain');
+  var ctx = c.getContext('2d');
+  var drops = [];
   function size(){
-    c.width=window.innerWidth; c.height=window.innerHeight;
-    drops=[];
-    var cols=Math.ceil(window.innerWidth/22);
-    for(var i=0;i<cols;i++) drops.push(Math.random()*-30);
+    c.width = window.innerWidth;
+    c.height = window.innerHeight;
+    drops = [];
+    var cols = Math.ceil(window.innerWidth / 22);
+    for (var i = 0; i < cols; i++) drops.push(Math.random() * -30);
   }
   function rain(){
-    ctx.fillStyle='rgba(8,11,24,.12)';
+    ctx.fillStyle = 'rgba(8,11,24,.12)';
     ctx.fillRect(0,0,c.width,c.height);
-    ctx.fillStyle='#ff4d5a';
-    ctx.font='14px monospace';
-    for(var i=0;i<drops.length;i++){
-      ctx.fillText(Math.random()>.5?'0':'1',i*22,drops[i]*22);
-      drops[i]+=.35;
-      if(drops[i]*22>c.height&&Math.random()>.97) drops[i]=0;
+    ctx.fillStyle = '#ffd166';
+    ctx.font = '14px monospace';
+    for (var i = 0; i < drops.length; i++){
+      ctx.fillText(Math.random() > .5 ? '0' : '1', i * 22, drops[i] * 22);
+      drops[i] += .35;
+      if (drops[i] * 22 > c.height && Math.random() > .97) drops[i] = 0;
     }
     requestAnimationFrame(rain);
   }
   size();
-  window.addEventListener('resize',size);
+  window.addEventListener('resize', size);
   rain();
 })();
-
-renderAll();
-console.log('Student Hub · Deep Guided Course ready — '+lessons.length+' lessons');
 </script>
 </body>
 </html>
