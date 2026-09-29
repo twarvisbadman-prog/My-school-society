@@ -1,274 +1,397 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Edit Note · Admin</title>
-  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
-  <style>
-    /* ----- reset & base ----- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Edit Note · Admin | Student Hub</title>
+<link rel="icon" type="image/png" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+    /* Theme 1 · Warm SaaS */
+    --bg:#fafaf9;
+    --surface:#ffffff;
+    --alt:#f5f5f4;
+    --border:#e7e5e4;
+    --border-strong:#d6d3d1;
+    --ink:#1c1917;
+    --text-2:#44403c;
+    --text-3:#57534e;
+    --accent:#c2410c;
+    --accent-bright:#ea580c;
+    --accent-pink:#db2777;
+    --accent-dim:#fff1e8;
+    --grad:linear-gradient(120deg,#ea580c,#db2777);
+    --grad-cta:linear-gradient(120deg,#c2410c,#be185d);
+    --grad-cta-hover:linear-gradient(120deg,#9a3412,#9d174d);
+    --success:#15803d;
+    --success-dim:#dcfce7;
+    --blue:#2563eb;
+    --blue-dim:#dbeafe;
+    --danger:#dc2626;
+    --danger-dim:#fee2e2;
+    --gold:#b45309;
+    --gold-dim:#fef3c7;
+    --radius-sm:10px;
+    --radius-md:14px;
+    --radius-lg:20px;
+    --radius-xl:28px;
+    --shadow-sm:0 1px 2px rgba(28,25,23,.06);
+    --shadow-md:0 10px 28px -12px rgba(28,25,23,.18);
+    --shadow-lg:0 28px 64px -20px rgba(28,25,23,.22);
+    --shadow-cta:0 8px 22px -8px rgba(219,39,119,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+    font-family:'Inter',sans-serif;
+    background:var(--bg);color:var(--ink);
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    padding:32px 20px;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+img{max-width:100%;height:auto;display:block}
 
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(145deg, #0b0e1a 0%, #1a1f35 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem 1.5rem;
-      margin: 0;
-    }
+/* TOP BAR */
+.topbar{position:fixed;top:0;left:0;right:0;background:var(--ink);color:#f5f5f4;font-size:.78rem;padding:8px 0;border-bottom:1px solid var(--border);z-index:10}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 18px;display:flex;justify-content:center;align-items:center;gap:16px;flex-wrap:wrap;text-align:center}
+.topbar-inner span{display:inline-flex;align-items:center;gap:7px;color:#a8a29e;white-space:nowrap}
+.topbar-inner span i{color:var(--accent-bright);font-size:.72rem}
 
-    .container {
-      max-width: 640px;
-      width: 100%;
-      margin: 0 auto;
-    }
+/* NAV */
+.mainnav{
+    position:fixed;top:31px;left:0;right:0;
+    background:rgba(250,250,249,.9);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--border);
+    z-index:10;
+}
+.mainnav-inner{max-width:1200px;margin:0 auto;padding:12px 18px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.05rem;color:var(--ink);letter-spacing:-.02em;flex-shrink:0}
+.logo-img{width:38px;height:38px;border-radius:10px;object-fit:cover;flex-shrink:0;box-shadow:0 6px 16px -6px rgba(219,39,119,.4);display:block;background:#fff}
+.logo-text span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.back-link{
+    color:var(--text-2);font-size:.82rem;font-weight:600;
+    display:inline-flex;align-items:center;gap:6px;
+    padding:8px 14px;border-radius:9px;border:1px solid var(--border);
+    transition:.2s;background:var(--surface);
+}
+.back-link:hover{color:var(--accent);border-color:var(--accent);background:var(--accent-dim)}
+.back-link i{font-size:.78rem}
 
-    /* ----- card ----- */
-    .card {
-      background: rgba(255, 255, 255, 0.96);
-      backdrop-filter: blur(2px);
-      border-radius: 2.5rem;
-      padding: 2.5rem 2.8rem;
-      box-shadow: 0 30px 50px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
-      transition: transform 0.2s ease;
-    }
+/* CONTAINER */
+.container{max-width:640px;width:100%;margin:0 auto;padding-top:100px}
 
-    /* ----- typography ----- */
-    h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: #0d1224;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      margin-bottom: 0.25rem;
-    }
+/* CARD */
+.card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-xl);
+    padding:40px 36px;
+    box-shadow:var(--shadow-lg);
+}
 
-    .file-name {
-      font-size: 1rem;
-      font-weight: 500;
-      color: #4a5278;
-      background: #f0f3fd;
-      padding: 0.5rem 1rem;
-      border-radius: 100px;
-      display: inline-block;
-      margin-top: 0.1rem;
-      margin-bottom: 1.8rem;
-      border: 1px solid #d9e0f0;
-      letter-spacing: -0.01em;
-    }
+/* HEADER */
+.edit-header{text-align:center;margin-bottom:28px}
+.edit-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--accent-dim);
+    border:1px solid #fed7c3;
+    color:var(--accent);
+    font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+    padding:7px 16px;border-radius:50px;margin-bottom:16px;
+}
+.edit-badge i{font-size:.72rem}
 
-    .file-name::before {
-      content: "📄 ";
-      opacity: 0.7;
-    }
+h1{
+    font-size:clamp(1.5rem,4vw,1.9rem);
+    font-weight:900;letter-spacing:-.03em;
+    color:var(--ink);margin-bottom:8px;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+}
+h1 i{
+    font-size:1.1em;
+    background:var(--grad);
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;
+}
 
-    /* ----- form ----- */
-    .form-group {
-      margin-bottom: 1.6rem;
-    }
+.file-name{
+    font-size:.85rem;
+    font-weight:600;color:var(--text-3);
+    background:var(--alt);
+    padding:8px 16px;border-radius:50px;
+    display:inline-flex;align-items:center;gap:8px;
+    margin-top:6px;
+    border:1px solid var(--border);
+    max-width:100%;
+    word-break:break-all;
+    line-height:1.4;
+}
+.file-name i{color:var(--accent);flex-shrink:0}
 
-    label {
-      display: block;
-      font-weight: 600;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      color: #2c345a;
-      margin-bottom: 0.5rem;
-    }
+/* FORM */
+.form-group{margin-bottom:22px}
+.form-label{
+    display:block;font-weight:700;font-size:.85rem;
+    color:var(--ink);margin-bottom:8px;
+    letter-spacing:.01em;
+}
+.form-label i{color:var(--accent);margin-right:6px;font-size:.85rem}
+.form-label .required{color:var(--accent);margin-left:4px}
 
-    .form-input,
-    .form-textarea {
-      width: 100%;
-      padding: 0.9rem 1.2rem;
-      border: 2px solid #dfe5f5;
-      border-radius: 1.2rem;
-      font-size: 1rem;
-      font-family: 'Inter', sans-serif;
-      background: #fbfdff;
-      transition: border 0.2s, box-shadow 0.15s;
-      color: #12182b;
-    }
+.form-input,.form-textarea,.form-select{
+    width:100%;padding:13px 16px;
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    font-size:.92rem;font-family:inherit;font-weight:500;
+    color:var(--ink);background:var(--bg);
+    outline:none;transition:all .25s ease;
+}
+.form-input:hover,.form-textarea:hover,.form-select:hover{
+    border-color:var(--border-strong);background:var(--surface);
+}
+.form-input:focus,.form-textarea:focus,.form-select:focus{
+    border-color:var(--accent-bright);background:var(--surface);
+    box-shadow:0 0 0 4px rgba(234,88,12,.12);
+}
+.form-textarea{resize:vertical;min-height:110px;line-height:1.6;font-family:inherit}
+.form-select{
+    appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 12 12'%3E%3Cpath fill='%23c2410c' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 16px center;
+    padding-right:44px;cursor:pointer;
+}
+.form-select option{background:var(--surface);color:var(--ink)}
 
-    .form-input:focus,
-    .form-textarea:focus {
-      outline: none;
-      border-color: #6b7eea;
-      box-shadow: 0 0 0 4px rgba(107, 126, 234, 0.15);
-      background: #ffffff;
-    }
+.form-hint{
+    font-size:.76rem;color:var(--text-3);
+    margin-top:6px;font-weight:500;
+    display:flex;align-items:center;gap:5px;
+}
+.form-hint i{color:var(--text-3);font-size:.7rem}
 
-    .form-textarea {
-      resize: vertical;
-      min-height: 110px;
-    }
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 
-    /* ----- button row ----- */
-    .action-row {
-      display: flex;
-      flex-direction: column;
-      gap: 0.9rem;
-      margin-top: 0.5rem;
-    }
+/* DIVIDER */
+.divider-light{
+    height:1px;
+    background:linear-gradient(to right,transparent,var(--border),transparent);
+    margin:26px 0 22px;
+    opacity:.7;
+}
 
-    .btn-save {
-      background: linear-gradient(135deg, #5b6fdf, #7b4ea8);
-      color: white;
-      border: none;
-      padding: 1rem 1.5rem;
-      border-radius: 60px;
-      font-size: 1.05rem;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      transition: all 0.2s ease;
-      box-shadow: 0 8px 18px -6px rgba(91, 111, 223, 0.3);
-      letter-spacing: 0.01em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.6rem;
-    }
+/* ACTIONS */
+.action-row{display:flex;flex-direction:column;gap:12px}
 
-    .btn-save:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 16px 28px -8px rgba(91, 111, 223, 0.5);
-      background: linear-gradient(135deg, #4f63d4, #6f429b);
-    }
+.btn-save{
+    background:var(--grad-cta);color:#fff;
+    border:none;padding:15px 24px;border-radius:999px;
+    font-size:.95rem;font-weight:800;cursor:pointer;
+    width:100%;transition:all .25s ease;
+    box-shadow:var(--shadow-cta);
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    letter-spacing:.02em;
+}
+.btn-save i{font-size:.95rem}
+.btn-save:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
+.btn-save:active{transform:translateY(0)}
+.btn-save:disabled{opacity:.6;cursor:not-allowed;transform:none;box-shadow:none}
 
-    .btn-save:active {
-      transform: translateY(0px);
-      box-shadow: 0 4px 12px -4px rgba(91, 111, 223, 0.4);
-    }
+.btn-cancel{
+    background:var(--surface);color:var(--ink);
+    text-decoration:none;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:14px 20px;border-radius:999px;
+    font-weight:700;font-size:.9rem;
+    width:100%;transition:all .25s ease;
+    border:1px solid var(--border);
+}
+.btn-cancel:hover{background:var(--alt);border-color:var(--border-strong);transform:translateY(-1px)}
+.btn-cancel i{color:var(--accent)}
 
-    .btn-cancel {
-      background: #eef2fa;
-      color: #1f274a;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 0.9rem 1.2rem;
-      border-radius: 60px;
-      font-weight: 600;
-      font-size: 1rem;
-      width: 100%;
-      transition: all 0.2s ease;
-      border: 1px solid transparent;
-    }
+/* INFO NOTE */
+.info-note{
+    background:var(--blue-dim);
+    border:1px solid #bfdbfe;
+    border-radius:var(--radius-sm);
+    padding:14px 16px;
+    margin-top:20px;
+    display:flex;align-items:flex-start;gap:10px;
+    font-size:.82rem;color:var(--blue);line-height:1.55;
+    font-weight:500;
+}
+.info-note i{color:var(--blue);font-size:1rem;margin-top:2px;flex-shrink:0}
 
-    .btn-cancel:hover {
-      background: #e2e8f5;
-      border-color: #c5cee6;
-      transform: scale(0.98);
-    }
-
-    /* ----- tiny extras ----- */
-    .note-hint {
-      font-size: 0.8rem;
-      color: #6f7aa0;
-      margin-top: 0.3rem;
-      font-weight: 400;
-      letter-spacing: 0.01em;
-    }
-
-    .divider-light {
-      height: 1px;
-      background: linear-gradient(to right, #d9e0f0, transparent);
-      margin: 1.8rem 0 1.4rem 0;
-      opacity: 0.5;
-    }
-
-    /* ----- responsive touch ----- */
-    @media (max-width: 480px) {
-      .card {
-        padding: 1.8rem 1.2rem;
-        border-radius: 2rem;
-      }
-
-      h1 {
-        font-size: 1.7rem;
-      }
-
-      .file-name {
-        font-size: 0.9rem;
-        padding: 0.3rem 0.8rem;
-      }
-
-      .btn-save {
-        font-size: 1rem;
-        padding: 0.9rem 1.2rem;
-      }
-
-      .btn-cancel {
-        font-size: 0.95rem;
-        padding: 0.8rem 1.2rem;
-      }
-    }
-
-    /* small decoration: emoji alignment */
-    .emoji-icon {
-      display: inline-block;
-      line-height: 1;
-    }
-  </style>
+/* RESPONSIVE */
+@media (max-width:720px){
+    .mainnav-inner{padding:10px 14px;gap:12px}
+    .logo{font-size:1rem}
+    .logo-img{width:34px;height:34px;border-radius:9px}
+    .back-link{padding:7px 12px;font-size:.78rem}
+    .back-link span{display:none}
+    .container{padding-top:96px}
+}
+@media (max-width:560px){
+    body{padding:20px 14px;align-items:flex-start}
+    .topbar{padding:7px 0}
+    .topbar-inner{gap:12px;font-size:.7rem}
+    .topbar-inner span:nth-child(3){display:none}
+    .mainnav{top:29px}
+    .card{padding:28px 22px;border-radius:var(--radius-lg)}
+    h1{font-size:1.4rem}
+    .file-name{font-size:.78rem;padding:6px 14px}
+    .form-row{grid-template-columns:1fr}
+    .form-input,.form-textarea,.form-select{padding:12px 14px;font-size:.88rem}
+    .btn-save,.btn-cancel{padding:13px 20px;font-size:.88rem}
+}
+@media (max-width:400px){
+    .topbar-inner span:nth-child(2){display:none}
+    .logo-text{font-size:.9rem}
+    h1{font-size:1.2rem}
+    .card{padding:24px 18px}
+    .edit-badge{font-size:.62rem;padding:6px 12px}
+}
+@media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}
+</style>
 </head>
 <body>
-  <div class="container">
-    <div class="card">
-      <h1>
-        <span class="emoji-icon">✏️</span> Edit Note
-      </h1>
-      <div class="file-name">
-        {{ note.filename }}
-      </div>
 
-      <form method="post">
-        <!-- CSRF token (Django style) -->
-        {% csrf_token %}
-
-        <div class="form-group">
-          <label for="id_module">📘 Module Name</label>
-          {{ form.module }}
-          <div class="note-hint">e.g. "Advanced Python" or "Module 4"</div>
-        </div>
-
-        <div class="form-group">
-          <label for="id_course">📚 Course Name</label>
-          {{ form.course }}
-          <div class="note-hint">e.g. "Data Science Bootcamp"</div>
-        </div>
-
-        <div class="form-group">
-          <label for="id_description">📝 Description</label>
-          {{ form.description }}
-          <div class="note-hint">Brief summary or key points</div>
-        </div>
-
-        <!-- subtle divider -->
-        <div class="divider-light"></div>
-
-        <div class="action-row">
-          <button type="submit" class="btn-save">
-            <span>💾</span> Save Changes
-          </button>
-          <a href="/admin/" class="btn-cancel">
-            <span>←</span> Cancel
-          </a>
-        </div>
-      </form>
+<!-- TOP BAR -->
+<div class="topbar">
+    <div class="topbar-inner">
+        <span><i class="fas fa-phone"></i> +255 740 706 007</span>
+        <span><i class="fas fa-envelope"></i> Twarvisteh@gmail.com</span>
+        <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
     </div>
-  </div>
+</div>
+
+<!-- NAV -->
+<nav class="mainnav">
+    <div class="mainnav-inner">
+        <a href="/" class="logo">
+            <img src="/apple-touch-icon.png" alt="Student Hub" class="logo-img">
+            <span class="logo-text">Student<span>Hub</span></span>
+        </a>
+        <a href="/admin-portal-twarvis-9x7k2m4p8q3z5w6v/" class="back-link">
+            <i class="fas fa-arrow-left"></i> <span>Back to Admin</span>
+        </a>
+    </div>
+</nav>
+
+<!-- CONTAINER -->
+<div class="container">
+    <div class="card">
+
+        <!-- HEADER -->
+        <div class="edit-header">
+            <span class="edit-badge"><i class="fas fa-pen"></i> Edit Metadata</span>
+            <h1><i class="fas fa-file-pen"></i> Edit Note</h1>
+            <div class="file-name">
+                <i class="fas fa-file"></i>
+                {{ note.original_filename|default:note.filename }}
+            </div>
+        </div>
+
+        <!-- FORM -->
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Module + Course -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="id_module">
+                        <i class="fas fa-tag"></i> Module Name <span class="required">*</span>
+                    </label>
+                    {{ form.module }}
+                    <div class="form-hint">
+                        <i class="fas fa-info-circle"></i>
+                        e.g., "Computer Networks" or "Module 4"
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="id_course">
+                        <i class="fas fa-book"></i> Course Code <span class="required">*</span>
+                    </label>
+                    {{ form.course }}
+                    <div class="form-hint">
+                        <i class="fas fa-info-circle"></i>
+                        e.g., "CIT 3102"
+                    </div>
+                </div>
+            </div>
+
+            <!-- University + File Type -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="id_university">
+                        <i class="fas fa-university"></i> University
+                    </label>
+                    {{ form.university }}
+                    <div class="form-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Optional
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="id_file_type">
+                        <i class="fas fa-file"></i> File Type
+                    </label>
+                    {{ form.file_type }}
+                    <div class="form-hint">
+                        <i class="fas fa-info-circle"></i>
+                        Notes or Past Paper
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+                <label class="form-label" for="id_description">
+                    <i class="fas fa-align-left"></i> Description
+                </label>
+                {{ form.description }}
+                <div class="form-hint">
+                    <i class="fas fa-info-circle"></i>
+                    Brief summary or key points
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="divider-light"></div>
+
+            <!-- Actions -->
+            <div class="action-row">
+                <button type="submit" class="btn-save">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+                <a href="/admin-portal-twarvis-9x7k2m4p8q3z5w6v/" class="btn-cancel">
+                    <i class="fas fa-arrow-left"></i> Cancel
+                </a>
+            </div>
+
+        </form>
+
+        <!-- Info Note -->
+        <div class="info-note">
+            <i class="fas fa-circle-info"></i>
+            <span>Changes take effect immediately. The file itself (PDF, doc, image) will not be modified — only the metadata (module, course, description, university, file type).</span>
+        </div>
+
+    </div>
+</div>
+
 </body>
 </html>
