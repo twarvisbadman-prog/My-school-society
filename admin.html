@@ -1,975 +1,689 @@
-<!-- admin.html - Fixed Version -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Portal | Twarvis School</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Admin Portal | Student Hub</title>
+<link rel="icon" type="image/png" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+    --bg:#fafaf9;--surface:#ffffff;--alt:#f5f5f4;
+    --border:#e7e5e4;--border-strong:#d6d3d1;
+    --ink:#1c1917;--text-2:#44403c;--text-3:#57534e;
+    --accent:#c2410c;--accent-bright:#ea580c;--accent-pink:#db2777;
+    --accent-dim:#fff1e8;
+    --grad:linear-gradient(120deg,#ea580c,#db2777);
+    --grad-cta:linear-gradient(120deg,#c2410c,#be185d);
+    --grad-cta-hover:linear-gradient(120deg,#9a3412,#9d174d);
+    --success:#15803d;--success-dim:#dcfce7;
+    --gold:#b45309;--gold-dim:#fef3c7;--gold-border:#fde68a;
+    --blue:#2563eb;--blue-dim:#dbeafe;
+    --danger:#dc2626;--danger-dim:#fee2e2;
+    --radius-sm:10px;--radius-md:14px;--radius-lg:20px;--radius-xl:28px;
+    --shadow-sm:0 1px 2px rgba(28,25,23,.06);
+    --shadow-md:0 10px 28px -12px rgba(28,25,23,.18);
+    --shadow-lg:0 28px 64px -20px rgba(28,25,23,.22);
+    --shadow-cta:0 8px 22px -8px rgba(219,39,119,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;overflow-x:hidden;width:100%;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+img{max-width:100%;height:auto;display:block}
 
-        body {
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-        }
+/* TOP BAR */
+.topbar{background:var(--ink);color:#f5f5f4;font-size:.82rem;padding:9px 0}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;text-align:center}
+.topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:#a8a29e;white-space:nowrap}
+.topbar-inner span i{color:var(--accent-bright);font-size:.78rem}
 
-        /* ===== WATER & FISH CANVAS BACKGROUND ===== */
-        #aquarium-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            background: linear-gradient(180deg, #0a4a6e 0%, #0c5a7a 25%, #0e6b8a 50%, #0a5a7a 75%, #074a6a 100%);
-        }
+/* NAV */
+.mainnav{background:rgba(250,250,249,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;width:100%}
+.mainnav-inner{max-width:1280px;margin:0 auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.3rem;color:var(--ink);letter-spacing:-.02em;flex-shrink:0}
+.logo-img{width:46px;height:46px;border-radius:12px;object-fit:cover;flex-shrink:0;box-shadow:0 6px 16px -6px rgba(219,39,119,.4);display:block;background:#fff}
+.logo-text span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.menu{display:flex;align-items:center;gap:2px;flex-wrap:wrap;justify-content:center;flex:1;min-width:0}
+.menu a{padding:8px 11px;font-size:.84rem;font-weight:600;color:var(--text-2);border-radius:8px;white-space:nowrap;transition:all .25s ease}
+.menu a:hover{color:var(--ink);background:var(--alt)}
+.menu a.course-link{color:var(--accent)}
+.menu a.hack-link{color:var(--accent-pink)}
+.menu a.course-link i,.menu a.hack-link i{font-size:.75rem;margin-right:5px}
+.nav-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.btn-quote{background:var(--grad-cta);color:#fff;padding:11px 22px;border-radius:999px;font-weight:700;font-size:.85rem;display:inline-flex;align-items:center;gap:8px;transition:all .25s ease;white-space:nowrap;box-shadow:var(--shadow-cta)}
+.btn-quote:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
 
-        /* ===== GLASS OVERLAY ===== */
-        .glass-overlay {
-            position: relative;
-            z-index: 2;
-            background: rgba(255, 255, 255, 0.06);
-            min-height: 100vh;
-            width: 100%;
-            backdrop-filter: blur(3px);
-        }
+/* CONTAINER */
+.admin-container{max-width:1280px;margin:0 auto;padding:32px 20px 80px}
 
-        /* ===== ADMIN CONTAINER ===== */
-        .admin-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+.admin-topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;margin-bottom:24px}
+.back-link{display:inline-flex;align-items:center;gap:10px;background:var(--surface);color:var(--ink);text-decoration:none;padding:11px 22px;border-radius:999px;transition:all .25s;font-weight:700;font-size:.85rem;border:1px solid var(--border);box-shadow:var(--shadow-sm)}
+.back-link:hover{background:var(--alt);transform:translateX(-3px);border-color:var(--border-strong)}
+.back-link i{color:var(--accent)}
+.admin-badge{background:var(--gold-dim);border:1px solid var(--gold-border);padding:9px 22px;border-radius:999px;color:var(--gold);font-weight:800;font-size:.85rem;display:inline-flex;align-items:center;gap:8px;letter-spacing:.02em}
 
-        /* ===== TOP BAR ===== */
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
+/* SECURITY HEADER */
+.security-header{background:var(--success-dim);border:1px solid #86efac;border-radius:var(--radius-md);padding:14px 22px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.security-header .security-info{color:var(--success);font-size:.85rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-weight:600}
+.security-header .security-info i{color:var(--success)}
+.lock-status{display:flex;align-items:center;gap:12px}
+.lock-status .status-dot{width:10px;height:10px;border-radius:50%;display:inline-block;background:var(--success);box-shadow:0 0 12px rgba(21,128,61,.4);animation:pulseDot 2s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+.lock-status span:last-child{color:var(--success);font-size:.82rem;font-weight:600}
 
-        .top-bar .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            text-decoration: none;
-            padding: 10px 22px;
-            border-radius: 40px;
-            transition: all 0.3s;
-            font-weight: 500;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
+/* HEADER CARD */
+.admin-header{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:36px 32px;margin-bottom:28px;text-align:center;box-shadow:var(--shadow-sm);position:relative;overflow:hidden}
+.admin-header::before{content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;background:radial-gradient(circle at center,rgba(234,88,12,.04),transparent 70%);animation:shimmer 15s ease-in-out infinite;pointer-events:none}
+@keyframes shimmer{0%,100%{transform:rotate(0deg)}50%{transform:rotate(180deg)}}
+.admin-header h1{font-size:clamp(1.6rem,4vw,2.3rem);font-weight:900;letter-spacing:-.03em;margin-bottom:8px;position:relative;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.admin-header p{color:var(--text-2);font-size:.98rem;position:relative}
 
-        .top-bar .back-link:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateX(-3px);
-        }
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:28px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 22px;transition:all .25s ease;box-shadow:var(--shadow-sm)}
+.stat-card:hover{transform:translateY(-3px);border-color:#fed7c3;box-shadow:var(--shadow-md)}
+.stat-card .stat-icon{font-size:1.6rem;display:block;margin-bottom:8px}
+.stat-card .stat-number{font-size:2rem;font-weight:900;letter-spacing:-.03em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
+.stat-card .stat-label{color:var(--text-3);font-size:.8rem;margin-top:4px;font-weight:600}
 
-        .top-bar .admin-badge {
-            background: rgba(255, 215, 0, 0.15);
-            border: 1px solid rgba(255, 215, 0, 0.25);
-            padding: 8px 20px;
-            border-radius: 40px;
-            color: #ffd700;
-            font-weight: 600;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+/* FILE LIST */
+.file-list{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:26px;box-shadow:var(--shadow-sm)}
+.file-list-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.file-list-header h2{color:var(--ink);font-size:1.25rem;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.file-list-header h2 i{color:var(--accent)}
+.file-count{background:var(--alt);padding:5px 14px;border-radius:30px;color:var(--text-2);font-size:.78rem;font-weight:700;border:1px solid var(--border)}
 
-        /* ===== SECURITY HEADER ===== */
-        .security-header {
-            background: rgba(255, 215, 0, 0.06);
-            border: 1px solid rgba(255, 215, 0, 0.12);
-            border-radius: 16px;
-            padding: 15px 25px;
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
+.file-item{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px;transition:background .2s;border-radius:var(--radius-md)}
+.file-item:last-child{border-bottom:none}
+.file-item:hover{background:var(--alt)}
 
-        .security-header .security-info {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+.file-info{flex:2;min-width:220px}
+.file-name{color:var(--ink);font-weight:700;font-size:.92rem;word-break:break-all;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.file-name i{color:var(--accent)}
+.privacy-badge{font-size:.62rem;padding:3px 10px;border-radius:30px;font-weight:800;background:var(--success-dim);color:var(--success);border:1px solid #86efac;letter-spacing:.04em;text-transform:uppercase;display:inline-flex;align-items:center;gap:4px}
+.privacy-badge.private{background:var(--gold-dim);color:var(--gold);border-color:var(--gold-border)}
 
-        .security-header .security-info i {
-            color: #ffd700;
-        }
+.file-meta{color:var(--text-3);font-size:.72rem;margin-top:6px;display:flex;flex-wrap:wrap;gap:12px;font-weight:600}
+.file-meta span{display:inline-flex;align-items:center;gap:4px}
+.file-meta i{color:var(--accent);font-size:.7rem}
 
-        .security-header .lock-status {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+.file-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 
-        .security-header .lock-status .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-        }
+/* PASSCODE SECTION */
+.passcode-section{display:flex;align-items:center;gap:8px;background:var(--alt);padding:4px 12px 4px 16px;border-radius:30px;border:1px solid var(--border)}
+.passcode-label{color:var(--text-3);font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.passcode-label i{color:var(--accent)}
+.passcode-display{color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:700;letter-spacing:2px;min-width:40px;text-align:center;background:var(--surface);padding:3px 8px;border-radius:8px;border:1px solid var(--border)}
+.passcode-display.empty{color:var(--text-3);font-weight:600;font-size:.72rem;letter-spacing:0;font-family:'Inter',sans-serif;padding:3px 10px}
+.passcode-input{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:5px 10px;color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;letter-spacing:2px;width:70px;text-align:center;transition:all .25s;outline:none}
+.passcode-input:focus{border-color:var(--accent-bright);box-shadow:0 0 0 3px rgba(234,88,12,.12)}
+.passcode-input::placeholder{color:var(--text-3);font-weight:400;letter-spacing:0;font-size:.65rem}
+.passcode-btn{background:var(--gold-dim);border:1px solid var(--gold-border);color:var(--gold);padding:5px 12px;border-radius:20px;font-size:.65rem;font-weight:800;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:4px}
+.passcode-btn:hover{background:var(--gold);color:#fff;border-color:var(--gold);transform:scale(1.05)}
+.toggle-passcode{background:none;border:none;color:var(--text-3);cursor:pointer;padding:4px;transition:all .25s;font-size:.85rem}
+.toggle-passcode:hover{color:var(--accent)}
 
-        .security-header .lock-status .status-dot.secure {
-            background: #00ff64;
-            box-shadow: 0 0 15px rgba(0, 255, 100, 0.3);
-        }
+/* ADMIN BUTTONS */
+.admin-btn{padding:7px 14px;border:none;border-radius:30px;color:#fff;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .25s;font-size:.72rem;font-weight:700;white-space:nowrap}
+.admin-btn i{font-size:.72rem}
 
-        /* ===== GLASS CARD HEADER ===== */
-        .admin-header {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 30px 35px;
-            margin-bottom: 30px;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-            position: relative;
-            overflow: hidden;
-        }
+.admin-btn.danger{background:var(--danger-dim);color:var(--danger);border:1px solid #fca5a5}
+.admin-btn.danger:hover{background:var(--danger);color:#fff;border-color:var(--danger);transform:scale(1.04);box-shadow:0 6px 18px rgba(220,38,38,.3)}
 
-        .admin-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at center, rgba(255,215,0,0.05), transparent 70%);
-            animation: shimmer 12s ease-in-out infinite;
-        }
+.admin-btn.view-btn{background:var(--blue-dim);color:var(--blue);border:1px solid #bfdbfe}
+.admin-btn.view-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue);transform:scale(1.04);box-shadow:0 6px 18px rgba(37,99,235,.3)}
 
-        @keyframes shimmer {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(180deg); }
-        }
+.admin-btn.download-btn{background:var(--success-dim);color:var(--success);border:1px solid #86efac}
+.admin-btn.download-btn:hover{background:var(--success);color:#fff;border-color:var(--success);transform:scale(1.04);box-shadow:0 6px 18px rgba(21,128,61,.3)}
 
-        .admin-header h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, #fff, #ffd700, #00ffcc);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 8px;
-            position: relative;
-        }
+.admin-btn.edit-btn{background:var(--accent-dim);color:var(--accent);border:1px solid #fed7c3}
+.admin-btn.edit-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);transform:scale(1.04);box-shadow:0 6px 18px rgba(194,65,12,.3)}
 
-        .admin-header p {
-            color: rgba(255, 255, 255, 0.7);
-            text-shadow: 0 0 10px rgba(0,0,0,0.3);
-            position: relative;
-            font-size: 1.05rem;
-        }
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(28,25,23,.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto;animation:fadeIn .25s ease}
+.modal-overlay.active{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
-        /* ===== STATS GRID ===== */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px;
-            margin-bottom: 30px;
-        }
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);max-width:640px;width:100%;padding:32px;box-shadow:var(--shadow-lg);animation:popIn .4s cubic-bezier(.34,1.56,.64,1);margin:auto;max-height:95vh;overflow-y:auto}
+@keyframes popIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
 
-        .stat-card {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 18px;
-            padding: 18px 22px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.modal-header h2{font-size:1.25rem;font-weight:900;color:var(--ink);letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.modal-header h2 i{color:var(--accent)}
+.modal-close{background:none;border:none;color:var(--text-3);font-size:1.4rem;cursor:pointer;padding:4px 10px;border-radius:8px;transition:all .2s;width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center}
+.modal-close:hover{background:var(--danger-dim);color:var(--danger)}
 
-        .stat-card:hover {
-            transform: translateY(-3px);
-            background: rgba(255, 255, 255, 0.12);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
+.form-group{margin-bottom:18px}
+.form-label{display:block;font-weight:700;color:var(--ink);font-size:.85rem;margin-bottom:8px;letter-spacing:.01em}
+.form-label i{color:var(--accent);margin-right:6px;font-size:.85rem}
+.form-input, .form-textarea, .form-select{width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:.9rem;font-family:inherit;font-weight:500;outline:none;transition:all .25s;background:var(--bg);color:var(--ink)}
+.form-input:hover, .form-textarea:hover, .form-select:hover{border-color:var(--border-strong);background:var(--surface)}
+.form-input:focus, .form-textarea:focus, .form-select:focus{border-color:var(--accent-bright);background:var(--surface);box-shadow:0 0 0 4px rgba(234,88,12,.12)}
+.form-textarea{resize:vertical;min-height:90px;line-height:1.55}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 12 12'%3E%3Cpath fill='%23c2410c' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:44px;cursor:pointer}
 
-        .stat-card .stat-icon {
-            font-size: 1.5rem;
-            margin-bottom: 6px;
-            display: block;
-        }
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 
-        .stat-card .stat-number {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #fff;
-            text-shadow: 0 0 15px rgba(0,0,0,0.3);
-        }
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:24px;padding-top:20px;border-top:1px solid var(--border);flex-wrap:wrap}
+.btn-modal{padding:12px 24px;border-radius:999px;font-weight:700;font-size:.88rem;cursor:pointer;border:none;transition:all .25s;display:inline-flex;align-items:center;gap:8px}
+.btn-modal.primary{background:var(--grad-cta);color:#fff;box-shadow:var(--shadow-cta)}
+.btn-modal.primary:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
+.btn-modal.primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn-modal.secondary{background:var(--alt);color:var(--ink);border:1px solid var(--border)}
+.btn-modal.secondary:hover{background:var(--surface);border-color:var(--border-strong)}
 
-        .stat-card .stat-label {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.8rem;
-            margin-top: 2px;
-        }
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;padding:14px 22px;border-radius:var(--radius-md);font-weight:700;font-size:.88rem;box-shadow:var(--shadow-lg);z-index:3000;display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(20px);transition:all .3s;pointer-events:none;max-width:90vw}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success{background:var(--success)}
+.toast.error{background:var(--danger)}
 
-        /* ===== FILE LIST ===== */
-        .file-list {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 24px;
-            padding: 25px;
-            margin-bottom: 30px;
-        }
+/* EMPTY */
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-3)}
+.empty-state i{font-size:3.5rem;color:var(--border-strong);margin-bottom:16px;display:block}
+.empty-state h3{color:var(--ink);font-size:1.15rem;margin-bottom:6px;font-weight:800}
+.empty-state p{font-size:.9rem;color:var(--text-2)}
 
-        .file-list-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
+/* FOOTER */
+footer{background:var(--ink);padding:26px 20px;border-top:1px solid var(--border);margin-top:40px}
+.footer-inner{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.footer-inner p{color:#78716c;font-size:.82rem}
+.footer-socials{display:flex;gap:8px}
+.footer-socials a{width:38px;height:38px;border:1px solid #292524;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#a8a29e;font-size:.9rem;transition:all .25s ease;background:#1c1917}
+.footer-socials a:hover{background:var(--grad-cta);color:#fff;border-color:transparent;transform:translateY(-2px);box-shadow:0 8px 20px -6px rgba(219,39,119,.5)}
 
-        .file-list-header h2 {
-            color: #ffd700;
-            font-size: 1.3rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .file-list-header .file-count {
-            background: rgba(255, 255, 255, 0.06);
-            padding: 4px 14px;
-            border-radius: 30px;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.8rem;
-        }
-
-        .file-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 18px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            flex-wrap: wrap;
-            gap: 12px;
-            transition: background 0.2s;
-            border-radius: 12px;
-        }
-
-        .file-item:hover {
-            background: rgba(255, 255, 255, 0.04);
-        }
-
-        .file-item .file-info {
-            flex: 2;
-            min-width: 200px;
-        }
-
-        .file-item .file-name {
-            color: #fff;
-            font-weight: 600;
-            font-size: 0.9rem;
-            word-break: break-all;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .file-item .file-name .privacy-badge {
-            font-size: 0.55rem;
-            padding: 2px 10px;
-            border-radius: 30px;
-            font-weight: 600;
-            background: rgba(0, 255, 100, 0.12);
-            color: #00ff64;
-            border: 1px solid rgba(0, 255, 100, 0.1);
-        }
-
-        .file-item .file-name .privacy-badge.private {
-            background: rgba(255, 152, 0, 0.12);
-            color: #ff9800;
-            border-color: rgba(255, 152, 0, 0.1);
-        }
-
-        .file-item .file-meta {
-            color: rgba(255, 255, 255, 0.35);
-            font-size: 0.65rem;
-            margin-top: 4px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .file-item .file-meta span {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .file-item .file-actions {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        /* ===== PASSCODE SECTION ===== */
-        .passcode-section {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.04);
-            padding: 4px 12px 4px 16px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .passcode-section .passcode-label {
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 0.6rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .passcode-section .passcode-display {
-            color: #fff;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            min-width: 40px;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 2px 8px;
-            border-radius: 12px;
-        }
-
-        .passcode-section .passcode-display.empty {
-            color: rgba(255, 255, 255, 0.2);
-            font-weight: 400;
-            font-size: 0.7rem;
-            letter-spacing: 0;
-        }
-
-        .passcode-section .passcode-input {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 4px 10px;
-            color: #fff;
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            width: 70px;
-            text-align: center;
-            transition: all 0.3s;
-            outline: none;
-        }
-
-        .passcode-section .passcode-input:focus {
-            border-color: #ffd700;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
-        }
-
-        .passcode-section .passcode-input::placeholder {
-            color: rgba(255, 255, 255, 0.15);
-            font-weight: 400;
-            letter-spacing: 0;
-            font-size: 0.6rem;
-        }
-
-        .passcode-section .passcode-btn {
-            background: rgba(255, 215, 0, 0.15);
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            color: #ffd700;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.6rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .passcode-section .passcode-btn:hover {
-            background: rgba(255, 215, 0, 0.25);
-            transform: scale(1.05);
-        }
-
-        .passcode-section .toggle-passcode {
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.2);
-            cursor: pointer;
-            padding: 4px;
-            transition: all 0.3s;
-            font-size: 0.8rem;
-        }
-
-        .passcode-section .toggle-passcode:hover {
-            color: #fff;
-        }
-
-        /* ===== ADMIN BUTTONS ===== */
-        .admin-btn {
-            padding: 6px 16px;
-            border: none;
-            border-radius: 30px;
-            color: white;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.3s;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
-        .admin-btn.danger {
-            background: rgba(255, 69, 69, 0.6);
-        }
-
-        .admin-btn.danger:hover {
-            background: #ff4444;
-            transform: scale(1.03);
-            box-shadow: 0 5px 20px rgba(255, 68, 68, 0.3);
-        }
-
-        .admin-btn.view-btn {
-            background: rgba(59, 130, 246, 0.4);
-        }
-
-        .admin-btn.view-btn:hover {
-            background: #3b82f6;
-            transform: scale(1.03);
-            box-shadow: 0 5px 20px rgba(59, 130, 246, 0.3);
-        }
-
-        .admin-btn.download-btn {
-            background: rgba(0, 255, 100, 0.15);
-            color: #00ff64;
-        }
-
-        .admin-btn.download-btn:hover {
-            background: rgba(0, 255, 100, 0.3);
-            transform: scale(1.03);
-        }
-
-        /* ===== EMPTY STATE ===== */
-        .empty-state {
-            text-align: center;
-            padding: 50px 20px;
-            color: rgba(255, 255, 255, 0.4);
-        }
-
-        .empty-state i {
-            font-size: 3.5rem;
-            opacity: 0.2;
-            margin-bottom: 12px;
-        }
-
-        .empty-state h3 {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 1.2rem;
-            margin-bottom: 6px;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .admin-header h1 { font-size: 1.6rem; }
-            .security-header { flex-direction: column; align-items: stretch; text-align: center; }
-            .security-header .lock-status { justify-content: center; }
-            .stats-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
-            .stat-card .stat-number { font-size: 1.5rem; }
-            .file-item { flex-direction: column; align-items: stretch; }
-            .file-item .file-actions { justify-content: flex-start; flex-wrap: wrap; }
-            .top-bar { flex-direction: column; align-items: stretch; text-align: center; }
-            .top-bar .back-link { justify-content: center; }
-            .passcode-section { flex-wrap: wrap; justify-content: center; }
-            .passcode-section .passcode-input { width: 60px; }
-        }
-
-        @media (max-width: 480px) {
-            .admin-header { padding: 18px; }
-            .admin-header h1 { font-size: 1.3rem; }
-            .stats-grid { grid-template-columns: 1fr 1fr; }
-            .stat-card { padding: 12px 15px; }
-            .stat-card .stat-number { font-size: 1.3rem; }
-            .file-list { padding: 12px; }
-            .file-item { padding: 10px 12px; }
-            .file-item .file-name { font-size: 0.8rem; }
-        }
-    </style>
+/* RESPONSIVE */
+@media (max-width:720px){
+    .mainnav-inner{flex-wrap:wrap;padding:12px 16px;gap:12px}
+    .logo{font-size:1.05rem;gap:10px}
+    .logo-img{width:40px;height:40px;border-radius:11px}
+    .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0;margin:0 -16px;padding-left:16px;padding-right:16px}
+    .menu::-webkit-scrollbar{display:none}
+    .menu a{padding:8px 12px;font-size:.8rem;flex-shrink:0}
+    .admin-container{padding:24px 16px 60px}
+    .admin-header{padding:24px 20px}
+    .admin-header h1{font-size:1.6rem}
+    .security-header{flex-direction:column;text-align:center;align-items:stretch}
+    .lock-status{justify-content:center}
+    .stats-grid{grid-template-columns:repeat(2,1fr)}
+    .stat-card .stat-number{font-size:1.5rem}
+    .file-list{padding:18px}
+    .file-item{flex-direction:column;align-items:stretch}
+    .file-actions{justify-content:flex-start;flex-wrap:wrap}
+    .admin-topbar{flex-direction:column;align-items:stretch;text-align:center}
+    .back-link{justify-content:center}
+    .passcode-section{flex-wrap:wrap;justify-content:center}
+    .passcode-input{width:60px}
+    .modal-box{padding:24px 20px}
+    .form-row{grid-template-columns:1fr}
+    .modal-actions{flex-direction:column-reverse}
+    .modal-actions .btn-modal{width:100%;justify-content:center}
+}
+@media (max-width:480px){
+    .topbar-inner{gap:12px;font-size:.72rem}
+    .topbar-inner span:nth-child(3){display:none}
+    .admin-header h1{font-size:1.3rem}
+    .stats-grid{grid-template-columns:1fr}
+    .stat-card{padding:14px 16px}
+    .stat-card .stat-number{font-size:1.4rem}
+    .file-list{padding:14px}
+    .file-item{padding:12px}
+    .file-name{font-size:.82rem}
+    .admin-btn{padding:6px 10px;font-size:.68rem}
+    .btn-quote span{display:none}
+    .logo-text{font-size:.95rem}
+    .logo-img{width:36px;height:36px;border-radius:10px}
+    .topbar-inner span:nth-child(2){display:none}
+    .footer-inner{flex-direction:column;text-align:center}
+    .toast{right:12px;left:12px;bottom:12px}
+}
+@media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}
+</style>
 </head>
 <body>
 
-    <!-- Water & Fish Canvas -->
-    <canvas id="aquarium-canvas"></canvas>
+<!-- TOP BAR -->
+<div class="topbar">
+    <div class="topbar-inner">
+        <span><i class="fas fa-phone"></i> +255 740 706 007</span>
+        <span><i class="fas fa-envelope"></i> Twarvisteh@gmail.com</span>
+        <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
+    </div>
+</div>
 
-    <div class="glass-overlay">
-        <div class="admin-container">
-            <!-- Top Bar -->
-            <div class="top-bar">
-                <a href="/" class="back-link">
-                    <i class="fas fa-arrow-left"></i> Back to Home
-                </a>
-                <span class="admin-badge"><i class="fas fa-crown"></i> Admin Access</span>
-            </div>
+<!-- NAV -->
+<nav class="mainnav">
+    <div class="mainnav-inner">
+        <a href="/" class="logo">
+            <img src="/apple-touch-icon.png" alt="Student Hub" class="logo-img">
+            <span class="logo-text">Student<span>Hub</span></span>
+        </a>
+        <div class="menu">
+            <a href="/">Home</a>
+            <a href="/browse/">Browse</a>
+            <a href="/upload/">Upload</a>
+            <a href="/calculator/">Calculator</a>
+            <a href="/scanner/">Scanner</a>
+            <a href="/autoquiz/">AutoQuiz AI</a>
+            <a href="/free_course/" class="course-link"><i class="fas fa-book-open"></i>Free Courses</a>
+            <a href="/hackerthon/" class="hack-link"><i class="fas fa-code"></i>Hackathon</a>
+            <a href="/about/">About</a>
+        </div>
+        <div class="nav-right">
+            <a href="/upload/" class="btn-quote">
+                <span>Upload File</span> <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</nav>
 
-            <!-- Security Header -->
-            <div class="security-header">
-                <div class="security-info">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Secure Admin Panel</span>
-                    <span style="opacity:0.5;">|</span>
-                    <span><i class="fas fa-lock"></i> All data encrypted</span>
-                </div>
-                <div class="lock-status">
-                    <span style="color:rgba(255,255,255,0.3); font-size:0.8rem;">Status:</span>
-                    <span class="status-dot secure"></span>
-                    <span style="color:rgba(255,255,255,0.5); font-size:0.8rem;">Secure Connection</span>
-                </div>
-            </div>
+<!-- ADMIN CONTAINER -->
+<div class="admin-container">
 
-            <!-- Header -->
-            <div class="admin-header">
-                <h1>🐠 ADMIN PORTAL 🐠</h1>
-                <p>Full control over your school files — view, manage, and delete</p>
-            </div>
+    <div class="admin-topbar">
+        <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        <span class="admin-badge"><i class="fas fa-crown"></i> Admin Access</span>
+    </div>
 
-            <!-- Stats -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <span class="stat-icon">📁</span>
-                    <div class="stat-number">{{ stats.total_files }}</div>
-                    <div class="stat-label">Total Files</div>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-icon">🔓</span>
-                    <div class="stat-number">{{ stats.public_count|default:0 }}</div>
-                    <div class="stat-label">Public Files</div>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-icon">🔒</span>
-                    <div class="stat-number">{{ stats.private_count|default:0 }}</div>
-                    <div class="stat-label">Private Files</div>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-icon">📚</span>
-                    <div class="stat-number">{{ stats.top_modules|length }}</div>
-                    <div class="stat-label">Modules</div>
-                </div>
-            </div>
-
-            <!-- File List -->
-            <div class="file-list">
-                <div class="file-list-header">
-                    <h2><i class="fas fa-fish"></i> All Uploaded Files</h2>
-                    <span class="file-count">{{ notes|length }} files</span>
-                </div>
-
-                <!-- FIXED: Loop through notes -->
-                {% if notes %}
-                    {% for note in notes %}
-                    <div class="file-item">
-                        <div class="file-info">
-                            <div class="file-name">
-                                <i class="fas fa-file"></i> {{ note.original_filename|default:note.filename }}
-                                {% if note.privacy == 'private' %}
-                                    <span class="privacy-badge private"><i class="fas fa-lock"></i> Private</span>
-                                {% else %}
-                                    <span class="privacy-badge"><i class="fas fa-globe"></i> Public</span>
-                                {% endif %}
-                            </div>
-                            <div class="file-meta">
-                                <span><i class="fas fa-tag"></i> {{ note.module|default:"N/A" }}</span>
-                                <span><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
-                                <span><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
-                                <span><i class="fas fa-university"></i> {{ note.university|default:"Not specified" }}</span>
-                            </div>
-                        </div>
-                        <div class="file-actions">
-                            <!-- Passcode Section -->
-                            <div class="passcode-section" data-file-id="{{ note.id }}">
-                                <span class="passcode-label">
-                                    {% if note.privacy == 'private' %}
-                                        <i class="fas fa-key"></i>
-                                    {% else %}
-                                        <i class="fas fa-lock-open"></i>
-                                    {% endif %}
-                                </span>
-                                {% if note.privacy == 'private' %}
-                                    <span class="passcode-display" id="passcode-display-{{ note.id }}">{{ note.passcode|default:"0000" }}</span>
-                                    <input type="password" class="passcode-input" id="passcode-input-{{ note.id }}" 
-                                           placeholder="New" maxlength="4" inputmode="numeric"
-                                           data-file-id="{{ note.id }}">
-                                    <button class="passcode-btn" onclick="updatePasscode({{ note.id }})">
-                                        <i class="fas fa-save"></i> Change
-                                    </button>
-                                    <button class="toggle-passcode" onclick="togglePasscodeVisibility({{ note.id }})" title="Toggle visibility">
-                                        <i class="fas fa-eye" id="toggle-icon-{{ note.id }}"></i>
-                                    </button>
-                                {% else %}
-                                    <span class="passcode-display empty">No passcode</span>
-                                {% endif %}
-                            </div>
-
-                            <!-- FIXED: Edit link uses note.id -->
-                            <a href="/admin_edit/{{ note.id }}/" class="admin-btn view-btn" target="_blank">
-                                <i class="fas fa-eye"></i> Edit
-                            </a>
-                            <!-- FIXED: View link uses note.id -->
-                            <a href="/view/{{ note.id }}/" class="admin-btn view-btn" target="_blank">
-                                <i class="fas fa-eye"></i> View
-                            </a>
-                            <!-- FIXED: Download link uses note.id -->
-                            <a href="/download/{{ note.id }}/" class="admin-btn download-btn">
-                                <i class="fas fa-download"></i> Download
-                            </a>
-                            <!-- FIXED: Delete link uses note.id -->
-                            <a href="/delete/{{ note.id }}/" class="admin-btn danger" onclick="return confirm('⚠️ Delete this file permanently? This cannot be undone!')">
-                                <i class="fas fa-trash-alt"></i> Delete
-                            </a>
-                            <a href="/admin_settings.html/" class="admin-btn view-btn" target="_blank">
-                                <i class="fas fa-eye"></i> Settings
-                            </a>
-                        </div>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="empty-state">
-                        <i class="fas fa-water"></i>
-                        <h3>No files uploaded yet</h3>
-                        <p>The ocean is empty! Students haven't shared any files yet.</p>
-                    </div>
-                {% endif %}
-            </div>
+    <div class="security-header">
+        <div class="security-info">
+            <i class="fas fa-shield-alt"></i>
+            <span>Secure Admin Panel</span>
+            <span style="opacity:.5">|</span>
+            <span><i class="fas fa-lock"></i> All data encrypted</span>
+        </div>
+        <div class="lock-status">
+            <span style="color:var(--success);font-size:.82rem;font-weight:600">Status:</span>
+            <span class="status-dot"></span>
+            <span>Secure Connection</span>
         </div>
     </div>
 
-    <script>
-        // ===== AQUARIUM WITH FISH AND WATER =====
-        const canvas = document.getElementById('aquarium-canvas');
-        const ctx = canvas.getContext('2d');
+    <div class="admin-header">
+        <h1>Admin Portal</h1>
+        <p>Full control — edit metadata, manage passcodes, view, and delete files</p>
+    </div>
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span class="stat-icon">📁</span>
+            <div class="stat-number">{{ stats.total_files }}</div>
+            <div class="stat-label">Total Files</div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon">🔓</span>
+            <div class="stat-number">{{ stats.public_count|default:0 }}</div>
+            <div class="stat-label">Public Files</div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon">🔒</span>
+            <div class="stat-number">{{ stats.private_count|default:0 }}</div>
+            <div class="stat-label">Private Files</div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-icon">📚</span>
+            <div class="stat-number">{{ stats.top_modules|length }}</div>
+            <div class="stat-label">Modules</div>
+        </div>
+    </div>
+
+    <div class="file-list">
+        <div class="file-list-header">
+            <h2><i class="fas fa-folder-open"></i> All Uploaded Files</h2>
+            <span class="file-count">{{ notes|length }} files</span>
+        </div>
+
+        {% if notes %}
+            {% for note in notes %}
+            <div class="file-item" id="file-item-{{ note.id }}">
+                <div class="file-info">
+                    <div class="file-name">
+                        <i class="fas fa-file"></i>
+                        <span id="fname-module-{{ note.id }}">{{ note.module|default:"Untitled" }}</span>
+                        {% if note.privacy == 'private' %}
+                            <span class="privacy-badge private"><i class="fas fa-lock"></i> Private</span>
+                        {% else %}
+                            <span class="privacy-badge"><i class="fas fa-globe"></i> Public</span>
+                        {% endif %}
+                    </div>
+                    <div class="file-meta">
+                        <span><i class="fas fa-file-signature"></i> <span id="fname-original-{{ note.id }}">{{ note.original_filename|default:note.filename }}</span></span>
+                        <span><i class="fas fa-book"></i> <span id="fmeta-course-{{ note.id }}">{{ note.course|default:"N/A" }}</span></span>
+                        <span><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
+                        <span><i class="fas fa-university"></i> <span id="fmeta-uni-{{ note.id }}">{{ note.university|default:"Not specified" }}</span></span>
+                        {% if note.description %}
+                            <span><i class="fas fa-align-left"></i> <span id="fmeta-desc-{{ note.id }}">{{ note.description|truncatechars:60 }}</span></span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="file-actions">
+                    <div class="passcode-section" data-file-id="{{ note.id }}">
+                        <span class="passcode-label">
+                            {% if note.privacy == 'private' %}
+                                <i class="fas fa-key"></i>
+                            {% else %}
+                                <i class="fas fa-lock-open"></i>
+                            {% endif %}
+                        </span>
+                        {% if note.privacy == 'private' %}
+                            <span class="passcode-display" id="passcode-display-{{ note.id }}">{{ note.passcode|default:"0000" }}</span>
+                            <input type="password" class="passcode-input" id="passcode-input-{{ note.id }}"
+                                   placeholder="New" maxlength="4" inputmode="numeric"
+                                   data-file-id="{{ note.id }}">
+                            <button class="passcode-btn" onclick="updatePasscode({{ note.id }})">
+                                <i class="fas fa-save"></i> Change
+                            </button>
+                            <button class="toggle-passcode" onclick="togglePasscodeVisibility({{ note.id }})" title="Toggle visibility">
+                                <i class="fas fa-eye" id="toggle-icon-{{ note.id }}"></i>
+                            </button>
+                        {% else %}
+                            <span class="passcode-display empty">No passcode</span>
+                        {% endif %}
+                    </div>
+
+                    <button class="admin-btn edit-btn"
+                            data-id="{{ note.id }}"
+                            data-module="{{ note.module|default:'' }}"
+                            data-course="{{ note.course|default:'' }}"
+                            data-description="{{ note.description|default:'' }}"
+                            data-university="{{ note.university|default:'' }}"
+                            data-file-type="{{ note.file_type|default:'notes' }}"
+                            onclick="openEditModal(this)">
+                        <i class="fas fa-pen"></i> Edit
+                    </button>
+
+                    <a href="/view/{{ note.id }}/" class="admin-btn view-btn" target="_blank">
+                        <i class="fas fa-eye"></i> View
+                    </a>
+                    <a href="/download/{{ note.id }}/" class="admin-btn download-btn">
+                        <i class="fas fa-download"></i> Download
+                    </a>
+                    <a href="/delete/{{ note.id }}/" class="admin-btn danger" onclick="return confirm('⚠️ Delete this file permanently? This cannot be undone!')">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-folder-open"></i>
+                <h3>No files uploaded yet</h3>
+                <p>Students haven't shared any files yet. Share the platform!</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2><i class="fas fa-pen"></i> Edit File Metadata</h2>
+            <button class="modal-close" onclick="closeEditModal()" aria-label="Close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <input type="hidden" id="edit-id">
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-tag"></i> Module Name</label>
+                <input type="text" class="form-input" id="edit-module" placeholder="e.g., Computer Networks">
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-book"></i> Course Code</label>
+                <input type="text" class="form-input" id="edit-course" placeholder="e.g., CIT 3102">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-university"></i> University</label>
+                <input type="text" class="form-input" id="edit-university" placeholder="e.g., UDSM">
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-file"></i> File Type</label>
+                <select class="form-select" id="edit-file-type">
+                    <option value="notes">Notes</option>
+                    <option value="pastpaper">Past Paper</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label"><i class="fas fa-align-left"></i> Description</label>
+            <textarea class="form-textarea" id="edit-description" rows="4" placeholder="Brief description of the file..."></textarea>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn-modal secondary" onclick="closeEditModal()">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button class="btn-modal primary" id="saveEditBtn" onclick="saveEdit()">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+    <i class="fas fa-check-circle"></i>
+    <span id="toast-text">Saved</span>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-inner">
+        <p>© 2026 Student Hub · Admin Portal</p>
+        <div class="footer-socials">
+            <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+            <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+        </div>
+    </div>
+</footer>
+
+<script>
+// ============================================================
+// PASSCODE FUNCTIONS
+// ============================================================
+var passcodeVisible = {};
+
+function togglePasscodeVisibility(fileId) {
+    var display = document.getElementById('passcode-display-' + fileId);
+    var icon = document.getElementById('toggle-icon-' + fileId);
+    if (!display) return;
+
+    if (passcodeVisible[fileId]) {
+        display.textContent = display.dataset.original || '****';
+        icon.className = 'fas fa-eye';
+        passcodeVisible[fileId] = false;
+    } else {
+        display.dataset.original = display.textContent;
+        icon.className = 'fas fa-eye-slash';
+        passcodeVisible[fileId] = true;
+    }
+}
+
+function updatePasscode(fileId) {
+    var input = document.getElementById('passcode-input-' + fileId);
+    var display = document.getElementById('passcode-display-' + fileId);
+    if (!input || !display) return;
+
+    var newPasscode = input.value.trim();
+
+    if (!newPasscode) { showToast('Please enter a 4-digit passcode', 'error'); return; }
+    if (!/^\d{4}$/.test(newPasscode)) { showToast('Passcode must be exactly 4 digits', 'error'); return; }
+
+    fetch('/update-passcode/' + fileId + '/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token|default:"" }}',
+        },
+        body: JSON.stringify({ passcode: newPasscode })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+        if (data.success) {
+            display.textContent = newPasscode;
+            input.value = '';
+            input.placeholder = 'Updated ✓';
+            setTimeout(function(){ input.placeholder = 'New'; }, 2000);
+            showToast('Passcode updated successfully', 'success');
+        } else {
+            showToast('Failed: ' + (data.error || 'Unknown error'), 'error');
         }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
+    })
+    .catch(function(err){
+        showToast('Error: ' + err, 'error');
+    });
+}
 
-        // Fish class
-        class Fish {
-            constructor(x, y, size, speed, color, direction) {
-                this.x = x;
-                this.y = y;
-                this.size = size;
-                this.speed = speed;
-                this.color = color;
-                this.direction = direction;
-                this.tailAngle = 0;
-                this.tailSpeed = 0.15 + Math.random() * 0.1;
+// ============================================================
+// EDIT METADATA FUNCTIONS
+// ============================================================
+function openEditModal(btn) {
+    var id = btn.dataset.id;
+    document.getElementById('edit-id').value = id;
+    document.getElementById('edit-module').value = btn.dataset.module || '';
+    document.getElementById('edit-course').value = btn.dataset.course || '';
+    document.getElementById('edit-description').value = btn.dataset.description || '';
+    document.getElementById('edit-university').value = btn.dataset.university || '';
+    document.getElementById('edit-file-type').value = btn.dataset.fileType || 'notes';
+
+    document.getElementById('editModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function saveEdit() {
+    var id = document.getElementById('edit-id').value;
+    var module = document.getElementById('edit-module').value.trim();
+    var course = document.getElementById('edit-course').value.trim();
+    var description = document.getElementById('edit-description').value.trim();
+    var university = document.getElementById('edit-university').value.trim();
+    var file_type = document.getElementById('edit-file-type').value;
+
+    if (!module) { showToast('Module name is required', 'error'); return; }
+    if (!course) { showToast('Course code is required', 'error'); return; }
+
+    var btn = document.getElementById('saveEditBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+    fetch('/update-metadata/' + id + '/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token|default:"" }}',
+        },
+        body: JSON.stringify({
+            module: module,
+            course: course,
+            description: description,
+            university: university || 'Not specified',
+            file_type: file_type,
+        })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+
+        if (data.success) {
+            // Update the UI on the page without reloading
+            document.getElementById('fname-module-' + id).textContent = module;
+            document.getElementById('fmeta-course-' + id).textContent = course;
+            document.getElementById('fmeta-uni-' + id).textContent = university || 'Not specified';
+
+            var descEl = document.getElementById('fmeta-desc-' + id);
+            if (descEl) {
+                descEl.textContent = description.length > 60 ? description.substring(0, 60) + '...' : description;
             }
 
-            update() {
-                this.x += this.speed * this.direction;
-                this.tailAngle += this.tailSpeed;
-
-                if (this.x > canvas.width + this.size) this.x = -this.size;
-                if (this.x < -this.size) this.x = canvas.width + this.size;
-
-                this.y += Math.sin(this.x * 0.01) * 0.3;
-                this.y = Math.min(Math.max(this.y, this.size + 30), canvas.height - this.size - 30);
+            // Update the button's data so next time it opens with fresh values
+            var btn_edit = document.querySelector('.edit-btn[data-id="' + id + '"]');
+            if (btn_edit) {
+                btn_edit.dataset.module = module;
+                btn_edit.dataset.course = course;
+                btn_edit.dataset.description = description;
+                btn_edit.dataset.university = university;
+                btn_edit.dataset.fileType = file_type;
             }
 
-            draw() {
-                ctx.save();
-                ctx.beginPath();
-                ctx.ellipse(this.x, this.y, this.size, this.size * 0.55, 0, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = this.color;
-                ctx.fill();
-
-                ctx.shadowBlur = 0;
-                const eyeX = this.direction === 1 ? this.x + this.size * 0.4 : this.x - this.size * 0.4;
-                ctx.beginPath();
-                ctx.arc(eyeX, this.y - this.size * 0.15, this.size * 0.13, 0, Math.PI * 2);
-                ctx.fillStyle = 'white';
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(eyeX + (this.direction === 1 ? 2 : -2), this.y - this.size * 0.17, this.size * 0.06, 0, Math.PI * 2);
-                ctx.fillStyle = 'black';
-                ctx.fill();
-
-                ctx.shadowBlur = 5;
-                ctx.shadowColor = this.color;
-                const tailX = this.direction === 1 ? this.x - this.size * 0.7 : this.x + this.size * 0.7;
-                const tailWag = Math.sin(this.tailAngle) * this.size * 0.2;
-                ctx.beginPath();
-                ctx.moveTo(tailX, this.y);
-                ctx.quadraticCurveTo(
-                    tailX - this.size * 0.5 * this.direction,
-                    this.y - this.size * 0.4 + tailWag,
-                    tailX - this.size * 0.7 * this.direction,
-                    this.y + tailWag * 0.5
-                );
-                ctx.quadraticCurveTo(
-                    tailX - this.size * 0.5 * this.direction,
-                    this.y + this.size * 0.4 + tailWag,
-                    tailX,
-                    this.y
-                );
-                ctx.fill();
-                ctx.shadowBlur = 0;
-                ctx.restore();
-            }
+            showToast('Changes saved successfully', 'success');
+            closeEditModal();
+        } else {
+            showToast('Failed: ' + (data.error || 'Unknown error'), 'error');
         }
+    })
+    .catch(function(err){
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+        showToast('Error: ' + err, 'error');
+    });
+}
 
-        const fishColors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#ff9999', '#66ccff', '#ffcc66', '#99ff99', '#ff85a2', '#7b68ee'];
-        const fishes = [];
+// ============================================================
+// TOAST
+// ============================================================
+var toastTimer = null;
+function showToast(msg, type) {
+    var toast = document.getElementById('toast');
+    var text = document.getElementById('toast-text');
+    text.textContent = msg;
+    toast.className = 'toast show ' + (type || '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 3000);
+}
 
-        for (let i = 0; i < 18; i++) {
-            fishes.push(new Fish(
-                Math.random() * canvas.width,
-                Math.random() * canvas.height,
-                Math.random() * 22 + 14,
-                Math.random() * 1.2 + 0.6,
-                fishColors[Math.floor(Math.random() * fishColors.length)],
-                Math.random() > 0.5 ? 1 : -1
-            ));
-        }
-
-        class Bubble {
-            constructor(x, y, size) {
-                this.x = x;
-                this.y = y;
-                this.size = size;
-                this.speed = Math.random() * 0.6 + 0.3;
-                this.wobble = Math.random() * 0.02;
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Passcode inputs: Enter key + numbers only
+    document.querySelectorAll('.passcode-input').forEach(function(input){
+        input.addEventListener('keypress', function(e){
+            if (e.key === 'Enter') {
+                var fileId = this.dataset.fileId;
+                if (fileId) updatePasscode(parseInt(fileId));
             }
-
-            update() {
-                this.y -= this.speed;
-                this.x += Math.sin(this.y * this.wobble) * 0.5;
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
-                ctx.fill();
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-                ctx.lineWidth = 0.5;
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.arc(this.x - this.size * 0.3, this.y - this.size * 0.3, this.size * 0.2, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
-                ctx.fill();
-            }
-        }
-
-        const bubbles = [];
-        for (let i = 0; i < 35; i++) {
-            bubbles.push(new Bubble(
-                Math.random() * canvas.width,
-                Math.random() * canvas.height,
-                Math.random() * 5 + 2
-            ));
-        }
-
-        function drawPlants() {
-            for (let i = 0; i < canvas.width; i += 70) {
-                const sway = Math.sin(i * 0.02 + Date.now() * 0.0005) * 8;
-                ctx.beginPath();
-                ctx.moveTo(i, canvas.height);
-                ctx.quadraticCurveTo(i + 20 + sway, canvas.height - 70, i - 5 + sway, canvas.height - 140);
-                ctx.quadraticCurveTo(i + 15 + sway, canvas.height - 200, i + 5 + sway, canvas.height - 250);
-                ctx.strokeStyle = 'rgba(34, 160, 34, 0.3)';
-                ctx.lineWidth = 10;
-                ctx.lineCap = 'round';
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(i + 25, canvas.height);
-                ctx.quadraticCurveTo(i + 40 - sway * 0.5, canvas.height - 50, i + 20 - sway * 0.5, canvas.height - 100);
-                ctx.strokeStyle = 'rgba(34, 160, 34, 0.2)';
-                ctx.lineWidth = 6;
-                ctx.stroke();
-            }
-        }
-
-        let lightAngle = 0;
-
-        function drawLightRays() {
-            lightAngle += 0.003;
-            for (let i = 0; i < 6; i++) {
-                const xOffset = i * 150 + 50;
-                const sway = Math.sin(lightAngle + i) * 40;
-                ctx.beginPath();
-                ctx.moveTo(xOffset + sway, 0);
-                ctx.lineTo(xOffset - 80 + sway, canvas.height);
-                ctx.lineTo(xOffset + 80 + sway, canvas.height);
-                ctx.fillStyle = 'rgba(255, 255, 220, 0.02)';
-                ctx.fill();
-            }
-        }
-
-        function animate() {
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, '#0a4a6e');
-            gradient.addColorStop(0.4, '#0e6b8a');
-            gradient.addColorStop(0.7, '#0c5a7a');
-            gradient.addColorStop(1, '#064a6a');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            drawLightRays();
-            drawPlants();
-
-            for (let fish of fishes) {
-                fish.update();
-                fish.draw();
-            }
-
-            for (let bubble of bubbles) {
-                bubble.update();
-                bubble.draw();
-                if (bubble.y + bubble.size < 0) {
-                    bubble.x = Math.random() * canvas.width;
-                    bubble.y = canvas.height + 10;
-                }
-            }
-
-            requestAnimationFrame(animate);
-        }
-
-        animate();
-
-        function createBubbles(x, y) {
-            for (let i = 0; i < 4; i++) {
-                bubbles.push(new Bubble(
-                    x + (Math.random() - 0.5) * 40,
-                    y + (Math.random() - 0.5) * 20,
-                    Math.random() * 5 + 2
-                ));
-            }
-            if (bubbles.length > 120) {
-                bubbles.splice(0, 20);
-            }
-        }
-
-        canvas.addEventListener('mousemove', (e) => createBubbles(e.clientX, e.clientY));
-        canvas.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            const touch = e.touches[0];
-            createBubbles(touch.clientX, touch.clientY);
         });
-
-        // ===== PASSCODE FUNCTIONS =====
-        let passcodeVisible = {};
-
-        function togglePasscodeVisibility(fileId) {
-            const display = document.getElementById(`passcode-display-${fileId}`);
-            const icon = document.getElementById(`toggle-icon-${fileId}`);
-            
-            if (!display) return;
-            
-            if (passcodeVisible[fileId]) {
-                display.textContent = display.dataset.original || '****';
-                icon.className = 'fas fa-eye';
-                passcodeVisible[fileId] = false;
-            } else {
-                display.dataset.original = display.textContent;
-                icon.className = 'fas fa-eye-slash';
-                passcodeVisible[fileId] = true;
-            }
-        }
-
-        function updatePasscode(fileId) {
-            const input = document.getElementById(`passcode-input-${fileId}`);
-            const display = document.getElementById(`passcode-display-${fileId}`);
-            
-            if (!input || !display) return;
-            
-            const newPasscode = input.value.trim();
-            
-            if (!newPasscode) {
-                alert('Please enter a 4-digit passcode');
-                return;
-            }
-            
-            if (!/^\d{4}$/.test(newPasscode)) {
-                alert('Passcode must be exactly 4 digits (0-9)');
-                return;
-            }
-            
-            // Send the update to the server
-            fetch(`/update-passcode/${fileId}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token|default:"" }}',
-                },
-                body: JSON.stringify({ passcode: newPasscode })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    display.textContent = newPasscode;
-                    input.value = '';
-                    input.placeholder = 'Updated ✓';
-                    setTimeout(() => {
-                        input.placeholder = 'New';
-                    }, 2000);
-                    alert('✅ Passcode updated successfully!');
-                } else {
-                    alert('❌ Failed to update passcode: ' + (data.error || 'Unknown error'));
-                }
-            })
-            .catch(error => {
-                alert('❌ Error updating passcode: ' + error);
-            });
-        }
-
-        // Allow Enter key to submit passcode
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.passcode-input').forEach(input => {
-                input.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        const fileId = this.dataset.fileId;
-                        if (fileId) {
-                            updatePasscode(parseInt(fileId));
-                        }
-                    }
-                });
-                
-                // Only allow numbers
-                input.addEventListener('input', function() {
-                    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);
-                });
-            });
+        input.addEventListener('input', function(){
+            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);
         });
+    });
 
-        console.log('🐠 Admin Portal Loaded!');
-        console.log('🔒 Passcode management enabled');
-    </script>
+    // Close modal on Escape
+    document.addEventListener('keydown', function(e){
+        if (e.key === 'Escape') closeEditModal();
+    });
+
+    // Close modal on overlay click
+    var overlay = document.getElementById('editModal');
+    if (overlay) {
+        overlay.addEventListener('click', function(e){
+            if (e.target === this) closeEditModal();
+        });
+    }
+});
+
+console.log('Student Hub — Admin Portal (with Edit)');
+</script>
+
 </body>
 </html>
