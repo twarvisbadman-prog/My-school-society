@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>My Dashboard | Student Hub</title>
+<link rel="icon" type="image/png" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+    --bg:#fafaf9;--surface:#ffffff;--alt:#f5f5f4;
+    --border:#e7e5e4;--border-strong:#d6d3d1;
+    --ink:#1c1917;--text-2:#44403c;--text-3:#57534e;
+    --accent:#c2410c;--accent-bright:#ea580c;--accent-pink:#db2777;
+    --accent-dim:#fff1e8;
+    --grad:linear-gradient(120deg,#ea580c,#db2777);
+    --grad-cta:linear-gradient(120deg,#c2410c,#be185d);
+    --grad-cta-hover:linear-gradient(120deg,#9a3412,#9d174d);
+    --success:#15803d;--success-dim:#dcfce7;
+    --blue:#2563eb;--blue-dim:#dbeafe;
+    --gold:#b45309;--gold-dim:#fef3c7;
+    --danger:#dc2626;--danger-dim:#fee2e2;
+    --radius-sm:10px;--radius-md:14px;--radius-lg:20px;--radius-xl:28px;
+    --shadow-sm:0 1px 2px rgba(28,25,23,.06);
+    --shadow-md:0 10px 28px -12px rgba(28,25,23,.18);
+    --shadow-lg:0 28px 64px -20px rgba(28,25,23,.22);
+    --shadow-cta:0 8px 22px -8px rgba(219,39,119,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;overflow-x:hidden;width:100%;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+img{max-width:100%;height:auto;display:block}
+
+.topbar{background:var(--ink);color:#f5f5f4;font-size:.82rem;padding:9px 0}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;text-align:center}
+.topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:#a8a29e;white-space:nowrap}
+.topbar-inner span i{color:var(--accent-bright);font-size:.78rem}
+
+.mainnav{background:rgba(250,250,249,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;width:100%}
+.mainnav-inner{max-width:1280px;margin:0 auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.3rem;color:var(--ink);letter-spacing:-.02em;flex-shrink:0}
+.logo-img{width:46px;height:46px;border-radius:12px;object-fit:cover;flex-shrink:0;box-shadow:0 6px 16px -6px rgba(219,39,119,.4);display:block;background:#fff}
+.logo-text span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.menu{display:flex;align-items:center;gap:2px;flex-wrap:wrap;justify-content:center;flex:1;min-width:0}
+.menu a{padding:8px 11px;font-size:.84rem;font-weight:600;color:var(--text-2);border-radius:8px;white-space:nowrap;transition:all .25s ease}
+.menu a:hover{color:var(--ink);background:var(--alt)}
+.menu a.active{color:var(--accent);background:var(--accent-dim);font-weight:700}
+.nav-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.btn-quote{background:var(--grad-cta);color:#fff;padding:11px 22px;border-radius:999px;font-weight:700;font-size:.85rem;display:inline-flex;align-items:center;gap:8px;transition:all .25s ease;white-space:nowrap;box-shadow:var(--shadow-cta)}
+.btn-quote:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
+
+/* CONTAINER */
+.dash-container{max-width:1100px;margin:0 auto;padding:40px 20px 80px}
+
+/* WELCOME */
+.dash-welcome{
+    background:var(--ink);
+    border-radius:var(--radius-xl);
+    padding:40px 36px;
+    margin-bottom:28px;
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+    text-align:center;
+}
+.dash-welcome::before{
+    content:'';position:absolute;left:0;right:0;bottom:0;height:70%;
+    background:radial-gradient(circle at 50% 100%,#be185d 0%,transparent 70%);
+    opacity:.5;pointer-events:none;
+}
+.dash-welcome-inner{position:relative;z-index:1}
+.dash-avatar{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:80px;height:80px;border-radius:50%;
+    background:var(--grad-cta);
+    color:#fff;font-size:2rem;font-weight:900;
+    box-shadow:0 12px 30px rgba(219,39,119,.5);
+    margin-bottom:16px;
+}
+.dash-welcome h1{font-size:clamp(1.5rem,3.5vw,2rem);font-weight:900;letter-spacing:-.03em;margin-bottom:6px;color:#fff}
+.dash-welcome h1 em{
+    font-style:normal;
+    background:linear-gradient(120deg,#fdba8c,#f9a8d4);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.dash-welcome p{color:#d6d3d1;font-size:.95rem}
+
+/* STATS */
+.dash-stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:14px;margin-bottom:28px;
+}
+.dash-stat{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:20px 18px;
+    text-align:center;
+    transition:all .25s ease;
+    box-shadow:var(--shadow-sm);
+}
+.dash-stat:hover{transform:translateY(-3px);border-color:#fed7c3;box-shadow:var(--shadow-md)}
+.dash-stat-icon{font-size:1.6rem;display:block;margin-bottom:8px}
+.dash-stat-num{
+    font-size:1.8rem;font-weight:900;letter-spacing:-.03em;
+    background:var(--grad);
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;line-height:1;
+}
+.dash-stat-label{color:var(--text-3);font-size:.75rem;margin-top:4px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+
+/* SECTION */
+.dash-section{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-xl);
+    padding:28px;
+    box-shadow:var(--shadow-sm);
+    margin-bottom:24px;
+}
+.dash-section-head{
+    display:flex;justify-content:space-between;align-items:center;
+    flex-wrap:wrap;gap:12px;
+    margin-bottom:22px;padding-bottom:16px;
+    border-bottom:1px solid var(--border);
+}
+.dash-section-head h2{
+    font-size:1.15rem;font-weight:900;color:var(--ink);
+    letter-spacing:-.02em;display:flex;align-items:center;gap:10px;
+}
+.dash-section-head h2 i{color:var(--accent)}
+.dash-section-head .count{
+    background:var(--alt);padding:5px 12px;border-radius:30px;
+    color:var(--text-2);font-size:.75rem;font-weight:700;
+    border:1px solid var(--border);
+}
+
+/* FILE LIST */
+.file-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px 16px;
+    border-bottom:1px solid var(--border);
+    gap:12px;flex-wrap:wrap;
+    transition:background .2s;
+    border-radius:var(--radius-sm);
+}
+.file-row:last-child{border-bottom:none}
+.file-row:hover{background:var(--alt)}
+.file-row-info{flex:2;min-width:200px}
+.file-row-name{
+    color:var(--ink);font-weight:700;font-size:.9rem;
+    margin-bottom:4px;word-break:break-word;
+}
+.file-row-meta{
+    display:flex;gap:12px;flex-wrap:wrap;
+    color:var(--text-3);font-size:.72rem;font-weight:600;
+}
+.file-row-meta span{display:inline-flex;align-items:center;gap:4px}
+.file-row-meta i{color:var(--accent);font-size:.7rem}
+.file-row-actions{display:flex;gap:6px;flex-wrap:wrap}
+
+.badge{
+    display:inline-flex;align-items:center;gap:4px;
+    padding:3px 10px;border-radius:30px;
+    font-size:.62rem;font-weight:800;
+    letter-spacing:.04em;text-transform:uppercase;
+}
+.badge.public{background:var(--success-dim);color:var(--success);border:1px solid #86efac}
+.badge.private{background:var(--gold-dim);color:var(--gold);border:1px solid #fde68a}
+
+.btn-sm{
+    padding:7px 14px;border-radius:30px;
+    font-size:.72rem;font-weight:700;
+    display:inline-flex;align-items:center;gap:5px;
+    cursor:pointer;border:1px solid transparent;
+    transition:all .25s;text-decoration:none;white-space:nowrap;
+}
+.btn-sm.view{background:var(--blue-dim);color:var(--blue);border-color:#bfdbfe}
+.btn-sm.view:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-sm.download{background:var(--success-dim);color:var(--success);border-color:#86efac}
+.btn-sm.download:hover{background:var(--success);color:#fff;border-color:var(--success)}
+.btn-sm.delete{background:var(--danger-dim);color:var(--danger);border-color:#fca5a5}
+.btn-sm.delete:hover{background:var(--danger);color:#fff;border-color:var(--danger)}
+
+/* EMPTY */
+.empty-dash{text-align:center;padding:50px 20px;color:var(--text-3)}
+.empty-dash i{font-size:3rem;color:var(--border-strong);display:block;margin-bottom:14px}
+.empty-dash h3{color:var(--ink);font-size:1.05rem;margin-bottom:6px;font-weight:800}
+.empty-dash p{font-size:.88rem;color:var(--text-2);margin-bottom:18px}
+
+.btn-empty{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:12px 24px;background:var(--grad-cta);
+    color:#fff;border-radius:999px;font-weight:700;font-size:.85rem;
+    box-shadow:var(--shadow-cta);transition:all .25s;
+}
+.btn-empty:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
+
+footer{background:var(--ink);padding:26px 20px;border-top:1px solid var(--border);margin-top:40px}
+.footer-inner{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.footer-inner p{color:#78716c;font-size:.82rem}
+.footer-socials{display:flex;gap:8px}
+.footer-socials a{width:38px;height:38px;border:1px solid #292524;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#a8a29e;font-size:.9rem;transition:all .25s ease;background:#1c1917}
+.footer-socials a:hover{background:var(--grad-cta);color:#fff;border-color:transparent;transform:translateY(-2px)}
+
+@media (max-width:720px){
+    .mainnav-inner{flex-wrap:wrap;padding:12px 16px;gap:12px}
+    .logo{font-size:1.05rem;gap:10px}
+    .logo-img{width:40px;height:40px;border-radius:11px}
+    .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0;margin:0 -16px;padding-left:16px;padding-right:16px}
+    .menu::-webkit-scrollbar{display:none}
+    .menu a{padding:8px 12px;font-size:.8rem;flex-shrink:0}
+    .dash-container{padding:24px 16px 60px}
+    .dash-welcome{padding:28px 22px}
+    .dash-avatar{width:64px;height:64px;font-size:1.6rem}
+    .dash-section{padding:20px}
+    .file-row{flex-direction:column;align-items:stretch}
+    .file-row-actions{justify-content:flex-start}
+}
+@media (max-width:480px){
+    .topbar-inner span:nth-child(3){display:none}
+    .dash-stats{grid-template-columns:repeat(2,1fr)}
+    .btn-quote span{display:none}
+    .logo-text{font-size:.95rem}
+    .logo-img{width:36px;height:36px;border-radius:10px}
+    .topbar-inner span:nth-child(2){display:none}
+    .footer-inner{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="topbar-inner">
+        <span><i class="fas fa-phone"></i> +255 740 706 007</span>
+        <span><i class="fas fa-envelope"></i> Twarvisteh@gmail.com</span>
+        <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
+    </div>
+</div>
+
+<nav class="mainnav">
+    <div class="mainnav-inner">
+        <a href="/" class="logo">
+            <img src="/apple-touch-icon.png" alt="Student Hub" class="logo-img">
+            <span class="logo-text">Student<span>Hub</span></span>
+        </a>
+        <div class="menu">
+            <a href="/">Home</a>
+            <a href="/browse/">Browse</a>
+            <a href="/upload/">Upload</a>
+            <a href="/calculator/">Calculator</a>
+            <a href="/scanner/">Scanner</a>
+            <a href="/autoquiz/">AutoQuiz AI</a>
+            <a href="/free_course/">Free Courses</a>
+            <a href="/hackerthon/">Hackathon</a>
+            <a href="/dashboard/" class="active">Dashboard</a>
+        </div>
+        <div class="nav-right">
+            <a href="/upload/" class="btn-quote">
+                <span>Upload File</span> <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="dash-container">
+
+    <!-- WELCOME -->
+    <div class="dash-welcome">
+        <div class="dash-welcome-inner">
+            <div class="dash-avatar">{{ user_initial }}</div>
+            <h1>Hi, <em>{{ user_name }}</em>!</h1>
+            <p>{{ user_email }}</p>
+        </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="dash-stats">
+        <div class="dash-stat">
+            <span class="dash-stat-icon">📁</span>
+            <div class="dash-stat-num">{{ stats.total }}</div>
+            <div class="dash-stat-label">My Files</div>
+        </div>
+        <div class="dash-stat">
+            <span class="dash-stat-icon">🔓</span>
+            <div class="dash-stat-num">{{ stats.public }}</div>
+            <div class="dash-stat-label">Public</div>
+        </div>
+        <div class="dash-stat">
+            <span class="dash-stat-icon">🔒</span>
+            <div class="dash-stat-num">{{ stats.private }}</div>
+            <div class="dash-stat-label">Private</div>
+        </div>
+        <div class="dash-stat">
+            <span class="dash-stat-icon">⬇️</span>
+            <div class="dash-stat-num">{{ stats.downloads }}</div>
+            <div class="dash-stat-label">Downloads</div>
+        </div>
+    </div>
+
+    <!-- MY UPLOADS -->
+    <div class="dash-section">
+        <div class="dash-section-head">
+            <h2><i class="fas fa-file-upload"></i> My Uploads</h2>
+            <span class="count">{{ my_notes|length }} files</span>
+        </div>
+
+        {% if my_notes %}
+            {% for note in my_notes %}
+            <div class="file-row">
+                <div class="file-row-info">
+                    <div class="file-row-name">
+                        {{ note.module|default:"Untitled" }}
+                        {% if note.privacy == 'private' %}
+                            <span class="badge private"><i class="fas fa-lock"></i> Private</span>
+                        {% else %}
+                            <span class="badge public"><i class="fas fa-globe"></i> Public</span>
+                        {% endif %}
+                    </div>
+                    <div class="file-row-meta">
+                        <span><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
+                        <span><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
+                        <span><i class="fas fa-university"></i> {{ note.university|default:"Not specified" }}</span>
+                    </div>
+                </div>
+                <div class="file-row-actions">
+                    <a href="/view/{{ note.id }}/" class="btn-sm view"><i class="fas fa-eye"></i> View</a>
+                    <a href="/download/{{ note.id }}/" class="btn-sm download"><i class="fas fa-download"></i> Download</a>
+                    <a href="/delete-own/{{ note.id }}/" class="btn-sm delete" onclick="return confirm('Delete this file? This cannot be undone!')"><i class="fas fa-trash"></i> Delete</a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-dash">
+                <i class="fas fa-folder-open"></i>
+                <h3>You haven't uploaded anything yet</h3>
+                <p>Share your notes and help other students.</p>
+                <a href="/upload/" class="btn-empty"><i class="fas fa-cloud-upload-alt"></i> Upload Your First File</a>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<footer>
+    <div class="footer-inner">
+        <p>© 2026 Student Hub · My Dashboard</p>
+        <div class="footer-socials">
+            <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+            <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
