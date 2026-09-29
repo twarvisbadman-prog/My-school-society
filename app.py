@@ -1,4 +1,4 @@
-# app.py - FULL VERSION with Cloudflare R2 + Supabase Auth + Admin Panel
+# app.py - FULL VERSION with Cloudflare R2 + Supabase + Admin
 import os
 import uuid
 import json
@@ -18,7 +18,7 @@ from botocore.config import Config
 from botocore.exceptions import ClientError
 
 # ============================================================
-# LOAD .env FOR LOCAL DEVELOPMENT
+# LOAD .env
 # ============================================================
 try:
     from dotenv import load_dotenv
@@ -30,9 +30,6 @@ try:
 except ImportError:
     pass
 
-# ============================================================
-# SAFE ENV VAR LOADER
-# ============================================================
 def env(key, default=""):
     val = os.environ.get(key, "").strip()
     return val if val else default
@@ -65,25 +62,21 @@ _csrf = env("CSRF_TRUSTED_ORIGINS", "https://*.onrender.com,http://localhost:800
 CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf.split(",") if o.strip()]
 
 # ============================================================
-# CONFIG SANITY CHECK
+# STARTUP INFO
 # ============================================================
 print("=" * 60)
-print("🚀 TWARVIS SCHOOL — R2 + Auth + Admin")
+print("🚀 STUDENT HUB — FULL SYSTEM")
 print("=" * 60)
-print(f"📡 Supabase URL:  {SUPABASE_URL[:50]}")
-print(f"🔑 Supabase Key:  {'✅ VALID JWT' if SUPABASE_KEY.startswith('eyJ') else '❌ INVALID'}")
-print(f"☁️  R2 Bucket:    {R2_BUCKET_NAME}")
-print(f"☁️  R2 Endpoint:  {R2_ENDPOINT_URL[:50]}")
-print(f"☁️  R2 Public:    {R2_PUBLIC_URL[:50]}")
-print(f"🔐 Admin URL:     /{SECRET_ADMIN_PATH}/")
-print(f"🐛 Debug:         {DEBUG}")
+print(f"📡 Supabase:  {SUPABASE_URL[:50]}")
+print(f"🔑 Key:       {'✅ VALID' if SUPABASE_KEY.startswith('eyJ') else '❌ INVALID'}")
+print(f"☁️  Bucket:    {R2_BUCKET_NAME}")
+print(f"🔐 Admin:     /{SECRET_ADMIN_PATH}/")
 print("=" * 60)
 
 if not SUPABASE_KEY.startswith("eyJ"):
-    print("❌ FATAL: SUPABASE_KEY is invalid!")
-    raise SystemExit(1)
+    raise SystemExit("❌ FATAL: SUPABASE_KEY is invalid!")
 
-print("✅ Supabase key format is valid (starts with 'eyJ')")
+print("✅ Supabase key format is valid")
 
 # ============================================================
 # DJANGO SETTINGS
@@ -124,7 +117,7 @@ if not settings.configured:
 from django import forms
 
 # ============================================================
-# SUPABASE CLIENT
+# SUPABASE + R2 CLIENTS
 # ============================================================
 try:
     supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -133,26 +126,19 @@ except Exception as e:
     print(f"❌ Supabase connection FAILED: {e}")
     raise SystemExit(1)
 
-# ============================================================
-# CLOUDFLARE R2 CLIENT
-# ============================================================
 r2_client = None
 try:
-    if R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY and R2_ENDPOINT_URL:
-        r2_client = boto3.client(
-            "s3",
-            endpoint_url=R2_ENDPOINT_URL,
-            aws_access_key_id=R2_ACCESS_KEY_ID,
-            aws_secret_access_key=R2_SECRET_ACCESS_KEY,
-            config=Config(signature_version="s3v4"),
-            region_name="auto",
-        )
-        print("✅ Cloudflare R2 client initialized!")
-    else:
-        print("⚠️  R2 credentials missing — uploads will fail")
+    r2_client = boto3.client(
+        "s3",
+        endpoint_url=R2_ENDPOINT_URL,
+        aws_access_key_id=R2_ACCESS_KEY_ID,
+        aws_secret_access_key=R2_SECRET_ACCESS_KEY,
+        config=Config(signature_version="s3v4"),
+        region_name="auto",
+    )
+    print("✅ Cloudflare R2 client initialized!")
 except Exception as e:
-    print(f"⚠️  R2 client init failed: {e}")
-    r2_client = None
+    print(f"⚠️  R2 init failed: {e}")
 
 # ============================================================
 # CONSTANTS
@@ -232,7 +218,6 @@ class UploadForm(forms.Form):
 
 
 class EditForm(forms.Form):
-    """Form for editing note metadata in admin panel."""
     module = forms.CharField(max_length=200, required=True,
                              widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., Computer Networks"}))
     course = forms.CharField(max_length=200, required=True,
@@ -297,25 +282,19 @@ def get_r2_file_bytes(key):
         return None
 
 # ============================================================
-# HELPER FUNCTIONS
+# HELPERS
 # ============================================================
 def get_content_type(filename):
     ext = os.path.splitext(filename)[1].lower()
     types = {
-        '.pdf': 'application/pdf',
-        '.ppt': 'application/vnd.ms-powerpoint',
+        '.pdf': 'application/pdf', '.ppt': 'application/vnd.ms-powerpoint',
         '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         '.doc': 'application/msword',
         '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        '.txt': 'text/plain',
-        '.md': 'text/markdown',
-        '.xls': 'application/vnd.ms-excel',
+        '.txt': 'text/plain', '.md': 'text/markdown', '.xls': 'application/vnd.ms-excel',
         '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        '.csv': 'text/csv',
-        '.jpg': 'image/jpeg',
-        '.jpeg': 'image/jpeg',
-        '.png': 'image/png',
-        '.gif': 'image/gif',
+        '.csv': 'text/csv', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
+        '.png': 'image/png', '.gif': 'image/gif',
     }
     return types.get(ext, 'application/octet-stream')
 
@@ -354,7 +333,7 @@ def search_notes(query):
     try:
         response = supabase.table("notes").select("*").or_(f"module.ilike.%{query}%,course.ilike.%{query}%,description.ilike.%{query}%").order("uploaded_at", desc=True).execute()
         return response.data if response.data else []
-    except Exception as e:
+    except Exception:
         return get_all_notes()
 
 # ============================================================
@@ -362,7 +341,7 @@ def search_notes(query):
 # ============================================================
 def get_passcode_html(file_id, filename, error=None):
     error_html = f'<div class="error-msg" style="color:#ff4444;font-size:0.85rem;margin-top:12px;background:rgba(255,68,68,0.05);padding:10px;border-radius:10px;border:1px solid rgba(255,68,68,0.1);">{error}</div>' if error else '<div class="error-msg" id="passcodeError" style="color:#ff4444;font-size:0.85rem;margin-top:12px;display:none;background:rgba(255,68,68,0.05);padding:10px;border-radius:10px;border:1px solid rgba(255,68,68,0.1);">❌ Incorrect passcode. Please try again.</div>'
-    
+
     return f'''
 <!DOCTYPE html>
 <html lang="en">
@@ -371,23 +350,22 @@ def get_passcode_html(file_id, filename, error=None):
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Passcode Required | Student Hub</title>
     <link rel="icon" type="image/png" href="/apple-touch-icon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * {{ margin:0; padding:0; box-sizing:border-box; }}
-        body {{ font-family:'Inter',sans-serif; background:#fafaf9; min-height:100vh; display:flex; align-items:center; justify-content:center; overflow-x:hidden; padding:20px; }}
-        .container {{ position:relative; z-index:2; max-width:450px; width:100%; }}
+        body {{ font-family:'Inter',sans-serif; background:#fafaf9; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }}
+        .container {{ max-width:450px; width:100%; }}
         .card {{ background:#ffffff; border:1px solid #e7e5e4; border-radius:28px; padding:40px 35px; box-shadow:0 28px 64px -20px rgba(28,25,23,.22); text-align:center; }}
         .card .lock-icon {{ display:inline-flex; align-items:center; justify-content:center; width:82px; height:82px; margin-bottom:18px; border-radius:50%; background:#fef3c7; color:#b45309; font-size:2rem; }}
         .card h1 {{ font-size:1.6rem; font-weight:800; color:#1c1917; margin-bottom:8px; }}
         .card .sub-text {{ color:#57534e; font-size:0.88rem; margin-bottom:16px; }}
         .card .filename {{ color:#44403c; font-size:0.85rem; margin-bottom:20px; padding:12px; background:#f5f5f4; border-radius:12px; border:1px solid #e7e5e4; word-break:break-all; }}
-        .card .passcode-hint {{ color:#78716c; font-size:0.72rem; margin-bottom:12px; }}
-        .card input {{ width:100%; padding:16px 18px; background:#fafaf9; border:1px solid #e7e5e4; border-radius:16px; color:#1c1917; font-size:1.4rem; font-family:'Courier New',monospace; letter-spacing:12px; text-align:center; transition:0.25s; outline:none; }}
+        .card input {{ width:100%; padding:16px 18px; background:#fafaf9; border:1px solid #e7e5e4; border-radius:16px; color:#1c1917; font-size:1.4rem; font-family:'Courier New',monospace; letter-spacing:12px; text-align:center; outline:none; }}
         .card input:focus {{ border-color:#ea580c; background:#ffffff; box-shadow:0 0 0 4px rgba(234,88,12,.12); }}
         {error_html}
-        .card button {{ width:100%; padding:15px; margin-top:16px; background:linear-gradient(120deg,#c2410c,#be185d); border:none; border-radius:999px; color:#fff; font-weight:800; font-size:1rem; cursor:pointer; transition:0.25s; box-shadow:0 8px 22px -8px rgba(219,39,119,.5); }}
-        .card button:hover {{ transform:translateY(-2px); box-shadow:0 12px 28px -8px rgba(219,39,119,.6); }}
+        .card button {{ width:100%; padding:15px; margin-top:16px; background:linear-gradient(120deg,#c2410c,#be185d); border:none; border-radius:999px; color:#fff; font-weight:800; font-size:1rem; cursor:pointer; box-shadow:0 8px 22px -8px rgba(219,39,119,.5); }}
+        .card button:hover {{ transform:translateY(-2px); }}
         .back-link {{ display:inline-block; margin-top:16px; color:#57534e; text-decoration:none; font-size:0.85rem; }}
         .back-link:hover {{ color:#c2410c; }}
     </style>
@@ -399,7 +377,6 @@ def get_passcode_html(file_id, filename, error=None):
             <h1>🔒 Private Document</h1>
             <p class="sub-text">Enter the passcode to view this document</p>
             <div class="filename"><i class="fas fa-file"></i> {filename}</div>
-            <p class="passcode-hint">Enter the 4-digit passcode set by the uploader</p>
             <input type="password" id="passcodeInput" placeholder="••••" maxlength="4" inputmode="numeric" autofocus>
             {error_html}
             <button id="unlockBtn"><i class="fas fa-unlock"></i> Unlock Document</button>
@@ -412,18 +389,17 @@ def get_passcode_html(file_id, filename, error=None):
         const input = document.getElementById('passcodeInput');
         const btn = document.getElementById('unlockBtn');
         const error = document.getElementById('passcodeError');
-        const fileId = {file_id};
         if (error) {{ error.style.display = 'none'; }}
         input.addEventListener('input', function() {{
             this.value = this.value.replace(/\\D/g, '').slice(0, 4);
-            if (error) {{ error.classList.remove('show'); error.style.display = 'none'; }}
+            if (error) {{ error.style.display = 'none'; }}
         }});
         btn.addEventListener('click', function() {{
             const passcode = input.value.trim();
             if (passcode.length === 4) {{
                 window.location.href = `/view/{file_id}/?passcode=${{passcode}}`;
             }} else {{
-                if (error) {{ error.textContent = '❌ Please enter a 4-digit passcode'; error.classList.add('show'); error.style.display = 'block'; }}
+                if (error) {{ error.textContent = '❌ Please enter a 4-digit passcode'; error.style.display = 'block'; }}
                 input.value = ''; input.focus();
             }}
         }});
@@ -485,12 +461,12 @@ def favicon_view(request):
 def index(request):
     return render(request, "index.html")
 
-def upload_view(request):
-    # Require login
-    if not request.session.get("user_id"):
-        return redirect("/login/")
 
-    user_id = request.session.get("user_id")
+def upload_view(request):
+    """Upload — works for everyone. No login. No limits."""
+
+    # Get user info (optional — for tracking only)
+    user_id = request.session.get("user_id", None)
     user_name = request.session.get("user_name", "Anonymous")
 
     message = None
@@ -535,6 +511,7 @@ def upload_view(request):
                     if not r2_url:
                         error = "Upload to storage failed. Please try again."
                     else:
+                        # Save to Supabase — no login required
                         supabase.table("notes").insert({
                             "filename": safe_filename,
                             "original_filename": file.name,
@@ -546,10 +523,8 @@ def upload_view(request):
                             "passcode": passcode if privacy == "private" else "",
                             "university": university,
                             "uploader": user_name,
-                            "user_id": user_id,
                             "uploaded_at": datetime.now().isoformat(),
                             "file_size": file_size,
-                            "downloads": 0,
                         }).execute()
 
                         message = f"✅ {file.name} uploaded successfully!"
@@ -568,7 +543,9 @@ def upload_view(request):
         "message": message,
         "error": error,
         "user_name": user_name,
+        "is_logged_in": bool(user_id),
     })
+
 
 def browse_view(request):
     query = request.GET.get("q", "").strip()
@@ -600,6 +577,7 @@ def browse_view(request):
             note["course"] = "N/A"
 
     return render(request, "browse.html", {"notes": notes, "query": query})
+
 
 def view_file(request, id):
     try:
@@ -645,6 +623,7 @@ def view_file(request, id):
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", status=500)
 
+
 def download_file(request, id):
     try:
         result = supabase.table("notes").select("*").eq("id", id).execute()
@@ -668,13 +647,6 @@ def download_file(request, id):
         if file_data is None:
             return HttpResponse("File not found in storage", status=404)
 
-        # Increment downloads counter (non-blocking, best effort)
-        try:
-            current = note.get("downloads", 0) or 0
-            supabase.table("notes").update({"downloads": current + 1}).eq("id", id).execute()
-        except Exception:
-            pass
-
         content_type = get_content_type(note["filename"])
         response = HttpResponse(file_data, content_type=content_type)
         response["Content-Disposition"] = f"attachment; filename=\"{note.get('original_filename', note['filename'])}\""
@@ -682,6 +654,7 @@ def download_file(request, id):
 
     except Exception as e:
         return HttpResponse(f"Download failed: {str(e)}", status=500)
+
 
 def delete_file(request, id):
     """Admin delete."""
@@ -695,8 +668,9 @@ def delete_file(request, id):
     except Exception as e:
         return HttpResponse(f"Delete failed: {str(e)}", status=500)
 
+
 def delete_own_file(request, id):
-    """User deletes their own file."""
+    """User deletes their own file (only if logged in)."""
     if not request.session.get("user_id"):
         return redirect("/login/")
 
@@ -716,11 +690,12 @@ def delete_own_file(request, id):
     except Exception as e:
         return HttpResponse(f"Delete failed: {str(e)}", status=500)
 
+
 def favicon(request):
     return HttpResponse(status=204)
 
 # ============================================================
-# AUTH VIEWS
+# AUTH VIEWS (optional — kwa wanaotaka ku-track uploads zao)
 # ============================================================
 def login_view(request):
     if request.method == "POST":
@@ -767,7 +742,7 @@ def signup_view(request):
             return render(request, "signup.html", {"error": "Password must be at least 6 characters."})
 
         try:
-            response = supabase.auth.sign_up({
+            supabase.auth.sign_up({
                 "email": email,
                 "password": password,
                 "options": {"data": {"full_name": full_name}}
@@ -778,7 +753,7 @@ def signup_view(request):
         except Exception as e:
             err = str(e)
             if "already registered" in err.lower() or "already exists" in err.lower():
-                return render(request, "signup.html", {"error": "This email is already registered. Try signing in."})
+                return render(request, "signup.html", {"error": "This email is already registered."})
             return render(request, "signup.html", {"error": f"Signup failed: {err}"})
 
     if request.session.get("user_id"):
@@ -843,7 +818,7 @@ def forgot_password_view(request):
                 "message": "Check your email! We sent you a password reset link."
             })
         except Exception:
-            return render(request, "forgot_password.html", {"error": "Could not send reset email. Try again."})
+            return render(request, "forgot_password.html", {"error": "Could not send reset email."})
 
     return render(request, "forgot_password.html")
 
@@ -859,13 +834,11 @@ def reset_password_view(request):
         if password != confirm:
             return render(request, "reset_password.html", {"error": "Passwords do not match.", "access_token": access_token})
         if len(password) < 6:
-            return render(request, "reset_password.html", {"error": "Password must be at least 6 characters.", "access_token": access_token})
+            return render(request, "reset_password.html", {"error": "Password too short.", "access_token": access_token})
 
         try:
             supabase.auth.update_user({"password": password})
-            return render(request, "reset_password.html", {
-                "message": "Password updated! You can now sign in with your new password."
-            })
+            return render(request, "reset_password.html", {"message": "Password updated! You can now sign in."})
         except Exception as e:
             return render(request, "reset_password.html", {"error": f"Reset failed: {str(e)}"})
 
@@ -874,13 +847,10 @@ def reset_password_view(request):
 
 
 def google_oauth_view(request):
-    """Redirect to Google OAuth via Supabase."""
     try:
         response = supabase.auth.sign_in_with_oauth({
             "provider": "google",
-            "options": {
-                "redirect_to": "https://twarvis-school.onrender.com/dashboard/"
-            }
+            "options": {"redirect_to": "https://twarvis-school.onrender.com/dashboard/"}
         })
         return redirect(response.url)
     except Exception as e:
@@ -1050,7 +1020,7 @@ def admin_settings(request):
     })
 
 # ============================================================
-# OTHER PAGE VIEWS
+# OTHER PAGES
 # ============================================================
 def about_view(request):
     try:
@@ -1096,7 +1066,7 @@ def autoquiz_view(request):
 urlpatterns = [
     path("", index),
 
-    # ========== AUTH ==========
+    # AUTH (optional — kwa wanaotaka ku-track uploads)
     path("login/", login_view, name="login"),
     path("signup/", signup_view, name="signup"),
     path("logout/", logout_view, name="logout"),
@@ -1106,18 +1076,18 @@ urlpatterns = [
     path("reset-password/", reset_password_view, name="reset_password"),
     path("auth/google/", google_oauth_view, name="google_oauth"),
 
-    # ========== ADMIN ==========
+    # ADMIN
     path(f"{SECRET_ADMIN_PATH}/", admin_dashboard, name="admin_dashboard"),
     path(f"{SECRET_ADMIN_PATH}/settings/", admin_settings, name="admin_settings"),
     path("admin_edit/<int:id>/", admin_edit, name="admin_edit"),
 
-    # ========== ROOT FILES / FAVICON ==========
+    # ROOT FILES / FAVICON
     path("apple-touch-icon.png", serve_root_file, {"filename": "apple-touch-icon.png"}, name="apple_icon"),
     path("apple-touch-icon-precomposed.png", serve_root_file, {"filename": "apple-touch-icon.png"}),
     path("favicon.ico", favicon_view, name="favicon"),
     path("favicon.png", favicon_view, name="favicon_png"),
 
-    # ========== MAIN PAGES ==========
+    # MAIN PAGES
     path("upload/", upload_view),
     path("browse/", browse_view),
     path("view/<int:id>/", view_file),
@@ -1126,35 +1096,35 @@ urlpatterns = [
     path("update-passcode/<int:id>/", update_passcode, name="update_passcode"),
     path("update-metadata/<int:id>/", update_metadata, name="update_metadata"),
 
-    # ========== ABOUT ==========
+    # ABOUT
     path("about.html", about_view, name="about"),
     path("about/", about_view, name="about_alt"),
 
-    # ========== CALCULATOR ==========
+    # CALCULATOR
     path("calculator.html", calculator_view),
     path("calculator/", calculator_view, name="calculator"),
 
-    # ========== HACKATHON ==========
+    # HACKATHON
     path("hackerthon.html", hackathon_view),
     path("hackerthon/", hackathon_view, name="hackerthon"),
     path("hackathon.html", hackathon_view),
     path("hackathon/", hackathon_view, name="hackathon"),
 
-    # ========== FREE COURSES ==========
+    # FREE COURSES
     path("free_course.html", free_courses_view),
     path("free_course/", free_courses_view, name="free_course"),
     path("free_courses.html", free_courses_view),
     path("free-courses/", free_courses_view, name="free_courses"),
 
-    # ========== AUTOQUIZ ==========
+    # AUTOQUIZ
     path("autoquiz.html", autoquiz_view, name="autoquiz"),
     path("autoquiz/", autoquiz_view, name="autoquiz_alt"),
 
-    # ========== SCANNER ==========
+    # SCANNER
     path("scanner.html", scanner_view, name="scanner"),
     path("scanner/", scanner_view, name="scanner_alt"),
 
-    # ========== GENERIC ROOT FILE SERVER (must be LAST) ==========
+    # GENERIC ROOT FILE SERVER (must be LAST)
     path("<str:filename>", serve_root_file, name="root_file"),
 ]
 
