@@ -1,92 +1,328 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Settings | Twarvis School</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            min-height: 100vh;
-            padding: 40px 20px;
-        }
-        .container { max-width: 800px; margin: 0 auto; }
-        .card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        }
-        h1 { font-size: 2rem; margin-bottom: 10px; color: #333; }
-        .subtitle { color: #666; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #f0f0f0; }
-        .status-box {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 25px;
-            border-left: 4px solid #28a745;
-        }
-        .status-box h3 { margin-bottom: 15px; color: #333; }
-        .status-good { color: #28a745; font-weight: bold; }
-        .status-bad { color: #dc3545; font-weight: bold; }
-        .message {
-            padding: 15px 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-        }
-        .message.success { background: #d4edda; color: #155724; border-left: 4px solid #28a745; }
-        .message.error { background: #f8d7da; color: #721c24; border-left: 4px solid #dc3545; }
-        .info-box {
-            background: #e7f3ff;
-            padding: 15px;
-            border-radius: 12px;
-            margin-top: 20px;
-            font-size: 0.85rem;
-            color: #004085;
-        }
-        .btn-back {
-            background: #6c757d;
-            color: white;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            padding: 12px 24px;
-            border-radius: 40px;
-            margin-top: 20px;
-            width: 100%;
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Admin Settings | Student Hub</title>
+<link rel="icon" type="image/png" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+    /* Theme 1 · Warm SaaS */
+    --bg:#fafaf9;
+    --surface:#ffffff;
+    --alt:#f5f5f4;
+    --border:#e7e5e4;
+    --border-strong:#d6d3d1;
+    --ink:#1c1917;
+    --text-2:#44403c;
+    --text-3:#57534e;
+    --accent:#c2410c;
+    --accent-bright:#ea580c;
+    --accent-pink:#db2777;
+    --accent-dim:#fff1e8;
+    --grad:linear-gradient(120deg,#ea580c,#db2777);
+    --grad-cta:linear-gradient(120deg,#c2410c,#be185d);
+    --grad-cta-hover:linear-gradient(120deg,#9a3412,#9d174d);
+    --success:#15803d;
+    --success-dim:#dcfce7;
+    --danger:#dc2626;
+    --danger-dim:#fee2e2;
+    --blue:#2563eb;
+    --blue-dim:#dbeafe;
+    --gold:#b45309;
+    --gold-dim:#fef3c7;
+    --radius-sm:10px;
+    --radius-md:14px;
+    --radius-lg:20px;
+    --radius-xl:28px;
+    --shadow-sm:0 1px 2px rgba(28,25,23,.06);
+    --shadow-md:0 10px 28px -12px rgba(28,25,23,.18);
+    --shadow-lg:0 28px 64px -20px rgba(28,25,23,.22);
+    --shadow-cta:0 8px 22px -8px rgba(219,39,119,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+    padding:32px 20px 60px;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+img{max-width:100%;height:auto;display:block}
+
+/* TOP BAR */
+.topbar{background:var(--ink);color:#f5f5f4;font-size:.82rem;padding:9px 0;border-radius:var(--radius-md)}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;text-align:center}
+.topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:#a8a29e;white-space:nowrap}
+.topbar-inner span i{color:var(--accent-bright);font-size:.78rem}
+
+/* CONTAINER */
+.container{max-width:800px;margin:0 auto;padding-top:24px}
+
+/* CARD */
+.card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-xl);
+    padding:40px 36px;
+    box-shadow:var(--shadow-lg);
+}
+
+/* HEADER */
+.settings-header{text-align:center;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.settings-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--accent-dim);
+    border:1px solid #fed7c3;
+    color:var(--accent);
+    font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+    padding:7px 16px;border-radius:50px;margin-bottom:16px;
+}
+.settings-badge i{font-size:.72rem}
+
+h1{
+    font-size:clamp(1.5rem,4vw,2rem);
+    font-weight:900;letter-spacing:-.03em;
+    color:var(--ink);margin-bottom:10px;
+    display:flex;align-items:center;justify-content:center;gap:12px;
+    flex-wrap:wrap;
+}
+h1 i{
+    font-size:1em;
+    background:var(--grad);
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;
+}
+
+.subtitle{color:var(--text-2);font-size:.95rem;font-weight:500}
+
+/* STATUS BOX */
+.status-box{
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-left:4px solid var(--success);
+    border-radius:var(--radius-md);
+    padding:22px 24px;
+    margin-bottom:24px;
+}
+.status-box.warning{
+    border-left-color:var(--danger);
+    background:var(--danger-dim);
+    border-color:#fca5a5;
+}
+.status-box h3{
+    margin-bottom:16px;
+    color:var(--ink);
+    font-size:1.05rem;
+    font-weight:800;
+    display:flex;align-items:center;gap:10px;
+    letter-spacing:-.01em;
+}
+.status-box h3 i{color:var(--accent)}
+
+.status-good{
+    color:var(--success);
+    font-weight:800;
+    font-size:.95rem;
+    display:flex;align-items:flex-start;gap:10px;
+    margin-bottom:10px;
+    line-height:1.5;
+}
+.status-good i{color:var(--success);font-size:1.05rem;margin-top:2px;flex-shrink:0}
+
+.status-bad{
+    color:var(--danger);
+    font-weight:800;
+    font-size:.95rem;
+    display:flex;align-items:flex-start;gap:10px;
+    margin-bottom:10px;
+    line-height:1.5;
+}
+.status-bad i{color:var(--danger);font-size:1.05rem;margin-top:2px;flex-shrink:0}
+
+.status-box p{
+    color:var(--text-2);
+    font-size:.88rem;
+    line-height:1.7;
+    margin-top:8px;
+}
+
+/* MESSAGE */
+.message{
+    padding:16px 20px;
+    border-radius:var(--radius-md);
+    margin-bottom:22px;
+    display:flex;align-items:center;gap:12px;
+    font-weight:600;font-size:.88rem;
+    line-height:1.55;
+}
+.message i{font-size:1.1rem;flex-shrink:0}
+.message.success{
+    background:var(--success-dim);
+    color:var(--success);
+    border:1px solid #86efac;
+}
+.message.success i{color:var(--success)}
+.message.error{
+    background:var(--danger-dim);
+    color:var(--danger);
+    border:1px solid #fca5a5;
+}
+.message.error i{color:var(--danger)}
+
+/* INFO BOX */
+.info-box{
+    background:var(--blue-dim);
+    border:1px solid #bfdbfe;
+    border-left:4px solid var(--blue);
+    border-radius:var(--radius-md);
+    padding:16px 20px;
+    font-size:.85rem;
+    color:var(--blue);
+    line-height:1.65;
+    margin-top:22px;
+    display:flex;align-items:flex-start;gap:12px;
+    font-weight:500;
+}
+.info-box i{
+    color:var(--blue);
+    font-size:1.05rem;
+    margin-top:2px;
+    flex-shrink:0;
+}
+.info-box strong{color:var(--blue);font-weight:800}
+
+/* BUTTON */
+.btn-back{
+    display:inline-flex;align-items:center;justify-content:center;gap:10px;
+    background:var(--grad-cta);
+    color:#fff;
+    text-decoration:none;
+    padding:15px 28px;
+    border-radius:999px;
+    font-weight:800;font-size:.9rem;
+    width:100%;
+    margin-top:28px;
+    transition:all .25s ease;
+    box-shadow:var(--shadow-cta);
+    letter-spacing:.02em;
+}
+.btn-back i{font-size:.88rem}
+.btn-back:hover{
+    background:var(--grad-cta-hover);
+    transform:translateY(-2px);
+    box-shadow:0 12px 28px -8px rgba(219,39,119,.6);
+}
+
+/* RESPONSIVE */
+@media (max-width:560px){
+    body{padding:20px 14px 50px}
+    .topbar{padding:7px 0;font-size:.72rem}
+    .topbar-inner{gap:12px}
+    .topbar-inner span:nth-child(3){display:none}
+    .card{padding:28px 22px;border-radius:var(--radius-lg)}
+    h1{font-size:1.4rem}
+    .status-box{padding:18px 18px}
+    .status-box h3{font-size:.95rem}
+    .status-good,.status-bad{font-size:.88rem}
+    .status-box p{font-size:.84rem}
+    .message{padding:14px 16px;font-size:.84rem}
+    .info-box{padding:14px 16px;font-size:.8rem}
+    .btn-back{padding:13px 22px;font-size:.86rem}
+}
+@media (max-width:400px){
+    .topbar-inner span:nth-child(2){display:none}
+    h1{font-size:1.25rem}
+    .card{padding:24px 18px}
+    .settings-badge{font-size:.62rem;padding:6px 12px}
+}
+@media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <h1>⚙️ Admin Settings</h1>
-            <div class="subtitle">Google Drive Storage Status</div>
 
-            <div class="status-box">
-                <h3>📦 Google Drive Backup Status</h3>
-                {% if google_drive_configured %}
-                    <p class="status-good">✅ Google Drive is CONFIGURED and ACTIVE!</p>
-                    <p>All new uploads will be automatically backed up to Google Drive (15GB free storage).</p>
-                {% else %}
-                    <p class="status-bad">❌ Google Drive is NOT CONFIGURED</p>
-                    <p>Add GOOGLE_DRIVE_FOLDER_ID and GOOGLE_SERVICE_ACCOUNT_JSON environment variables to enable 15GB backup storage.</p>
-                {% endif %}
-            </div>
-
-            {% if message %}
-            <div class="message success">{{ message }}</div>
-            {% endif %}
-
-            <div class="info-box">
-                <strong>ℹ️ Note:</strong> Your files are always stored in Supabase. Google Drive provides an additional 15GB backup storage for extra safety.
-            </div>
-
-            <a href="/admin/" class="btn-back">← Back to Admin Panel</a>
-        </div>
+<!-- TOP BAR -->
+<div class="topbar">
+    <div class="topbar-inner">
+        <span><i class="fas fa-phone"></i> +255 740 706 007</span>
+        <span><i class="fas fa-envelope"></i> Twarvisteh@gmail.com</span>
+        <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
     </div>
+</div>
+
+<!-- CONTAINER -->
+<div class="container">
+    <div class="card">
+
+        <!-- HEADER -->
+        <div class="settings-header">
+            <span class="settings-badge"><i class="fas fa-cog"></i> Admin Settings</span>
+            <h1><i class="fas fa-sliders"></i> Admin Settings</h1>
+            <p class="subtitle">Storage status and system configuration</p>
+        </div>
+
+        <!-- STATUS BOX -->
+        <div class="status-box {% if not google_drive_configured %}warning{% endif %}">
+            <h3>
+                <i class="fas fa-cloud"></i> Google Drive Backup Status
+            </h3>
+
+            {% if google_drive_configured %}
+                <p class="status-good">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Google Drive is <strong>CONFIGURED</strong> and <strong>ACTIVE</strong>!</span>
+                </p>
+                <p>All new uploads will be automatically backed up to Google Drive (15GB free storage).</p>
+            {% else %}
+                <p class="status-bad">
+                    <i class="fas fa-times-circle"></i>
+                    <span>Google Drive is <strong>NOT CONFIGURED</strong></span>
+                </p>
+                <p>Add <code>GOOGLE_DRIVE_FOLDER_ID</code> and <code>GOOGLE_SERVICE_ACCOUNT_JSON</code> environment variables to enable 15GB backup storage.</p>
+            {% endif %}
+        </div>
+
+        <!-- MESSAGE -->
+        {% if message %}
+            <div class="message success">
+                <i class="fas fa-check-circle"></i>
+                <span>{{ message }}</span>
+            </div>
+        {% endif %}
+
+        {% if error %}
+            <div class="message error">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>{{ error }}</span>
+            </div>
+        {% endif %}
+
+        <!-- INFO BOX -->
+        <div class="info-box">
+            <i class="fas fa-circle-info"></i>
+            <span>
+                <strong>Note:</strong> Your files are always stored in <strong>Supabase</strong> and <strong>Cloudflare R2</strong>. Google Drive provides an additional 15GB backup storage for extra safety.
+            </span>
+        </div>
+
+        <!-- BUTTON -->
+        <a href="/admin-portal-twarvis-9x7k2m4p8q3z5w6v/" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Back to Admin Panel
+        </a>
+
+    </div>
+</div>
+
 </body>
 </html>
