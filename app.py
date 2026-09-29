@@ -377,7 +377,7 @@ def get_passcode_html(file_id, filename, error=None):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Passcode Required | Twarvis School</title>
+    <title>Passcode Required | Student Hub</title>
     <link rel="icon" type="image/png" href="/apple-touch-icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -385,28 +385,19 @@ def get_passcode_html(file_id, filename, error=None):
         * {{ margin:0; padding:0; box-sizing:border-box; }}
         body {{
             font-family:'Inter',sans-serif;
-            background:#0a0a1a;
+            background:#fafaf9;
             min-height:100vh;
             display:flex;
             align-items:center;
             justify-content:center;
             overflow-x:hidden;
-        }}
-        #matrix-canvas {{
-            position:fixed;
-            top:0;
-            left:0;
-            width:100%;
-            height:100%;
-            z-index:0;
-            background:linear-gradient(180deg,#0a0a2e 0%,#0a0a20 50%,#0a0a1a 100%);
+            padding:20px;
         }}
         .container {{
             position:relative;
             z-index:2;
             max-width:450px;
-            width:90%;
-            padding:20px;
+            width:100%;
             animation:fadeInUp 0.6s ease;
         }}
         @keyframes fadeInUp {{
@@ -414,122 +405,114 @@ def get_passcode_html(file_id, filename, error=None):
             to {{ opacity:1; transform:translateY(0); }}
         }}
         .card {{
-            background:rgba(0,0,0,0.7);
-            border:2px solid rgba(255,152,0,0.15);
+            background:#ffffff;
+            border:1px solid #e7e5e4;
             border-radius:28px;
             padding:40px 35px;
-            backdrop-filter:blur(10px);
-            box-shadow:0 0 60px rgba(255,152,0,0.03);
+            box-shadow:0 28px 64px -20px rgba(28,25,23,.22);
             text-align:center;
-            animation:float 3s ease-in-out infinite;
-        }}
-        @keyframes float {{
-            0%,100%{{transform:translateY(0px)}}
-            50%{{transform:translateY(-6px)}}
         }}
         .card .lock-icon {{
-            font-size:4rem;
-            color:#ff9800;
-            margin-bottom:16px;
-            display:block;
-            animation:pulse 2s ease-in-out infinite;
-        }}
-        @keyframes pulse {{
-            0%,100%{{transform:scale(1);opacity:0.8}}
-            50%{{transform:scale(1.05);opacity:1}}
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            width:82px;
+            height:82px;
+            margin-bottom:18px;
+            border-radius:50%;
+            background:#fef3c7;
+            color:#b45309;
+            font-size:2rem;
         }}
         .card h1 {{
-            font-size:1.8rem;
+            font-size:1.6rem;
             font-weight:800;
-            color:#fff;
+            color:#1c1917;
             margin-bottom:8px;
+            letter-spacing:-.02em;
         }}
         .card .sub-text {{
-            color:rgba(255,255,255,0.25);
-            font-size:0.85rem;
-            margin-bottom:4px;
+            color:#57534e;
+            font-size:0.88rem;
+            margin-bottom:16px;
         }}
         .card .filename {{
-            color:rgba(255,255,255,0.4);
+            color:#44403c;
             font-size:0.85rem;
             margin-bottom:20px;
-            padding:10px;
-            background:rgba(255,255,255,0.02);
+            padding:12px;
+            background:#f5f5f4;
             border-radius:12px;
-            border:1px solid rgba(255,255,255,0.04);
+            border:1px solid #e7e5e4;
             word-break:break-all;
         }}
         .card .passcode-hint {{
-            color:rgba(255,255,255,0.12);
-            font-size:0.7rem;
+            color:#78716c;
+            font-size:0.72rem;
             margin-bottom:12px;
         }}
         .card input {{
             width:100%;
-            padding:14px 18px;
-            background:rgba(255,255,255,0.03);
-            border:2px solid rgba(255,152,0,0.1);
+            padding:16px 18px;
+            background:#fafaf9;
+            border:1px solid #e7e5e4;
             border-radius:16px;
-            color:#fff;
+            color:#1c1917;
             font-size:1.4rem;
-            font-family:monospace;
+            font-family:'Courier New',monospace;
             letter-spacing:12px;
             text-align:center;
-            transition:0.3s;
+            transition:0.25s;
             outline:none;
         }}
         .card input:focus {{
-            border-color:rgba(255,152,0,0.3);
-            box-shadow:0 0 30px rgba(255,152,0,0.05);
+            border-color:#ea580c;
+            background:#ffffff;
+            box-shadow:0 0 0 4px rgba(234,88,12,.12);
         }}
         .card input::placeholder {{
             letter-spacing:2px;
             font-size:0.9rem;
-            color:rgba(255,255,255,0.08);
+            color:#a8a29e;
         }}
         {error_html}
         .card button {{
             width:100%;
-            padding:14px;
+            padding:15px;
             margin-top:16px;
-            background:linear-gradient(135deg,#ff9800,#ff6b00);
+            background:linear-gradient(120deg,#c2410c,#be185d);
             border:none;
-            border-radius:50px;
+            border-radius:999px;
             color:#fff;
-            font-weight:700;
-            font-size:1.05rem;
+            font-weight:800;
+            font-size:1rem;
             cursor:pointer;
-            transition:0.3s;
-            animation:btnGlow 2s ease-in-out infinite;
-        }}
-        @keyframes btnGlow {{
-            0%,100%{{box-shadow:0 0 20px rgba(255,152,0,0.1)}}
-            50%{{box-shadow:0 0 40px rgba(255,152,0,0.25)}}
+            transition:0.25s;
+            box-shadow:0 8px 22px -8px rgba(219,39,119,.5);
         }}
         .card button:hover {{
-            transform:scale(1.02);
-            box-shadow:0 0 50px rgba(255,152,0,0.3);
+            transform:translateY(-2px);
+            box-shadow:0 12px 28px -8px rgba(219,39,119,.6);
         }}
         .back-link {{
             display:inline-block;
             margin-top:16px;
-            color:rgba(100,180,255,0.2);
+            color:#57534e;
             text-decoration:none;
             font-size:0.85rem;
-            transition:0.3s;
+            transition:0.25s;
         }}
         .back-link:hover {{
-            color:#4a7cf7;
+            color:#c2410c;
         }}
         @media(max-width:480px){{
-            .card{{padding:30px 20px}}
-            .card h1{{font-size:1.4rem}}
+            .card{{padding:30px 22px}}
+            .card h1{{font-size:1.3rem}}
             .card input{{font-size:1.2rem;letter-spacing:8px}}
         }}
     </style>
 </head>
 <body>
-    <canvas id="matrix-canvas"></canvas>
     <div class="container">
         <div class="card">
             <span class="lock-icon"><i class="fas fa-lock"></i></span>
@@ -546,38 +529,6 @@ def get_passcode_html(file_id, filename, error=None):
         </div>
     </div>
     <script>
-        const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
-        function resizeCanvas() {{
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }}
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-        const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        const drops = [];
-        const columns = Math.ceil(canvas.width / 20);
-        for (let i = 0; i < columns; i++) drops[i] = Math.random() * -200;
-        function drawRain() {{
-            ctx.fillStyle = 'rgba(10, 10, 30, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < drops.length; i++) {{
-                const char = chars[Math.floor(Math.random() * chars.length)];
-                const x = i * 20;
-                const y = drops[i] * 20;
-                ctx.fillStyle = '#ff9800';
-                ctx.shadowBlur = 8;
-                ctx.shadowColor = '#ff980055';
-                ctx.font = 'bold 18px monospace';
-                if (y > 0 && y < canvas.height + 50) ctx.fillText(char, x, y);
-                ctx.shadowBlur = 0;
-                if (drops[i] * 20 > canvas.height + 50 && Math.random() > 0.98) drops[i] = 0;
-                drops[i] += 0.4 + Math.random() * 0.3;
-            }}
-            requestAnimationFrame(drawRain);
-        }}
-        drawRain();
-
         const input = document.getElementById('passcodeInput');
         const btn = document.getElementById('unlockBtn');
         const error = document.getElementById('passcodeError');
@@ -627,7 +578,6 @@ def get_passcode_html(file_id, filename, error=None):
 # ============================================================
 def serve_root_file(request, filename):
     """Serve any file directly from the project root directory."""
-    # Security: block path traversal
     safe_name = os.path.basename(filename)
     if safe_name != filename or ".." in safe_name or safe_name.startswith("."):
         return HttpResponse("Not found", status=404)
@@ -636,7 +586,6 @@ def serve_root_file(request, filename):
     if not os.path.exists(file_path):
         return HttpResponse("Not found", status=404)
 
-    # Map file extension to content type
     ext = os.path.splitext(safe_name)[1].lower()
     content_types = {
         ".png": "image/png",
@@ -661,7 +610,7 @@ def serve_root_file(request, filename):
         with open(file_path, "rb") as f:
             data = f.read()
         response = HttpResponse(data, content_type=content_type)
-        response["Cache-Control"] = "public, max-age=2592000"  # 30 days
+        response["Cache-Control"] = "public, max-age=2592000"
         return response
     except Exception as e:
         print(f"Error serving {safe_name}: {e}")
@@ -723,7 +672,6 @@ def upload_view(request):
                     unique_id = str(uuid.uuid4())[:8]
                     safe_filename = f"{timestamp}_{unique_id}_{file.name.replace(' ', '_')}"
                     
-                    # ========== ☁️ UPLOAD TO CLOUDFLARE R2 ==========
                     file_content = file.read()
                     file_size = len(file_content)
                     
@@ -737,7 +685,6 @@ def upload_view(request):
                         error = "Upload to storage failed. Please try again."
                         print(f"❌ R2 upload failed for {safe_filename}")
                     else:
-                        # ========== 💾 SAVE METADATA TO SUPABASE DB ==========
                         supabase.table("notes").insert({
                             "filename": safe_filename,
                             "original_filename": file.name,
@@ -806,7 +753,6 @@ def view_file(request, id):
         
         note = result.data[0]
         
-        # ========== CHECK IF PRIVATE ==========
         if note.get("privacy") == "private":
             correct_passcode = note.get("passcode", "")
             get_passcode = request.GET.get("passcode", "")
@@ -819,7 +765,6 @@ def view_file(request, id):
                 html = get_passcode_html(id, note.get("original_filename", note.get("filename", "")), "❌ Incorrect passcode. Please try again.")
                 return HttpResponse(html)
         
-        # ========== ☁️ GET FILE URL FROM R2 ==========
         r2_key = f"notes/{note['filename']}"
         file_url = get_r2_public_url(r2_key)
         
@@ -857,7 +802,6 @@ def download_file(request, id):
         
         note = result.data[0]
         
-        # ========== CHECK IF PRIVATE ==========
         if note.get("privacy") == "private":
             correct_passcode = note.get("passcode", "")
             get_passcode = request.GET.get("passcode", "")
@@ -868,7 +812,6 @@ def download_file(request, id):
             if get_passcode != correct_passcode:
                 return HttpResponse("Access Denied. Incorrect passcode.", status=403)
         
-        # ========== ☁️ DOWNLOAD FROM R2 ==========
         r2_key = f"notes/{note['filename']}"
         file_data = get_r2_file_bytes(r2_key)
         
@@ -888,10 +831,8 @@ def delete_file(request, id):
     try:
         note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
         
-        # ========== ☁️ DELETE FROM R2 ==========
         delete_from_r2(f"notes/{note['filename']}")
         
-        # ========== 🗑️ DELETE FROM SUPABASE DB ==========
         supabase.table("notes").delete().eq("id", id).execute()
         
         return redirect(f"/{SECRET_ADMIN_PATH}/")
@@ -988,20 +929,21 @@ def about_view(request):
         return HttpResponse(f"""
             <!DOCTYPE html>
             <html>
-            <head><title>About | Twarvis School</title></head>
-            <body style="font-family:Arial;background:#0a0a1a;color:#fff;text-align:center;padding:50px;">
-                <h1 style="color:#ffd700;">About Student Hub</h1>
-                <p style="color:#888;">About page coming soon.</p>
-                <a href="/" style="color:#4a7cf7;">← Back to Home</a>
-                <p style="color:#666;font-size:12px;margin-top:20px;">Error: {e}</p>
+            <head><title>About | Student Hub</title></head>
+            <body style="font-family:Arial;background:#fafaf9;color:#1c1917;text-align:center;padding:50px;">
+                <h1 style="color:#c2410c;">About Student Hub</h1>
+                <p style="color:#57534e;">About page coming soon.</p>
+                <a href="/" style="color:#2563eb;">← Back to Home</a>
+                <p style="color:#8492a6;font-size:12px;margin-top:20px;">Error: {e}</p>
             </body>
             </html>
         """)
 
-# ========== NEW PAGE VIEWS ==========
+# ========== CALCULATOR VIEW ==========
 def calculator_view(request):
     return render(request, "calculator.html")
 
+# ========== HACKATHON VIEW ==========
 def hackathon_view(request):
     try:
         return render(request, "hackerthon.html")
@@ -1010,15 +952,16 @@ def hackathon_view(request):
             <!DOCTYPE html>
             <html>
             <head><title>Hackathon</title></head>
-            <body style="font-family:Arial;background:#0a0a1a;color:#fff;text-align:center;padding:50px;">
-                <h1 style="color:#ffd700;">🚀 Hackathon Coming Soon!</h1>
-                <p style="color:#888;">We're preparing an exciting event.</p>
-                <a href="/" style="color:#4a7cf7;">← Back to Home</a>
-                <p style="color:#666;font-size:12px;margin-top:20px;">Error: {e}</p>
+            <body style="font-family:Arial;background:#fafaf9;color:#1c1917;text-align:center;padding:50px;">
+                <h1 style="color:#c2410c;">🚀 Hackathon Coming Soon!</h1>
+                <p style="color:#57534e;">We're preparing an exciting event.</p>
+                <a href="/" style="color:#2563eb;">← Back to Home</a>
+                <p style="color:#8492a6;font-size:12px;margin-top:20px;">Error: {e}</p>
             </body>
             </html>
         """)
 
+# ========== FREE COURSES VIEW ==========
 def free_courses_view(request):
     try:
         return render(request, "free_course.html")
@@ -1027,11 +970,11 @@ def free_courses_view(request):
             <!DOCTYPE html>
             <html>
             <head><title>Free Courses</title></head>
-            <body style="font-family:Arial;background:#0a0a1a;color:#fff;text-align:center;padding:50px;">
-                <h1 style="color:#00ff64;">📚 Free Courses</h1>
-                <p style="color:#888;">Under Maintenance - Check back soon!</p>
-                <a href="/" style="color:#4a7cf7;">← Back to Home</a>
-                <p style="color:#666;font-size:12px;margin-top:20px;">Error: {e}</p>
+            <body style="font-family:Arial;background:#fafaf9;color:#1c1917;text-align:center;padding:50px;">
+                <h1 style="color:#c2410c;">📚 Free Courses</h1>
+                <p style="color:#57534e;">Under Maintenance - Check back soon!</p>
+                <a href="/" style="color:#2563eb;">← Back to Home</a>
+                <p style="color:#8492a6;font-size:12px;margin-top:20px;">Error: {e}</p>
             </body>
             </html>
         """)
@@ -1045,7 +988,7 @@ def scanner_view(request):
             <!DOCTYPE html>
             <html>
             <head>
-                <title>Scanner | Twarvis School</title>
+                <title>Scanner | Student Hub</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <link rel="icon" type="image/png" href="/apple-touch-icon.png">
                 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -1054,42 +997,37 @@ def scanner_view(request):
                     * {{ margin:0; padding:0; box-sizing:border-box; }}
                     body {{
                         font-family:'Inter',sans-serif;
-                        background:#0a0a1a;
+                        background:#fafaf9;
                         min-height:100vh;
                         display:flex;
                         align-items:center;
                         justify-content:center;
-                        color:#fff;
+                        color:#1c1917;
                         padding:20px;
                     }}
                     .scanner-container {{
                         max-width:500px;
                         width:100%;
-                        background:rgba(0,0,0,0.6);
-                        border:2px solid rgba(0,255,65,0.15);
+                        background:#ffffff;
+                        border:1px solid #e7e5e4;
                         border-radius:32px;
                         padding:40px 30px;
                         text-align:center;
-                        backdrop-filter:blur(10px);
+                        box-shadow:0 28px 64px -20px rgba(28,25,23,.22);
                     }}
                     .scanner-icon {{
                         font-size:5rem;
-                        color:#4a7cf7;
+                        color:#ea580c;
                         margin-bottom:16px;
-                        animation:pulse 2s ease-in-out infinite;
                     }}
-                    @keyframes pulse {{
-                        0%,100%{{transform:scale(1);opacity:0.8}}
-                        50%{{transform:scale(1.05);opacity:1}}
-                    }}
-                    h1 {{ font-size:2rem; font-weight:800; margin-bottom:8px; }}
-                    p {{ color:rgba(100,180,255,0.4); font-size:1rem; line-height:1.6; margin-bottom:24px; }}
+                    h1 {{ font-size:2rem; font-weight:800; margin-bottom:8px; color:#1c1917; }}
+                    p {{ color:#57534e; font-size:1rem; line-height:1.6; margin-bottom:24px; }}
                     .scan-btn {{
                         display:inline-flex;
                         align-items:center;
                         gap:12px;
                         padding:16px 40px;
-                        background:linear-gradient(135deg,#4a7cf7,#6c9aff);
+                        background:linear-gradient(120deg,#c2410c,#be185d);
                         border:none;
                         border-radius:60px;
                         color:#fff;
@@ -1098,26 +1036,27 @@ def scanner_view(request):
                         cursor:pointer;
                         transition:0.3s;
                         text-decoration:none;
+                        box-shadow:0 8px 22px -8px rgba(219,39,119,.5);
                     }}
-                    .scan-btn:hover {{ transform:scale(1.04); box-shadow:0 0 40px rgba(74,124,247,0.3); }}
+                    .scan-btn:hover {{ transform:translateY(-2px); }}
                     .back-link {{
                         display:inline-block;
                         margin-top:16px;
-                        color:rgba(100,180,255,0.2);
+                        color:#57534e;
                         text-decoration:none;
                         font-size:0.85rem;
                         transition:0.3s;
                     }}
-                    .back-link:hover {{ color:#4a7cf7; }}
+                    .back-link:hover {{ color:#c2410c; }}
                     .placeholder-box {{
-                        background:rgba(255,255,255,0.02);
-                        border:2px dashed rgba(100,180,255,0.05);
+                        background:#f5f5f4;
+                        border:2px dashed #d6d3d1;
                         border-radius:20px;
                         padding:40px 20px;
                         margin-bottom:20px;
                     }}
-                    .placeholder-box i {{ font-size:3rem; color:rgba(100,180,255,0.1); }}
-                    .placeholder-box p {{ color:rgba(100,180,255,0.1); font-size:0.9rem; margin-top:8px; }}
+                    .placeholder-box i {{ font-size:3rem; color:#a8a29e; }}
+                    .placeholder-box p {{ color:#78716c; font-size:0.9rem; margin-top:8px; }}
                     @media(max-width:480px){{
                         .scanner-container{{padding:30px 20px}}
                         h1{{font-size:1.6rem}}
@@ -1131,18 +1070,33 @@ def scanner_view(request):
                     <p>Capture, crop, and enhance documents like a pro.</p>
                     <div class="placeholder-box">
                         <i class="fas fa-qrcode"></i>
-                        <p>Scanner interface — <strong style="color:rgba(100,180,255,0.3);">scanner.html</strong> will load here</p>
+                        <p>Scanner interface — <strong>scanner.html</strong> will load here</p>
                     </div>
-                    <a href="#" class="scan-btn" onclick="alert('📸 Scanner would open here.\\n\\nTo fully integrate, create scanner.html in your project root.');">
+                    <a href="#" class="scan-btn" onclick="alert('📸 Scanner would open here.');">
                         <i class="fas fa-camera"></i> Start Scanning
                     </a>
                     <br>
                     <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
-                    <p style="font-size:0.65rem;color:rgba(100,180,255,0.06);margin-top:16px;">Error: {e}</p>
+                    <p style="font-size:0.65rem;color:#a8a29e;margin-top:16px;">Error: {e}</p>
                 </div>
             </body>
             </html>
         """)
+
+# ========== AUTOQUIZ VIEW ==========
+def autoquiz_view(request):
+    """AutoQuiz AI — PDF to Quiz generator page."""
+    path = os.path.join(BASE_DIR, "autoquiz.html")
+    if os.path.exists(path):
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                html = f.read()
+            return HttpResponse(html, content_type="text/html")
+        except Exception as e:
+            print(f"Error serving autoquiz: {e}")
+            return HttpResponse(f"Error loading AutoQuiz: {e}", status=500)
+    return HttpResponse("AutoQuiz page not found.", status=404)
+
 
 # ============================================================
 # URLS
@@ -1187,6 +1141,10 @@ urlpatterns = [
     path("free_course/", free_courses_view, name="free_course"),
     path("free_courses.html", free_courses_view),
     path("free-courses/", free_courses_view, name="free_courses"),
+    
+    # AUTOQUIZ
+    path("autoquiz.html", autoquiz_view, name="autoquiz"),
+    path("autoquiz/", autoquiz_view, name="autoquiz_alt"),
     
     # SCANNER ROUTE
     path("scanner.html", scanner_view, name="scanner"),
