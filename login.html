@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Sign In | Student Hub</title>
+<link rel="icon" type="image/png" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+    --bg:#fafaf9;
+    --surface:#ffffff;
+    --alt:#f5f5f4;
+    --border:#e7e5e4;
+    --border-strong:#d6d3d1;
+    --ink:#1c1917;
+    --text-2:#44403c;
+    --text-3:#57534e;
+    --accent:#c2410c;
+    --accent-bright:#ea580c;
+    --accent-pink:#db2777;
+    --accent-dim:#fff1e8;
+    --grad:linear-gradient(120deg,#ea580c,#db2777);
+    --grad-cta:linear-gradient(120deg,#c2410c,#be185d);
+    --grad-cta-hover:linear-gradient(120deg,#9a3412,#9d174d);
+    --success:#15803d;
+    --success-dim:#dcfce7;
+    --danger:#dc2626;
+    --danger-dim:#fee2e2;
+    --radius-sm:10px;
+    --radius-md:14px;
+    --radius-lg:20px;
+    --radius-xl:28px;
+    --shadow-sm:0 1px 2px rgba(28,25,23,.06);
+    --shadow-md:0 10px 28px -12px rgba(28,25,23,.18);
+    --shadow-lg:0 28px 64px -20px rgba(28,25,23,.22);
+    --shadow-cta:0 8px 22px -8px rgba(219,39,119,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px 20px;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+}
+body::before{
+    content:'';
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(circle at 25% 25%, rgba(234,88,12,.08) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(219,39,119,.08) 0%, transparent 50%);
+    pointer-events:none;
+    z-index:0;
+}
+a{color:inherit;text-decoration:none}
+button,input{font-family:inherit}
+img{max-width:100%;height:auto;display:block}
+
+.login-wrap{
+    position:relative;
+    z-index:1;
+    max-width:440px;
+    width:100%;
+    animation:popIn .5s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popIn{
+    from{opacity:0;transform:scale(.95) translateY(20px)}
+    to{opacity:1;transform:scale(1) translateY(0)}
+}
+
+/* LOGO */
+.login-logo{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    margin-bottom:32px;
+    font-weight:800;
+    font-size:1.4rem;
+    letter-spacing:-.02em;
+    color:var(--ink);
+}
+.login-logo .logo-img{
+    width:52px;
+    height:52px;
+    border-radius:14px;
+    object-fit:cover;
+    box-shadow:0 8px 20px -6px rgba(219,39,119,.4);
+    background:#fff;
+}
+.login-logo-text span{
+    background:var(--grad);
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;
+}
+
+/* CARD */
+.login-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-xl);
+    padding:40px 36px;
+    box-shadow:var(--shadow-lg);
+}
+
+.login-card h1{
+    font-size:1.6rem;
+    font-weight:900;
+    letter-spacing:-.03em;
+    color:var(--ink);
+    margin-bottom:8px;
+    text-align:center;
+}
+
+.login-card .subtitle{
+    color:var(--text-2);
+    font-size:.9rem;
+    text-align:center;
+    margin-bottom:28px;
+}
+
+/* FORM */
+.form-group{margin-bottom:18px}
+.form-label{
+    display:block;
+    font-weight:700;
+    font-size:.85rem;
+    color:var(--ink);
+    margin-bottom:8px;
+    letter-spacing:.01em;
+}
+.form-label i{color:var(--accent);margin-right:6px;font-size:.85rem}
+
+.form-input{
+    width:100%;
+    padding:14px 16px;
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    font-size:.92rem;
+    font-weight:500;
+    color:var(--ink);
+    background:var(--bg);
+    outline:none;
+    transition:all .25s ease;
+}
+.form-input:hover{border-color:var(--border-strong);background:var(--surface)}
+.form-input:focus{
+    border-color:var(--accent-bright);
+    background:var(--surface);
+    box-shadow:0 0 0 4px rgba(234,88,12,.12);
+}
+.form-input::placeholder{color:var(--text-3)}
+
+/* PASSWORD WRAP */
+.password-wrap{position:relative}
+.password-wrap .form-input{padding-right:48px}
+.toggle-password{
+    position:absolute;
+    top:50%;
+    right:12px;
+    transform:translateY(-50%);
+    background:none;
+    border:none;
+    color:var(--text-3);
+    cursor:pointer;
+    padding:6px 10px;
+    border-radius:8px;
+    transition:all .2s;
+    font-size:.9rem;
+}
+.toggle-password:hover{color:var(--accent);background:var(--accent-dim)}
+
+/* OPTIONS ROW */
+.login-options{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin:20px 0 24px;
+    flex-wrap:wrap;
+    font-size:.82rem;
+}
+.remember{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:var(--text-2);
+    font-weight:600;
+    cursor:pointer;
+}
+.remember input[type="checkbox"]{
+    width:16px;
+    height:16px;
+    accent-color:var(--accent);
+    cursor:pointer;
+}
+.forgot-link{
+    color:var(--accent);
+    font-weight:700;
+    transition:color .25s;
+}
+.forgot-link:hover{color:var(--accent-bright);text-decoration:underline}
+
+/* SUBMIT */
+.btn-submit{
+    width:100%;
+    padding:15px;
+    background:var(--grad-cta);
+    border:none;
+    border-radius:var(--radius-sm);
+    color:#fff;
+    font-weight:800;
+    font-size:.95rem;
+    cursor:pointer;
+    transition:all .25s ease;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    letter-spacing:.02em;
+    box-shadow:var(--shadow-cta);
+}
+.btn-submit:hover{
+    background:var(--grad-cta-hover);
+    transform:translateY(-2px);
+    box-shadow:0 12px 28px -8px rgba(219,39,119,.6);
+}
+.btn-submit:active{transform:translateY(0)}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* DIVIDER */
+.divider{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin:26px 0 22px;
+    color:var(--text-3);
+    font-size:.75rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+}
+.divider::before,
+.divider::after{
+    content:'';
+    flex:1;
+    height:1px;
+    background:var(--border);
+}
+
+/* SOCIAL LOGIN */
+.social-btns{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:24px;
+}
+.social-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:12px 16px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    font-weight:700;
+    font-size:.85rem;
+    color:var(--ink);
+    cursor:pointer;
+    transition:all .25s ease;
+    text-decoration:none;
+}
+.social-btn i{font-size:1rem}
+.social-btn.google i{color:#ea4335}
+.social-btn.github i{color:#333}
+.social-btn:hover{
+    background:var(--alt);
+    border-color:var(--border-strong);
+    transform:translateY(-1px);
+}
+
+/* SIGNUP LINK */
+.signup-text{
+    text-align:center;
+    color:var(--text-2);
+    font-size:.88rem;
+    font-weight:500;
+}
+.signup-text a{
+    color:var(--accent);
+    font-weight:800;
+    transition:color .25s;
+}
+.signup-text a:hover{color:var(--accent-bright);text-decoration:underline}
+
+/* ERROR */
+.error-box{
+    padding:13px 16px;
+    background:var(--danger-dim);
+    border:1px solid #fca5a5;
+    border-radius:var(--radius-sm);
+    color:var(--danger);
+    font-size:.85rem;
+    font-weight:600;
+    margin-bottom:20px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    animation:shake .4s ease;
+}
+@keyframes shake{
+    0%,100%{transform:translateX(0)}
+    25%{transform:translateX(-6px)}
+    75%{transform:translateX(6px)}
+}
+.error-box i{font-size:1rem;flex-shrink:0}
+
+/* BACK HOME */
+.back-home{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin-top:24px;
+    color:var(--text-3);
+    font-size:.82rem;
+    font-weight:600;
+    transition:color .25s;
+}
+.back-home:hover{color:var(--accent)}
+.back-home i{font-size:.75rem}
+
+.back-wrap{text-align:center;margin-top:20px}
+
+/* TOPBAR MINI */
+.login-topbar{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    background:var(--ink);
+    color:#f5f5f4;
+    font-size:.78rem;
+    padding:8px 0;
+    z-index:10;
+}
+.login-topbar-inner{
+    max-width:1200px;
+    margin:0 auto;
+    padding:0 18px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+    text-align:center;
+}
+.login-topbar-inner span{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    color:#a8a29e;
+    white-space:nowrap;
+}
+.login-topbar-inner span i{color:var(--accent-bright);font-size:.72rem}
+
+/* RESPONSIVE */
+@media (max-width:560px){
+    body{padding:64px 14px 40px;align-items:flex-start}
+    .login-topbar{padding:7px 0}
+    .login-topbar-inner{gap:12px;font-size:.7rem}
+    .login-topbar-inner span:nth-child(3){display:none}
+    .login-card{padding:32px 22px;border-radius:var(--radius-lg)}
+    .login-logo .logo-img{width:46px;height:46px;border-radius:12px}
+    .login-logo{font-size:1.2rem;margin-bottom:24px}
+    .login-card h1{font-size:1.4rem}
+    .social-btns{grid-template-columns:1fr}
+    .form-input{padding:13px 14px;font-size:.88rem}
+    .btn-submit{padding:14px;font-size:.9rem}
+}
+@media (max-width:400px){
+    .login-topbar-inner span:nth-child(2){display:none}
+    .login-card{padding:28px 18px}
+    .login-card h1{font-size:1.25rem}
+    .login-logo-text{font-size:1.05rem}
+}
+@media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="login-topbar">
+    <div class="login-topbar-inner">
+        <span><i class="fas fa-phone"></i> +255 740 706 007</span>
+        <span><i class="fas fa-envelope"></i> Twarvisteh@gmail.com</span>
+        <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
+    </div>
+</div>
+
+<!-- LOGIN FORM -->
+<div class="login-wrap">
+
+    <!-- LOGO -->
+    <a href="/" class="login-logo">
+        <img src="/apple-touch-icon.png" alt="Student Hub" class="logo-img">
+        <span class="login-logo-text">Student<span>Hub</span></span>
+    </a>
+
+    <div class="login-card">
+        <h1>Welcome back</h1>
+        <p class="subtitle">Sign in to access your account and notes</p>
+
+        {% if error %}
+        <div class="error-box">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>{{ error }}</span>
+        </div>
+        {% endif %}
+
+        {% if message %}
+        <div class="error-box" style="background:var(--success-dim);border-color:#86efac;color:var(--success)">
+            <i class="fas fa-check-circle"></i>
+            <span>{{ message }}</span>
+        </div>
+        {% endif %}
+
+        <form method="post" action="/login/">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="form-label" for="id_username">
+                    <i class="fas fa-user"></i> Email or Username
+                </label>
+                <input
+                    type="text"
+                    name="username"
+                    id="id_username"
+                    class="form-input"
+                    placeholder="you@example.com"
+                    required
+                    autofocus
+                    autocomplete="username"
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="id_password">
+                    <i class="fas fa-lock"></i> Password
+                </label>
+                <div class="password-wrap">
+                    <input
+                        type="password"
+                        name="password"
+                        id="id_password"
+                        class="form-input"
+                        placeholder="Enter your password"
+                        required
+                        autocomplete="current-password"
+                    >
+                    <button type="button" class="toggle-password" onclick="togglePassword()" aria-label="Show password">
+                        <i class="fas fa-eye" id="toggleIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="login-options">
+                <label class="remember">
+                    <input type="checkbox" name="remember" value="1">
+                    <span>Remember me</span>
+                </label>
+                <a href="/forgot-password/" class="forgot-link">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
+        </form>
+
+        <div class="divider">or continue with</div>
+
+        <div class="social-btns">
+            <a href="/auth/google/" class="social-btn google">
+                <i class="fab fa-google"></i> Google
+            </a>
+            <a href="/auth/github/" class="social-btn github">
+                <i class="fab fa-github"></i> GitHub
+            </a>
+        </div>
+
+        <p class="signup-text">
+            Don't have an account? <a href="/signup/">Create one free</a>
+        </p>
+    </div>
+
+    <div class="back-wrap">
+        <a href="/" class="back-home">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+    </div>
+
+</div>
+
+<script>
+function togglePassword() {
+    var input = document.getElementById('id_password');
+    var icon = document.getElementById('toggleIcon');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fas fa-eye-slash';
+    } else {
+        input.type = 'password';
+        icon.className = 'fas fa-eye';
+    }
+}
+</script>
+
+</body>
+</html>
