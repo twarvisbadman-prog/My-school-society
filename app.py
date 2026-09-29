@@ -245,6 +245,22 @@ class UploadForm(forms.Form):
     university = forms.ChoiceField(choices=[('', '-- Select your university --')] + [(u, u) for u in UNIVERSITIES] + [('Other', 'Other')], required=False, widget=forms.Select(attrs={"class": "form-select"}))
     custom_university = forms.CharField(max_length=200, required=False, widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "Type your university name..."}))
 
+
+class EditForm(forms.Form):
+    """Form for editing note metadata in admin panel."""
+    module = forms.CharField(max_length=200, required=True,
+                             widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., Computer Networks"}))
+    course = forms.CharField(max_length=200, required=True,
+                             widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., CIT 3102"}))
+    description = forms.CharField(required=False,
+                                  widget=forms.Textarea(attrs={"class": "form-textarea", "rows": 4, "placeholder": "Brief description..."}))
+    university = forms.CharField(max_length=200, required=False,
+                                 widget=forms.TextInput(attrs={"class": "form-input", "placeholder": "e.g., UDSM"}))
+    file_type = forms.ChoiceField(
+        choices=[('notes', 'Notes'), ('pastpaper', 'Past Paper')],
+        widget=forms.Select(attrs={"class": "form-select"})
+    )
+
 # ============================================================
 # R2 HELPER FUNCTIONS
 # ============================================================
@@ -842,6 +858,10 @@ def delete_file(request, id):
 def favicon(request):
     return HttpResponse(status=204)
 
+
+# ============================================================
+# ADMIN VIEWS
+# ============================================================
 @csrf_exempt
 def update_passcode(request, id):
     if not ADMIN:
@@ -880,6 +900,98 @@ def update_passcode(request, id):
     except Exception as e:
         return JsonResponse({"success": False, "error": str(e)}, status=500)
 
+
+@csrf_exempt
+def update_metadata(request, id):
+    """Admin — update module, course, description, university, file_type via AJAX."""
+    if not ADMIN:
+        return JsonResponse({"success": False, "error": "Not authorized"}, status=403)
+
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "Method not allowed"}, status=405)
+
+    try:
+        data = json.loads(request.body)
+
+        check_result = supabase.table("notes").select("*").eq("id", id).execute()
+        if not check_result.data:
+            return JsonResponse({"success": False, "error": "File not found"})
+
+        allowed_fields = ["module", "course", "description", "university", "file_type"]
+        update_data = {}
+        for field in allowed_fields:
+            if field in data:
+                value = str(data[field]).strip()
+                update_data[field] = value
+
+        if not update_data:
+            return JsonResponse({"success": False, "error": "No valid fields to update"})
+
+        if "file_type" in update_data and update_data["file_type"] not in ["notes", "pastpaper"]:
+            return JsonResponse({"success": False, "error": "Invalid file_type"})
+
+        supabase.table("notes").update(update_data).eq("id", id).execute()
+
+        return JsonResponse({"success": True, "message": "Metadata updated", "updated": update_data})
+
+    except json.JSONDecodeError:
+        return JsonResponse({"success": False, "error": "Invalid JSON"}, status=400)
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+
+def admin_edit(request, id):
+    """Admin — edit note metadata with a full page form."""
+    if not ADMIN:
+        return HttpResponse("Access Denied. Admin only.", status=403)
+
+    try:
+        result = supabase.table("notes").select("*").eq("id", id).execute()
+        if not result.data:
+            return HttpResponse("File not found", status=404)
+
+        note = result.data[0]
+        error_message = None
+
+        if request.method == "POST":
+            module = request.POST.get("module", "").strip()
+            course = request.POST.get("course", "").strip()
+            description = request.POST.get("description", "").strip()
+            university = request.POST.get("university", "").strip()
+            file_type = request.POST.get("file_type", "notes").strip()
+
+            if not module or not course:
+                error_message = "Module and Course are required."
+            else:
+                supabase.table("notes").update({
+                    "module": module,
+                    "course": course,
+                    "description": description,
+                    "university": university or "Not specified",
+                    "file_type": file_type,
+                }).eq("id", id).execute()
+
+                return redirect(f"/{SECRET_ADMIN_PATH}/")
+
+        # Build form with current (or submitted) values
+        form = EditForm(initial={
+            "module": note.get("module", ""),
+            "course": note.get("course", ""),
+            "description": note.get("description", ""),
+            "university": note.get("university", ""),
+            "file_type": note.get("file_type", "notes"),
+        })
+
+        return render(request, "admin_edit.html", {
+            "note": note,
+            "form": form,
+            "error": error_message,
+        })
+
+    except Exception as e:
+        return HttpResponse(f"Error: {str(e)}", status=500)
+
+
 def admin_dashboard(request):
     if not ADMIN:
         return HttpResponse("Access Denied. Admin only.", status=403)
@@ -916,10 +1028,21 @@ def admin_dashboard(request):
     
     return render(request, "admin.html", {"notes": all_notes, "stats": stats, "admin": ADMIN})
 
+
 def admin_settings(request):
     if not ADMIN:
         return HttpResponse("Access Denied. Admin only.", status=403)
-    return render(request, "admin_settings.html", {})
+
+    # Check if Google Drive is configured via env vars
+    google_drive_configured = bool(
+        env("GOOGLE_DRIVE_FOLDER_ID", "") and
+        env("GOOGLE_SERVICE_ACCOUNT_JSON", "")
+    )
+
+    return render(request, "admin_settings.html", {
+        "google_drive_configured": google_drive_configured,
+    })
+
 
 # ========== ABOUT VIEW ==========
 def about_view(request):
@@ -1107,6 +1230,7 @@ urlpatterns = [
     # 🔐 SECRET ADMIN ROUTES
     path(f"{SECRET_ADMIN_PATH}/", admin_dashboard, name="admin_dashboard"),
     path(f"{SECRET_ADMIN_PATH}/settings/", admin_settings, name="admin_settings"),
+    path("admin_edit/<int:id>/", admin_edit, name="admin_edit"),
     
     # ========== ICON / FAVICON / ROOT FILES ==========
     path("apple-touch-icon.png", serve_root_file, {"filename": "apple-touch-icon.png"}, name="apple_icon"),
@@ -1121,6 +1245,7 @@ urlpatterns = [
     path("download/<int:id>/", download_file),
     path("delete/<int:id>/", delete_file),
     path("update-passcode/<int:id>/", update_passcode, name="update_passcode"),
+    path("update-metadata/<int:id>/", update_metadata, name="update_metadata"),
     
     # ABOUT PAGE
     path("about.html", about_view, name="about"),
