@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>AutoQuiz AI | Free PDF to Quiz Generator</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- PDF.js for client-side text extraction (no backend needed) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <!-- Marked for optional answer formatting -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fc 0%, #eef2f9 100%);
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* header */
+        .brand {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .brand h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(120deg, #0f2b3d, #1b4f6e);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+        .brand p {
+            color: #475569;
+            margin-top: 0.5rem;
+        }
+
+        /* cards */
+        .card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(2px);
+            border-radius: 28px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
+            padding: 2rem 1.8rem;
+            margin-bottom: 2rem;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            background: #fafcff;
+            border-radius: 24px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .upload-area:hover {
+            border-color: #3b82f6;
+            background: #f0f9ff;
+        }
+        .upload-icon {
+            font-size: 3rem;
+            color: #3b82f6;
+            margin-bottom: 0.8rem;
+        }
+        .file-input {
+            display: none;
+        }
+        .btn {
+            background: linear-gradient(100deg, #1e3a5f, #0f2b3d);
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .btn-primary {
+            background: linear-gradient(95deg, #2563eb, #1e40af);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(37,99,235,0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #3b82f6;
+            color: #1e40af;
+            box-shadow: none;
+        }
+        .btn-outline:hover {
+            background: #eef2ff;
+        }
+        .topic-badge {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            border-radius: 40px;
+            padding: 4px 14px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .difficulty {
+            display: inline-block;
+            border-radius: 40px;
+            padding: 4px 14px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .easy { background: #dcfce7; color: #15803d; }
+        .medium { background: #fef9c3; color: #a16207; }
+        .hard { background: #ffe4e2; color: #b91c1c; }
+        .question-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.4rem;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid #e9edf2;
+            transition: 0.1s;
+        }
+        .question-header {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .question-text {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin: 10px 0;
+            line-height: 1.4;
+        }
+        .answer-area {
+            margin-top: 14px;
+            width: 100%;
+        }
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 20px;
+            border: 1.5px solid #e2e8f0;
+            font-family: 'Inter', monospace;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            resize: vertical;
+        }
+        textarea:focus, input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+        }
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #2563eb;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .result-summary {
+            background: #f1f5f9;
+            border-radius: 28px;
+            padding: 1.2rem;
+            margin-bottom: 1.8rem;
+            text-align: center;
+        }
+        .score-circle {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+        .footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #5b6e8c;
+            margin-top: 2rem;
+        }
+        .grid-2 {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .message {
+            padding: 12px;
+            border-radius: 60px;
+            background: #eef2ff;
+            margin: 1rem 0;
+        }
+        hr {
+            margin: 1rem 0;
+        }
+        i {
+            margin-right: 5px;
+        }
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            .card { padding: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="brand">
+        <h1><i class="fas fa-brain"></i> AutoQuiz AI</h1>
+        <p>Upload PDF notes → Auto-detect topic → Instant smart quiz (Easy / Medium / Hard)</p>
+        <p style="font-size: 0.85rem;">✨ Powered by AI & PDF.js — works 100% free, no backend required</p>
+    </div>
+
+    <!-- Upload Card -->
+    <div class="card" id="uploadCard">
+        <div class="upload-area" id="dropZone">
+            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+            <h3>Drag & drop your PDF notes</h3>
+            <p style="color: #5b6e8c; margin: 8px 0;">or click to browse</p>
+            <input type="file" id="pdfInput" accept="application/pdf" class="file-input">
+            <div style="margin-top: 20px;">
+                <button class="btn btn-primary" id="browseBtn"><i class="fas fa-folder-open"></i> Select PDF</button>
+            </div>
+        </div>
+        <div id="fileInfo" style="margin-top: 18px; font-size: 0.85rem; text-align: center;"></div>
+    </div>
+
+    <!-- Loading / Progress -->
+    <div id="loadingIndicator" style="display: none;">
+        <div class="card loading">
+            <div class="spinner"></div>
+            <h3>📖 Reading PDF & generating smart questions...</h3>
+            <p>Extracting text, detecting topic (Physics/Math/Biology/Chemistry), creating quiz</p>
+        </div>
+    </div>
+
+    <!-- Quiz Panel (hidden initially) -->
+    <div id="quizPanel" style="display: none;">
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <div>
+                    <h2><i class="fas fa-question-circle"></i> Generated Quiz</h2>
+                    <div id="topicMeta" style="margin-top: 6px;"></div>
+                </div>
+                <button id="resetBtn" class="btn btn-outline"><i class="fas fa-plus-circle"></i> New PDF</button>
+            </div>
+            <hr>
+            <div id="questionsContainer"></div>
+            <div style="margin-top: 2rem; text-align: center;">
+                <button id="submitQuizBtn" class="btn btn-primary" style="padding: 12px 32px;"><i class="fas fa-check-double"></i> Submit & Grade</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Panel -->
+    <div id="resultsPanel" style="display: none;">
+        <div class="card">
+            <h2><i class="fas fa-chart-simple"></i> Your Score</h2>
+            <div id="scoreSummary"></div>
+            <div id="detailedResults"></div>
+            <div style="margin-top: 25px; text-align: center;">
+                <button id="retakeBtn" class="btn btn-outline"><i class="fas fa-redo-alt"></i> Retake Same Quiz</button>
+                <button id="newPdfFromResultsBtn" class="btn btn-primary" style="margin-left: 1rem;"><i class="fas fa-upload"></i> New PDF</button>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <i class="fas fa-laptop-code"></i> fully local AI: formula detection, numeric problems, definition Q&A
+    </div>
+</div>
+
+<script>
+    // -------------------- GLOBAL STATE --------------------
+    let currentQuestions = [];      // { text, correctAnswer, difficulty, type, options, id }
+    let currentTopic = "general";
+    let rawPDFText = "";
+    let quizActive = false;
+    let resultsActive = false;
+    
+    // DOM Elements
+    const dropZone = document.getElementById('dropZone');
+    const pdfInput = document.getElementById('pdfInput');
+    const browseBtn = document.getElementById('browseBtn');
+    const uploadCard = document.getElementById('uploadCard');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const quizPanel = document.getElementById('quizPanel');
+    const resultsPanel = document.getElementById('resultsPanel');
+    const resetBtn = document.getElementById('resetBtn');
+    const submitQuizBtn = document.getElementById('submitQuizBtn');
+    const retakeBtn = document.getElementById('retakeBtn');
+    const newPdfFromResultsBtn = document.getElementById('newPdfFromResultsBtn');
+    const questionsContainer = document.getElementById('questionsContainer');
+    const topicMeta = document.getElementById('topicMeta');
+    const scoreSummaryDiv = document.getElementById('scoreSummary');
+    const detailedResultsDiv = document.getElementById('detailedResults');
+    
+    // Helper: show/hide sections
+    function showUpload() {
+        uploadCard.style.display = 'block';
+        loadingIndicator.style.display = 'none';
+        quizPanel.style.display = 'none';
+        resultsPanel.style.display = 'none';
+        document.getElementById('fileInfo').innerHTML = '';
+    }
+    
+    function resetToUpload() {
+        currentQuestions = [];
+        quizActive = false;
+        resultsActive = false;
+        showUpload();
+    }
+    
+    // -------------------- TOPIC DETECTION (keyword based) --------------------
+    function detectTopic(text) {
+        const lower = text.toLowerCase();
+        const topics = {
+            physics: ['newton', 'force', 'mass', 'acceleration', 'velocity', 'energy', 'momentum', 'gravity', 'electric', 'magnetic', 'circuit', 'ohm', 'friction', 'kinetic'],
+            math: ['equation', 'function', 'derivative', 'integral', 'matrix', 'vector', 'theorem', 'algebra', 'calculus', 'polynomial', 'graph', 'exponential'],
+            biology: ['cell', 'dna', 'protein', 'enzyme', 'mitochondria', 'photosynthesis', 'evolution', 'organism', 'gene', 'membrane', 'nucleus', 'chloroplast'],
+            chemistry: ['molecule', 'atom', 'reaction', 'acid', 'base', 'solution', 'bond', 'periodic', 'molar', 'compound', 'chemical', 'ph', 'valence']
+        };
+        let scores = { physics:0, math:0, biology:0, chemistry:0, general:0 };
+        for (let [topic, keywords] of Object.entries(topics)) {
+            for (let kw of keywords) {
+                if (lower.includes(kw)) scores[topic] += 1;
+            }
+        }
+        let best = 'general';
+        let bestScore = 0;
+        for (let [topic, score] of Object.entries(scores)) {
+            if (score > bestScore) { bestScore = score; best = topic; }
+        }
+        return best;
+    }
+    
+    // -------------------- SMART QUESTION GENERATION --------------------
+    function extractSentences(text, maxSentences = 25) {
+        // simple sentence split
+        const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 30).map(s => s.trim());
+        return sentences.slice(0, maxSentences);
+    }
+    
+    // detect formulas like "F = m * a" or "Force = mass × acceleration"
+    function extractFormulaSentences(sentences) {
+        const formulaPattern = /(\b\w+\b)\s*[=≈]\s*(.+?)(?=\s*(?:where|and|\.|$))/i;
+        return sentences.filter(s => formulaPattern.test(s));
+    }
+    
+    function generateDefinitionQuestions(sentences, limit=5) {
+        const questions = [];
+        for (let sent of sentences) {
+            if (questions.length >= limit) break;
+            // look for "X is Y" or "X are Y" patterns
+            const isMatch = sent.match(/(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s+(?:is|are|means)\s+(.+)/i);
+            if (isMatch && isMatch[1] && isMatch[2]) {
+                let subject = isMatch[1].trim();
+                let definition = isMatch[2].trim();
+                if (subject.length < 60 && definition.length < 200) {
+                    questions.push({
+                        text: `What is ${subject}?`,
+                        correctAnswer: definition,
+                        difficulty: "easy",
+                        type: "short",
+                        options: null
+                    });
+                }
+            } else if (sent.length < 140 && sent.split(' ').length > 4) {
+                // fallback: ask about the concept
+                let shortConcept = sent.substring(0, 80);
+                questions.push({
+                    text: `Explain the following concept: "${shortConcept}${sent.length>80?'...':''}"`,
+                    correctAnswer: sent,
+                    difficulty: "easy",
+                    type: "short",
+                    options: null
+                });
+            }
+        }
+        return questions;
+    }
+    
+    function generateFormulaQuestions(sentences, topic) {
+        const formulaRegex = /(\b\w+\b)\s*=\s*([^=\n]+?)(?=\s*(?:\.|,|and|where|$))/i;
+        const questions = [];
+        for (let sent of sentences) {
+            const match = sent.match(formulaRegex);
+            if (match && (topic === 'physics' || topic === 'math' || topic === 'chemistry')) {
+                const variable = match[1].trim();
+                const expression = match[2].trim();
+                // Medium: recall formula
+                questions.push({
+                    text: `What is the formula for ${variable}?`,
+                    correctAnswer: `${variable} = ${expression}`,
+                    difficulty: "medium",
+                    type: "short",
+                    options: null
+                });
+                // Hard: numeric problem by injecting random values
+                const varMatches = expression.match(/[a-zA-Z_]+/g);
+                if (varMatches && varMatches.length >= 1) {
+                    let randomValues = {};
+                    let substituted = expression;
+                    for (let v of [...new Set(varMatches)]) {
+                        if (v !== variable && !v.match(/^[0-9]/)) {
+                            let val = Math.floor(Math.random() * 80) + 5; // 5-85
+                            randomValues[v] = val;
+                            substituted = substituted.replace(new RegExp(`\\b${v}\\b`, 'g'), val);
+                        }
+                    }
+                    if (Object.keys(randomValues).length > 0) {
+                        let valueDesc = Object.entries(randomValues).map(([k,v]) => `${k} = ${v}`).join(', ');
+                        let problemText = `Given ${valueDesc}, use the formula ${variable} = ${expression} to calculate ${variable}.`;
+                        let computedAnswer = "";
+                        try {
+                            // safe eval for basic math expressions (only digits, ops)
+                            if (/^[0-9+\-*/(). ]+$/.test(substituted)) {
+                                let result = eval(substituted);
+                                computedAnswer = `${variable} = ${result}`;
+                            } else {
+                                computedAnswer = `${variable} = ${substituted}`;
+                            }
+                        } catch(e) { computedAnswer = `${variable} = ${expression} (with given values)`; }
+                        questions.push({
+                            text: problemText,
+                            correctAnswer: computedAnswer,
+                            difficulty: "hard",
+                            type: "problem",
+                            options: null
+                        });
+                    }
+                }
+            }
+        }
+        return questions;
+    }
+    
+    function generateFallbackQuestions(topic) {
+        const fallbacks = {
+            physics: [
+                { text: "What is Newton's First Law?", answer: "An object remains at rest or uniform motion unless acted by an external force.", difficulty: "easy" },
+                { text: "A 5 kg object is pushed with 20 N force. Find acceleration.", answer: "4 m/s²", difficulty: "hard", type: "problem" }
+            ],
+            math: [
+                { text: "What is the quadratic formula?", answer: "x = [-b ± √(b²-4ac)]/(2a)", difficulty: "easy" }
+            ],
+            biology: [
+                { text: "What is the powerhouse of the cell?", answer: "Mitochondria", difficulty: "easy" }
+            ],
+            chemistry: [
+                { text: "What is the pH of pure water?", answer: "7", difficulty: "easy" }
+            ],
+            general: [
+                { text: "Summarize the main idea of these notes.", answer: "Extracted from your PDF content. Refer to original material.", difficulty: "easy" }
+            ]
+        };
+        let base = fallbacks[topic] || fallbacks.general;
+        return base.map(fb => ({
+            text: fb.text,
+            correctAnswer: fb.answer,
+            difficulty: fb.difficulty || "easy",
+            type: fb.type || "short",
+            options: null
+        }));
+    }
+    
+    async function generateFullQuiz(text) {
+        const topic = detectTopic(text);
+        currentTopic = topic;
+        let sentences = extractSentences(text, 30);
+        let questions = [];
+        
+        // easy definition Qs
+        let definitionQs = generateDefinitionQuestions(sentences, 4);
+        questions.push(...definitionQs);
+        
+        // formula based (medium/hard)
+        let formulaSentences = extractFormulaSentences(sentences);
+        let formulaQs = generateFormulaQuestions(formulaSentences, topic);
+        questions.push(...formulaQs);
+        
+        // if still less than 4, add fallback
+        if (questions.length < 4) {
+            let fallback = generateFallbackQuestions(topic);
+            questions.push(...fallback.slice(0, 6));
+        }
+        
+        // remove duplicates by text
+        const unique = [];
+        const seen = new Set();
+        for (let q of questions) {
+            if (!seen.has(q.text.toLowerCase())) {
+                seen.add(q.text.toLowerCase());
+                unique.push(q);
+            }
+        }
+        
+        // assign IDs
+        return unique.slice(0, 12).map((q, idx) => ({ ...q, id: idx }));
+    }
+    
+    // -------------------- PDF TEXT EXTRACTION (pdf.js) --------------------
+    async function extractTextFromPDF(file) {
+        const arrayBuffer = await file.arrayBuffer();
+        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+        const pdf = await loadingTask.promise;
+        let fullText = "";
+        for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            const pageText = textContent.items.map(item => item.str).join(" ");
+            fullText += pageText + "\n";
+        }
+        return fullText;
+    }
+    
+    // -------------------- RENDER QUIZ UI --------------------
+    function renderQuiz() {
+        if (!currentQuestions.length) return;
+        topicMeta.innerHTML = `<span class="topic-badge"><i class="fas fa-flask"></i> Detected: ${currentTopic.toUpperCase()}</span> 
+                                <span style="margin-left: 10px;"><i class="fas fa-list"></i> ${currentQuestions.length} questions (Easy/Med/Hard)</span>`;
+        let html = '';
+        currentQuestions.forEach((q, idx) => {
+            let inputField = '';
+            if (q.type === 'short' || q.type === 'problem') {
+                inputField = `<textarea rows="2" id="answer_${q.id}" placeholder="Type your answer here..."></textarea>`;
+            } else {
+                inputField = `<input type="text" id="answer_${q.id}" placeholder="Your answer">`;
+            }
+            let diffClass = q.difficulty === 'easy' ? 'easy' : (q.difficulty === 'medium' ? 'medium' : 'hard');
+            html += `
+                <div class="question-card" data-qid="${q.id}">
+                    <div class="question-header">
+                        <span class="difficulty ${diffClass}">${q.difficulty.toUpperCase()}</span>
+                        <span class="topic-badge">${q.type === 'problem' ? '📐 Problem' : '❓ Q&A'}</span>
+                    </div>
+                    <div class="question-text">${idx+1}. ${escapeHtml(q.text)}</div>
+                    <div class="answer-area">
+                        ${inputField}
+                    </div>
+                </div>
+            `;
+        });
+        questionsContainer.innerHTML = html;
+        quizPanel.style.display = 'block';
+        resultsPanel.style.display = 'none';
+        uploadCard.style.display = 'none';
+        loadingIndicator.style.display = 'none';
+    }
+    
+    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+    
+    // Submit & Grade
+    function gradeQuiz() {
+        let score = 0;
+        let resultsHtml = '';
+        for (let q of currentQuestions) {
+            const userAnswerElem = document.getElementById(`answer_${q.id}`);
+            let userAnswer = userAnswerElem ? userAnswerElem.value.trim() : "";
+            let isCorrect = false;
+            let normalizedCorrect = q.correctAnswer.trim().toLowerCase().replace(/[^\w\s]/g, '');
+            let normalizedUser = userAnswer.toLowerCase().replace(/[^\w\s]/g, '');
+            if (normalizedUser === normalizedCorrect || (normalizedCorrect.includes(normalizedUser) && normalizedUser.length > 3) || (normalizedUser.includes(normalizedCorrect) && normalizedCorrect.length > 3)) {
+                isCorrect = true;
+                score++;
+            } else if (q.correctAnswer.toLowerCase().includes(userAnswer.toLowerCase()) && userAnswer.length > 3) {
+                // partial match leniency for longer answers
+                isCorrect = true;
+                score++;
+            }
+            const diffClass = q.difficulty === 'easy' ? 'easy' : (q.difficulty === 'medium' ? 'medium' : 'hard');
+            resultsHtml += `
+                <div class="question-card" style="border-left: 5px solid ${isCorrect ? '#2ecc71' : '#e74c3c'}">
+                    <div><span class="difficulty ${diffClass}">${q.difficulty}</span> <strong>Q:</strong> ${escapeHtml(q.text)}</div>
+                    <div style="margin-top: 8px;"><strong>Your answer:</strong> ${escapeHtml(userAnswer) || '(blank)'}</div>
+                    ${!isCorrect ? `<div><strong>✅ Correct answer:</strong> ${escapeHtml(q.correctAnswer)}</div>` : '<div style="color:#2e7d32;">✔️ Correct!</div>'}
+                </div>
+            `;
+        }
+        const percent = Math.round((score / currentQuestions.length) * 100);
+        scoreSummaryDiv.innerHTML = `<div class="result-summary"><span class="score-circle">${score}/${currentQuestions.length}</span> <span style="font-weight:500;">(${percent}%)</span><br><i class="fas fa-star"></i> Great effort! Review answers below.</div>`;
+        detailedResultsDiv.innerHTML = resultsHtml;
+        quizPanel.style.display = 'none';
+        resultsPanel.style.display = 'block';
+        uploadCard.style.display = 'none';
+    }
+    
+    // -------------------- MAIN FLOW: Upload + Generate --------------------
+    async function handlePDF(file) {
+        if (!file || file.type !== 'application/pdf') {
+            alert("Please select a valid PDF file.");
+            return;
+        }
+        uploadCard.style.display = 'none';
+        loadingIndicator.style.display = 'block';
+        quizPanel.style.display = 'none';
+        resultsPanel.style.display = 'none';
+        
+        try {
+            const extracted = await extractTextFromPDF(file);
+            if (!extracted.trim() || extracted.length < 50) {
+                throw new Error("PDF contains very little extractable text. Try a text-based PDF.");
+            }
+            rawPDFText = extracted;
+            const questions = await generateFullQuiz(rawPDFText);
+            if (!questions.length) throw new Error("Could not generate questions. Try PDF with richer content.");
+            currentQuestions = questions;
+            renderQuiz();
+        } catch (err) {
+            console.error(err);
+            alert("Error: " + err.message);
+            resetToUpload();
+        }
+    }
+    
+    // Event listeners
+    browseBtn.addEventListener('click', () => pdfInput.click());
+    pdfInput.addEventListener('change', (e) => {
+        if (e.target.files.length) handlePDF(e.target.files[0]);
+    });
+    
+    dropZone.addEventListener('click', () => pdfInput.click());
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.background = '#e6f0ff'; });
+    dropZone.addEventListener('dragleave', () => { dropZone.style.background = '#fafcff'; });
+    dropZone.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        dropZone.style.background = '#fafcff';
+        const file = e.dataTransfer.files[0];
+        if (file && file.type === 'application/pdf') handlePDF(file);
+        else alert("Drop a PDF file only.");
+    });
+    
+    resetBtn.addEventListener('click', resetToUpload);
+    newPdfFromResultsBtn.addEventListener('click', resetToUpload);
+    retakeBtn.addEventListener('click', () => {
+        renderQuiz(); // re-render fresh inputs
+    });
+    submitQuizBtn.addEventListener('click', gradeQuiz);
+    
+    // initial state
+    showUpload();
+</script>
+</body>
+</html>
