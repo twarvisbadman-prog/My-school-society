@@ -1,0 +1,2112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub: Zero to Hero — Ultimate Interactive Guide</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-alt: #161b22;
+    --bg-card: #1c2128;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-dim: #8b949e;
+    --accent: #58a6ff;
+    --accent-2: #3fb950;
+    --accent-3: #f778ba;
+    --accent-4: #a371f7;
+    --warn: #d29922;
+    --danger: #f85149;
+    --code-bg: #010409;
+    --mono: 'SF Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: var(--sans); line-height: 1.7; font-size: 16px;
+    overflow-x: hidden;
+  }
+
+  /* ============ PROGRESS BAR ============ */
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-4));
+    background-size: 200% 100%;
+    animation: gradShift 3s ease infinite;
+    width: 0%; z-index: 1000; transition: width 0.15s ease;
+  }
+  @keyframes gradShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* ============ RESUME BANNER ============ */
+  #resume-banner {
+    position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+    background: linear-gradient(135deg, #1c2128, #22272e);
+    border: 1px solid var(--accent);
+    border-radius: 10px; padding: 12px 20px;
+    display: flex; align-items: center; gap: 14px;
+    z-index: 1001; box-shadow: 0 8px 32px rgba(88,166,255,0.35);
+    transition: top 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-width: 90vw;
+  }
+  #resume-banner.show { top: 20px; }
+  #resume-banner .icon { font-size: 22px; }
+  #resume-banner .text { font-size: 14px; }
+  #resume-banner .text strong { color: var(--accent); }
+  #resume-banner .btn-resume {
+    background: var(--accent); color: var(--bg);
+    border: none; padding: 6px 14px; border-radius: 6px;
+    font-weight: 600; font-size: 13px; cursor: pointer;
+    font-family: var(--sans);
+    transition: transform 0.15s;
+  }
+  #resume-banner .btn-resume:hover { transform: scale(1.05); }
+  #resume-banner .btn-close {
+    background: transparent; border: none; color: var(--text-dim);
+    font-size: 18px; cursor: pointer; padding: 0 4px;
+  }
+
+  /* ============ SIDEBAR ============ */
+  nav#sidebar {
+    position: fixed; left: 0; top: 0; width: 260px; height: 100vh;
+    background: var(--bg-alt); border-right: 1px solid var(--border);
+    padding: 24px 16px; overflow-y: auto; z-index: 100;
+  }
+  nav#sidebar h2 { font-size: 15px; color: var(--accent); margin-bottom: 4px; letter-spacing: 0.5px; }
+  nav#sidebar .subtitle { font-size: 12px; color: var(--text-dim); margin-bottom: 16px; }
+
+  /* Sidebar overall progress */
+  .sidebar-progress {
+    background: var(--bg-card); border-radius: 8px;
+    padding: 10px 12px; margin-bottom: 16px;
+    border: 1px solid var(--border);
+  }
+  .sidebar-progress .label {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--text-dim); margin-bottom: 6px;
+    font-family: var(--mono);
+  }
+  .sidebar-progress .label strong { color: var(--accent-2); }
+  .sidebar-progress .bar {
+    height: 6px; background: var(--bg);
+    border-radius: 3px; overflow: hidden;
+  }
+  .sidebar-progress .bar-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--accent-2), var(--accent));
+    border-radius: 3px; transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  nav#sidebar a {
+    display: block; padding: 8px 12px; color: var(--text-dim);
+    text-decoration: none; border-radius: 6px; font-size: 14px;
+    margin-bottom: 2px; border-left: 2px solid transparent; transition: all 0.15s;
+    display: flex; align-items: center; gap: 4px;
+  }
+  nav#sidebar a:hover { background: var(--bg-card); color: var(--text); }
+  nav#sidebar a.active {
+    background: var(--bg-card); color: var(--accent);
+    border-left-color: var(--accent);
+  }
+  nav#sidebar a .num {
+    display: inline-block; width: 22px; color: var(--text-dim);
+    font-family: var(--mono); font-size: 12px;
+  }
+  nav#sidebar a.completed .num { color: var(--accent-2); }
+  nav#sidebar a.completed .num::after {
+    content: ' ✓'; color: var(--accent-2); font-weight: 700;
+  }
+  nav#sidebar a .check-mark {
+    margin-left: auto; color: var(--accent-2); font-size: 13px;
+    opacity: 0; transform: scale(0); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  nav#sidebar a.completed .check-mark { opacity: 1; transform: scale(1); }
+
+  /* ============ MAIN ============ */
+  main { margin-left: 260px; max-width: 960px; padding: 60px 48px 120px; }
+
+  /* ============ HERO ============ */
+  .hero {
+    text-align: center; padding: 40px 0 60px;
+    border-bottom: 1px solid var(--border); margin-bottom: 60px;
+  }
+  .hero .badge {
+    display: inline-block; background: rgba(88,166,255,0.12); color: var(--accent);
+    padding: 4px 12px; border-radius: 20px; font-size: 12px;
+    font-family: var(--mono); margin-bottom: 20px;
+    border: 1px solid rgba(88,166,255,0.3);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(88,166,255,0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(88,166,255,0); }
+  }
+  .hero h1 {
+    font-size: 48px; line-height: 1.15; margin-bottom: 20px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 50%, #a371f7 100%);
+    background-size: 200% 200%;
+    animation: gradShift 5s ease infinite;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p { color: var(--text-dim); font-size: 18px; max-width: 600px; margin: 0 auto 28px; }
+  .hero .stats { display: flex; justify-content: center; gap: 32px; margin-top: 32px; }
+  .hero .stats div { text-align: center; }
+  .hero .stats strong {
+    display: block; font-size: 24px; color: var(--accent-2); font-family: var(--mono);
+  }
+  .hero .stats span { font-size: 12px; color: var(--text-dim); }
+
+  /* ============ SECTIONS ============ */
+  section { margin-bottom: 80px; scroll-margin-top: 20px; }
+  .section-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 24px; padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-header .step-num {
+    background: var(--accent); color: var(--bg);
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 15px; flex-shrink: 0; font-family: var(--mono);
+    transition: all 0.4s;
+  }
+  section.completed .step-num {
+    background: var(--accent-2);
+    box-shadow: 0 0 0 4px rgba(63,185,80,0.2);
+  }
+  .section-header h2 { font-size: 26px; font-weight: 700; flex: 1; }
+  .section-header .section-check {
+    font-size: 22px; color: var(--accent-2);
+    opacity: 0; transform: scale(0) rotate(-180deg);
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  section.completed .section-header .section-check {
+    opacity: 1; transform: scale(1) rotate(0);
+  }
+
+  /* Mark complete button */
+  .mark-complete {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 30px; padding: 14px 20px;
+    background: var(--bg-card); border: 1px dashed var(--border);
+    border-radius: 10px; transition: all 0.25s;
+  }
+  .mark-complete.done {
+    border-style: solid; border-color: var(--accent-2);
+    background: rgba(63,185,80,0.08);
+  }
+  .mark-complete button {
+    background: var(--accent-2); color: var(--bg);
+    border: none; padding: 8px 16px; border-radius: 6px;
+    font-weight: 600; font-size: 13.5px; cursor: pointer;
+    font-family: var(--sans); transition: transform 0.15s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .mark-complete button:hover { transform: translateY(-1px); }
+  .mark-complete.done button {
+    background: transparent; color: var(--accent-2);
+    border: 1px solid var(--accent-2);
+  }
+  .mark-complete .text { font-size: 14px; color: var(--text-dim); flex: 1; }
+  .mark-complete.done .text { color: var(--accent-2); }
+
+  h3 { font-size: 19px; margin: 28px 0 12px; color: var(--text); }
+  h4 {
+    font-size: 15px; margin: 20px 0 8px; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  p { margin-bottom: 14px; color: #c9d1d9; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  ul, ol { margin: 0 0 16px 24px; color: #c9d1d9; }
+  li { margin-bottom: 6px; }
+
+  code {
+    font-family: var(--mono); background: var(--bg-card);
+    padding: 2px 6px; border-radius: 4px; font-size: 13px;
+    color: var(--accent-3);
+  }
+  pre {
+    background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 18px; overflow-x: auto;
+    margin: 14px 0 20px; font-size: 13.5px; line-height: 1.6;
+  }
+  pre code { background: none; padding: 0; color: #c9d1d9; font-size: 13.5px; }
+  pre .cmd { color: var(--accent-2); }
+  pre .comment { color: var(--text-dim); font-style: italic; }
+  pre .str { color: var(--accent-3); }
+  pre .flag { color: var(--warn); }
+
+  .card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px 22px; margin: 18px 0;
+  }
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: rgba(88,166,255,0.06);
+    padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 18px 0;
+  }
+  .callout.warn { border-color: var(--warn); background: rgba(210,153,34,0.08); }
+  .callout.tip { border-color: var(--accent-2); background: rgba(63,185,80,0.07); }
+  .callout.danger { border-color: var(--danger); background: rgba(248,81,73,0.07); }
+  .callout strong { color: var(--text); }
+
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+  .split .box {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px; transition: all 0.25s;
+  }
+  .split .box:hover { transform: translateY(-3px); border-color: var(--accent); }
+  .split .box h4 { margin-top: 0; font-size: 14px; }
+  .split .box.git h4 { color: var(--accent-2); }
+  .split .box.github h4 { color: var(--accent); }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 14px; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  th {
+    background: var(--bg-card); color: var(--accent);
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  td code { font-size: 12.5px; }
+
+  .flow {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    justify-content: center; padding: 24px 16px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; margin: 20px 0;
+  }
+  .flow .node {
+    background: var(--bg); border: 1px solid var(--border);
+    padding: 8px 14px; border-radius: 6px; font-size: 13px;
+    font-family: var(--mono); color: var(--text); white-space: nowrap;
+  }
+  .flow .node.active {
+    border-color: var(--accent); color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(88,166,255,0.15);
+    animation: nodePulse 2s ease-in-out infinite;
+  }
+  @keyframes nodePulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(88,166,255,0.15); }
+    50% { box-shadow: 0 0 0 8px rgba(88,166,255,0.05); }
+  }
+  .flow .arrow { color: var(--text-dim); font-size: 14px; }
+
+  .terminal {
+    background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden; margin: 20px 0;
+    font-family: var(--mono);
+  }
+  .terminal .term-bar {
+    background: var(--bg-card); padding: 8px 12px;
+    display: flex; align-items: center; gap: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .terminal .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .dot.red { background: #ff5f57; } .dot.yellow { background: #febc2e; } .dot.green { background: #28c840; }
+  .terminal .term-title { margin-left: auto; font-size: 11px; color: var(--text-dim); }
+  .terminal .term-body { padding: 16px; font-size: 13.5px; line-height: 1.7; min-height: 120px; }
+  .terminal .prompt { color: var(--accent-2); }
+  .terminal .out { color: var(--text-dim); }
+  .terminal .ok { color: var(--accent-2); }
+  .terminal .err { color: var(--danger); }
+
+  .quiz {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 22px; margin: 24px 0;
+  }
+  .quiz .q-text { font-weight: 600; margin-bottom: 14px; color: var(--text); }
+  .quiz .opts { display: flex; flex-direction: column; gap: 8px; }
+  .quiz .opt {
+    background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    padding: 11px 16px; border-radius: 8px; text-align: left;
+    cursor: pointer; font-family: var(--sans); font-size: 14px; transition: all 0.15s;
+  }
+  .quiz .opt:hover:not(:disabled) { border-color: var(--accent); background: rgba(88,166,255,0.05); }
+  .quiz .opt.correct { border-color: var(--accent-2); background: rgba(63,185,80,0.12); color: var(--accent-2); }
+  .quiz .opt.wrong { border-color: var(--danger); background: rgba(248,81,73,0.1); color: var(--danger); }
+  .quiz .opt:disabled { cursor: default; }
+  .quiz .feedback {
+    margin-top: 14px; font-size: 14px;
+    padding: 10px 14px; border-radius: 6px; display: none;
+  }
+  .quiz .feedback.show { display: block; animation: fadeIn 0.4s; }
+  .quiz .feedback.good { background: rgba(63,185,80,0.1); color: var(--accent-2); }
+  .quiz .feedback.bad { background: rgba(248,81,73,0.1); color: var(--danger); }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .checklist { list-style: none; margin-left: 0; }
+  .checklist li {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 14px; background: var(--bg-card);
+    border: 1px solid var(--border); border-radius: 8px;
+    margin-bottom: 8px; cursor: pointer; transition: all 0.15s;
+  }
+  .checklist li:hover { border-color: var(--accent); }
+  .checklist li.checked { background: rgba(63,185,80,0.06); border-color: rgba(63,185,80,0.4); }
+  .checklist .box {
+    width: 18px; height: 18px; border: 2px solid var(--border);
+    border-radius: 4px; flex-shrink: 0; margin-top: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; transition: all 0.15s;
+  }
+  .checklist li.checked .box { background: var(--accent-2); border-color: var(--accent-2); color: var(--bg); }
+  .checklist li.checked .box::after { content: '✓'; font-weight: 700; }
+  .checklist .label { flex: 1; font-size: 14.5px; }
+  .checklist li.checked .label { color: var(--text-dim); text-decoration: line-through; }
+
+  .accordion { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+  .accordion .acc-head {
+    background: var(--bg-card); padding: 14px 18px; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    font-weight: 600; font-size: 14.5px; transition: background 0.15s;
+  }
+  .accordion .acc-head:hover { background: #22272e; }
+  .accordion .acc-head::after {
+    content: '+'; font-size: 20px; color: var(--accent);
+    font-weight: 300; transition: transform 0.2s;
+  }
+  .accordion.open .acc-head::after { content: '−'; }
+  .accordion .acc-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease; padding: 0 18px;
+  }
+  .accordion.open .acc-body { max-height: 1500px; padding: 16px 18px; }
+
+  /* ============ MOCK GITHUB UI ============ */
+  .gh-mock {
+    background: var(--bg-alt); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden; margin: 20px 0;
+    font-family: var(--sans); font-size: 13.5px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  }
+  .gh-mock .gh-topbar {
+    background: #010409; padding: 10px 16px;
+    display: flex; align-items: center; gap: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .gh-mock .gh-logo { font-size: 20px; color: var(--text); }
+  .gh-mock .gh-search {
+    background: var(--bg-alt); border: 1px solid var(--border);
+    border-radius: 6px; padding: 5px 12px; flex: 1;
+    color: var(--text-dim); font-size: 13px;
+  }
+  .gh-mock .gh-nav-item { color: var(--text-dim); font-size: 13px; cursor: default; }
+  .gh-mock .gh-nav-item.active { color: var(--text); font-weight: 600; }
+  .gh-mock .gh-avatar {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-4));
+    margin-left: auto;
+  }
+  .gh-mock .gh-body { padding: 20px 22px; }
+  .gh-mock .gh-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 16px; padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .gh-mock .gh-repo-title { font-size: 17px; color: var(--accent); font-weight: 600; }
+  .gh-mock .gh-repo-sub { color: var(--text-dim); font-size: 14px; }
+  .gh-mock .gh-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 12px;
+    font-size: 11px; border: 1px solid var(--border); color: var(--text-dim);
+  }
+  .gh-mock .gh-btn {
+    display: inline-block; padding: 5px 12px; border-radius: 6px;
+    font-size: 12px; border: 1px solid var(--border);
+    background: var(--bg-card); color: var(--text);
+    margin-right: 6px; cursor: default;
+  }
+  .gh-mock .gh-btn.green { background: var(--accent-2); color: var(--bg); border-color: var(--accent-2); font-weight: 600; }
+  .gh-mock .gh-btn.blue { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }
+  .gh-mock .gh-step {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px; background: var(--bg-card);
+    border: 1px solid var(--border); border-radius: 8px;
+    margin-bottom: 8px; font-size: 13.5px;
+  }
+  .gh-mock .gh-step-num {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--accent); color: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 12px; flex-shrink: 0;
+  }
+  .gh-mock .gh-arrow-down {
+    text-align: center; color: var(--text-dim); font-size: 18px;
+    margin: -4px 0 4px 26px; line-height: 1;
+  }
+  .gh-mock .gh-form-label {
+    display: block; color: var(--text); font-size: 13px;
+    font-weight: 600; margin-bottom: 6px;
+  }
+  .gh-mock .gh-input {
+    width: 100%; background: var(--bg);
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 12px; color: var(--text); font-size: 13px;
+    font-family: var(--sans); margin-bottom: 14px;
+  }
+  .gh-mock .gh-input.focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88,166,255,0.15); }
+  .gh-mock .gh-input.filled { color: var(--text); }
+  .gh-mock .gh-pr-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 16px; background: rgba(63,185,80,0.08);
+    border-left: 3px solid var(--accent-2); border-radius: 0 6px 6px 0;
+    margin-bottom: 14px; font-size: 13.5px;
+  }
+  .gh-mock .gh-pr-header .pr-icon { color: var(--accent-2); font-size: 16px; }
+  .gh-mock-caption {
+    text-align: center; font-size: 12px; color: var(--text-dim);
+    margin-top: -12px; margin-bottom: 24px; font-style: italic;
+  }
+
+  /* ============ ANIMATED SVG ============ */
+  .diagram-wrap {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px; margin: 24px 0;
+    text-align: center;
+  }
+  .diagram-wrap svg { max-width: 100%; height: auto; }
+  .diagram-caption {
+    font-size: 13px; color: var(--text-dim);
+    margin-top: 14px; font-style: italic;
+  }
+  .anim-dash { stroke-dasharray: 8 6; animation: dashMove 1.2s linear infinite; }
+  @keyframes dashMove { to { stroke-dashoffset: -28; } }
+  .anim-fade-in { animation: fadeIn 0.8s ease both; }
+  .anim-delay-1 { animation-delay: 0.2s; }
+  .anim-delay-2 { animation-delay: 0.4s; }
+  .anim-delay-3 { animation-delay: 0.6s; }
+  .anim-delay-4 { animation-delay: 0.8s; }
+  .anim-delay-5 { animation-delay: 1.0s; }
+  .anim-float { animation: floatY 3s ease-in-out infinite; }
+  @keyframes floatY {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .anim-pop { animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+  @keyframes popIn {
+    from { transform: scale(0.6); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  /* ============ FILE TREE ============ */
+  .tree {
+    background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 20px; margin: 20px 0;
+    font-family: var(--mono); font-size: 14px; line-height: 1.9;
+  }
+  .tree .folder {
+    color: var(--accent); cursor: pointer; user-select: none;
+    display: inline-block; transition: color 0.15s;
+  }
+  .tree .folder:hover { color: #79b8ff; }
+  .tree .file { color: #c9d1d9; }
+  .tree .file-desc { color: var(--text-dim); font-style: italic; font-size: 12.5px; margin-left: 8px; }
+  .tree .children {
+    margin-left: 20px; overflow: hidden; max-height: 0;
+    transition: max-height 0.4s ease;
+  }
+  .tree .children.open { max-height: 800px; }
+  .tree .toggle { display: inline-block; width: 14px; color: var(--text-dim); }
+  .tree .toggle::before { content: '▸'; display: inline-block; transition: transform 0.2s; }
+  .tree .folder.open .toggle::before { transform: rotate(90deg); }
+
+  /* ============ MISTAKES ============ */
+  .mistake {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-left: 3px solid var(--danger);
+    border-radius: 0 10px 10px 0;
+    padding: 18px 20px; margin: 14px 0; transition: all 0.2s;
+  }
+  .mistake:hover { border-left-width: 6px; }
+  .mistake h4 {
+    color: var(--danger); margin-top: 0; font-size: 14px;
+    text-transform: none; letter-spacing: 0;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .mistake .fix {
+    background: rgba(63,185,80,0.08); border-left: 2px solid var(--accent-2);
+    padding: 10px 14px; border-radius: 0 6px 6px 0; margin-top: 10px;
+    font-size: 13.5px; color: #c9d1d9;
+  }
+  .mistake .fix strong { color: var(--accent-2); }
+
+  /* ============ FINAL CTA ============ */
+  .final {
+    text-align: center; padding: 48px 24px;
+    background: linear-gradient(135deg, rgba(88,166,255,0.08), rgba(163,113,247,0.08));
+    border: 1px solid var(--border); border-radius: 14px; margin-top: 60px;
+  }
+  .final h2 { font-size: 30px; margin-bottom: 14px; }
+  .final p { color: var(--text-dim); margin-bottom: 24px; }
+  .btn {
+    display: inline-block; background: var(--accent-2); color: var(--bg);
+    padding: 12px 26px; border-radius: 8px; font-weight: 700;
+    font-size: 15px; text-decoration: none; transition: transform 0.15s, box-shadow 0.15s;
+    border: none; cursor: pointer; font-family: var(--sans);
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(63,185,80,0.3); text-decoration: none; }
+  .btn.secondary { background: transparent; color: var(--accent); border: 1px solid var(--accent); margin-left: 10px; }
+  .btn.purple {
+    background: linear-gradient(135deg, var(--accent-4), var(--accent-3));
+    color: white;
+    animation: shimmer 3s ease-in-out infinite;
+    background-size: 200% 200%;
+  }
+  .btn.purple:disabled {
+    opacity: 0.4; cursor: not-allowed;
+    animation: none; transform: none;
+  }
+  .btn.purple:disabled:hover { transform: none; box-shadow: none; }
+  @keyframes shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* ============ BACK TO TOP ============ */
+  #back-to-top {
+    position: fixed; bottom: 30px; right: 30px;
+    width: 50px; height: 50px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-4));
+    color: white; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; z-index: 999;
+    opacity: 0; transform: translateY(20px) scale(0.8);
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 8px 24px rgba(88,166,255,0.4);
+  }
+  #back-to-top.show { opacity: 1; transform: translateY(0) scale(1); }
+  #back-to-top:hover { transform: translateY(-4px) scale(1.08); box-shadow: 0 12px 28px rgba(88,166,255,0.6); }
+  #back-to-top::before { content: '↑'; font-weight: 700; }
+
+  /* ============ CERTIFICATE MODAL ============ */
+  #cert-modal {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    z-index: 10000;
+    display: none; align-items: center; justify-content: center;
+    padding: 20px;
+    opacity: 0; transition: opacity 0.4s ease;
+  }
+  #cert-modal.show { display: flex; opacity: 1; }
+  #cert-modal .cert-outer {
+    max-width: 900px; width: 100%; max-height: 95vh;
+    overflow-y: auto;
+    transform: scale(0.7) rotateY(-25deg);
+    opacity: 0;
+    transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  #cert-modal.show .cert-outer {
+    transform: scale(1) rotateY(0deg);
+    opacity: 1;
+  }
+
+  /* Certificate design */
+  .certificate {
+    background:
+      radial-gradient(circle at 20% 10%, rgba(88,166,255,0.08), transparent 50%),
+      radial-gradient(circle at 80% 90%, rgba(163,113,247,0.08), transparent 50%),
+      linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    border-radius: 16px;
+    padding: 50px 60px;
+    position: relative;
+    overflow: hidden;
+    color: var(--text);
+    font-family: var(--sans);
+  }
+  .certificate::before {
+    content: '';
+    position: absolute; inset: -2px;
+    border-radius: 16px; padding: 2px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-4), var(--accent-2), var(--accent-3));
+    background-size: 300% 300%;
+    animation: gradShift 4s ease infinite;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+  }
+  /* Confetti inside cert */
+  .cert-confetti {
+    position: absolute; inset: 0;
+    pointer-events: none; overflow: hidden;
+  }
+  .confetti-piece {
+    position: absolute;
+    width: 8px; height: 12px;
+    opacity: 0;
+    animation: confettiFall 3s linear infinite;
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    100% { transform: translateY(650px) rotate(720deg); opacity: 0; }
+  }
+  .confetti-piece:nth-child(1)  { left: 5%;  background: var(--accent-2); animation-delay: 0s; }
+  .confetti-piece:nth-child(2)  { left: 15%; background: var(--accent);   animation-delay: 0.4s; }
+  .confetti-piece:nth-child(3)  { left: 25%; background: var(--accent-3); animation-delay: 0.8s; }
+  .confetti-piece:nth-child(4)  { left: 35%; background: var(--accent-4); animation-delay: 0.2s; }
+  .confetti-piece:nth-child(5)  { left: 45%; background: var(--warn);     animation-delay: 1.2s; }
+  .confetti-piece:nth-child(6)  { left: 55%; background: var(--accent-2); animation-delay: 0.6s; }
+  .confetti-piece:nth-child(7)  { left: 65%; background: var(--accent);   animation-delay: 1.6s; }
+  .confetti-piece:nth-child(8)  { left: 75%; background: var(--accent-3); animation-delay: 0.9s; }
+  .confetti-piece:nth-child(9)  { left: 85%; background: var(--accent-4); animation-delay: 1.4s; }
+  .confetti-piece:nth-child(10) { left: 95%; background: var(--warn);     animation-delay: 0.3s; }
+
+  .cert-inner {
+    position: relative; z-index: 2;
+    text-align: center;
+  }
+
+  .cert-seal {
+    width: 80px; height: 80px; margin: 0 auto 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-4));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px;
+    box-shadow: 0 0 0 6px rgba(88,166,255,0.15), 0 0 40px rgba(88,166,255,0.4);
+    animation: sealSpin 8s linear infinite;
+  }
+  @keyframes sealSpin {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.05); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+
+  .cert-title {
+    font-size: 14px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+    font-family: var(--mono);
+  }
+  .cert-main {
+    font-size: 42px; font-weight: 800; margin-bottom: 10px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 50%, #a371f7 100%);
+    background-size: 200% 200%;
+    animation: gradShift 4s ease infinite;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+  }
+  .cert-sub {
+    font-size: 15px; color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .cert-name {
+    font-size: 32px; font-weight: 700; color: var(--text);
+    margin: 24px 0 8px;
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+  }
+  .cert-body {
+    font-size: 15px; color: #c9d1d9;
+    max-width: 600px; margin: 20px auto 24px;
+    line-height: 1.8;
+  }
+  .cert-stats {
+    display: flex; justify-content: center; gap: 40px;
+    margin: 28px 0 24px;
+    padding: 20px;
+    background: rgba(88,166,255,0.05);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .cert-stats div { text-align: center; }
+  .cert-stats .val {
+    display: block; font-size: 26px; font-weight: 700;
+    color: var(--accent-2); font-family: var(--mono);
+  }
+  .cert-stats .lbl {
+    font-size: 11px; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .cert-footer {
+    display: flex; justify-content: space-between;
+    align-items: flex-end; margin-top: 30px;
+    padding-top: 20px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--text-dim);
+  }
+  .cert-footer .sig {
+    text-align: left;
+  }
+  .cert-footer .sig-name {
+    font-family: 'Brush Script MT', cursive;
+    font-size: 22px; color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .cert-footer .date {
+    text-align: right; font-family: var(--mono);
+  }
+
+  .cert-actions {
+    display: flex; gap: 12px; justify-content: center;
+    margin-top: 24px; flex-wrap: wrap;
+  }
+  .cert-actions button, .cert-actions a {
+    padding: 11px 22px; border-radius: 8px;
+    font-weight: 600; font-size: 14px; cursor: pointer;
+    font-family: var(--sans); border: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+    text-decoration: none; display: inline-flex;
+    align-items: center; gap: 6px;
+  }
+  .cert-actions .primary {
+    background: var(--accent-2); color: var(--bg);
+  }
+  .cert-actions .secondary-act {
+    background: var(--bg-card); color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .cert-actions button:hover, .cert-actions a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  }
+
+  /* Name input for certificate */
+  .cert-name-input {
+    display: flex; gap: 10px; justify-content: center;
+    margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .cert-name-input input {
+    background: var(--bg-card); border: 1px solid var(--border);
+    color: var(--text); padding: 12px 18px; border-radius: 8px;
+    font-size: 15px; font-family: var(--sans);
+    min-width: 260px;
+    transition: all 0.15s;
+  }
+  .cert-name-input input:focus {
+    outline: none; border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(88,166,255,0.15);
+  }
+
+  /* ============ MOBILE ============ */
+  #menu-toggle {
+    display: none; position: fixed; top: 14px; left: 14px; z-index: 200;
+    background: var(--bg-card); border: 1px solid var(--border);
+    color: var(--text); padding: 8px 12px; border-radius: 6px;
+    cursor: pointer; font-size: 18px;
+  }
+  @media (max-width: 900px) {
+    nav#sidebar { transform: translateX(-100%); transition: transform 0.25s; }
+    nav#sidebar.open { transform: translateX(0); }
+    main { margin-left: 0; padding: 60px 24px 120px; }
+    #menu-toggle { display: block; }
+    .hero h1 { font-size: 32px; }
+    .split { grid-template-columns: 1fr; }
+    .hero .stats { gap: 20px; }
+    #back-to-top { bottom: 20px; right: 20px; width: 44px; height: 44px; }
+    .certificate { padding: 30px 24px; }
+    .cert-main { font-size: 28px; }
+    .cert-name { font-size: 22px; }
+    .cert-stats { gap: 20px; padding: 14px; }
+    .cert-footer { flex-direction: column; gap: 16px; align-items: center; text-align: center; }
+    .cert-footer .sig, .cert-footer .date { text-align: center; }
+  }
+
+  .kbd {
+    display: inline-block; padding: 2px 7px; font-family: var(--mono);
+    font-size: 12px; background: var(--bg-card); border: 1px solid var(--border);
+    border-bottom-width: 2px; border-radius: 4px; color: var(--text);
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* Global confetti overlay for graduation */
+  #global-confetti {
+    position: fixed; inset: 0; pointer-events: none;
+    z-index: 9999; overflow: hidden; display: none;
+  }
+  #global-confetti.show { display: block; }
+  #global-confetti .cp {
+    position: absolute; top: -20px;
+    width: 10px; height: 14px; opacity: 0;
+    animation: globalConfetti 4s ease-in forwards;
+  }
+  @keyframes globalConfetti {
+    0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+    100% { transform: translateY(105vh) rotate(900deg) scale(0.6); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<button id="menu-toggle">☰</button>
+
+<button id="back-to-top" onclick="window.scrollTo({top:0, behavior:'smooth'})" title="Back to Home"></button>
+
+<!-- Resume Banner -->
+<div id="resume-banner">
+  <span class="icon">👋</span>
+  <div class="text">Welcome back! You're <strong id="resume-pct">0%</strong> through the course.</div>
+  <button class="btn-resume" onclick="resumeJourney()">Resume →</button>
+  <button class="btn-close" onclick="dismissResume()">×</button>
+</div>
+
+<!-- Global Confetti -->
+<div id="global-confetti"></div>
+
+<!-- ================= SIDEBAR ================= -->
+<nav id="sidebar">
+  <h2>⚡ GitHub</h2>
+  <div class="subtitle">Zero → Hero</div>
+
+  <div class="sidebar-progress">
+    <div class="label">
+      <span>PROGRESS</span>
+      <strong id="sidebar-pct">0%</strong>
+    </div>
+    <div class="bar"><div class="bar-fill" id="sidebar-bar"></div></div>
+  </div>
+
+  <a href="#s0" class="nav-link" data-section="s0"><span class="num">00</span>Mental Model<span class="check-mark">✓</span></a>
+  <a href="#s1" class="nav-link" data-section="s1"><span class="num">01</span>Setup &amp; Security<span class="check-mark">✓</span></a>
+  <a href="#s2" class="nav-link" data-section="s2"><span class="num">02</span>Your First Repo<span class="check-mark">✓</span></a>
+  <a href="#s3" class="nav-link" data-section="s3"><span class="num">03</span>The Core Loop<span class="check-mark">✓</span></a>
+  <a href="#s4" class="nav-link" data-section="s4"><span class="num">04</span>Branches &amp; PRs<span class="check-mark">✓</span></a>
+  <a href="#s5" class="nav-link" data-section="s5"><span class="num">05</span>Collaboration<span class="check-mark">✓</span></a>
+  <a href="#s6" class="nav-link" data-section="s6"><span class="num">06</span>GitHub Actions<span class="check-mark">✓</span></a>
+  <a href="#s7" class="nav-link" data-section="s7"><span class="num">07</span>Pro Tips<span class="check-mark">✓</span></a>
+  <a href="#s8" class="nav-link" data-section="s8"><span class="num">08</span>Common Mistakes<span class="check-mark">✓</span></a>
+  <a href="#final" class="nav-link" data-section="final"><span class="num">★</span>Graduation<span class="check-mark">✓</span></a>
+</nav>
+
+<!-- ================= MAIN ================= -->
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <span class="badge">// interactive learning path v3.0</span>
+    <h1>GitHub: Zero to Hero</h1>
+    <p>A complete, visual, hands-on guide — with progress tracking and a certificate at the end.</p>
+    <div class="stats">
+      <div><strong>9</strong><span>Modules</span></div>
+      <div><strong>60min</strong><span>To Complete</span></div>
+      <div><strong id="hero-progress">0%</strong><span>Your Progress</span></div>
+    </div>
+  </div>
+
+  <!-- ============ SECTION 0 ============ -->
+  <section id="s0" class="reveal" data-module="s0">
+    <div class="section-header">
+      <div class="step-num">00</div>
+      <h2>The 5-Minute Mental Model</h2>
+      <span class="section-check">✓</span>
+    </div>
+
+    <p>Before touching a single command, you need this distinction locked in. Most beginners confuse these two — and it makes everything else harder.</p>
+
+    <div class="split">
+      <div class="box git">
+        <h4>🔧 Git = The Tool</h4>
+        <p>A version control system that runs <strong>on your computer</strong>. It tracks every change you make to files over time.</p>
+      </div>
+      <div class="box github">
+        <h4>☁️ GitHub = The Place</h4>
+        <p>A cloud platform that <strong>hosts Git repositories</strong>. It adds collaboration, PRs, and automation on top of Git.</p>
+      </div>
+    </div>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="40" width="240" height="140" rx="12" fill="#161b22" stroke="#3fb950" stroke-width="2" class="anim-fade-in"/>
+        <text x="140" y="70" text-anchor="middle" fill="#3fb950" font-size="14" font-weight="700" font-family="monospace">YOUR COMPUTER</text>
+        <circle cx="90" cy="120" r="20" fill="none" stroke="#3fb950" stroke-width="2" class="anim-float"/>
+        <text x="90" y="126" text-anchor="middle" fill="#3fb950" font-size="16" font-family="monospace">Git</text>
+        <text x="180" y="126" text-anchor="middle" fill="#8b949e" font-size="11" font-family="sans-serif">local repo</text>
+        <rect x="440" y="40" width="240" height="140" rx="12" fill="#161b22" stroke="#58a6ff" stroke-width="2" class="anim-fade-in anim-delay-2"/>
+        <text x="560" y="70" text-anchor="middle" fill="#58a6ff" font-size="14" font-weight="700" font-family="monospace">GITHUB CLOUD</text>
+        <circle cx="510" cy="120" r="20" fill="none" stroke="#58a6ff" stroke-width="2" class="anim-float anim-delay-1"/>
+        <text x="510" y="126" text-anchor="middle" fill="#58a6ff" font-size="16" font-family="monospace">☁</text>
+        <text x="600" y="126" text-anchor="middle" fill="#8b949e" font-size="11" font-family="sans-serif">remote repo</text>
+        <line x1="265" y1="90" x2="435" y2="90" stroke="#58a6ff" stroke-width="2" class="anim-dash"/>
+        <polygon points="435,90 425,85 425,95" fill="#58a6ff"/>
+        <text x="350" y="80" text-anchor="middle" fill="#58a6ff" font-size="11" font-family="monospace">push →</text>
+        <line x1="435" y1="140" x2="265" y2="140" stroke="#3fb950" stroke-width="2" class="anim-dash"/>
+        <polygon points="265,140 275,135 275,145" fill="#3fb950"/>
+        <text x="350" y="158" text-anchor="middle" fill="#3fb950" font-size="11" font-family="monospace">← pull</text>
+      </svg>
+      <div class="diagram-caption">Git tracks changes locally. GitHub syncs them to the cloud.</div>
+    </div>
+
+    <div class="callout tip">
+      <strong>💡 Key insight:</strong> You can use Git <em>without</em> GitHub. You cannot use GitHub <em>without</em> Git.
+    </div>
+
+    <div class="quiz" data-quiz="0">
+      <div class="q-text">Quick check: Which one runs on your local computer?</div>
+      <div class="opts">
+        <button class="opt" data-correct="true">Git</button>
+        <button class="opt" data-correct="false">GitHub</button>
+        <button class="opt" data-correct="false">Both</button>
+        <button class="opt" data-correct="false">Neither</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="mark-complete" data-module="s0">
+      <button onclick="markComplete('s0')">✓ Mark Module Complete</button>
+      <span class="text">Finished reading? Mark it done to track progress.</span>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 1 ============ -->
+  <section id="s1" class="reveal" data-module="s1">
+    <div class="section-header">
+      <div class="step-num">01</div>
+      <h2>Setup &amp; Security</h2>
+      <span class="section-check">✓</span>
+    </div>
+
+    <p>Let's get you a real GitHub identity — and lock it down properly from day one.</p>
+
+    <h3>1.1 Create Your Account — Visual Walkthrough</h3>
+
+    <div class="gh-mock">
+      <div class="gh-topbar">
+        <span class="gh-logo">🐙</span>
+        <span class="gh-nav-item active">Sign up</span>
+        <span class="gh-nav-item">Sign in</span>
+        <span class="gh-avatar"></span>
+      </div>
+      <div class="gh-body">
+        <div class="gh-header">
+          <span class="gh-repo-title">Join GitHub</span>
+          <span class="gh-badge">Free forever</span>
+        </div>
+        <div class="gh-step"><div class="gh-step-num">1</div><div>Enter your <strong>email</strong></div></div>
+        <div class="gh-input filled">you@example.com</div>
+        <div class="gh-step"><div class="gh-step-num">2</div><div>Create a <strong>password</strong> (16+ chars)</div></div>
+        <div class="gh-input">••••••••••••••••</div>
+        <div class="gh-step"><div class="gh-step-num">3</div><div>Choose a <strong>username</strong></div></div>
+        <div class="gh-input filled">yourname</div>
+        <div class="gh-step"><div class="gh-step-num">4</div><div>Verify <strong>email</strong></div></div>
+        <div style="margin-top:16px;"><button class="gh-btn green" style="padding:8px 20px; font-size:13px;">Create account →</button></div>
+      </div>
+    </div>
+    <div class="gh-mock-caption">↑ Mock of the GitHub signup flow</div>
+
+    <h3>1.2 Turn On 2FA</h3>
+    <div class="gh-mock">
+      <div class="gh-topbar">
+        <span class="gh-logo">🐙</span>
+        <span class="gh-nav-item">Settings</span>
+        <span class="gh-nav-item active">Password and authentication</span>
+        <span class="gh-avatar"></span>
+      </div>
+      <div class="gh-body">
+        <h4 style="color:var(--accent); text-transform:none; letter-spacing:0; margin-top:0;">Two-factor authentication</h4>
+        <div class="gh-step"><div class="gh-step-num">1</div><div>Scan QR code with authenticator</div></div>
+        <div class="gh-arrow-down">↓</div>
+        <div class="gh-step"><div class="gh-step-num">2</div><div>Enter 6-digit code</div></div>
+        <div class="gh-arrow-down">↓</div>
+        <div class="gh-step" style="border-color:var(--warn);"><div class="gh-step-num" style="background:var(--warn);">3</div><div><strong>Download recovery codes</strong> — store offline!</div></div>
+      </div>
+    </div>
+    <div class="gh-mock-caption">↑ 2FA setup — step 3 is critical</div>
+
+    <div class="callout danger">
+      <strong>⚠️ Important:</strong> Save recovery codes in a password manager <em>before</em> closing the screen.
+    </div>
+
+    <h3>1.3 Install Git Locally</h3>
+    <div class="accordion">
+      <div class="acc-head">🍎 macOS</div>
+      <div class="acc-body"><pre><code><span class="cmd">brew install git</span></code></pre></div>
+    </div>
+    <div class="accordion">
+      <div class="acc-head">🪟 Windows</div>
+      <div class="acc-body"><p>Download <a href="https://git-scm.com/download/win" target="_blank">Git for Windows</a>.</p></div>
+    </div>
+    <div class="accordion">
+      <div class="acc-head">🐧 Linux</div>
+      <div class="acc-body"><pre><code><span class="cmd">sudo apt install git</span></code></pre></div>
+    </div>
+
+    <h3>1.4 Configure Your Identity</h3>
+    <pre><code><span class="cmd">git config</span> <span class="flag">--global</span> user.name <span class="str">"Your Name"</span>
+<span class="cmd">git config</span> <span class="flag">--global</span> user.email <span class="str">"you@example.com"</span></code></pre>
+
+    <h3>✅ Module 1 Checklist</h3>
+    <ul class="checklist" data-checklist="m1">
+      <li><span class="box"></span><span class="label">Created a GitHub account</span></li>
+      <li><span class="box"></span><span class="label">Enabled 2FA and saved recovery codes</span></li>
+      <li><span class="box"></span><span class="label">Installed Git locally</span></li>
+      <li><span class="box"></span><span class="label">Configured user.name and user.email</span></li>
+    </ul>
+
+    <div class="mark-complete" data-module="s1">
+      <button onclick="markComplete('s1')">✓ Mark Module Complete</button>
+      <span class="text">Finished reading? Mark it done to track progress.</span>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 2 ============ -->
+  <section id="s2" class="reveal" data-module="s2">
+    <div class="section-header">
+      <div class="step-num">02</div>
+      <h2>Your First Repository</h2>
+      <span class="section-check">✓</span>
+    </div>
+
+    <p>A <strong>repository</strong> (repo) is a project folder that Git tracks with full history.</p>
+
+    <h3>2.1 Create a Repo — Visual Walkthrough</h3>
+    <div class="gh-mock">
+      <div class="gh-topbar">
+        <span class="gh-logo">🐙</span>
+        <span class="gh-nav-item">Dashboard</span>
+        <span class="gh-nav-item active">New repository</span>
+        <span class="gh-avatar"></span>
+      </div>
+      <div class="gh-body">
+        <h4 style="color:var(--text); text-transform:none; letter-spacing:0; margin-top:0; font-size:18px;">Create a new repository</h4>
+        <label class="gh-form-label">Repository name *</label>
+        <div class="gh-input focus">hello-github</div>
+        <label class="gh-form-label">Description</label>
+        <div class="gh-input">My first GitHub repository</div>
+        <div style="display:flex; gap:16px; margin:16px 0; font-size:13px;">
+          <label><input type="radio" name="vis" checked> Public</label>
+          <label><input type="radio" name="vis"> Private</label>
+        </div>
+        <div style="border-top:1px solid var(--border); padding-top:14px;">
+          <label style="display:flex; gap:8px; align-items:center; font-size:13px; margin-bottom:8px;"><input type="checkbox" checked> Add a README file</label>
+          <label style="display:flex; gap:8px; align-items:center; font-size:13px;"><input type="checkbox"> Add .gitignore</label>
+        </div>
+        <button class="gh-btn green" style="margin-top:18px; padding:8px 20px; font-size:13px;">Create repository</button>
+      </div>
+    </div>
+    <div class="gh-mock-caption">↑ New repository form</div>
+
+    <h3>2.2 Interactive File Tree Explorer</h3>
+    <p>Click folders to expand:</p>
+    <div class="tree">
+      <div>
+        <span class="folder open" onclick="toggleTree(this)"><span class="toggle"></span>📁 my-project/</span>
+        <div class="children open">
+          <div><span class="file">📄 README.md</span><span class="file-desc">— project description</span></div>
+          <div><span class="file">📄 .gitignore</span><span class="file-desc">— files Git should skip</span></div>
+          <div><span class="file">📄 LICENSE</span><span class="file-desc">— usage terms</span></div>
+          <div><span class="folder" onclick="toggleTree(this)"><span class="toggle"></span>📁 .github/</span>
+            <div class="children">
+              <div><span class="folder" onclick="toggleTree(this)"><span class="toggle"></span>📁 workflows/</span>
+                <div class="children">
+                  <div><span class="file">📄 ci.yml</span><span class="file-desc">— automated tests</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div><span class="folder" onclick="toggleTree(this)"><span class="toggle"></span>📁 src/</span>
+            <div class="children">
+              <div><span class="file">📄 index.js</span><span class="file-desc">— main entry point</span></div>
+              <div><span class="file">📄 utils.js</span><span class="file-desc">— helpers</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>2.3 What is .gitignore?</h3>
+    <pre><code><span class="comment"># Secrets</span>
+.env
+*.key
+
+<span class="comment"># Dependencies</span>
+node_modules/</code></pre>
+
+    <div class="callout danger">
+      <strong>⚠️ Critical:</strong> Once committed to a public repo, a secret is permanently compromised. Rotate immediately.
+    </div>
+
+    <div class="mark-complete" data-module="s2">
+      <button onclick="markComplete('s2')">✓ Mark Module Complete</button>
+      <span class="text">Finished reading? Mark it done to track progress.</span>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 3 ============ -->
+  <section id="s3" class="reveal" data-module="s3">
+    <div class="section-header">
+      <div class="step-num">03</div>
+      <h2>The Core Loop</h2>
+      <span class="section-check">✓</span>
+    </div>
+
+    <p>This is the rhythm you'll repeat thousands of times.</p>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="120" cy="80" r="42" fill="#161b22" stroke="#58a6ff" stroke-width="2" class="anim-pop"/>
+        <text x="120" y="76" text-anchor="middle" fill="#58a6ff" font-size="13" font-family="monospace">git</text>
+        <text x="120" y="92" text-anchor="middle" fill="#58a6ff" font-size="13" font-family="monospace">clone</text>
+
+        <circle cx="360" cy="80" r="42" fill="#161b22" stroke="#f778ba" stroke-width="2" class="anim-pop anim-delay-1"/>
+        <text x="360" y="76" text-anchor="middle" fill="#f778ba" font-size="13" font-family="monospace">edit</text>
+        <text x="360" y="92" text-anchor="middle" fill="#f778ba" font-size="13" font-family="monospace">files</text>
+
+        <circle cx="600" cy="80" r="42" fill="#161b22" stroke="#d29922" stroke-width="2" class="anim-pop anim-delay-2"/>
+        <text x="600" y="76" text-anchor="middle" fill="#d29922" font-size="13" font-family="monospace">git</text>
+        <text x="600" y="92" text-anchor="middle" fill="#d29922" font-size="13" font-family="monospace">add</text>
+
+        <circle cx="600" cy="230" r="42" fill="#161b22" stroke="#3fb950" stroke-width="2" class="anim-pop anim-delay-3"/>
+        <text x="600" y="226" text-anchor="middle" fill="#3fb950" font-size="13" font-family="monospace">git</text>
+        <text x="600" y="242" text-anchor="middle" fill="#3fb950" font-size="13" font-family="monospace">commit</text>
+
+        <circle cx="360" cy="230" r="42" fill="#161b22" stroke="#a371f7" stroke-width="2" class="anim-pop anim-delay-4"/>
+        <text x="360" y="226" text-anchor="middle" fill="#a371f7" font-size="13" font-family="monospace">git</text>
+        <text x="360" y="242" text-anchor="middle" fill="#a371f7" font-size="13" font-family="monospace">push</text>
+
+        <circle cx="120" cy="230" r="42" fill="#161b22" stroke="#58a6ff" stroke-width="2" class="anim-pop anim-delay-5"/>
+        <text x="120" y="226" text-anchor="middle" fill="#58a6ff" font-size="13" font-family="monospace">git</text>
+        <text x="120" y="242" text-anchor="middle" fill="#58a6ff" font-size="13" font-family="monospace">pull</text>
+
+        <path d="M 165 80 L 315 80" stroke="#30363d" stroke-width="2" fill="none" class="anim-dash"/>
+        <polygon points="315,80 305,75 305,85" fill="#30363d"/>
+        <path d="M 405 80 L 555 80" stroke="#30363d" stroke-width="2" fill="none" class="anim-dash"/>
+        <polygon points="555,80 545,75 545,85" fill="#30363d"/>
+        <path d="M 600 125 L 600 185" stroke="#30363d" stroke-width="2" fill="none" class="anim-dash"/>
+        <polygon points="600,185 595,175 605,175" fill="#30363d"/>
+        <path d="M 555 230 L 405 230" stroke="#30363d" stroke-width="2" fill="none" class="anim-dash"/>
+        <polygon points="405,230 415,225 415,235" fill="#30363d"/>
+        <path d="M 315 230 L 165 230" stroke="#30363d" stroke-width="2" fill="none" class="anim-dash"/>
+        <polygon points="165,230 175,225 175,235" fill="#30363d"/>
+
+        <text x="360" y="160" text-anchor="middle" fill="#8b949e" font-size="14" font-family="sans-serif">The Repeatable</text>
+        <text x="360" y="180" text-anchor="middle" fill="#58a6ff" font-size="16" font-weight="700" font-family="sans-serif">GitHub Flow</text>
+      </svg>
+      <div class="diagram-caption">The core loop</div>
+    </div>
+
+    <h3>3.1 Essential Commands</h3>
+    <table>
+      <tr><th>Command</th><th>What it does</th></tr>
+      <tr><td><code>git clone &lt;url&gt;</code></td><td>Download a remote repo</td></tr>
+      <tr><td><code>git status</code></td><td>Show what changed</td></tr>
+      <tr><td><code>git add .</code></td><td>Stage all changes</td></tr>
+      <tr><td><code>git commit -m "msg"</code></td><td>Save a snapshot</td></tr>
+      <tr><td><code>git push</code></td><td>Upload to GitHub</td></tr>
+      <tr><td><code>git pull</code></td><td>Download updates</td></tr>
+    </table>
+
+    <h3>3.2 🎮 Live Terminal Simulation</h3>
+    <div class="terminal" id="terminal">
+      <div class="term-bar">
+        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+        <span class="term-title">~/hello-github — bash</span>
+      </div>
+      <div class="term-body" id="term-body">
+        <div class="out">Click "Run Simulation" to watch the workflow.</div>
+      </div>
+    </div>
+    <button class="btn" onclick="runSimulation()" id="sim-btn">▶ Run Simulation</button>
+
+    <div class="mark-complete" data-module="s3">
+      <button onclick="markComplete('s3')">✓ Mark Module Complete</button>
+      <span class="text">Finished reading? Mark it done to track progress.</span>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 4 ============ -->
+  <section id="s4" class="reveal" data-module="s4">
+    <div class="section-header">
+      <div class="step-num">04</div>
+      <h2>Branches &amp; Pull Requests</h2>
+      <span class="section-check">✓</span>
+    </div>
+
+    <p>A <strong>branch</strong> is a parallel version. Experiment safely, then merge when ready.</p>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg">
+        <line x1="60" y1="220" x2="660" y2="220" stroke="#3fb950" stroke-width="3"/>
+        <text x="30" y="225" fill="#3fb950" font-size="13" font-family="monospace">main</text>
+        <circle cx="120" cy="220" r="10" fill="#3fb950" class="anim-pop"/>
+        <circle cx="240" cy="220" r="10" fill="#3fb950" class="anim-pop anim-delay-1"/>
+        <circle cx="620" cy="220" r="10" fill="#3fb950" class="anim-pop anim-delay-4"/>
+        <path d="M 240 220 Q 260 120 320 120" stroke="#58a6ff" stroke-width="3" fill="none" class="anim-fade-in anim-delay-1"/>
+        <line x1="320" y1="120" x2="520" y2="120" stroke="#58a6ff" stroke-width="3"/>
+        <path d="M 520 120 Q 580 120 620 220" stroke="#58a6ff" stroke-width="3" fill="none" stroke-dasharray="6 4"/>
+        <circle cx="380" cy="120" r="10" fill="#58a6ff" class="anim-pop anim-delay-2"/>
+        <circle cx="460" cy="120" r="10" fill="#58a6ff" class="anim-pop anim-delay-3"/>
+        <text x="240" y="100" fill="#58a6ff" font-size="13" font-family="monospace">feature/new-thing</text>
+        <rect x="510" y="150" width="70" height="24" rx="12" fill="rgba(163,113,247,0.15)" stroke="#a371f7" stroke-width="1"/>
+        <text x="545" y="167" text-anchor="middle" fill="#a371f7" font-size="11" font-family="monospace">Pull Req</text>
+      </svg>
+      <div class="diagram-caption">Branches work in parallel. PRs merge them back.</div>
+    </div>
+
+    <h3>4.1 Branch Commands</h3>
+    <pre><code><span class="cmd">git switch</span> <span class="flag">-c</span> feature/my-change
+<span class="cmd">git switch</span> main
+<span class="cmd">git branch</span> <span class="flag">-d</span> feature/my-change</code></pre>
+
+    <h3>4.2 PR — Visual Walkthrough</h3>
+    <div class="gh-mock">
+      <div class="gh-topbar">
+        <span class="gh-logo">🐙</span>
+        <span class="gh-nav-item">yourname / hello-github</span>
+        <span class="gh-nav-item active">Pull requests</span>
+        <span class="gh-avatar"></span>
+      </div>
+      <div class="gh-body">
+        <div class="gh-pr-header"><span class="pr-icon">✔</span><span><strong>feature/add-contact-form</strong> has recent pushes</span></div>
+        <div class="gh-step"><div class="gh-step-num">1</div><div>Click <strong>Compare &amp; pull request</strong></div></div>
+        <div class="gh-arrow-down">↓</div>
+        <div class="gh-step"><div class="gh-step-num">2</div><div>Write title and description</div></div>
+        <div class="gh-input focus" style="margin-top:6px;">Add contact form to homepage</div>
+        <div class="gh-arrow-down">↓</div>
+        <div class="gh-step"><div class="gh-step-num">3</div><div>Request reviewers</div></div>
+        <div class="gh-arrow-down">↓</div>
+        <div class="gh-step" style="border-color:var(--accent-2);"><div class="gh-step-num" style="background:var(--accent-2);">4</div><div><strong>Create PR</strong> → review → merge</div></div>
+      </div>
+    </div>
+    <div class="gh-mock-caption">↑ The Pull Request flow</div>
+
+    <div class="callout warn">
+      <strong>🔒 Golden Rule:</strong> Never commit directly to <code>main</code> on a shared project.
+    </div>
+
+    <div class="mark-complete" data-module="s4">
+      <button onclick="markComplete('s4')">✓ Mark Module Complete</button>
+      <span class="text">Finished reading? Mark it done to track progress.</span>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 5 ============ -->
+  <section id="s5" class="reveal" data-module="s5">
+    <div class="section-header">
+      <div class="step-num">05</div>
+      <h2>Collaboration Features</h2>
+      <span class="section-check">✓</span>
+    </div>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
+        <rect x="40" y="110" width="180" height="70" rx="10" fill="#161b22" stroke="#58a6ff" stroke-width="2"/>
+        <text x="130" y="140" text-anchor="middle" fill="#58a6ff" font-size="14" font-family="monospace">ORIGINAL</text>
+        <text x="130" y="162" text-anchor="middle" fill="#8b949e" font-size="12" font-family="monospace">team/repo</text>
+        <path d="M 220 145 Q 320 60 440 90" stroke="#a371f7" stroke-width="2" fill="none" class="anim-dash"/>
+        <polygon points="440,90 430,84 428,94" fill="#a371f7"/>
+        <text x="320" y="60" text-anchor="middle" fill="#a371f7" font-size="12" font-family="monospace">fork 🍴</text>
+        <rect x="460" y="70" width="200" height="70" rx="10" fill="#161b22" stroke="#a371f7" stroke-width="2"/>
+        <text x="560" y="100" text-anchor="middle" fill="#a371f7" font-size="14" font-family="monospace">YOUR FORK</text>
+        <text x="560" y="122" text-anchor="middle" fill="#8b949e" font-size="12" font-family="monospace">you/repo</text>
+        <rect x="240" y="190" width="180" height="70" rx="10" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+        <text x="330" y="220" text-anchor="middle" fill="#3fb950" font-size="14" font-family="monospace">LOCAL CLONE</text>
+        <text x="330" y="242" text-anchor="middle" fill="#8b949e" font-size="12" font-family="monospace">~/dev/repo</text>
+        <path d="M 560 140 Q 560 190 420 220" stroke="#3fb950" stroke-width="2" fill="none" stroke-dasharray="4 4"/>
+        <text x="520" y="195" fill="#3fb950" font-size="11" font-family="monospace">clone</text>
+        <path d="M 320 190 Q 240 100 130 180" stroke="#f778ba" stroke-width="2" fill="none" class="anim-dash"/>
+        <polygon points="130,180 140,175 138,185" fill="#f778ba"/>
+        <text x="180" y="130" fill="#f778ba" font-size="11" font-family="monospace">pull request</text>
+      </svg>
+      <div class="diagram-caption">Fork → clone → edit → PR back</div>
+    </div>
+
+    <div class="accordion">
+      <div class="acc-head">📋 Issues</div>
+      <div class="acc-body"><p>Track bugs and tasks. Reference with <code>#123</code>; use <code>Closes #123</code> in PRs to auto-close.</p></div>
+    </div>
+    <div class="accordion">
+      <div class="acc-head">🍴 Forks</div>
+      <div class="acc-body"><p>Your personal copy — make changes, open PRs back to the original.</p></div>
+    </div>
+    <div class="accordion">
+      <div class="acc-head">⭐ Stars &amp; Watch</div>
+      <div class="acc-body"><p>Star to bookmark, Watch to get notifications.</p></div>
+    </div>
+    <div class="accordion">
+      <div class="acc-head">👥 Organizations</div>
+      <div class="acc-body"><p>Shared accounts with Teams for permission management.</p></div>
+    </div>
+
+    <div class="mark-complete" data-module="s5">
+      <button onclick="markComplete('s5')">✓ Mark Module Complete</button>
+      <span class="text">Finished reading? Mark it done to track progress.</span>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 6 ============ -->
+  <section id="s6" class="reveal" data-module="s6">
+    <div class="section-header">
+      <div class="step-num">06</div>
+      <h2>GitHub Actions — Automation</h2>
+      <span class="section-check">✓</span>
+    </div>
+
+    <p><strong>Actions</strong> runs automated workflows on events like push or PR.</p>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 720 240" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="70" cy="120" r="45" fill="#161b22" stroke="#58a6ff" stroke-width="2" class="anim-pop"/>
+        <text x="70" y="115" text-anchor="middle" fill="#58a6ff" font-size="12" font-family="monospace">git push</text>
+        <text x="70" y="132" text-anchor="middle" fill="#8b949e" font-size="11" font-family="sans-serif">trigger</text>
+        <line x1="120" y1="120" x2="175" y2="120" stroke="#30363d" stroke-width="2" class="anim-dash"/>
+        <polygon points="175,120 165,115 165,125" fill="#30363d"/>
+        <rect x="185" y="90" width="110" height="60" rx="10" fill="#161b22" stroke="#d29922" stroke-width="2" class="anim-pop anim-delay-1"/>
+        <text x="240" y="115" text-anchor="middle" fill="#d29922" font-size="13" font-family="monospace">install</text>
+        <text x="240" y="133" text-anchor="middle" fill="#8b949e" font-size="11" font-family="monospace">npm ci</text>
+        <line x1="295" y1="120" x2="345" y2="120" stroke="#30363d" stroke-width="2" class="anim-dash"/>
+        <polygon points="345,120 335,115 335,125" fill="#30363d"/>
+        <rect x="355" y="90" width="110" height="60" rx="10" fill="#161b22" stroke="#3fb950" stroke-width="2" class="anim-pop anim-delay-2"/>
+        <text x="410" y="115" text-anchor="middle" fill="#3fb950" font-size="13" font-family="monospace">test</text>
+        <text x="410" y="133" text-anchor="middle" fill="#8b949e" font-size="11" font-family="monospace">npm test</text>
+        <line x1="465" y1="120" x2="515" y2="120" stroke="#30363d" stroke-width="2" class="anim-dash"/>
+        <polygon points="515,120 505,115 505,125" fill="#30363d"/>
+        <rect x="525" y="90" width="130" height="60" rx="10" fill="#161b22" stroke="#a371f7" stroke-width="2" class="anim-pop anim-delay-3"/>
+        <text x="590" y="115" text-anchor="middle" fill="#a371f7" font-size="13" font-family="monospace">deploy</text>
+        <text x="590" y="133" text-anchor="middle" fill="#8b949e" font-size="11" font-family="monospace">if main ✓</text>
+        <text x="360" y="210" text-anchor="middle" fill="#3fb950" font-size="13" font-family="monospace">✓ workflow complete</text>
+      </svg>
+      <div class="diagram-caption">CI/CD pipeline</div>
+    </div>
+
+    <pre><code><span class="comment">name:</span> CI
+<span class="comment">on:</span> [push, pull_request]
+<span class="comment">jobs:</span>
+  <span class="comment">test:</span>
+    <span class="comment">runs-on:</span> ubuntu-latest
+    <span class="comment">steps:</span>
+      - <span class="comment">uses:</span> actions/checkout@v4
+      - <span class="comment">run:</span> <span class="str">npm ci &amp;&amp; npm test</span></code></pre>
+
+    <div class="mark-complete" data-module="s6">
+      <button onclick="markComplete('s6')">✓ Mark Module Complete</button>
+      <span class="text">Finished reading? Mark it done to track progress.</span>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 7 ============ -->
+  <section id="s7" class="reveal" data-module="s7">
+    <div class="section-header">
+      <div class="step-num">07</div>
+      <h2>Pro Tips &amp; Power Features</h2>
+      <span class="section-check">✓</span>
+    </div>
+
+    <div class="accordion">
+      <div class="acc-head">⌨️ Keyboard shortcuts</div>
+      <div class="acc-body">
+        <ul>
+          <li><span class="kbd">?</span> — all shortcuts</li>
+          <li><span class="kbd">t</span> — fuzzy-find files</li>
+          <li><span class="kbd">.</span> — open in github.dev</li>
+        </ul>
+      </div>
+    </div>
+    <div class="accordion">
+      <div class="acc-head">💻 Codespaces</div>
+      <div class="acc-body"><p>Cloud VS Code. 60 hrs/month free.</p></div>
+    </div>
+    <div class="accordion">
+      <div class="acc-head">🛡️ Security features</div>
+      <div class="acc-body">
+        <ul>
+          <li><strong>Dependabot</strong> — auto vulnerability PRs</li>
+          <li><strong>Secret scanning</strong> — alerts on leaked keys</li>
+          <li><strong>CodeQL</strong> — finds security bugs</li>
+        </ul>
+      </div>
+    </div>
+    <div class="accordion">
+      <div class="acc-head">🌐 gh CLI</div>
+      <div class="acc-body"><pre><code><span class="cmd">gh repo create</span> my-project <span class="flag">--public</span>
+<span class="cmd">gh pr create</span> <span class="flag">--fill</span></code></pre></div>
+    </div>
+
+    <div class="mark-complete" data-module="s7">
+      <button onclick="markComplete('s7')">✓ Mark Module Complete</button>
+      <span class="text">Finished reading? Mark it done to track progress.</span>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 8 ============ -->
+  <section id="s8" class="reveal" data-module="s8">
+    <div class="section-header">
+      <div class="step-num">08</div>
+      <h2>Common Mistakes &amp; Fixes</h2>
+      <span class="section-check">✓</span>
+    </div>
+
+    <div class="mistake">
+      <h4>❌ Committing a secret</h4>
+      <p>Pushed <code>.env</code> with a real key. Deleting doesn't remove it from history.</p>
+      <div class="fix"><strong>✅ Fix:</strong> Rotate the key immediately. Add to <code>.gitignore</code>. Use trufflehog for cleanup.</div>
+    </div>
+    <div class="mistake">
+      <h4>❌ Committing to main directly</h4>
+      <p>Bypassed review, possibly broke the build.</p>
+      <div class="fix"><strong>✅ Fix:</strong> Enable branch protection. Use <code>git revert &lt;sha&gt;</code> to undo cleanly.</div>
+    </div>
+    <div class="mistake">
+      <h4>❌ Merge conflict panic</h4>
+      <p>Force-pushing loses work.</p>
+      <div class="fix"><strong>✅ Fix:</strong> Edit conflicting file, keep what you want, delete markers, <code>git add . &amp;&amp; git commit</code>.</div>
+    </div>
+    <div class="mistake">
+      <h4>❌ Force-pushing shared branches</h4>
+      <p>Erases teammates' commits.</p>
+      <div class="fix"><strong>✅ Fix:</strong> Use <code>--force-with-lease</code>. Better: never force-push shared branches.</div>
+    </div>
+    <div class="mistake">
+      <h4>❌ Committing node_modules/</h4>
+      <p>Repo bloats with dependencies.</p>
+      <div class="fix"><strong>✅ Fix:</strong> Add to <code>.gitignore</code>. If committed: <code>git rm -r --cached node_modules</code>.</div>
+    </div>
+    <div class="mistake">
+      <h4>❌ Vague commit messages</h4>
+      <p>"fix", "update", "asdf".</p>
+      <div class="fix"><strong>✅ Fix:</strong> Imperative mood: <code>Add login validation</code>.</div>
+    </div>
+
+    <div class="mark-complete" data-module="s8">
+      <button onclick="markComplete('s8')">✓ Mark Module Complete</button>
+      <span class="text">Finished reading? Mark it done to track progress.</span>
+    </div>
+  </section>
+
+  <!-- ============ FINAL ============ -->
+  <section id="final" class="reveal" data-module="final">
+    <div class="section-header">
+      <div class="step-num">★</div>
+      <h2>Graduation</h2>
+      <span class="section-check">✓</span>
+    </div>
+
+    <div class="final">
+      <h2>🏆 You made it — Zero to Hero</h2>
+      <p>You now understand the mental model, core loop, collaboration, automation, and common traps. Generate your certificate below.</p>
+
+      <div style="margin: 30px auto; max-width: 500px;">
+        <div class="cert-name-input">
+          <input type="text" id="cert-user-name" placeholder="Enter your name for the certificate" maxlength="40"/>
+        </div>
+
+        <button class="btn purple" id="generate-cert-btn" onclick="openCertificate()" style="font-size:16px; padding:14px 34px;">
+          🎓 Generate My Certificate
+        </button>
+        <p style="font-size:13px; color:var(--text-dim); margin-top:14px;" id="cert-lock-msg">
+          Complete all 9 modules to unlock your certificate.
+        </p>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <a href="https://skills.github.com" target="_blank" class="btn secondary">Continue with GitHub Skills →</a>
+      </div>
+    </div>
+
+    <div class="mark-complete" data-module="final">
+      <button onclick="markComplete('final')">✓ Mark Module Complete</button>
+      <span class="text">Finished reading? Mark it done to track progress.</span>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= CERTIFICATE MODAL ================= -->
+<div id="cert-modal">
+  <div class="cert-outer">
+    <div class="certificate" id="certificate">
+      <div class="cert-confetti">
+        <div class="confetti-piece"></div><div class="confetti-piece"></div>
+        <div class="confetti-piece"></div><div class="confetti-piece"></div>
+        <div class="confetti-piece"></div><div class="confetti-piece"></div>
+        <div class="confetti-piece"></div><div class="confetti-piece"></div>
+        <div class="confetti-piece"></div><div class="confetti-piece"></div>
+      </div>
+
+      <div class="cert-inner">
+        <div class="cert-seal">🏆</div>
+        <div class="cert-title">Certificate of Completion</div>
+        <div class="cert-main">GitHub: Zero to Hero</div>
+        <div class="cert-sub">This is to certify that</div>
+
+        <div class="cert-name" id="cert-display-name">Your Name</div>
+
+        <div class="cert-body">
+          has successfully completed all 9 modules of the GitHub: Zero to Hero interactive course —
+          demonstrating proficiency in version control, repository management, the GitHub Flow,
+          collaboration through branches and pull requests, GitHub Actions automation, and industry best practices.
+        </div>
+
+        <div class="cert-stats">
+          <div>
+            <span class="val" id="cert-stat-modules">9</span>
+            <span class="lbl">Modules</span>
+          </div>
+          <div>
+            <span class="val" id="cert-stat-quizzes">4</span>
+            <span class="lbl">Quizzes</span>
+          </div>
+          <div>
+            <span class="val">100%</span>
+            <span class="lbl">Complete</span>
+          </div>
+        </div>
+
+        <div class="cert-footer">
+          <div class="sig">
+            <div class="sig-name">GitHub</div>
+            <div>Zero to Hero Program</div>
+          </div>
+          <div class="date">
+            <div>Issued</div>
+            <div id="cert-date">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cert-actions">
+      <button class="primary" onclick="downloadCertificate()">⬇ Download as Image</button>
+      <button class="secondary-act" onclick="printCertificate()">🖨 Print</button>
+      <button class="secondary-act" onclick="closeCertificate()">✕ Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   STORAGE KEYS
+   ========================================================= */
+const STORAGE_KEY = 'gh-zero-to-hero-v3';
+const MODULES = ['s0','s1','s2','s3','s4','s5','s6','s7','s8','final'];
+const TOTAL_MODULES = MODULES.length;
+
+/* =========================================================
+   STATE (persisted)
+   ========================================================= */
+let state = {
+  completed: [],       // module ids
+  userName: '',
+  completedAt: null,
+  lastVisited: null,
+  firstVisitAt: Date.now(),
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      state = { ...state, ...parsed };
+    }
+  } catch (e) { console.warn('State load failed', e); }
+}
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) { console.warn('State save failed', e); }
+}
+
+/* =========================================================
+   PROGRESS
+   ========================================================= */
+function updateProgress() {
+  const pct = Math.round((state.completed.length / TOTAL_MODULES) * 100);
+
+  // Sidebar
+  document.getElementById('sidebar-pct').textContent = pct + '%';
+  document.getElementById('sidebar-bar').style.width = pct + '%';
+
+  // Hero
+  const heroProgress = document.getElementById('hero-progress');
+  if (heroProgress) heroProgress.textContent = pct + '%';
+
+  // Resume banner
+  document.getElementById('resume-pct').textContent = pct + '%';
+
+  // Nav links
+  document.querySelectorAll('.nav-link').forEach(link => {
+    const mod = link.dataset.section;
+    if (state.completed.includes(mod)) link.classList.add('completed');
+    else link.classList.remove('completed');
+  });
+
+  // Sections
+  document.querySelectorAll('section[data-module]').forEach(sec => {
+    const mod = sec.dataset.module;
+    const done = state.completed.includes(mod);
+    sec.classList.toggle('completed', done);
+
+    const markBox = sec.querySelector('.mark-complete');
+    if (markBox) {
+      markBox.classList.toggle('done', done);
+      const btn = markBox.querySelector('button');
+      if (btn) btn.textContent = done ? '↺ Mark Incomplete' : '✓ Mark Module Complete';
+      const txt = markBox.querySelector('.text');
+      if (txt) txt.textContent = done ? 'Module complete — great work! 🎉' : 'Finished reading? Mark it done to track progress.';
+    }
+  });
+
+  // Certificate unlock
+  const allDone = state.completed.length === TOTAL_MODULES;
+  const genBtn = document.getElementById('generate-cert-btn');
+  const lockMsg = document.getElementById('cert-lock-msg');
+  if (genBtn) genBtn.disabled = !allDone;
+  if (lockMsg) {
+    lockMsg.textContent = allDone
+      ? '🎉 All modules complete! Your certificate is unlocked.'
+      : `Complete all ${TOTAL_MODULES} modules to unlock your certificate. (${state.completed.length}/${TOTAL_MODULES} done)`;
+    lockMsg.style.color = allDone ? 'var(--accent-2)' : 'var(--text-dim)';
+  }
+
+  // Persist
+  saveState();
+}
+
+function markComplete(mod) {
+  const idx = state.completed.indexOf(mod);
+  if (idx >= 0) {
+    state.completed.splice(idx, 1);
+    saveState();
+    updateProgress();
+  } else {
+    state.completed.push(mod);
+    saveState();
+    updateProgress();
+
+    if (state.completed.length === TOTAL_MODULES) {
+      // Just finished everything
+      celebrate();
+      setTimeout(() => {
+        document.getElementById('final').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 400);
+    } else {
+      // Small toast-like confetti? Keep it subtle — just a short pulse.
+      pulseProgressBar();
+    }
+  }
+}
+
+function pulseProgressBar() {
+  const bar = document.getElementById('sidebar-bar');
+  bar.style.transition = 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+  bar.style.transform = 'scaleY(1.6)';
+  setTimeout(() => { bar.style.transform = 'scaleY(1)'; }, 300);
+}
+
+/* =========================================================
+   RESUME BANNER
+   ========================================================= */
+function showResumeBanner() {
+  if (state.completed.length === 0) return;
+  if (state.completed.length === TOTAL_MODULES) return;
+  if (sessionStorage.getItem('gh-banner-dismissed') === '1') return;
+
+  const banner = document.getElementById('resume-banner');
+  setTimeout(() => banner.classList.add('show'), 900);
+}
+function dismissResume() {
+  document.getElementById('resume-banner').classList.remove('show');
+  sessionStorage.setItem('gh-banner-dismissed', '1');
+}
+function resumeJourney() {
+  // Scroll to the last incomplete module
+  for (const mod of MODULES) {
+    if (!state.completed.includes(mod)) {
+      document.getElementById(mod).scrollIntoView({ behavior: 'smooth', block: 'start' });
+      break;
+    }
+  }
+  dismissResume();
+}
+
+/* =========================================================
+   CONFETTI
+   ========================================================= */
+function celebrate() {
+  const container = document.getElementById('global-confetti');
+  container.classList.add('show');
+  container.innerHTML = '';
+
+  const colors = ['#3fb950','#58a6ff','#f778ba','#a371f7','#d29922','#79c0ff'];
+
+  for (let i = 0; i < 120; i++) {
+    const cp = document.createElement('div');
+    cp.className = 'cp';
+    cp.style.left = Math.random() * 100 + 'vw';
+    cp.style.background = colors[Math.floor(Math.random() * colors.length)];
+    cp.style.animationDelay = (Math.random() * 1.5) + 's';
+    cp.style.animationDuration = (2.5 + Math.random() * 2) + 's';
+    cp.style.transform = `rotate(${Math.random() * 360}deg)`;
+    if (Math.random() > 0.5) cp.style.borderRadius = '50%';
+    cp.style.width = (6 + Math.random() * 8) + 'px';
+    cp.style.height = (8 + Math.random() * 12) + 'px';
+    container.appendChild(cp);
+  }
+
+  setTimeout(() => {
+    container.classList.remove('show');
+    container.innerHTML = '';
+  }, 5000);
+}
+
+/* =========================================================
+   CERTIFICATE
+   ========================================================= */
+function openCertificate() {
+  if (state.completed.length !== TOTAL_MODULES) return;
+
+  const nameInput = document.getElementById('cert-user-name');
+  const name = (nameInput.value.trim() || state.userName || 'GitHub Hero').slice(0, 40);
+
+  state.userName = name;
+  state.completedAt = state.completedAt || Date.now();
+  saveState();
+
+  document.getElementById('cert-display-name').textContent = name;
+
+  const d = new Date(state.completedAt);
+  document.getElementById('cert-date').textContent =
+    d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  const modal = document.getElementById('cert-modal');
+  modal.classList.add('show');
+  document.body.style.overflow = 'hidden';
+
+  // Re-trigger the entrance animation
+  const outer = modal.querySelector('.cert-outer');
+  outer.style.transition = 'none';
+  outer.style.transform = 'scale(0.7) rotateY(-25deg)';
+  outer.style.opacity = '0';
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      outer.style.transition = 'all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      outer.style.transform = 'scale(1) rotateY(0deg)';
+      outer.style.opacity = '1';
+    }, 40);
+  });
+
+  celebrate();
+}
+
+function closeCertificate() {
+  document.getElementById('cert-modal').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+function printCertificate() {
+  window.print();
+}
+
+async function downloadCertificate() {
+  // Use SVG-based rendering (via foreignObject) into canvas → PNG
+  const certEl = document.getElementById('certificate');
+  const btn = event.currentTarget;
+  const originalText = btn.textContent;
+  btn.textContent = '⏳ Rendering...';
+
+  try {
+    const rect = certEl.getBoundingClientRect();
+    const scale = 2;
+    const w = Math.round(rect.width);
+    const h = Math.round(rect.height);
+
+    // Clone and strip animations for a clean export
+    const clone = certEl.cloneNode(true);
+    clone.style.width = w + 'px';
+    clone.style.height = h + 'px';
+    clone.querySelectorAll('.confetti-piece').forEach(p => p.remove());
+
+    // Inline computed styles into the clone
+    inlineStyles(certEl, clone);
+
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('xmlns', svgNS);
+    svg.setAttribute('width', w);
+    svg.setAttribute('height', h);
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+    const fo = document.createElementNS(svgNS, 'foreignObject');
+    fo.setAttribute('x', '0');
+    fo.setAttribute('y', '0');
+    fo.setAttribute('width', w);
+    fo.setAttribute('height', h);
+
+    // Wrap in XHTML div
+    const wrapper = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
+    wrapper.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+    wrapper.style.width = w + 'px';
+    wrapper.style.height = h + 'px';
+    wrapper.style.background = '#0d1117';
+    wrapper.appendChild(clone);
+    fo.appendChild(wrapper);
+    svg.appendChild(fo);
+
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+
+    await new Promise((resolve, reject) => {
+      img.onload = resolve;
+      img.onerror = reject;
+      img.src = url;
+    });
+
+    const canvas = document.createElement('canvas');
+    canvas.width = w * scale;
+    canvas.height = h * scale;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#0d1117';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.scale(scale, scale);
+    ctx.drawImage(img, 0, 0);
+
+    URL.revokeObjectURL(url);
+
+    canvas.toBlob((blob) => {
+      const link = document.createElement('a');
+      const safeName = (state.userName || 'certificate').replace(/[^a-z0-9]/gi, '_');
+      link.download = `GitHub-Zero-to-Hero-Certificate-${safeName}.png`;
+      link.href = URL.createObjectURL(blob);
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+      btn.textContent = originalText;
+    }, 'image/png');
+  } catch (err) {
+    console.error(err);
+    btn.textContent = originalText;
+    alert('Could not generate image. Try the Print button and "Save as PDF".');
+  }
+}
+
+function inlineStyles(src, dst) {
+  const srcNodes = [src, ...src.querySelectorAll('*')];
+  const dstNodes = [dst, ...dst.querySelectorAll('*')];
+  for (let i = 0; i < srcNodes.length; i++) {
+    const cs = getComputedStyle(srcNodes[i]);
+    let str = '';
+    for (const prop of cs) {
+      str += `${prop}:${cs.getPropertyValue(prop)};`;
+    }
+    dstNodes[i].style.cssText = str;
+  }
+}
+
+/* =========================================================
+   NAV / SIDEBAR
+   ========================================================= */
+const sections = document.querySelectorAll('section');
+const navLinks = document.querySelectorAll('.nav-link');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`.nav-link[href="#${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+      state.lastVisited = entry.target.id;
+      saveState();
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+
+sections.forEach(s => observer.observe(s));
+
+/* =========================================================
+   SCROLL REVEAL + PROGRESS BAR + BACK TO TOP
+   ========================================================= */
+const progressBar = document.getElementById('progress-bar');
+const backToTop = document.getElementById('back-to-top');
+
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = pct + '%';
+
+  if (scrollTop > 400) backToTop.classList.add('show');
+  else backToTop.classList.remove('show');
+});
+
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* =========================================================
+   MOBILE MENU
+   ========================================================= */
+document.getElementById('menu-toggle').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+});
+navLinks.forEach(link => link.addEventListener('click', () => {
+  document.getElementById('sidebar').classList.remove('open');
+}));
+
+/* =========================================================
+   QUIZZES
+   ========================================================= */
+document.querySelectorAll('.quiz').forEach(quiz => {
+  const opts = quiz.querySelectorAll('.opt');
+  const feedback = quiz.querySelector('.feedback');
+  opts.forEach(opt => {
+    opt.addEventListener('click', () => {
+      const isCorrect = opt.dataset.correct === 'true';
+      opts.forEach(o => {
+        o.disabled = true;
+        if (o.dataset.correct === 'true') o.classList.add('correct');
+      });
+      if (!isCorrect) opt.classList.add('wrong');
+      feedback.textContent = isCorrect
+        ? '✅ Correct! Nice work.'
+        : '❌ Not quite — correct answer is in green.';
+      feedback.className = 'feedback show ' + (isCorrect ? 'good' : 'bad');
+    });
+  });
+});
+
+/* =========================================================
+   CHECKLISTS (persisted)
+   ========================================================= */
+document.querySelectorAll('.checklist').forEach(list => {
+  const key = 'gh-checklist-' + list.dataset.checklist;
+  const saved = JSON.parse(localStorage.getItem(key) || '[]');
+  list.querySelectorAll('li').forEach((item, i) => {
+    if (saved.includes(i)) item.classList.add('checked');
+    item.addEventListener('click', () => {
+      item.classList.toggle('checked');
+      const st = [];
+      list.querySelectorAll('li').forEach((li, idx) => {
+        if (li.classList.contains('checked')) st.push(idx);
+      });
+      localStorage.setItem(key, JSON.stringify(st));
+    });
+  });
+});
+
+/* =========================================================
+   ACCORDIONS
+   ========================================================= */
+document.querySelectorAll('.accordion').forEach(acc => {
+  acc.querySelector('.acc-head').addEventListener('click', () => {
+    acc.classList.toggle('open');
+  });
+});
+
+/* =========================================================
+   FILE TREE
+   ========================================================= */
+function toggleTree(el) {
+  el.classList.toggle('open');
+  const children = el.parentElement.querySelector(':scope > .children');
+  if (children) children.classList.toggle('open');
+}
+
+/* =========================================================
+   TERMINAL SIMULATION
+   ========================================================= */
+const simSteps = [
+  { type: 'cmd', text: 'git clone https://github.com/you/hello-github.git' },
+  { type: 'out', text: "Cloning into 'hello-github'..." },
+  { type: 'ok',  text: '✓ Cloned. Now editing README.md...' },
+  { type: 'cmd', text: 'git status' },
+  { type: 'out', text: 'On branch main' },
+  { type: 'out', text: '  modified:   README.md' },
+  { type: 'cmd', text: 'git add README.md' },
+  { type: 'ok',  text: '✓ Staged.' },
+  { type: 'cmd', text: 'git commit -m "Add project description"' },
+  { type: 'out', text: '[main 3f8a1c2] Add project description' },
+  { type: 'cmd', text: 'git push' },
+  { type: 'out', text: 'To github.com:you/hello-github.git' },
+  { type: 'out', text: '   a1b2c3d..3f8a1c2  main -> main' },
+  { type: 'ok',  text: '✅ Done! Your changes are live on GitHub.' },
+];
+
+let simRunning = false;
+function runSimulation() {
+  if (simRunning) return;
+  simRunning = true;
+  const body = document.getElementById('term-body');
+  const btn = document.getElementById('sim-btn');
+  body.innerHTML = '';
+  btn.textContent = '⏳ Running...';
+  btn.disabled = true;
+
+  let i = 0;
+  const next = () => {
+    if (i >= simSteps.length) {
+      simRunning = false;
+      btn.textContent = '↺ Run Again';
+      btn.disabled = false;
+      return;
+    }
+    const step = simSteps[i];
+    const line = document.createElement('div');
+    if (step.type === 'cmd') line.innerHTML = `<span class="prompt">$</span> <span class="cmd">${step.text}</span>`;
+    else if (step.type === 'ok') line.innerHTML = `<span class="ok">${step.text}</span>`;
+    else line.innerHTML = `<span class="out">${step.text}</span>`;
+    body.appendChild(line);
+    body.scrollTop = body.scrollHeight;
+    i++;
+    setTimeout(next, step.type === 'cmd' ? 700 : 300);
+  };
+  next();
+}
+
+/* =========================================================
+   KEYBOARD / MODAL CLOSE
+   ========================================================= */
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeCertificate();
+    dismissResume();
+  }
+});
+document.getElementById('cert-modal').addEventListener('click', (e) => {
+  if (e.target.id === 'cert-modal') closeCertificate();
+});
+
+/* =========================================================
+   BOOT
+   ========================================================= */
+function boot() {
+  loadState();
+
+  // Prefill name input if stored
+  const nameInput = document.getElementById('cert-user-name');
+  if (nameInput && state.userName) nameInput.value = state.userName;
+
+  updateProgress();
+
+  // Update resume banner text
+  showResumeBanner();
+
+  // Optional: scroll to last visited if returning
+  const returning = state.completed.length > 0 && state.completed.length < TOTAL_MODULES;
+  if (returning && state.lastVisited && !sessionStorage.getItem('gh-visited-this-session')) {
+    // Don't auto-scroll — the banner handles it. Just remember.
+    sessionStorage.setItem('gh-visited-this-session', '1');
+  }
+}
+
+boot();
+</script>
+
+</body>
+</html>
