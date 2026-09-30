@@ -232,6 +232,21 @@ UNIVERSITIES = [
 ]
 
 # ============================================================
+# FREE COURSE CONFIG
+# ============================================================
+# Ordered list of courses shown on free_course.html
+# `slug` must match the folder name under free_course/
+# `mode` = "live" | "maintenance"
+FREE_COURSES = {
+    "github":       {"name": "Learn GitHub",        "mode": "live"},
+    "web-hosting":  {"name": "Free Web Hosting",    "mode": "maintenance"},
+    "python":       {"name": "Learn Python",        "mode": "maintenance"},
+    "html-css":     {"name": "Learn HTML & CSS",    "mode": "maintenance"},
+    "english":      {"name": "Learn English",       "mode": "maintenance"},
+    "kiswahili":    {"name": "Learn Kiswahili",     "mode": "maintenance"},
+}
+
+# ============================================================
 # FORMS
 # ============================================================
 class UploadForm(forms.Form):
@@ -487,6 +502,80 @@ def serve_root_file(request, filename):
         return response
     except Exception as e:
         print(f"Error serving {safe_name}: {e}")
+        return HttpResponse("Error", status=500)
+
+
+# ============================================================
+# SERVE FILES FROM SUBFOLDERS (free_course/, static assets, etc.)
+# ============================================================
+def serve_subfolder_file(request, subpath):
+    """
+    Safely serve any file from within BASE_DIR subfolders.
+    Used for free_course/<course>/index.html and any assets inside
+    those course folders (css, js, images).
+    """
+    # Normalize and block path traversal
+    safe_subpath = os.path.normpath(subpath).replace("\\", "/")
+    if safe_subpath.startswith("..") or safe_subpath.startswith("/") or ".." in safe_subpath.split("/"):
+        return HttpResponse("Not found", status=404)
+
+    file_path = os.path.join(BASE_DIR, safe_subpath)
+    real_path = os.path.realpath(file_path)
+    real_base = os.path.realpath(BASE_DIR)
+
+    # Ensure the resolved path is still inside BASE_DIR
+    if not real_path.startswith(real_base):
+        return HttpResponse("Not found", status=404)
+
+    if not os.path.exists(real_path) or os.path.isdir(real_path):
+        return HttpResponse("Not found", status=404)
+
+    ext = os.path.splitext(real_path)[1].lower()
+    content_types = {
+        ".html": "text/html; charset=utf-8",
+        ".htm": "text/html; charset=utf-8",
+        ".css": "text/css; charset=utf-8",
+        ".js": "application/javascript; charset=utf-8",
+        ".mjs": "application/javascript; charset=utf-8",
+        ".json": "application/json",
+        ".png": "image/png",
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".gif": "image/gif",
+        ".svg": "image/svg+xml",
+        ".webp": "image/webp",
+        ".ico": "image/x-icon",
+        ".woff": "font/woff",
+        ".woff2": "font/woff2",
+        ".ttf": "font/ttf",
+        ".otf": "font/otf",
+        ".pdf": "application/pdf",
+        ".txt": "text/plain; charset=utf-8",
+        ".md": "text/markdown; charset=utf-8",
+        ".xml": "application/xml",
+        ".map": "application/json",
+        ".mp4": "video/mp4",
+        ".webm": "video/webm",
+        ".mp3": "audio/mpeg",
+        ".wav": "audio/wav",
+    }
+    content_type = content_types.get(ext, "application/octet-stream")
+
+    try:
+        with open(real_path, "rb") as f:
+            data = f.read()
+
+        response = HttpResponse(data, content_type=content_type)
+
+        # Long cache for assets, short cache for HTML
+        if ext in (".html", ".htm"):
+            response["Cache-Control"] = "public, max-age=300"
+        else:
+            response["Cache-Control"] = "public, max-age=2592000"
+
+        return response
+    except Exception as e:
+        print(f"Error serving {safe_subpath}: {e}")
         return HttpResponse("Error", status=500)
 
 
@@ -906,7 +995,9 @@ def hackathon_view(request):
         return HttpResponse(f"Hackathon page error: {e}", status=500)
 
 
-# ========== FREE COURSES VIEW ==========
+# ============================================================
+# FREE COURSES — LANDING PAGE
+# ============================================================
 def free_courses_view(request):
     try:
         return render(request, "free_course.html")
@@ -914,7 +1005,53 @@ def free_courses_view(request):
         return HttpResponse(f"Free courses error: {e}", status=500)
 
 
-# ========== SCANNER VIEW ==========
+# ============================================================
+# FREE COURSES — GENERIC COURSE LOADER
+# ============================================================
+def _serve_course_index(course_slug):
+    """
+    Internal helper: read free_course/<course_slug>/index.html
+    and return an HttpResponse, or None if it doesn't exist.
+    """
+    path = os.path.join(BASE_DIR, "free_course", course_slug, "index.html")
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            html = f.read()
+        response = HttpResponse(html, content_type="text/html; charset=utf-8")
+        # Don't cache course HTML long so updates ship fast
+        response["Cache-Control"] = "public, max-age=300"
+        return response
+    except Exception as e:
+        return HttpResponse(f"Course '{course_slug}' error: {e}", status=500)
+
+
+def free_course_detail_view(request, course_slug):
+    """
+    Serve free_course/<slug>/index.html for any registered course.
+    Falls back to the free_course.html landing page if the folder
+    doesn't exist yet — so clicking a 'coming soon' card doesn't 404.
+
+    Recognized slugs come from FREE_COURSES above. Unknown slugs
+    are still served if the folder exists (so you can drop new
+    courses in without touching this file), otherwise → landing page.
+    """
+    # Sanitize slug
+    if not course_slug or not re.match(r"^[a-z0-9\-]+$", course_slug):
+        return free_courses_view(request)
+
+    response = _serve_course_index(course_slug)
+    if response is not None:
+        return response
+
+    # No index.html yet — fall back to landing page so nothing breaks
+    return free_courses_view(request)
+
+
+# ============================================================
+# SCANNER VIEW
+# ============================================================
 def scanner_view(request):
     try:
         return render(request, "scanner.html")
@@ -922,7 +1059,9 @@ def scanner_view(request):
         return HttpResponse(f"Scanner error: {e}", status=500)
 
 
-# ========== AUTOQUIZ VIEW ==========
+# ============================================================
+# AUTOQUIZ VIEW
+# ============================================================
 def autoquiz_view(request):
     path = os.path.join(BASE_DIR, "autoquiz.html")
     if os.path.exists(path):
@@ -975,11 +1114,28 @@ urlpatterns = [
     path("hackathon.html", hackathon_view),
     path("hackathon/", hackathon_view, name="hackathon"),
 
-    # FREE_COURSE
+    # ============================================================
+    # FREE_COURSE — LANDING PAGE
+    # ============================================================
     path("free_course.html", free_courses_view),
     path("free_course/", free_courses_view, name="free_course"),
     path("free_courses.html", free_courses_view),
     path("free-courses/", free_courses_view, name="free_courses"),
+
+    # ============================================================
+    # FREE_COURSE — COURSE INDEX (all 6 tracks)
+    # Works for: github, web-hosting, python, html-css, english, kiswahili
+    # URLs match:  /free_course/<slug>/  and  /free_course/<slug>/index.html
+    # ============================================================
+    path("free_course/<slug:course_slug>/", free_course_detail_view, name="free_course_detail"),
+    path("free_course/<slug:course_slug>/index.html", free_course_detail_view, name="free_course_detail_index"),
+
+    # ============================================================
+    # FREE_COURSE — ASSET SERVER (CSS, JS, images, fonts, etc.)
+    # Serves any file inside free_course/<course>/... 
+    # MUST come AFTER the specific course routes above.
+    # ============================================================
+    path("free_course/<path:subpath>", serve_subfolder_file, name="free_course_assets"),
 
     # AUTOQUIZ
     path("autoquiz.html", autoquiz_view, name="autoquiz"),
