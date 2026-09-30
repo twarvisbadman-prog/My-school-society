@@ -1,4 +1,4 @@
-# app.py - FULL VERSION — Django + Supabase + Cloudflare R2 + Free Courses
+# app.py - PRODUCTION VERSION (Secure, no debug)
 import os
 import uuid
 import json
@@ -18,7 +18,7 @@ from botocore.config import Config
 from botocore.exceptions import ClientError
 
 # ============================================================
-# LOAD .env
+# LOAD .env FOR LOCAL DEVELOPMENT ONLY
 # ============================================================
 try:
     from dotenv import load_dotenv
@@ -26,58 +26,61 @@ try:
     env_path = Path(__file__).parent / '.env'
     if env_path.exists():
         load_dotenv(env_path)
-        print("✅ Loaded .env file")
 except ImportError:
-    pass
+    pass  # production: env vars set in Render dashboard
 
 def env(key, default=""):
     val = os.environ.get(key, "").strip()
     return val if val else default
 
 # ============================================================
-# CONFIGURATION
+# CONFIGURATION — ALL SECRETS FROM ENVIRONMENT
 # ============================================================
-SECRET_KEY = env("SECRET_KEY", "django-insecure-twarvis-school-key-2024")
+SECRET_KEY = env("SECRET_KEY")
+if not SECRET_KEY:
+    raise SystemExit("❌ SECRET_KEY is required in environment")
+
 DEBUG = env("DEBUG", "False").lower() == "true"
 
-SUPABASE_URL = env("SUPABASE_URL", "https://hnszltswipxiqurkwydm.supabase.co")
-SUPABASE_KEY = env(
-    "SUPABASE_KEY",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhuc3psdHN3aXB4aXF1cmt3eWRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTEyODcsImV4cCI6MjA5MzEyNzI4N30.JsSgMXE9JMqJAAZd-riwrr-D-5MURL6WCfuNTrAtoWU"
-)
+# Supabase — MANDATORY from environment
+SUPABASE_URL = env("SUPABASE_URL")
+SUPABASE_KEY = env("SUPABASE_KEY")
+if not SUPABASE_URL or not SUPABASE_KEY:
+    raise SystemExit("❌ SUPABASE_URL and SUPABASE_KEY are required")
 
-R2_ACCESS_KEY_ID = env("R2_ACCESS_KEY_ID", "5b7111f929b3cd22162e7a20ef69a09a")
-R2_SECRET_ACCESS_KEY = env("R2_SECRET_ACCESS_KEY", "0cebef92f4316520d5553049763e957eb7f3f778e51cd57eeaa9b797a013d6c7")
+if not SUPABASE_KEY.startswith("eyJ"):
+    raise SystemExit("❌ SUPABASE_KEY format invalid")
+
+# Cloudflare R2 — MANDATORY from environment
+R2_ACCESS_KEY_ID = env("R2_ACCESS_KEY_ID")
+R2_SECRET_ACCESS_KEY = env("R2_SECRET_ACCESS_KEY")
 R2_BUCKET_NAME = env("R2_BUCKET_NAME", "pdf")
-R2_ENDPOINT_URL = env("R2_ENDPOINT_URL", "https://29d150504a083e2cf780e2115ebc9b28.r2.cloudflarestorage.com")
-R2_PUBLIC_URL = env("R2_PUBLIC_URL", "https://pub-062ab58e23db4e31a628e6f6273a014c.r2.dev").rstrip("/")
+R2_ENDPOINT_URL = env("R2_ENDPOINT_URL")
+R2_PUBLIC_URL = env("R2_PUBLIC_URL").rstrip("/")
+if not R2_ACCESS_KEY_ID or not R2_SECRET_ACCESS_KEY or not R2_ENDPOINT_URL:
+    raise SystemExit("❌ R2 credentials required")
 
-SECRET_ADMIN_PATH = env("SECRET_ADMIN_PATH", "admin-portal-twarvis-9x7k2m4p8q3z5w6v")
+# Admin path — MANDATORY from environment (secret)
+SECRET_ADMIN_PATH = env("SECRET_ADMIN_PATH")
+if not SECRET_ADMIN_PATH:
+    raise SystemExit("❌ SECRET_ADMIN_PATH required")
+
 ADMIN = True
 
+# Hosts
 _allowed = env("ALLOWED_HOSTS", "*")
 ALLOWED_HOSTS = [h.strip() for h in _allowed.split(",") if h.strip()]
 
 _csrf = env("CSRF_TRUSTED_ORIGINS", "https://*.onrender.com,http://localhost:8000")
 CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf.split(",") if o.strip()]
 
-print("=" * 60)
-print("🚀 TWARVIS SCHOOL — FINAL v4")
-print("=" * 60)
-print(f"📡 Supabase: {SUPABASE_URL[:50]}")
-print(f"🔑 Key: {'✅ VALID' if SUPABASE_KEY.startswith('eyJ') else '❌ INVALID'}")
-print(f"🐛 Debug: {DEBUG}")
-print("=" * 60)
-
-if not SUPABASE_KEY.startswith("eyJ"):
-    raise SystemExit("❌ SUPABASE_KEY invalid")
+print("🚀 TWARVIS SCHOOL — Production")
+print(f"✅ Environment loaded | DEBUG={DEBUG}")
 
 # ============================================================
 # DJANGO SETTINGS
 # ============================================================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-print(f"📂 BASE_DIR: {BASE_DIR}")
-print(f"📂 free_course/ exists: {os.path.exists(os.path.join(BASE_DIR, 'free_course'))}")
 
 if not settings.configured:
     settings.configure(
@@ -115,25 +118,23 @@ from django import forms
 # ============================================================
 try:
     supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-    print("✅ Supabase connected!")
+    print("✅ Supabase connected")
 except Exception as e:
-    print(f"❌ Supabase FAILED: {e}")
-    raise SystemExit(1)
+    raise SystemExit(f"❌ Supabase connection failed: {e}")
 
 r2_client = None
 try:
-    if R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY and R2_ENDPOINT_URL:
-        r2_client = boto3.client(
-            "s3",
-            endpoint_url=R2_ENDPOINT_URL,
-            aws_access_key_id=R2_ACCESS_KEY_ID,
-            aws_secret_access_key=R2_SECRET_ACCESS_KEY,
-            config=Config(signature_version="s3v4"),
-            region_name="auto",
-        )
-        print("✅ R2 client initialized!")
+    r2_client = boto3.client(
+        "s3",
+        endpoint_url=R2_ENDPOINT_URL,
+        aws_access_key_id=R2_ACCESS_KEY_ID,
+        aws_secret_access_key=R2_SECRET_ACCESS_KEY,
+        config=Config(signature_version="s3v4"),
+        region_name="auto",
+    )
+    print("✅ R2 connected")
 except Exception as e:
-    print(f"⚠️  R2 init failed: {e}")
+    print(f"⚠️ R2 init failed: {e}")
     r2_client = None
 
 # ============================================================
@@ -221,11 +222,9 @@ def upload_to_r2(file_obj, key, content_type="application/octet-stream"):
         file_obj.seek(0)
         r2_client.upload_fileobj(file_obj, R2_BUCKET_NAME, key,
             ExtraArgs={"ContentType": content_type, "CacheControl": "max-age=86400"})
-        url = f"{R2_PUBLIC_URL}/{key}"
-        print(f"✅ Uploaded to R2: {url}")
-        return url
+        return f"{R2_PUBLIC_URL}/{key}"
     except Exception as e:
-        print(f"❌ R2 upload failed: {e}")
+        print(f"R2 upload error: {type(e).__name__}")
         return None
 
 
@@ -235,8 +234,7 @@ def delete_from_r2(key):
     try:
         r2_client.delete_object(Bucket=R2_BUCKET_NAME, Key=key)
         return True
-    except Exception as e:
-        print(f"❌ R2 delete failed: {e}")
+    except Exception:
         return False
 
 
@@ -250,8 +248,7 @@ def get_r2_file_bytes(key):
     try:
         response = r2_client.get_object(Bucket=R2_BUCKET_NAME, Key=key)
         return response["Body"].read()
-    except Exception as e:
-        print(f"❌ R2 download failed: {e}")
+    except Exception:
         return None
 
 # ============================================================
@@ -301,8 +298,7 @@ def get_all_notes():
             note["passcode"] = note.get("passcode", "")
             note["can_view_inline"] = can_view_inline(note.get("filename", ""))
         return notes
-    except Exception as e:
-        print(f"Error: {e}")
+    except Exception:
         return []
 
 
@@ -312,7 +308,7 @@ def search_notes(query):
             f"module.ilike.%{query}%,course.ilike.%{query}%,description.ilike.%{query}%"
         ).order("uploaded_at", desc=True).execute()
         return response.data if response.data else []
-    except Exception as e:
+    except Exception:
         return get_all_notes()
 
 # ============================================================
@@ -363,7 +359,7 @@ input.focus();
 '''
 
 # ============================================================
-# SERVE ROOT FILES
+# FILE SERVING
 # ============================================================
 def serve_root_file(request, filename):
     safe_name = os.path.basename(filename)
@@ -387,13 +383,10 @@ def serve_root_file(request, filename):
         response = HttpResponse(data, content_type=content_type)
         response["Cache-Control"] = "public, max-age=2592000"
         return response
-    except Exception as e:
-        print(f"Error serving {safe_name}: {e}")
+    except Exception:
         return HttpResponse("Error", status=500)
 
-# ============================================================
-# SERVE SUBFOLDER FILES
-# ============================================================
+
 def serve_subfolder_file(request, subpath):
     safe_subpath = os.path.normpath(subpath).replace("\\", "/")
     if safe_subpath.startswith("..") or safe_subpath.startswith("/") or ".." in safe_subpath.split("/"):
@@ -433,9 +426,9 @@ def serve_subfolder_file(request, subpath):
         response = HttpResponse(data, content_type=content_type)
         response["Cache-Control"] = "public, max-age=300" if ext in (".html", ".htm") else "public, max-age=2592000"
         return response
-    except Exception as e:
-        print(f"Error serving {safe_subpath}: {e}")
+    except Exception:
         return HttpResponse("Error", status=500)
+
 
 # ============================================================
 # FAVICON
@@ -449,15 +442,14 @@ def favicon_view(request):
             response = HttpResponse(data, content_type="image/png")
             response["Cache-Control"] = "public, max-age=2592000"
             return response
-        except Exception as e:
-            print(f"Favicon error: {e}")
+        except Exception:
+            pass
     return HttpResponse(status=204)
 
 # ============================================================
-# 🔥 COURSE HANDLER — THE FIX IS HERE
+# COURSE HANDLERS
 # ============================================================
 def _embedded_course_html(course_slug):
-    """Rudisha HTML ya dharura kama file haipo. INATOSHA KABISA."""
     courses = {
         "github":       ("🐙", "Learn GitHub",      "Kursa kamili ya GitHub — version control, repositories, branches, pull requests, na collaboration workflows."),
         "web-hosting":  ("🚀", "Free Web Hosting",  "Deploy website yako bure kwa GitHub Pages, Netlify, Vercel, custom domains, HTTPS, na DNS."),
@@ -498,34 +490,22 @@ a:hover{{transform:translateY(-2px)}}
 
 
 def _serve_course_index(course_slug):
-    """Serve course file. Jaribu mahali pengi, kisha tumia embedded fallback."""
+    """Serve course file. Falls back to embedded HTML if file not found."""
     candidates = [
         os.path.join(BASE_DIR, "free_course", course_slug, "index.html"),
         os.path.join(BASE_DIR, course_slug, "index.html"),
-        os.path.join(BASE_DIR, "free_course", f"{course_slug}.html"),
     ]
-
-    print("=" * 60)
-    print(f"🔍 COURSE REQUEST: '{course_slug}'")
     for path in candidates:
-        exists = os.path.exists(path)
-        print(f"   → {path}   exists={exists}")
-        if exists:
+        if os.path.exists(path):
             try:
                 with open(path, "r", encoding="utf-8") as f:
                     html = f.read()
                 response = HttpResponse(html, content_type="text/html; charset=utf-8")
                 response["Cache-Control"] = "public, max-age=300"
-                print(f"✅✅✅ SERVED '{course_slug}' FROM: {path}")
-                print("=" * 60)
                 return response
-            except Exception as e:
-                print(f"❌ Error reading {path}: {e}")
-
-    print(f"⚠️⚠️⚠️  '{course_slug}' NOT FOUND — using embedded fallback")
-    print("=" * 60)
+            except Exception:
+                pass
     return _embedded_course_html(course_slug)
-
 
 # ============================================================
 # MAIN VIEWS
@@ -586,9 +566,8 @@ def upload_view(request):
                         }).execute()
                         message = f"✅ {file.name} uploaded successfully!"
                         form = UploadForm()
-            except Exception as e:
-                error = f"Upload failed: {str(e)}"
-                print(f"❌ ERROR: {error}")
+            except Exception:
+                error = "Upload failed. Please try again."
         else:
             error = "Please fill all required fields."
     else:
@@ -644,11 +623,11 @@ def view_file(request, id):
                 r = requests.get(file_url, timeout=10)
                 if r.status_code == 200:
                     note["text_content"] = r.text
-            except:
+            except Exception:
                 pass
         return render(request, "view.html", {"note": note, "pdf_url": file_url, "admin": ADMIN})
-    except Exception as e:
-        return HttpResponse(f"Error: {str(e)}", status=500)
+    except Exception:
+        return HttpResponse("Error loading file", status=500)
 
 
 def download_file(request, id):
@@ -670,8 +649,8 @@ def download_file(request, id):
         response = HttpResponse(file_data, content_type=content_type)
         response["Content-Disposition"] = f"attachment; filename=\"{note.get('original_filename', note['filename'])}\""
         return response
-    except Exception as e:
-        return HttpResponse(f"Download failed: {str(e)}", status=500)
+    except Exception:
+        return HttpResponse("Download failed", status=500)
 
 
 def delete_file(request, id):
@@ -682,8 +661,8 @@ def delete_file(request, id):
         delete_from_r2(f"notes/{note['filename']}")
         supabase.table("notes").delete().eq("id", id).execute()
         return redirect(f"/{SECRET_ADMIN_PATH}/")
-    except Exception as e:
-        return HttpResponse(f"Delete failed: {str(e)}", status=500)
+    except Exception:
+        return HttpResponse("Delete failed", status=500)
 
 
 def favicon(request):
@@ -709,8 +688,8 @@ def update_passcode(request, id):
             return JsonResponse({"success": False, "error": "File is not private"})
         supabase.table("notes").update({"passcode": new_passcode}).eq("id", id).execute()
         return JsonResponse({"success": True, "message": "Passcode updated"})
-    except Exception as e:
-        return JsonResponse({"success": False, "error": str(e)}, status=500)
+    except Exception:
+        return JsonResponse({"success": False, "error": "Server error"}, status=500)
 
 
 @csrf_exempt
@@ -732,8 +711,8 @@ def update_metadata(request, id):
             return JsonResponse({"success": False, "error": "Invalid file_type"})
         supabase.table("notes").update(update_data).eq("id", id).execute()
         return JsonResponse({"success": True, "message": "Metadata updated"})
-    except Exception as e:
-        return JsonResponse({"success": False, "error": str(e)}, status=500)
+    except Exception:
+        return JsonResponse({"success": False, "error": "Server error"}, status=500)
 
 
 def admin_edit(request, id):
@@ -768,8 +747,8 @@ def admin_edit(request, id):
             "file_type": note.get("file_type", "notes"),
         })
         return render(request, "admin_edit.html", {"note": note, "form": form, "error": error_message})
-    except Exception as e:
-        return HttpResponse(f"Error: {str(e)}", status=500)
+    except Exception:
+        return HttpResponse("Error", status=500)
 
 
 def admin_dashboard(request):
@@ -813,8 +792,8 @@ def admin_settings(request):
 def about_view(request):
     try:
         return render(request, "about.html")
-    except Exception as e:
-        return HttpResponse(f"About error: {e}", status=500)
+    except Exception:
+        return HttpResponse("Error", status=500)
 
 
 def calculator_view(request):
@@ -824,22 +803,22 @@ def calculator_view(request):
 def hackathon_view(request):
     try:
         return render(request, "hackerthon.html")
-    except Exception as e:
-        return HttpResponse(f"Hackathon error: {e}", status=500)
+    except Exception:
+        return HttpResponse("Error", status=500)
 
 
 def free_courses_view(request):
     try:
         return render(request, "free_course.html")
-    except Exception as e:
-        return HttpResponse(f"Free courses error: {e}", status=500)
+    except Exception:
+        return HttpResponse("Error", status=500)
 
 
 def scanner_view(request):
     try:
         return render(request, "scanner.html")
-    except Exception as e:
-        return HttpResponse(f"Scanner error: {e}", status=500)
+    except Exception:
+        return HttpResponse("Error", status=500)
 
 
 def autoquiz_view(request):
@@ -849,34 +828,9 @@ def autoquiz_view(request):
             with open(path, "r", encoding="utf-8") as f:
                 html = f.read()
             return HttpResponse(html, content_type="text/html")
-        except Exception as e:
-            return HttpResponse(f"Error loading AutoQuiz: {e}", status=500)
-    return HttpResponse("AutoQuiz page not found.", status=404)
-
-
-# ============================================================
-# 🔍 DEBUG VIEW
-# ============================================================
-def debug_view(request):
-    try:
-        all_files = []
-        for dp, dn, fn in os.walk(BASE_DIR):
-            if "/.git/" in dp or "node_modules" in dp or "__pycache__" in dp:
-                continue
-            for f in fn:
-                all_files.append(os.path.join(dp, f).replace(BASE_DIR, "."))
-
-        html = "<pre style='font-family:monospace;padding:24px;font-size:13px;line-height:1.7;background:#f5f5f4;'>"
-        html += f"<b>BASE_DIR:</b> {BASE_DIR}\n"
-        html += f"<b>CWD:</b> {os.getcwd()}\n\n"
-        html += f"<b>free_course/ exists?</b> {os.path.exists(os.path.join(BASE_DIR, 'free_course'))}\n"
-        html += f"<b>free_course/github/ exists?</b> {os.path.exists(os.path.join(BASE_DIR, 'free_course', 'github'))}\n"
-        html += f"<b>free_course/github/index.html exists?</b> {os.path.exists(os.path.join(BASE_DIR, 'free_course', 'github', 'index.html'))}\n\n"
-        html += "<b>ALL FILES:</b>\n" + "\n".join(sorted(all_files))
-        html += "</pre>"
-        return HttpResponse(html, content_type="text/html")
-    except Exception as e:
-        return HttpResponse(f"Debug error: {e}", status=500)
+        except Exception:
+            return HttpResponse("Error", status=500)
+    return HttpResponse("Page not found.", status=404)
 
 
 # ============================================================
@@ -884,9 +838,6 @@ def debug_view(request):
 # ============================================================
 urlpatterns = [
     path("", index),
-
-    # 🔍 DEBUG (can remove later)
-    path("__debug__/", debug_view),
 
     # 🔐 ADMIN
     path(f"{SECRET_ADMIN_PATH}/", admin_dashboard, name="admin_dashboard"),
@@ -919,32 +870,30 @@ urlpatterns = [
     path("hackathon/", hackathon_view),
 
     # ============================================================
-    # FREE COURSE — SPECIFIC COURSES (BEFORE the landing page!)
+    # FREE COURSES — SPECIFIC (BEFORE landing page!)
     # ============================================================
-    path("free_course/github/",             lambda r: _serve_course_index("github"), name="free_course_github"),
-    path("free_course/github/index.html",   lambda r: _serve_course_index("github")),
-    path("free_course/web-hosting/",        lambda r: _serve_course_index("web-hosting"), name="free_course_hosting"),
+    path("free_course/github/", lambda r: _serve_course_index("github"), name="free_course_github"),
+    path("free_course/github/index.html", lambda r: _serve_course_index("github")),
+    path("free_course/web-hosting/", lambda r: _serve_course_index("web-hosting"), name="free_course_hosting"),
     path("free_course/web-hosting/index.html", lambda r: _serve_course_index("web-hosting")),
-    path("free_course/python/",             lambda r: _serve_course_index("python"), name="free_course_python"),
-    path("free_course/python/index.html",   lambda r: _serve_course_index("python")),
-    path("free_course/html-css/",           lambda r: _serve_course_index("html-css"), name="free_course_htmlcss"),
+    path("free_course/python/", lambda r: _serve_course_index("python"), name="free_course_python"),
+    path("free_course/python/index.html", lambda r: _serve_course_index("python")),
+    path("free_course/html-css/", lambda r: _serve_course_index("html-css"), name="free_course_htmlcss"),
     path("free_course/html-css/index.html", lambda r: _serve_course_index("html-css")),
-    path("free_course/english/",            lambda r: _serve_course_index("english"), name="free_course_english"),
-    path("free_course/english/index.html",  lambda r: _serve_course_index("english")),
-    path("free_course/kiswahili/",          lambda r: _serve_course_index("kiswahili"), name="free_course_kiswahili"),
+    path("free_course/english/", lambda r: _serve_course_index("english"), name="free_course_english"),
+    path("free_course/english/index.html", lambda r: _serve_course_index("english")),
+    path("free_course/kiswahili/", lambda r: _serve_course_index("kiswahili"), name="free_course_kiswahili"),
     path("free_course/kiswahili/index.html", lambda r: _serve_course_index("kiswahili")),
 
     # ============================================================
-    # FREE COURSE — LANDING PAGE (AFTER specific courses!)
+    # FREE COURSES — LANDING (AFTER specific!)
     # ============================================================
     path("free_course.html", free_courses_view),
     path("free_course/", free_courses_view, name="free_course"),
     path("free_courses.html", free_courses_view),
     path("free-courses/", free_courses_view),
 
-    # ============================================================
-    # FREE COURSE — ASSETS (LAST among free_course routes)
-    # ============================================================
+    # FREE COURSES — ASSETS
     path("free_course/<path:subpath>", serve_subfolder_file, name="free_course_assets"),
 
     # AUTOQUIZ / SCANNER
@@ -953,7 +902,7 @@ urlpatterns = [
     path("scanner.html", scanner_view),
     path("scanner/", scanner_view),
 
-    # GENERIC ROOT FILE (must be LAST)
+    # GENERIC ROOT FILE (LAST)
     path("<str:filename>", serve_root_file, name="root_file"),
 ]
 
