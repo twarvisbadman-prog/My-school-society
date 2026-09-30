@@ -13,13 +13,11 @@
   --bg: #fafaf9;
   --bg-alt: #f5f5f4;
   --surface: #ffffff;
-  --surface-hover: #fefefe;
   --border: #e7e5e4;
   --border-strong: #d6d3d1;
   --ink: #1c1917;
   --text: #1c1917;
   --text-2: #44403c;
-  --text-3: #57534e;
   --text-dim: #78716c;
   --text-faint: #a8a29e;
   --sky: #0891b2;
@@ -37,7 +35,6 @@
   --violet-dim: #f3e8ff;
   --pink: #db2777;
   --grad: linear-gradient(120deg, #0891b2, #7c3aed);
-  --grad-cta: linear-gradient(120deg, #c2410c, #be185d);
   --code-bg: #1c1917;
   --mono: 'JetBrains Mono', 'Courier New', monospace;
   --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -78,7 +75,7 @@ body {
   50% { background-position: 100% 50%; }
 }
 
-/* ============ SIDEBAR — INFLUENCING DESIGN ============ */
+/* ============ SIDEBAR ============ */
 aside {
   position: fixed;
   top: 0; left: 0;
@@ -96,7 +93,17 @@ aside {
 aside::-webkit-scrollbar { width: 6px; }
 aside::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
 
-/* Welcome banner — makes sidebar stand out */
+/* Sidebar glow effect */
+aside::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 220px;
+  background: radial-gradient(ellipse at top, rgba(8, 145, 178, 0.15), transparent 70%);
+  pointer-events: none;
+}
+
+/* Welcome banner */
 .sidebar-welcome {
   margin: 0 16px 20px;
   padding: 16px 18px;
@@ -158,11 +165,12 @@ aside::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius
   margin: 0;
 }
 
-/* Sidebar header */
 .sidebar-header {
   padding: 0 22px 18px;
   border-bottom: 1px solid var(--border);
   margin-bottom: 18px;
+  position: relative;
+  z-index: 1;
 }
 .sidebar-header .logo {
   display: flex; align-items: center; gap: 10px;
@@ -188,9 +196,10 @@ aside::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius
   text-transform: uppercase;
 }
 
-/* Progress */
 .sidebar-progress {
   padding: 0 22px 20px;
+  position: relative;
+  z-index: 1;
 }
 .sidebar-progress .label {
   display: flex; justify-content: space-between;
@@ -219,8 +228,7 @@ aside::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius
   border-radius: 4px;
 }
 
-/* Nav sections */
-.nav-section { padding: 0 14px; margin-bottom: 8px; }
+.nav-section { padding: 0 14px; margin-bottom: 8px; position: relative; z-index: 1; }
 .nav-section-title {
   color: var(--text-faint);
   font-size: 0.62rem;
@@ -233,34 +241,44 @@ aside::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius
   align-items: center;
   gap: 8px;
 }
-.nav-section-title::before {
+.nav-section-title::before,
+.nav-section-title::after {
   content: '';
   flex: 1;
   height: 1px;
   background: linear-gradient(90deg, var(--border), transparent);
 }
 .nav-section-title::after {
-  content: '';
-  flex: 1;
-  height: 1px;
   background: linear-gradient(270deg, var(--border), transparent);
 }
 
+/* NAV ITEM — GLOWING AND LABELED */
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 11px 12px;
+  gap: 10px;
+  padding: 12px 12px;
   border-radius: 10px;
   color: var(--text-2);
   text-decoration: none;
   font-size: 0.87rem;
   font-weight: 500;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
   border: 1px solid transparent;
   position: relative;
+  overflow: hidden;
+}
+.nav-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--grad);
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform 0.3s;
 }
 .nav-item:hover {
   background: var(--bg-alt);
@@ -268,19 +286,27 @@ aside::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius
   border-color: var(--border);
   transform: translateX(3px);
 }
+.nav-item:hover::before { transform: scaleY(1); }
 .nav-item.active {
-  background: var(--sky-dim);
+  background: linear-gradient(135deg, rgba(8, 145, 178, 0.1), rgba(124, 58, 237, 0.1));
   color: var(--sky);
-  border-color: rgba(8, 145, 178, 0.3);
+  border-color: rgba(8, 145, 178, 0.4);
   font-weight: 700;
-  box-shadow: 0 4px 12px -4px rgba(8, 145, 178, 0.25);
+  box-shadow: 0 4px 16px -4px rgba(8, 145, 178, 0.35), inset 0 0 20px rgba(8, 145, 178, 0.05);
+  animation: activePulse 2s ease-in-out infinite;
 }
+@keyframes activePulse {
+  0%, 100% { box-shadow: 0 4px 16px -4px rgba(8, 145, 178, 0.35), inset 0 0 20px rgba(8, 145, 178, 0.05); }
+  50% { box-shadow: 0 4px 20px -2px rgba(8, 145, 178, 0.55), inset 0 0 30px rgba(8, 145, 178, 0.1); }
+}
+.nav-item.active::before { transform: scaleY(1); }
 .nav-item.active .nav-icon {
-  background: var(--sky);
+  background: var(--grad);
   color: white;
-  border-color: var(--sky);
-  box-shadow: 0 4px 10px -2px rgba(8, 145, 178, 0.4);
+  border-color: transparent;
+  box-shadow: 0 4px 12px -2px rgba(8, 145, 178, 0.6);
 }
+
 .nav-item.completed {
   color: var(--green);
   background: var(--green-dim);
@@ -289,27 +315,48 @@ aside::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius
 .nav-item.completed .nav-icon {
   background: var(--green);
   color: white;
-  border-color: var(--green);
+  border-color: transparent;
 }
+
 .nav-item .nav-icon {
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--bg-alt);
   border: 1px solid var(--border);
-  border-radius: 7px;
+  border-radius: 8px;
   font-family: var(--mono);
-  font-size: 0.7rem;
-  font-weight: 700;
+  font-size: 0.68rem;
+  font-weight: 800;
   color: var(--text-dim);
   flex-shrink: 0;
-  transition: all 0.2s;
+  transition: all 0.25s;
+  letter-spacing: -0.02em;
 }
 .nav-item .nav-icon i { font-size: 0.85rem; }
-.nav-item .nav-title {
+
+/* Nav labels — module number + name */
+.nav-item .nav-label {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
   flex: 1;
+}
+.nav-item .nav-module-num {
+  font-size: 0.58rem;
+  color: var(--text-faint);
+  font-family: var(--mono);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.nav-item.active .nav-module-num { color: var(--sky); }
+.nav-item.completed .nav-module-num { color: var(--green); }
+.nav-item .nav-title {
+  font-size: 0.84rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -546,83 +593,16 @@ pre .c-out { color: #a8a29e; }
   margin-top: 16px;
   font-style: italic;
 }
-.anim-dash { stroke-dasharray: 8 6; animation: dashMove 1.5s linear infinite; }
-@keyframes dashMove { to { stroke-dashoffset: -28; } }
 .anim-fade-in { animation: fadeIn 0.8s ease both; }
 .anim-delay-1 { animation-delay: 0.15s; }
 .anim-delay-2 { animation-delay: 0.3s; }
 .anim-delay-3 { animation-delay: 0.45s; }
-.anim-delay-4 { animation-delay: 0.6s; }
-.anim-delay-5 { animation-delay: 0.75s; }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .anim-flow { stroke-dasharray: 12 8; animation: flowMove 1.2s linear infinite; }
 @keyframes flowMove { to { stroke-dashoffset: -20; } }
-.anim-float { animation: float 3s ease-in-out infinite; }
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-/* ============ MOCK SCREENSHOTS ============ */
-.gh-mock {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  margin: 24px 0;
-  box-shadow: var(--shadow-md);
-}
-.gh-mock .gh-topbar {
-  background: #1c1917;
-  padding: 10px 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.gh-mock .dot { width: 11px; height: 11px; border-radius: 50%; }
-.dot-r { background: #ff5f57; }
-.dot-y { background: #febc2e; }
-.dot-g { background: #28c840; }
-.gh-mock .gh-title {
-  margin-left: 12px;
-  font-size: 0.75rem;
-  color: var(--text-faint);
-  font-family: var(--mono);
-}
-.gh-mock .gh-body { padding: 20px 24px; font-size: 0.88rem; background: var(--bg); }
-.gh-mock .gh-step {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 14px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  margin-bottom: 10px;
-  font-size: 0.86rem;
-  color: var(--text-2);
-}
-.gh-mock .gh-step-num {
-  width: 24px; height: 24px;
-  border-radius: 50%;
-  background: var(--sky);
-  color: white;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 800;
-  font-size: 0.75rem;
-  flex-shrink: 0;
-  font-family: var(--mono);
-}
-.gh-mock .gh-step.done .gh-step-num { background: var(--green); }
-.gh-mock-caption {
-  text-align: center;
-  font-size: 0.78rem;
-  color: var(--text-dim);
-  margin-top: -12px;
-  margin-bottom: 24px;
-  font-style: italic;
-}
 
 /* ============ TABLES ============ */
 .table-wrap {
@@ -780,18 +760,6 @@ td code { font-size: 0.82rem; }
   margin-bottom: 12px;
   line-height: 1.6;
 }
-.compare-card .cc-tag {
-  display: inline-block;
-  font-size: 0.66rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 50px;
-  background: var(--bg-alt);
-  color: var(--text-dim);
-  font-family: var(--mono);
-}
 
 /* ============ PROVIDER CARDS ============ */
 .provider-card {
@@ -865,16 +833,6 @@ td code { font-size: 0.82rem; }
   margin-bottom: 16px;
   line-height: 1.7;
 }
-.provider-info h4 {
-  color: var(--sky);
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-family: var(--mono);
-  margin: 16px 0 8px;
-}
-.provider-info ol { margin: 0 0 16px 22px; color: var(--text-2); font-size: 0.88rem; }
-.provider-info ol li { margin-bottom: 6px; line-height: 1.6; }
 .provider-actions {
   display: flex;
   gap: 8px;
@@ -937,11 +895,6 @@ td code { font-size: 0.82rem; }
   display: flex; align-items: center; justify-content: center;
   font-size: 1.2rem;
   flex-shrink: 0;
-  animation: pulse 2s ease-in-out infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.85; transform: scale(1.05); }
 }
 .render-warning h3 {
   font-size: 1.1rem;
@@ -1054,38 +1007,35 @@ td code { font-size: 0.82rem; }
 }
 .sidebar-overlay.show { display: block; }
 
-/* ============ ONBOARDING TOUR ============ */
+/* ============ ONBOARDING TOUR — LIGHT OVERLAY ============ */
 #tour-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.65);
-  backdrop-filter: blur(3px);
+  background: rgba(28, 25, 23, 0.4);
   z-index: 9998;
   display: none;
   opacity: 0;
   transition: opacity 0.3s;
+  pointer-events: none;
 }
-#tour-overlay.show { display: block; opacity: 1; }
+#tour-overlay.show { display: block; opacity: 1; pointer-events: auto; }
+
 .tour-spotlight {
   position: absolute;
   border-radius: 12px;
-  box-shadow: 0 0 0 9999px rgba(0,0,0,0.65), 0 0 0 4px var(--sky-bright), 0 0 40px 8px rgba(6, 182, 212, 0.6);
+  box-shadow: 0 0 0 9999px rgba(28, 25, 23, 0.4), 0 0 0 3px #06b6d4, 0 0 30px 6px rgba(6, 182, 212, 0.5);
   pointer-events: none;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 9999;
-  animation: spotlightPulse 2s ease-in-out infinite;
 }
-@keyframes spotlightPulse {
-  0%, 100% { box-shadow: 0 0 0 9999px rgba(0,0,0,0.65), 0 0 0 4px var(--sky-bright), 0 0 40px 8px rgba(6, 182, 212, 0.6); }
-  50% { box-shadow: 0 0 0 9999px rgba(0,0,0,0.65), 0 0 0 6px var(--sky-bright), 0 0 60px 12px rgba(6, 182, 212, 0.8); }
-}
+
 .tour-tooltip {
   position: fixed;
   background: var(--surface);
   border-radius: 16px;
-  padding: 24px 26px;
+  padding: 22px 24px;
   max-width: 380px;
-  box-shadow: 0 30px 60px -20px rgba(0,0,0,0.4), 0 0 0 1px var(--border);
+  box-shadow: 0 30px 60px -20px rgba(0,0,0,0.3), 0 0 0 1px var(--border);
   z-index: 10000;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   animation: tooltipPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1109,9 +1059,8 @@ td code { font-size: 0.82rem; }
   margin-bottom: 12px;
   font-family: var(--mono);
 }
-.tour-tooltip .tt-step i { font-size: 0.7rem; }
 .tour-tooltip h4 {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: var(--ink);
   margin-bottom: 8px;
@@ -1122,7 +1071,7 @@ td code { font-size: 0.82rem; }
   font-size: 0.9rem;
   color: var(--text-2);
   line-height: 1.65;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 .tour-tooltip .tt-actions {
   display: flex;
@@ -1179,22 +1128,7 @@ td code { font-size: 0.82rem; }
   height: 20px;
   background: var(--surface);
   transform: rotate(45deg);
-  box-shadow: -3px -3px 6px -2px rgba(0,0,0,0.05);
-}
-.tour-tooltip.arrow-top .tt-arrow {
-  top: -10px;
-  border-top: 1px solid var(--border);
-  border-left: 1px solid var(--border);
-}
-.tour-tooltip.arrow-bottom .tt-arrow {
-  bottom: -10px;
-  border-bottom: 1px solid var(--border);
-  border-right: 1px solid var(--border);
-}
-.tour-tooltip.arrow-right .tt-arrow {
-  right: -10px;
-  border-top: 1px solid var(--border);
-  border-right: 1px solid var(--border);
+  box-shadow: -2px -2px 4px -2px rgba(0,0,0,0.05);
 }
 
 /* ============ CERTIFICATE MODAL ============ */
@@ -1280,12 +1214,6 @@ td code { font-size: 0.82rem; }
   display: flex; align-items: center; justify-content: center;
   font-size: 2.5rem;
   box-shadow: 0 0 0 8px rgba(8, 145, 178, 0.15), 0 0 50px rgba(8, 145, 178, 0.4);
-  animation: sealSpin 8s linear infinite;
-}
-@keyframes sealSpin {
-  0% { transform: rotate(0deg) scale(1); }
-  50% { transform: rotate(180deg) scale(1.05); }
-  100% { transform: rotate(360deg) scale(1); }
 }
 .cert-title {
   font-size: 0.85rem;
@@ -1420,18 +1348,64 @@ td code { font-size: 0.82rem; }
   0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
   100% { transform: translateY(105vh) rotate(900deg) scale(0.6); opacity: 0; }
 }
+
+/* ============ AUTO-NAV TOAST ============ */
+#auto-nav-toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(120%);
+  background: linear-gradient(135deg, #0891b2, #7c3aed);
+  color: white;
+  padding: 16px 24px;
+  border-radius: 14px;
+  box-shadow: 0 20px 40px -10px rgba(8, 145, 178, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  z-index: 9997;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+#auto-nav-toast.show {
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+#auto-nav-toast i {
+  font-size: 1.3rem;
+  animation: pulse 1s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.1); }
+}
+#auto-nav-toast .toast-countdown {
+  background: rgba(255,255,255,0.2);
+  padding: 2px 8px;
+  border-radius: 50px;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+}
 </style>
 </head>
 <body>
 
 <div id="top-progress"><div class="fill" id="topProgressFill"></div></div>
 <div id="global-confetti"></div>
+
+<!-- Auto-nav toast -->
+<div id="auto-nav-toast">
+  <i class="fas fa-arrow-right"></i>
+  <span>Moving to next module in <span class="toast-countdown" id="toastCountdown">3</span>s...</span>
+</div>
+
 <button class="mobile-menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
 <!-- ==================== SIDEBAR ==================== -->
 <aside id="sidebar">
-  <!-- Welcome banner -->
   <div class="sidebar-welcome">
     <div class="w-badge"><i class="fas fa-sparkles"></i> Welcome</div>
     <h3>Web Hosting Course</h3>
@@ -1458,19 +1432,31 @@ td code { font-size: 0.82rem; }
     <div class="nav-section-title">Getting Started</div>
     <a class="nav-item" data-module="m0" onclick="showModule('m0')">
       <span class="nav-icon">00</span>
-      <span class="nav-title">What is Web Hosting?</span>
+      <span class="nav-label">
+        <span class="nav-module-num">Module 00</span>
+        <span class="nav-title">What is Web Hosting?</span>
+      </span>
     </a>
     <a class="nav-item" data-module="m1" onclick="showModule('m1')">
       <span class="nav-icon">01</span>
-      <span class="nav-title">GitHub Pages</span>
+      <span class="nav-label">
+        <span class="nav-module-num">Module 01</span>
+        <span class="nav-title">GitHub Pages</span>
+      </span>
     </a>
     <a class="nav-item" data-module="m2" onclick="showModule('m2')">
       <span class="nav-icon">02</span>
-      <span class="nav-title">Netlify</span>
+      <span class="nav-label">
+        <span class="nav-module-num">Module 02</span>
+        <span class="nav-title">Netlify</span>
+      </span>
     </a>
     <a class="nav-item" data-module="m3" onclick="showModule('m3')">
       <span class="nav-icon">03</span>
-      <span class="nav-title">Vercel</span>
+      <span class="nav-label">
+        <span class="nav-module-num">Module 03</span>
+        <span class="nav-title">Vercel</span>
+      </span>
     </a>
   </div>
 
@@ -1478,15 +1464,24 @@ td code { font-size: 0.82rem; }
     <div class="nav-section-title">Intermediate</div>
     <a class="nav-item" data-module="m4" onclick="showModule('m4')">
       <span class="nav-icon">04</span>
-      <span class="nav-title">Render + TZ Note</span>
+      <span class="nav-label">
+        <span class="nav-module-num">Module 04</span>
+        <span class="nav-title">Render + TZ Note</span>
+      </span>
     </a>
     <a class="nav-item" data-module="providers" onclick="showModule('providers')">
       <span class="nav-icon"><i class="fas fa-th"></i></span>
-      <span class="nav-title">All Providers</span>
+      <span class="nav-label">
+        <span class="nav-module-num">Bonus</span>
+        <span class="nav-title">All Providers</span>
+      </span>
     </a>
     <a class="nav-item" data-module="m5" onclick="showModule('m5')">
       <span class="nav-icon">05</span>
-      <span class="nav-title">Custom Domains</span>
+      <span class="nav-label">
+        <span class="nav-module-num">Module 05</span>
+        <span class="nav-title">Custom Domains</span>
+      </span>
     </a>
   </div>
 
@@ -1494,15 +1489,24 @@ td code { font-size: 0.82rem; }
     <div class="nav-section-title">Advanced</div>
     <a class="nav-item" data-module="m6" onclick="showModule('m6')">
       <span class="nav-icon">06</span>
-      <span class="nav-title">HTTPS &amp; Security</span>
+      <span class="nav-label">
+        <span class="nav-module-num">Module 06</span>
+        <span class="nav-title">HTTPS &amp; Security</span>
+      </span>
     </a>
     <a class="nav-item" data-module="m7" onclick="showModule('m7')">
       <span class="nav-icon">07</span>
-      <span class="nav-title">CI/CD Pipelines</span>
+      <span class="nav-label">
+        <span class="nav-module-num">Module 07</span>
+        <span class="nav-title">CI/CD Pipelines</span>
+      </span>
     </a>
     <a class="nav-item" data-module="m8" onclick="showModule('m8')">
       <span class="nav-icon">08</span>
-      <span class="nav-title">Capstone Project</span>
+      <span class="nav-label">
+        <span class="nav-module-num">Module 08</span>
+        <span class="nav-title">Capstone Project</span>
+      </span>
     </a>
   </div>
 
@@ -1514,7 +1518,7 @@ td code { font-size: 0.82rem; }
 <!-- ==================== MAIN ==================== -->
 <main>
 
-<!-- ========== MODULE 0: INTRO ========== -->
+<!-- ========== MODULE 0 ========== -->
 <div class="module-section active" data-module="m0">
   <div class="module-hero">
     <div class="module-badge"><i class="fas fa-cloud"></i> Module 00 — Introduction</div>
@@ -1588,7 +1592,6 @@ td code { font-size: 0.82rem; }
           <tr><td><strong>Shared Hosting</strong></td><td>One server, many websites</td><td>$2-10/mo</td><td>Small WordPress sites</td></tr>
           <tr><td><strong>VPS</strong></td><td>A virtual slice of a server</td><td>$5-50/mo</td><td>Growing apps</td></tr>
           <tr><td><strong>Dedicated</strong></td><td>An entire physical server</td><td>$100+/mo</td><td>Big apps</td></tr>
-          <tr><td><strong>Cloud</strong></td><td>Distributed across many servers</td><td>Pay per use</td><td>Scalable apps</td></tr>
         </tbody>
       </table>
     </div>
@@ -1599,25 +1602,21 @@ td code { font-size: 0.82rem; }
         <div class="cc-icon"><i class="fas fa-user-circle"></i></div>
         <h4>Personal Portfolio</h4>
         <p>Show off your work, CV, and projects with a custom domain.</p>
-        <span class="cc-tag">100% Free</span>
       </div>
       <div class="compare-card" style="--card-color: #7c3aed;">
         <div class="cc-icon"><i class="fas fa-book"></i></div>
         <h4>Blog or Docs</h4>
         <p>Static site generators like Hugo, Jekyll, Astro deploy free.</p>
-        <span class="cc-tag">100% Free</span>
       </div>
       <div class="compare-card" style="--card-color: #15803d;">
         <div class="cc-icon"><i class="fas fa-rocket"></i></div>
         <h4>Landing Page</h4>
         <p>Product launches, waitlists, marketing pages.</p>
-        <span class="cc-tag">100% Free</span>
       </div>
       <div class="compare-card" style="--card-color: #b45309;">
         <div class="cc-icon"><i class="fas fa-gamepad"></i></div>
         <h4>Small Apps</h4>
         <p>Client-side apps — games, tools, calculators.</p>
-        <span class="cc-tag">100% Free</span>
       </div>
     </div>
 
@@ -1628,8 +1627,6 @@ td code { font-size: 0.82rem; }
     <p>Old-school free hosting had ads. Modern platforms have <strong>zero ads</strong>.</p>
     <h4>❌ "I need to know Linux"</h4>
     <p>Nope. Modern platforms are <strong>deploy by push</strong> — you push code, it's live.</p>
-    <h4>❌ "Free = slow"</h4>
-    <p>Free hosting on CDNs is often <strong>faster</strong> than paid shared hosting.</p>
 
     <div class="quiz" data-quiz="m0">
       <div class="quiz-label">✓ Quick Check</div>
@@ -1654,7 +1651,7 @@ td code { font-size: 0.82rem; }
   </div>
 </div>
 
-<!-- ========== MODULE 1: GITHUB PAGES ========== -->
+<!-- ========== MODULE 1 ========== -->
 <div class="module-section" data-module="m1">
   <div class="module-hero">
     <div class="module-badge"><i class="fab fa-github"></i> Module 01 — GitHub Pages</div>
@@ -1756,7 +1753,7 @@ td code { font-size: 0.82rem; }
   </div>
 </div>
 
-<!-- ========== MODULE 2: NETLIFY ========== -->
+<!-- ========== MODULE 2 ========== -->
 <div class="module-section" data-module="m2">
   <div class="module-hero">
     <div class="module-badge"><i class="fas fa-bolt"></i> Module 02 — Netlify</div>
@@ -1852,7 +1849,7 @@ td code { font-size: 0.82rem; }
   </div>
 </div>
 
-<!-- ========== MODULE 3: VERCEL ========== -->
+<!-- ========== MODULE 3 ========== -->
 <div class="module-section" data-module="m3">
   <div class="module-hero">
     <div class="module-badge"><i class="fas fa-triangle"></i> Module 03 — Vercel</div>
@@ -1904,7 +1901,7 @@ td code { font-size: 0.82rem; }
   </div>
 </div>
 
-<!-- ========== MODULE 4: RENDER ========== -->
+<!-- ========== MODULE 4 ========== -->
 <div class="module-section" data-module="m4">
   <div class="module-hero">
     <div class="module-badge"><i class="fas fa-layer-group"></i> Module 04 — Render</div>
@@ -2004,12 +2001,12 @@ td code { font-size: 0.82rem; }
   </div>
 </div>
 
-<!-- ========== PROVIDER SHOWCASE ========== -->
+<!-- ========== PROVIDERS ========== -->
 <div class="module-section" data-module="providers">
   <div class="module-hero">
     <div class="module-badge"><i class="fas fa-th"></i> Bonus — All Providers</div>
     <h1 class="module-title">Free Hosting Providers — Visual Guide</h1>
-    <p class="module-subtitle">Logos, features, links, na jinsi ya kutumia kila platform. Chagua moja kulingana na project yako.</p>
+    <p class="module-subtitle">Logos, features, links, and how to use each platform. Choose the right one for your project.</p>
     <div class="module-meta">
       <div class="meta-item"><i class="fas fa-clock"></i> 10 min</div>
       <div class="meta-item"><i class="fas fa-signal"></i> Reference</div>
@@ -2148,24 +2145,24 @@ td code { font-size: 0.82rem; }
   </div>
 </div>
 
-<!-- ========== MODULE 5: DOMAINS ========== -->
+<!-- ========== MODULE 5 ========== -->
 <div class="module-section" data-module="m5">
   <div class="module-hero">
     <div class="module-badge"><i class="fas fa-globe"></i> Module 05 — Custom Domains</div>
     <h1 class="module-title">Custom Domains &amp; DNS</h1>
-    <p class="module-subtitle">Replace <code>username.github.io</code> with <code>yourname.com</code>. Learn how domains, DNS records, and nameservers work.</p>
+    <p class="module-subtitle">Replace username.github.io with yourname.com. Learn how domains, DNS records, and nameservers work.</p>
     <div class="module-meta">
       <div class="meta-item"><i class="fas fa-clock"></i> 15 min</div>
       <div class="meta-item"><i class="fas fa-signal"></i> Intermediate</div>
-      <div class="meta-item"><i class="fas fa-question-circle"></i> 2 quizzes</div>
+      <div class="meta-item"><i class="fas fa-question-circle"></i> 1 quiz</div>
     </div>
   </div>
 
   <div class="module-content">
     <h2>Why a Custom Domain?</h2>
     <ul>
-      <li>🔒 <strong>Professional</strong> — <code>yourname.com</code> looks better than <code>yourname.github.io</code></li>
-      <li>📧 <strong>Email</strong> — <code>you@yourname.com</code></li>
+      <li>🔒 <strong>Professional</strong> — yourname.com looks better</li>
+      <li>📧 <strong>Email</strong> — you@yourname.com</li>
       <li>🎨 <strong>Branding</strong> — own your online identity</li>
       <li>🔗 <strong>Portable</strong> — switch hosts without changing URL</li>
     </ul>
@@ -2178,7 +2175,6 @@ td code { font-size: 0.82rem; }
           <tr><td><strong>Cloudflare</strong></td><td>$10/yr</td><td>Cheapest, no markup, best DNS</td></tr>
           <tr><td><strong>Namecheap</strong></td><td>$11/yr</td><td>Free WHOIS privacy</td></tr>
           <tr><td><strong>Porkbun</strong></td><td>$9/yr</td><td>Cheap, no upsells</td></tr>
-          <tr><td><strong>GoDaddy</strong></td><td>$12+/yr</td><td>Aggressive upselling — avoid</td></tr>
         </tbody>
       </table>
     </div>
@@ -2189,34 +2185,12 @@ td code { font-size: 0.82rem; }
         <thead><tr><th>Type</th><th>Name</th><th>Points to</th><th>Use case</th></tr></thead>
         <tbody>
           <tr><td><code>A</code></td><td><code>@</code></td><td>IP address</td><td>Root domain → server IP</td></tr>
-          <tr><td><code>CNAME</code></td><td><code>www</code></td><td>domain.name</td><td>www subdomain → main domain</td></tr>
+          <tr><td><code>CNAME</code></td><td><code>www</code></td><td>domain.name</td><td>www → main domain</td></tr>
           <tr><td><code>MX</code></td><td><code>@</code></td><td>mail server</td><td>Email routing</td></tr>
-          <tr><td><code>TXT</code></td><td><code>@</code></td><td>verification string</td><td>Domain ownership proof</td></tr>
+          <tr><td><code>TXT</code></td><td><code>@</code></td><td>verification string</td><td>Domain ownership</td></tr>
         </tbody>
       </table>
     </div>
-
-    <h2>Setup Example: Netlify</h2>
-    <ol>
-      <li>Buy domain at Cloudflare / Namecheap</li>
-      <li>Netlify → Site settings → <strong>Domain management → Add custom domain</strong></li>
-      <li>Enter <code>yourname.com</code> and <code>www.yourname.com</code></li>
-      <li>Netlify shows DNS records to add</li>
-      <li>Go to registrar, add those records</li>
-      <li>Wait 5 min - 48 hr (usually ~10 min)</li>
-      <li>HTTPS provisions automatically</li>
-    </ol>
-
-    <h3>Records for Netlify</h3>
-    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-comment"># Root domain</span>
-Type:  A
-Name:  @
-Value: 75.2.60.5
-
-<span class="c-comment"># www subdomain</span>
-Type:  CNAME
-Name:  www
-Value: your-site.netlify.app</code></pre>
 
     <div class="quiz" data-quiz="m5-a">
       <div class="quiz-label">✓ Quick Check</div>
@@ -2241,16 +2215,16 @@ Value: your-site.netlify.app</code></pre>
   </div>
 </div>
 
-<!-- ========== MODULE 6: HTTPS ========== -->
+<!-- ========== MODULE 6 ========== -->
 <div class="module-section" data-module="m6">
   <div class="module-hero">
     <div class="module-badge"><i class="fas fa-lock"></i> Module 06 — HTTPS &amp; Security</div>
     <h1 class="module-title">HTTPS &amp; Security</h1>
-    <p class="module-subtitle">HTTPS inalinda data yako kwa encryption ya SSL/TLS. Modern hosts wanatoa bure — lakini lazima ujue kinachoendelea nyuma.</p>
+    <p class="module-subtitle">HTTPS protects your data with SSL/TLS encryption. Modern hosts provide it free — but you need to know what's happening behind the scenes.</p>
     <div class="module-meta">
       <div class="meta-item"><i class="fas fa-clock"></i> 12 min</div>
       <div class="meta-item"><i class="fas fa-signal"></i> Intermediate</div>
-      <div class="meta-item"><i class="fas fa-question-circle"></i> 2 quizzes</div>
+      <div class="meta-item"><i class="fas fa-question-circle"></i> 1 quiz</div>
     </div>
   </div>
 
@@ -2301,7 +2275,7 @@ Value: your-site.netlify.app</code></pre>
   </div>
 </div>
 
-<!-- ========== MODULE 7: CI/CD ========== -->
+<!-- ========== MODULE 7 ========== -->
 <div class="module-section" data-module="m7">
   <div class="module-hero">
     <div class="module-badge"><i class="fas fa-code-branch"></i> Module 07 — CI/CD Pipelines</div>
@@ -2339,30 +2313,7 @@ Value: your-site.netlify.app</code></pre>
       - <span class="c-flag">run:</span> <span class="c-str">npm ci</span>
       - <span class="c-flag">run:</span> <span class="c-str">npm run build</span></code></pre>
 
-    <h2>Common Workflows</h2>
-
-    <h3>1. Auto-deploy to GitHub Pages</h3>
-    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-flag">name:</span> Deploy to Pages
-<span class="c-flag">on:</span>
-  <span class="c-flag">push:</span>
-    <span class="c-flag">branches:</span> [ main ]
-
-<span class="c-flag">permissions:</span>
-  <span class="c-flag">contents:</span> read
-  <span class="c-flag">pages:</span> write
-
-<span class="c-flag">jobs:</span>
-  <span class="c-flag">deploy:</span>
-    <span class="c-flag">runs-on:</span> ubuntu-latest
-    <span class="c-flag">steps:</span>
-      - <span class="c-flag">uses:</span> actions/checkout@v4
-      - <span class="c-flag">uses:</span> actions/configure-pages@v4
-      - <span class="c-flag">uses:</span> actions/upload-pages-artifact@v3
-        <span class="c-flag">with:</span>
-          <span class="c-flag">path:</span> <span class="c-str">'.'</span>
-      - <span class="c-flag">uses:</span> actions/deploy-pages@v4</code></pre>
-
-    <h3>2. Keep Render app awake</h3>
+    <h2>Keep Render app awake</h2>
     <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-flag">name:</span> Keep Alive
 <span class="c-flag">on:</span>
   <span class="c-flag">schedule:</span>
@@ -2397,7 +2348,7 @@ Value: your-site.netlify.app</code></pre>
   </div>
 </div>
 
-<!-- ========== MODULE 8: CAPSTONE ========== -->
+<!-- ========== MODULE 8 ========== -->
 <div class="module-section" data-module="m8">
   <div class="module-hero">
     <div class="module-badge"><i class="fas fa-trophy"></i> Module 08 — Capstone Project</div>
@@ -2421,7 +2372,6 @@ Value: your-site.netlify.app</code></pre>
       <li>✅ Responsive (works on mobile)</li>
       <li>✅ Deployed live on GitHub Pages or Netlify</li>
       <li>✅ (Bonus) Custom domain</li>
-      <li>✅ (Bonus) Auto-deploy via GitHub Actions</li>
     </ol>
 
     <h2>Step 1: Create the HTML</h2>
@@ -2429,44 +2379,17 @@ Value: your-site.netlify.app</code></pre>
 <span class="c-flag">&lt;html</span> <span class="c-str">lang</span>=<span class="c-str">"en"</span><span class="c-flag">&gt;</span>
 <span class="c-flag">&lt;head&gt;</span>
   <span class="c-flag">&lt;meta</span> <span class="c-str">charset</span>=<span class="c-str">"UTF-8"</span><span class="c-flag">&gt;</span>
-  <span class="c-flag">&lt;meta</span> <span class="c-str">name</span>=<span class="c-str">"viewport"</span> <span class="c-str">content</span>=<span class="c-str">"width=device-width,initial-scale=1"</span><span class="c-flag">&gt;</span>
   <span class="c-flag">&lt;title&gt;</span>Your Name — Portfolio<span class="c-flag">&lt;/title&gt;</span>
-  <span class="c-flag">&lt;style&gt;</span>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, sans-serif; background: #0a0a0a; color: #f5f5f5; line-height: 1.7; }
-    header { padding: 100px 20px; text-align: center; background: linear-gradient(135deg, #0891b2, #7c3aed); }
-    header h1 { font-size: 3rem; margin-bottom: 10px; }
-    header p { font-size: 1.2rem; opacity: 0.9; }
-    section { padding: 60px 20px; max-width: 800px; margin: 0 auto; }
-    h2 { font-size: 2rem; margin-bottom: 20px; color: #38bdf8; }
-    .project { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
-    .project h3 { margin-bottom: 8px; }
-    footer { padding: 40px 20px; text-align: center; border-top: 1px solid #2a2a2a; color: #a0a0a0; }
-    a { color: #38bdf8; }
-  <span class="c-flag">&lt;/style&gt;</span>
 <span class="c-flag">&lt;/head&gt;</span>
 <span class="c-flag">&lt;body&gt;</span>
   <span class="c-flag">&lt;header&gt;</span>
     <span class="c-flag">&lt;h1&gt;</span>Your Name<span class="c-flag">&lt;/h1&gt;</span>
-    <span class="c-flag">&lt;p&gt;</span>Student Developer · Tanzania<span class="c-flag">&lt;/p&gt;</span>
+    <span class="c-flag">&lt;p&gt;</span>Student Developer<span class="c-flag">&lt;/p&gt;</span>
   <span class="c-flag">&lt;/header&gt;</span>
-
   <span class="c-flag">&lt;section&gt;</span>
     <span class="c-flag">&lt;h2&gt;</span>About Me<span class="c-flag">&lt;/h2&gt;</span>
-    <span class="c-flag">&lt;p&gt;</span>I'm learning web development and building cool things.<span class="c-flag">&lt;/p&gt;</span>
+    <span class="c-flag">&lt;p&gt;</span>I'm learning web development.<span class="c-flag">&lt;/p&gt;</span>
   <span class="c-flag">&lt;/section&gt;</span>
-
-  <span class="c-flag">&lt;section&gt;</span>
-    <span class="c-flag">&lt;h2&gt;</span>Projects<span class="c-flag">&lt;/h2&gt;</span>
-    <span class="c-flag">&lt;div</span> <span class="c-str">class</span>=<span class="c-str">"project"</span><span class="c-flag">&gt;</span>
-      <span class="c-flag">&lt;h3&gt;</span>Project One<span class="c-flag">&lt;/h3&gt;</span>
-      <span class="c-flag">&lt;p&gt;</span>Description of your project.<span class="c-flag">&lt;/p&gt;</span>
-    <span class="c-flag">&lt;/div&gt;</span>
-  <span class="c-flag">&lt;/section&gt;</span>
-
-  <span class="c-flag">&lt;footer&gt;</span>
-    <span class="c-flag">&lt;p&gt;</span>© 2026 Your Name<span class="c-flag">&lt;/p&gt;</span>
-  <span class="c-flag">&lt;/footer&gt;</span>
 <span class="c-flag">&lt;/body&gt;</span>
 <span class="c-flag">&lt;/html&gt;</span></code></pre>
 
@@ -2477,14 +2400,6 @@ Value: your-site.netlify.app</code></pre>
 <span class="c-cmd">git branch</span> <span class="c-flag">-M</span> main
 <span class="c-cmd">git remote add</span> origin https://github.com/YOUR-USERNAME/YOUR-USERNAME.github.io.git
 <span class="c-cmd">git push</span> <span class="c-flag">-u</span> origin main</code></pre>
-
-    <h2>Step 3: Share It</h2>
-    <ul>
-      <li>Add the link to your GitHub profile README</li>
-      <li>Share on LinkedIn, Twitter, WhatsApp</li>
-      <li>Add it to your CV</li>
-      <li>Submit to your university</li>
-    </ul>
 
     <div class="callout success">
       <i class="fas fa-trophy"></i>
@@ -2513,12 +2428,12 @@ Value: your-site.netlify.app</code></pre>
   <div class="tour-tooltip" id="tourTooltip">
     <div class="tt-arrow"></div>
     <div class="tt-step" id="tourStep"><i class="fas fa-sparkles"></i> Welcome</div>
-    <h4 id="tourTitle">Karibu! 👋</h4>
-    <p id="tourText">This is a guided tour. Let me show you how to navigate the course in 30 seconds.</p>
+    <h4 id="tourTitle">Welcome! 👋</h4>
+    <p id="tourText">This is a quick guided tour. Let me show you how to navigate the course in 30 seconds.</p>
     <div class="tt-actions">
       <div class="tt-progress" id="tourProgress"></div>
       <div class="tt-buttons">
-        <button class="tt-btn skip" onclick="endTour()">Skip Tour</button>
+        <button class="tt-btn skip" onclick="endTour()">Skip</button>
         <button class="tt-btn next" id="tourNextBtn" onclick="nextTourStep()">Next →</button>
       </div>
     </div>
@@ -2576,10 +2491,10 @@ Value: your-site.netlify.app</code></pre>
 /* =========================================================
    STORAGE
    ========================================================= */
-const STORAGE_KEY = 'web-hosting-course-v2';
-const TOUR_KEY = 'web-hosting-tour-seen';
+const STORAGE_KEY = 'web-hosting-course-v3';
+const TOUR_KEY = 'web-hosting-tour-seen-v2';
 const TOTAL_MODULES = 10;
-const ALL_MODULE_IDS = ['m0','m1','m2','m3','m4','providers','m5','m6','m7','m8'];
+const MODULE_ORDER = ['m0','m1','m2','m3','m4','providers','m5','m6','m7','m8'];
 let state = { completed: [], userName: '', completedAt: null };
 
 function loadState() {
@@ -2646,29 +2561,81 @@ function updateProgress() {
     : `<i class="fas fa-graduation-cap"></i> Certificate (${state.completed.length}/${TOTAL_MODULES})`;
 }
 
+/* =========================================================
+   AUTO-NAVIGATE ON COMPLETE
+   ========================================================= */
 function markComplete(moduleId) {
   const idx = state.completed.indexOf(moduleId);
+
   if (idx >= 0) {
+    // Un-marking
     state.completed.splice(idx, 1);
-  } else {
-    state.completed.push(moduleId);
-    if (state.completed.length === TOTAL_MODULES) {
-      setTimeout(() => {
-        celebrate();
-        setTimeout(() => {
-          const name = prompt('🎉 You completed the course! Enter your name for the certificate:');
-          if (name && name.trim()) {
-            state.userName = name.trim().slice(0, 40);
-            state.completedAt = Date.now();
-            saveState();
-          }
-          setTimeout(() => openCertificate(), 400);
-        }, 500);
-      }, 400);
-    }
+    saveState();
+    updateProgress();
+    return;
   }
+
+  // Marking complete
+  state.completed.push(moduleId);
   saveState();
   updateProgress();
+
+  // If all done — celebrate + certificate
+  if (state.completed.length === TOTAL_MODULES) {
+    setTimeout(() => {
+      celebrate();
+      setTimeout(() => {
+        const name = prompt('🎉 You completed the course! Enter your name for the certificate:');
+        if (name && name.trim()) {
+          state.userName = name.trim().slice(0, 40);
+          state.completedAt = Date.now();
+          saveState();
+        }
+        setTimeout(() => openCertificate(), 400);
+      }, 500);
+    }, 400);
+    return;
+  }
+
+  // AUTO-NAVIGATE to the next module
+  const currentIndex = MODULE_ORDER.indexOf(moduleId);
+  const nextModuleId = MODULE_ORDER[currentIndex + 1];
+
+  if (nextModuleId) {
+    showAutoNavToast(nextModuleId);
+  }
+}
+
+function showAutoNavToast(nextModuleId) {
+  const toast = document.getElementById('auto-nav-toast');
+  const countdown = document.getElementById('toastCountdown');
+  const nextModuleTitle = getModuleTitle(nextModuleId);
+
+  // Update text
+  toast.querySelector('span').innerHTML =
+    `Great! Moving to <strong>${nextModuleTitle}</strong> in <span class="toast-countdown" id="toastCountdown">3</span>s...`;
+
+  toast.classList.add('show');
+
+  let seconds = 3;
+  const newCountdown = document.getElementById('toastCountdown');
+  if (newCountdown) newCountdown.textContent = seconds;
+
+  const interval = setInterval(() => {
+    seconds--;
+    const cd = document.getElementById('toastCountdown');
+    if (cd) cd.textContent = seconds;
+    if (seconds <= 0) {
+      clearInterval(interval);
+      toast.classList.remove('show');
+      showModule(nextModuleId);
+    }
+  }, 1000);
+}
+
+function getModuleTitle(moduleId) {
+  const item = document.querySelector(`.nav-item[data-module="${moduleId}"] .nav-title`);
+  return item ? item.textContent : 'next module';
 }
 
 /* =========================================================
@@ -2710,48 +2677,48 @@ function copyCode(btn) {
 }
 
 /* =========================================================
-   ONBOARDING TOUR
+   ONBOARDING TOUR (LIGHT OVERLAY)
    ========================================================= */
 const tourSteps = [
   {
     selector: '.sidebar-welcome',
-    title: 'Karibu! 👋',
-    text: 'Hii ni course ya Free Web Hosting. Tutaenda hatua kwa hatua kukufundisha jinsi ya ku-deploy website bure.',
+    title: 'Welcome to the Course! 👋',
+    text: 'This is a 10-module course that teaches you how to host websites for free. Let me show you around in 30 seconds.',
     position: 'right',
     step: 'Welcome'
   },
   {
     selector: '.sidebar-progress',
-    title: 'Fuatilia Maendeleo Yako 📊',
-    text: 'Progress bar inaonyesha modules ngapi umemaliza. Ina-save automatically — unaweza kuendelea baadaye.',
+    title: 'Track Your Progress 📊',
+    text: 'The progress bar shows how many modules you have completed. It saves automatically — you can come back anytime.',
     position: 'right',
     step: 'Step 1 of 5'
   },
   {
     selector: '.nav-section:first-of-type .nav-item',
-    title: 'Chagua Module 📚',
-    text: 'Modules zimegawanywa: Getting Started, Intermediate, Advanced. Bonyeza module yoyote kuanza.',
+    title: 'Choose a Module 📚',
+    text: 'Modules are grouped: Getting Started, Intermediate, Advanced. Click any module to begin learning.',
     position: 'right',
     step: 'Step 2 of 5'
   },
   {
     selector: '.module-section.active .module-title',
-    title: 'Content Yako 📖',
-    text: 'Hapa ndio utakapopata content — maelezo, diagrams, code snippets, na quizzes. Soma kwa makini!',
+    title: 'Your Learning Content 📖',
+    text: 'Here you will find everything — explanations, animated diagrams, code snippets, and quizzes. Read carefully!',
     position: 'bottom',
     step: 'Step 3 of 5'
   },
   {
     selector: '.mark-complete',
     title: 'Mark Complete ✅',
-    text: 'Ukimaliza module, bonyeza "Mark Complete" ili kuendelea. Uki-maliza zote, utapata certificate!',
+    text: 'When you finish a module, click "Mark Complete". You will be automatically taken to the next module.',
     position: 'top',
     step: 'Step 4 of 5'
   },
   {
     selector: '#certBtn',
-    title: 'Certificate Yako 🎓',
-    text: 'Ukimaliza modules zote 10, utaweza kupata certificate yenye jina lako. Download kama PNG au print!',
+    title: 'Your Certificate 🎓',
+    text: 'Complete all 10 modules to unlock your personalized certificate. Download as PNG or print it!',
     position: 'right',
     step: 'Step 5 of 5'
   }
@@ -2782,19 +2749,16 @@ function renderTourStep() {
     return;
   }
 
-  // Update tooltip content
   document.getElementById('tourStep').innerHTML = `<i class="fas fa-sparkles"></i> ${step.step}`;
   document.getElementById('tourTitle').textContent = step.title;
   document.getElementById('tourText').textContent = step.text;
   document.getElementById('tourNextBtn').textContent =
     currentTourStep === tourSteps.length - 1 ? 'Finish 🎉' : 'Next →';
 
-  // Update progress dots
   document.querySelectorAll('#tourProgress span').forEach((s, i) => {
     s.classList.toggle('active', i === currentTourStep);
   });
 
-  // Position spotlight
   const rect = target.getBoundingClientRect();
   const padding = 8;
   const spotlight = document.getElementById('tourSpotlight');
@@ -2803,27 +2767,18 @@ function renderTourStep() {
   spotlight.style.width = (rect.width + padding * 2) + 'px';
   spotlight.style.height = (rect.height + padding * 2) + 'px';
 
-  // Position tooltip
   const tooltip = document.getElementById('tourTooltip');
-  tooltip.className = 'tour-tooltip';
   tooltip.style.animation = 'none';
-  tooltip.offsetHeight; // trigger reflow
+  tooltip.offsetHeight;
   tooltip.style.animation = '';
 
   const tw = 380;
-  const th = tooltip.offsetHeight || 220;
-  let left, top, arrowClass = '';
+  const th = tooltip.offsetHeight || 240;
+  let left, top;
 
   if (step.position === 'right') {
     left = rect.right + 20;
     top = rect.top + (rect.height / 2) - (th / 2);
-    arrowClass = 'arrow-left';
-    // Add arrow on left side
-    if (!tooltip.querySelector('.tt-arrow')) {
-      const arrow = document.createElement('div');
-      arrow.className = 'tt-arrow';
-      tooltip.insertBefore(arrow, tooltip.firstChild);
-    }
     const arrow = tooltip.querySelector('.tt-arrow');
     arrow.style.left = '-10px';
     arrow.style.top = '50%';
@@ -2857,7 +2812,6 @@ function renderTourStep() {
     arrow.style.borderTop = 'none';
   }
 
-  // Keep tooltip on screen
   left = Math.max(20, Math.min(left, window.innerWidth - tw - 20));
   top = Math.max(20, Math.min(top, window.innerHeight - th - 20));
 
@@ -2884,7 +2838,7 @@ function checkTour() {
   try {
     const seen = localStorage.getItem(TOUR_KEY);
     if (!seen) {
-      setTimeout(() => startTour(), 800);
+      setTimeout(() => startTour(), 1000);
     }
   } catch (e) {}
 }
@@ -2901,8 +2855,6 @@ function openCertificate() {
   const d = new Date(state.completedAt || Date.now());
   document.getElementById('certDate').textContent =
     d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-
-  document.getElementById('certStatModules').textContent = TOTAL_MODULES;
 
   const modal = document.getElementById('cert-modal');
   modal.classList.add('show');
@@ -3062,7 +3014,6 @@ document.addEventListener('keydown', (e) => {
   if (tourActive && e.key === 'ArrowRight') nextTourStep();
 });
 
-/* Handle window resize for tour */
 window.addEventListener('resize', () => {
   if (tourActive) renderTourStep();
 });
