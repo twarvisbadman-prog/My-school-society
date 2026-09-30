@@ -1,713 +1,3088 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Free Web Hosting — Under Maintenance | Student Hub</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Free Web Hosting — Zero to Hero | Student Hub</title>
 <link rel="icon" type="image/png" href="/apple-touch-icon.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-:root{
-  --bg:#fafaf9;
-  --surface:#ffffff;
-  --alt:#f5f5f4;
-  --border:#e7e5e4;
-  --border-strong:#d6d3d1;
-  --ink:#1c1917;
-  --text-2:#44403c;
-  --text-3:#57534e;
-  --accent:#c2410c;
-  --accent-bright:#ea580c;
-  --accent-pink:#db2777;
-  --accent-dim:#fff1e8;
-  --grad:linear-gradient(120deg,#ea580c,#db2777);
-  --grad-cta:linear-gradient(120deg,#c2410c,#be185d);
-  --grad-cta-hover:linear-gradient(120deg,#9a3412,#9d174d);
-  --sky:#0ea5e9;
-  --sky-dim:#e0f2fe;
-  --sky-glow:rgba(14,165,233,.22);
-  --success:#15803d;
-  --gold:#b45309;
-  --gold-dim:#fef3c7;
-  --gold-border:#fde68a;
-  --radius-sm:10px;
-  --radius-md:14px;
-  --radius-lg:20px;
-  --radius-xl:28px;
-  --shadow-sm:0 1px 2px rgba(28,25,23,.06);
-  --shadow-md:0 10px 28px -12px rgba(28,25,23,.18);
-  --shadow-lg:0 28px 64px -20px rgba(28,25,23,.22);
-  --shadow-cta:0 8px 22px -8px rgba(219,39,119,.5);
-  --shadow-sky:0 12px 32px -12px rgba(14,165,233,.45);
+:root {
+  --bg: #0a0a0a;
+  --bg-alt: #121212;
+  --bg-card: #1a1a1a;
+  --bg-elevated: #222222;
+  --border: #2a2a2a;
+  --border-bright: #3a3a3a;
+  --text: #f5f5f5;
+  --text-dim: #a0a0a0;
+  --text-faint: #666;
+  --sky: #0ea5e9;
+  --sky-bright: #38bdf8;
+  --sky-dark: #0369a1;
+  --sky-glow: rgba(14, 165, 233, 0.35);
+  --cyan: #06b6d4;
+  --green: #10b981;
+  --green-dim: rgba(16, 185, 129, 0.15);
+  --amber: #f59e0b;
+  --rose: #f43f5e;
+  --violet: #8b5cf6;
+  --code-bg: #050505;
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --sidebar-w: 300px;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{
-  font-family:'Inter',sans-serif;
-  background:var(--bg);color:var(--ink);
-  min-height:100vh;
-  display:flex;flex-direction:column;
-  overflow-x:hidden;
-  position:relative;
-  width:100%;
-}
-a{color:inherit;text-decoration:none}
-img{max-width:100%;height:auto;display:block}
-.page{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh}
-
-/* Ambient gradient blobs */
-.bg-blobs{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.bg-blobs .blob{
-  position:absolute;border-radius:50%;filter:blur(90px);opacity:.35;
-  animation:floatBlob 18s ease-in-out infinite;
-}
-.bg-blobs .blob.b1{width:520px;height:520px;background:#0ea5e9;top:-160px;left:-160px;animation-delay:0s}
-.bg-blobs .blob.b2{width:460px;height:460px;background:#db2777;top:-100px;right:-140px;animation-delay:-6s}
-.bg-blobs .blob.b3{width:420px;height:420px;background:#ea580c;bottom:-140px;left:30%;animation-delay:-12s}
-@keyframes floatBlob{
-  0%,100%{transform:translate(0,0) scale(1)}
-  33%{transform:translate(30px,-20px) scale(1.05)}
-  66%{transform:translate(-20px,20px) scale(.97)}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 16px;
+  overflow-x: hidden;
 }
 
-/* TOP BAR */
-.topbar{background:var(--ink);color:#f5f5f4;font-size:.82rem;padding:9px 0;position:relative;z-index:5}
-.topbar-inner{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;text-align:center}
-.topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:#a8a29e;white-space:nowrap}
-.topbar-inner span i{color:var(--accent-bright);font-size:.78rem}
-
-/* NAV */
-.mainnav{background:rgba(250,250,249,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;width:100%}
-.mainnav-inner{max-width:1280px;margin:0 auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:20px}
-.logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.3rem;color:var(--ink);letter-spacing:-.02em;flex-shrink:0}
-.logo-img{width:46px;height:46px;border-radius:12px;object-fit:cover;flex-shrink:0;box-shadow:0 6px 16px -6px rgba(219,39,119,.4);display:block;background:#fff}
-.logo-text span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.nav-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
-.btn-back{background:var(--surface);border:1px solid var(--border);color:var(--text-2);padding:10px 18px;border-radius:999px;font-weight:700;font-size:.85rem;display:inline-flex;align-items:center;gap:8px;transition:all .25s ease}
-.btn-back:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
-
-/* MAIN */
-.wrap{
-  flex:1;
-  max-width:900px;
-  margin:0 auto;
-  padding:60px 20px 80px;
-  width:100%;
-  position:relative;
-  z-index:2;
+/* ============ PROGRESS BAR ============ */
+#top-progress {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 4px;
+  background: rgba(255,255,255,0.05);
+  z-index: 1000;
+}
+#top-progress .fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--sky), var(--cyan), var(--sky-bright));
+  background-size: 200% 100%;
+  animation: gradientShift 3s ease infinite;
+  transition: width 0.4s ease;
+  box-shadow: 0 0 12px var(--sky-glow);
+}
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
-/* HERO */
-.hero{text-align:center;margin-bottom:36px}
-.hero .badge{
-  display:inline-flex;align-items:center;gap:8px;
-  background:var(--gold-dim);
-  border:1px solid var(--gold-border);
-  color:var(--gold);
-  font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
-  padding:8px 18px;border-radius:50px;margin-bottom:22px;
-  animation:pulseBadge 2.4s ease-in-out infinite;
+/* ============ SIDEBAR ============ */
+aside {
+  position: fixed;
+  top: 0; left: 0;
+  width: var(--sidebar-w);
+  height: 100vh;
+  background: var(--bg-alt);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  z-index: 100;
+  padding: 24px 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-bright) transparent;
 }
-.hero .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:blink 1.5s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-@keyframes pulseBadge{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+aside::-webkit-scrollbar { width: 6px; }
+aside::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
 
-.hero .course-icon{
-  width:96px;height:96px;
-  margin:0 auto 24px;
-  border-radius:26px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:2.6rem;
-  color:#fff;
-  background:linear-gradient(135deg,#0ea5e9,#0284c7);
-  box-shadow:0 18px 40px -14px rgba(14,165,233,.55),0 0 0 8px rgba(14,165,233,.08);
-  animation:iconFloat 4s ease-in-out infinite;
-  position:relative;
+.sidebar-header {
+  padding: 0 22px 22px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 18px;
 }
-.hero .course-icon::after{
-  content:'';
-  position:absolute;inset:-12px;
-  border-radius:32px;
-  border:2px dashed rgba(14,165,233,.35);
-  animation:spin 12s linear infinite;
+.sidebar-header .logo {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 900; font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
 }
-@keyframes iconFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-.hero h1{
-  font-size:clamp(1.9rem,4.6vw,2.8rem);
-  font-weight:900;letter-spacing:-.025em;
-  margin-bottom:14px;line-height:1.15;
-  color:var(--ink);
+.sidebar-header .logo-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--sky), var(--cyan));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  color: white;
+  box-shadow: 0 6px 16px -6px var(--sky-glow);
 }
-.hero h1 .accent{
-  background:linear-gradient(120deg,#0ea5e9,#0369a1);
-  -webkit-background-clip:text;background-clip:text;
-  color:transparent;
-}
-.hero p{
-  color:var(--text-2);font-size:1.02rem;line-height:1.75;
-  max-width:620px;margin:0 auto;
-}
-.hero p strong{color:var(--ink)}
-
-/* PROGRESS BAR (animated) */
-.progress-wrap{
-  margin:44px auto 40px;
-  max-width:560px;
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:var(--radius-lg);
-  padding:22px 24px;
-  box-shadow:var(--shadow-sm);
-}
-.progress-wrap .label{
-  display:flex;justify-content:space-between;align-items:center;
-  font-size:.78rem;font-weight:700;color:var(--text-2);
-  margin-bottom:10px;
-  text-transform:uppercase;letter-spacing:.1em;
-}
-.progress-wrap .label strong{color:var(--sky);font-family:'JetBrains Mono',monospace}
-.progress-track{
-  height:10px;background:var(--alt);border-radius:6px;overflow:hidden;
-  position:relative;
-}
-.progress-fill{
-  height:100%;width:0%;
-  background:linear-gradient(90deg,#0ea5e9,#38bdf8,#0284c7);
-  background-size:200% 100%;
-  border-radius:6px;
-  animation:progressShine 2s linear infinite;
-  transition:width 1.8s cubic-bezier(.4,0,.2,1);
-}
-@keyframes progressShine{0%{background-position:0% 50%}100%{background-position:200% 50%}}
-
-/* ROADMAP */
-.roadmap{margin:56px 0 40px}
-.roadmap-title{
-  text-align:center;
-  font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--text-3);margin-bottom:22px;
-}
-.roadmap-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:14px;
-}
-.step{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:var(--radius-md);
-  padding:20px 18px;
-  display:flex;flex-direction:column;gap:8px;
-  transition:all .3s cubic-bezier(.4,0,.2,1);
-  position:relative;
-  overflow:hidden;
-}
-.step::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,#0ea5e9,#38bdf8);
-  opacity:0;transition:opacity .3s;
-}
-.step:hover{
-  transform:translateY(-4px);
-  border-color:var(--sky);
-  box-shadow:0 20px 44px -20px var(--sky-glow);
-}
-.step:hover::before{opacity:1}
-.step .step-num{
-  font-family:'JetBrains Mono',monospace;
-  font-size:.7rem;font-weight:700;color:var(--sky);
-  background:var(--sky-dim);
-  padding:3px 9px;border-radius:6px;
-  align-self:flex-start;
-  letter-spacing:.08em;
-}
-.step .step-icon{
-  font-size:1.35rem;color:var(--sky);
-  margin-top:4px;
-}
-.step h3{
-  font-size:.95rem;font-weight:800;
-  color:var(--ink);line-height:1.3;
-  letter-spacing:-.01em;
-}
-.step p{
-  font-size:.82rem;color:var(--text-3);
-  line-height:1.55;
-}
-.step .step-status{
-  display:inline-flex;align-items:center;gap:5px;
-  font-size:.65rem;font-weight:800;letter-spacing:.1em;
-  text-transform:uppercase;
-  color:var(--gold);
-  background:var(--gold-dim);
-  border:1px solid var(--gold-border);
-  padding:3px 9px;border-radius:50px;
-  align-self:flex-start;
-  margin-top:4px;
-}
-.step .step-status .dot{
-  width:5px;height:5px;border-radius:50%;background:var(--gold);
-  animation:blink 1.5s ease-in-out infinite;
+.sidebar-header .subtitle {
+  color: var(--text-dim);
+  font-size: 0.72rem;
+  font-family: var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-/* NOTIFY CARD */
-.notify{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:var(--radius-xl);
-  padding:36px 32px;
-  text-align:center;
-  box-shadow:var(--shadow-md);
-  margin-top:40px;
-  position:relative;
-  overflow:hidden;
+.sidebar-progress { padding: 0 22px 20px; }
+.sidebar-progress .label {
+  display: flex; justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
-.notify::before{
-  content:'';
-  position:absolute;top:0;left:0;right:0;height:4px;
-  background:linear-gradient(90deg,#0ea5e9,#38bdf8,#db2777);
-  background-size:200% 100%;
-  animation:progressShine 3s linear infinite;
+.sidebar-progress .label strong { color: var(--sky-bright); font-weight: 700; }
+.sidebar-progress .bar {
+  height: 6px;
+  background: var(--bg);
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid var(--border);
 }
-.notify h2{
-  font-size:1.35rem;font-weight:900;
-  letter-spacing:-.02em;margin-bottom:10px;
-  color:var(--ink);
-}
-.notify p{
-  color:var(--text-3);font-size:.92rem;
-  margin-bottom:22px;line-height:1.65;
-  max-width:520px;margin-left:auto;margin-right:auto;
+.sidebar-progress .bar .fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--sky), var(--cyan));
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 10px var(--sky-glow);
 }
 
-.notify-form{
-  display:flex;gap:10px;
-  max-width:520px;margin:0 auto;
-  flex-wrap:wrap;
-  justify-content:center;
+.nav-section { padding: 0 14px; margin-bottom: 8px; }
+.nav-section-title {
+  color: var(--text-faint);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 12px 12px 6px;
+  font-family: var(--mono);
 }
-.notify-form input[type="email"]{
-  flex:1;min-width:220px;
-  background:var(--bg);
-  border:1px solid var(--border);
-  border-radius:999px;
-  padding:14px 22px;
-  font-size:.92rem;font-family:'Inter',sans-serif;
-  color:var(--ink);
-  outline:none;
-  transition:all .25s;
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.86rem;
+  font-weight: 500;
+  transition: all 0.15s;
+  cursor: pointer;
+  margin-bottom: 2px;
+  border-left: 2px solid transparent;
 }
-.notify-form input[type="email"]:focus{
-  border-color:var(--sky);
-  background:#fff;
-  box-shadow:0 0 0 4px rgba(14,165,233,.14);
+.nav-item:hover { background: var(--bg-card); color: var(--text); }
+.nav-item.active {
+  background: var(--bg-card);
+  color: var(--sky-bright);
+  border-left-color: var(--sky);
 }
-.notify-form button{
-  background:linear-gradient(120deg,#0ea5e9,#0284c7);
-  color:#fff;
-  border:none;
-  padding:14px 26px;
-  border-radius:999px;
-  font-weight:800;font-size:.88rem;
-  cursor:pointer;
-  font-family:'Inter',sans-serif;
-  display:inline-flex;align-items:center;gap:8px;
-  transition:all .25s;
-  box-shadow:var(--shadow-sky);
-  white-space:nowrap;
+.nav-item.completed { color: var(--green); }
+.nav-item.completed .nav-icon::after {
+  content: ' ✓';
+  color: var(--green);
+  font-weight: 700;
 }
-.notify-form button:hover{
-  transform:translateY(-2px);
-  box-shadow:0 16px 36px -10px rgba(14,165,233,.6);
+.nav-item .nav-icon {
+  width: 22px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  flex-shrink: 0;
 }
-.notify-form button:disabled{
-  opacity:.6;cursor:not-allowed;transform:none;
+.nav-item .nav-icon i { font-size: 0.9rem; }
+.nav-item .nav-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.notify .status-msg{
-  margin-top:16px;
-  font-size:.85rem;font-weight:600;
-  display:none;
-  padding:10px 16px;
-  border-radius:10px;
-  max-width:520px;
-  margin-left:auto;margin-right:auto;
+.cert-btn {
+  display: block;
+  margin: 18px 22px 0;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, var(--sky), var(--violet));
+  color: white;
+  text-align: center;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  box-shadow: 0 8px 24px -8px var(--sky-glow);
+  transition: transform 0.15s;
+  border: none;
+  width: calc(100% - 44px);
+  cursor: pointer;
+  font-family: var(--sans);
 }
-.notify .status-msg.show{display:block;animation:fadeIn .3s}
-.notify .status-msg.ok{background:#dcfce7;color:#166534;border:1px solid #86efac}
-.notify .status-msg.err{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
-@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.cert-btn:hover:not(:disabled) { transform: translateY(-2px); }
+.cert-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* INFO BANNER */
-.info{
-  margin-top:28px;
-  background:var(--sky-dim);
-  border:1px solid #bae6fd;
-  border-left:4px solid var(--sky);
-  border-radius:var(--radius-md);
-  padding:18px 22px;
-  display:flex;align-items:flex-start;gap:14px;
-}
-.info i{color:var(--sky);font-size:1.15rem;margin-top:2px;flex-shrink:0}
-.info-text{color:#075985;font-size:.88rem;line-height:1.7}
-.info-text strong{color:#075985;display:block;margin-bottom:3px;font-size:.92rem}
+/* ============ MAIN ============ */
+main { margin-left: var(--sidebar-w); min-height: 100vh; }
 
-/* CONTACT */
-.contact{
-  text-align:center;
-  margin-top:44px;
-  padding-top:32px;
-  border-top:1px solid var(--border);
+.module-hero { padding: 48px 60px 30px; max-width: 1000px; }
+.module-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(14, 165, 233, 0.12);
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  color: var(--sky-bright);
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: var(--mono);
+  margin-bottom: 18px;
 }
-.contact p{
-  font-size:.82rem;color:var(--text-3);
-  margin-bottom:16px;
-  text-transform:uppercase;letter-spacing:.1em;
-  font-weight:700;
+.module-badge i { font-size: 0.65rem; }
+.module-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 14px;
+  background: linear-gradient(135deg, #fff 0%, var(--sky-bright) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-.contact-links{
-  display:flex;justify-content:center;gap:10px;flex-wrap:wrap;
+.module-subtitle {
+  color: var(--text-dim);
+  font-size: 1.05rem;
+  max-width: 720px;
+  line-height: 1.7;
 }
-.contact-links a{
-  display:inline-flex;align-items:center;gap:8px;
-  background:var(--surface);
-  border:1px solid var(--border);
-  color:var(--text-2);
-  padding:10px 18px;
-  border-radius:999px;
-  font-size:.84rem;font-weight:700;
-  transition:all .25s ease;
+.module-meta { display: flex; gap: 24px; margin-top: 24px; flex-wrap: wrap; }
+.module-meta .meta-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  font-family: var(--mono);
 }
-.contact-links a:hover{
-  border-color:var(--sky);
-  color:var(--sky);
-  transform:translateY(-2px);
-}
-.contact-links a i{font-size:.9rem}
+.module-meta .meta-item i { color: var(--sky); font-size: 0.9rem; }
 
-/* FOOTER */
-footer{background:var(--ink);padding:26px 20px;border-top:1px solid var(--border);position:relative;z-index:1;margin-top:60px}
-.footer-inner{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-.footer-inner p{color:#78716c;font-size:.82rem}
-.footer-socials{display:flex;gap:8px}
-.footer-socials a{width:38px;height:38px;border:1px solid #292524;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#a8a29e;font-size:.9rem;transition:all .25s ease;background:#1c1917}
-.footer-socials a:hover{background:var(--grad-cta);color:#fff;border-color:transparent;transform:translateY(-2px);box-shadow:0 8px 20px -6px rgba(219,39,119,.5)}
+/* ============ CONTENT ============ */
+.module-content { padding: 20px 60px 80px; max-width: 1000px; }
 
-/* RESPONSIVE */
-@media(max-width:720px){
-  .mainnav-inner{padding:12px 16px}
-  .logo{font-size:1.05rem;gap:10px}
-  .logo-img{width:40px;height:40px;border-radius:11px}
-  .btn-back span{display:none}
-  .btn-back{padding:10px 14px}
-  .wrap{padding:40px 16px 60px}
-  .hero .course-icon{width:80px;height:80px;font-size:2.1rem;border-radius:22px}
-  .notify{padding:28px 20px}
-  .notify-form{flex-direction:column}
-  .notify-form input[type="email"]{min-width:100%}
-  .notify-form button{justify-content:center}
-  .roadmap-grid{grid-template-columns:1fr 1fr}
+.module-content h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 48px 0 18px;
+  color: var(--text);
+  display: flex; align-items: center; gap: 12px;
+  scroll-margin-top: 20px;
 }
-@media(max-width:480px){
-  .topbar-inner{gap:12px;font-size:.72rem}
-  .topbar-inner span:nth-child(3){display:none}
-  .hero h1{font-size:1.65rem}
-  .roadmap-grid{grid-template-columns:1fr}
-  .footer-inner{flex-direction:column;text-align:center}
+.module-content h2::before {
+  content: '';
+  width: 4px; height: 28px;
+  background: linear-gradient(180deg, var(--sky), var(--cyan));
+  border-radius: 2px;
+}
+.module-content h3 { font-size: 1.2rem; font-weight: 700; margin: 32px 0 12px; color: var(--text); }
+.module-content h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 22px 0 10px;
+  color: var(--sky-bright);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: var(--mono);
+}
+.module-content p { color: #c9c9c9; margin-bottom: 16px; line-height: 1.8; }
+.module-content strong { color: var(--text); font-weight: 700; }
+.module-content em { color: var(--sky-bright); font-style: normal; font-weight: 600; }
+.module-content a {
+  color: var(--sky-bright);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+  transition: all 0.15s;
+}
+.module-content a:hover { border-bottom-color: var(--sky-bright); color: white; }
+
+.module-content ul, .module-content ol { margin: 16px 0 20px 24px; color: #c9c9c9; }
+.module-content li { margin-bottom: 10px; line-height: 1.75; }
+.module-content li::marker { color: var(--sky); }
+
+code {
+  font-family: var(--mono);
+  background: var(--bg-card);
+  padding: 2px 8px;
+  border-radius: 5px;
+  font-size: 0.88em;
+  color: var(--cyan);
+  border: 1px solid var(--border);
+}
+
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 22px;
+  overflow-x: auto;
+  margin: 18px 0 24px;
+  position: relative;
+  font-size: 0.88rem;
+  line-height: 1.75;
+  scrollbar-width: thin;
+}
+pre::-webkit-scrollbar { height: 8px; }
+pre::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 4px; }
+pre code {
+  background: none;
+  padding: 0;
+  border: none;
+  color: #e0e0e0;
+  font-size: 0.88rem;
+}
+pre .c-cmd { color: var(--green); }
+pre .c-comment { color: var(--text-faint); font-style: italic; }
+pre .c-str { color: var(--amber); }
+pre .c-flag { color: var(--violet); }
+pre .c-out { color: var(--text-dim); }
+
+.copy-btn {
+  position: absolute;
+  top: 12px; right: 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition: all 0.15s;
+}
+.copy-btn:hover { background: var(--sky); color: white; border-color: var(--sky); }
+.copy-btn.copied { background: var(--green); color: white; border-color: var(--green); }
+
+/* ============ CALLOUTS ============ */
+.callout {
+  border-left: 4px solid var(--sky);
+  background: rgba(14, 165, 233, 0.08);
+  padding: 18px 22px;
+  border-radius: 0 12px 12px 0;
+  margin: 22px 0;
+  display: flex; gap: 14px; align-items: flex-start;
+}
+.callout i { color: var(--sky-bright); font-size: 1.1rem; margin-top: 2px; flex-shrink: 0; }
+.callout .callout-body { flex: 1; }
+.callout .callout-body strong { display: block; color: var(--sky-bright); margin-bottom: 6px; font-size: 0.92rem; }
+.callout .callout-body p:last-child { margin-bottom: 0; }
+
+.callout.warning { border-color: var(--amber); background: rgba(245, 158, 11, 0.08); }
+.callout.warning i, .callout.warning .callout-body strong { color: var(--amber); }
+.callout.danger { border-color: var(--rose); background: rgba(244, 63, 94, 0.08); }
+.callout.danger i, .callout.danger .callout-body strong { color: var(--rose); }
+.callout.success { border-color: var(--green); background: rgba(16, 185, 129, 0.08); }
+.callout.success i, .callout.success .callout-body strong { color: var(--green); }
+
+/* ============ ANIMATED DIAGRAMS ============ */
+.diagram {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px 24px;
+  margin: 28px 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.diagram svg { max-width: 100%; height: auto; }
+.diagram-caption {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  margin-top: 16px;
+  font-style: italic;
+}
+.anim-dash { stroke-dasharray: 8 6; animation: dashMove 1.5s linear infinite; }
+@keyframes dashMove { to { stroke-dashoffset: -28; } }
+.anim-fade-in { animation: fadeIn 0.8s ease both; }
+.anim-delay-1 { animation-delay: 0.15s; }
+.anim-delay-2 { animation-delay: 0.3s; }
+.anim-delay-3 { animation-delay: 0.45s; }
+.anim-delay-4 { animation-delay: 0.6s; }
+.anim-delay-5 { animation-delay: 0.75s; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.anim-pulse { animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+.anim-float { animation: float 3s ease-in-out infinite; }
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.anim-flow { stroke-dasharray: 12 8; animation: flowMove 1.2s linear infinite; }
+@keyframes flowMove { to { stroke-dashoffset: -20; } }
+
+/* ============ MOCK SCREENSHOTS ============ */
+.gh-mock {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 24px 0;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+}
+.gh-mock .gh-topbar {
+  background: #050505;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.gh-mock .dot { width: 11px; height: 11px; border-radius: 50%; }
+.dot-r { background: #ff5f57; }
+.dot-y { background: #febc2e; }
+.dot-g { background: #28c840; }
+.gh-mock .gh-title {
+  margin-left: 12px;
+  font-size: 0.75rem;
+  color: var(--text-faint);
+  font-family: var(--mono);
+}
+.gh-mock .gh-body { padding: 20px 24px; font-size: 0.88rem; }
+.gh-mock .gh-step {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 0.86rem;
+}
+.gh-mock .gh-step-num {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--sky);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  font-family: var(--mono);
+}
+.gh-mock .gh-step.done .gh-step-num { background: var(--green); }
+.gh-mock-caption {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-faint);
+  margin-top: -12px;
+  margin-bottom: 24px;
+  font-style: italic;
+}
+
+/* ============ TABLE ============ */
+.table-wrap {
+  overflow-x: auto;
+  margin: 20px 0 26px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+table { width: 100%; border-collapse: collapse; font-size: 0.88rem; min-width: 520px; }
+th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+th {
+  background: var(--bg-card);
+  color: var(--sky-bright);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+  font-family: var(--mono);
+}
+tr:last-child td { border-bottom: none; }
+td code { font-size: 0.82rem; }
+
+/* ============ QUIZ ============ */
+.quiz {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 26px;
+  margin: 30px 0;
+  position: relative;
+  overflow: hidden;
+}
+.quiz::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--violet), var(--sky), var(--cyan));
+  background-size: 200% 100%;
+  animation: gradientShift 4s ease infinite;
+}
+.quiz-label {
+  display: inline-block;
+  background: rgba(139, 92, 246, 0.15);
+  color: var(--violet);
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: var(--mono);
+  margin-bottom: 12px;
+}
+.quiz .q-text { font-weight: 700; margin-bottom: 16px; font-size: 1rem; color: var(--text); }
+.quiz .opts { display: flex; flex-direction: column; gap: 10px; }
+.quiz .opt {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 12px 16px;
+  border-radius: 10px;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  transition: all 0.15s;
+  font-weight: 500;
+}
+.quiz .opt:hover:not(:disabled) {
+  border-color: var(--sky);
+  background: rgba(14, 165, 233, 0.05);
+  transform: translateX(3px);
+}
+.quiz .opt.correct {
+  border-color: var(--green);
+  background: var(--green-dim);
+  color: var(--green);
+}
+.quiz .opt.wrong {
+  border-color: var(--rose);
+  background: rgba(244, 63, 94, 0.1);
+  color: var(--rose);
+}
+.quiz .opt:disabled { cursor: default; }
+.quiz .feedback {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  display: none;
+}
+.quiz .feedback.show { display: block; animation: fadeIn 0.3s; }
+.quiz .feedback.good {
+  background: var(--green-dim);
+  color: var(--green);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.quiz .feedback.bad {
+  background: rgba(244, 63, 94, 0.1);
+  color: var(--rose);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+}
+
+/* ============ COMPARISON CARDS ============ */
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+.compare-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 20px;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+.compare-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--card-color, var(--sky));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s;
+}
+.compare-card:hover {
+  border-color: var(--card-color, var(--sky));
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -20px var(--card-color, var(--sky));
+}
+.compare-card:hover::before { transform: scaleX(1); }
+.compare-card .cc-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  color: var(--card-color, var(--sky));
+  margin-bottom: 14px;
+}
+.compare-card h4 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: var(--text);
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: var(--sans);
+}
+.compare-card p {
+  font-size: 0.84rem;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+.compare-card .cc-tag {
+  display: inline-block;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 50px;
+  background: rgba(255,255,255,0.05);
+  color: var(--text-dim);
+  font-family: var(--mono);
+}
+
+/* ============ PROVIDER CARDS ============ */
+.provider-card {
+  display: flex;
+  gap: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 26px;
+  margin: 24px 0;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+.provider-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--logo-color, var(--sky));
+  opacity: 0.6;
+}
+.provider-card:hover {
+  border-color: var(--border-bright);
+  transform: translateY(-3px);
+  box-shadow: 0 20px 40px -20px rgba(0,0,0,0.5);
+}
+.provider-logo {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--bg-alt), var(--bg-elevated));
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s;
+}
+.provider-card:hover .provider-logo { transform: scale(1.06) rotate(-3deg); }
+.provider-info { flex: 1; min-width: 0; }
+.provider-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.provider-head h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.provider-tag {
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 50px;
+  background: rgba(255,255,255,0.05);
+  color: var(--text-dim);
+  font-family: var(--mono);
+}
+.provider-info > p {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+  line-height: 1.7;
+}
+.provider-info h4 {
+  color: var(--sky-bright);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: var(--mono);
+  margin: 16px 0 8px;
+}
+.provider-info ol { margin: 0 0 16px 22px; color: #c9c9c9; font-size: 0.88rem; }
+.provider-info ol li { margin-bottom: 6px; line-height: 1.6; }
+.provider-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.provider-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+  transition: all 0.15s;
+  font-family: var(--sans);
+}
+.provider-btn:hover {
+  border-color: var(--sky);
+  color: var(--sky-bright);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+.provider-btn.primary {
+  background: var(--btn-color, var(--sky));
+  color: white;
+  border-color: var(--btn-color, var(--sky));
+}
+.provider-btn.primary:hover { filter: brightness(1.1); color: white; }
+@media (max-width: 720px) {
+  .provider-card { flex-direction: column; gap: 16px; }
+  .provider-logo { width: 64px; height: 64px; }
+}
+
+/* ============ RENDER WARNING ============ */
+.render-warning {
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.1), rgba(139, 92, 246, 0.1));
+  border: 2px solid rgba(244, 63, 94, 0.3);
+  border-radius: 16px;
+  padding: 26px 24px;
+  margin: 26px 0;
+}
+.render-warning .rw-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.render-warning .rw-icon {
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  background: var(--rose);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+.render-warning h3 {
+  font-size: 1.1rem;
+  margin: 0;
+  color: var(--rose);
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: var(--sans);
+}
+.render-warning p { color: #d9d9d9; font-size: 0.92rem; margin-bottom: 12px; }
+.render-warning ul { margin: 12px 0 12px 22px; }
+
+/* ============ MARK COMPLETE ============ */
+.mark-complete {
+  margin: 60px 0 40px;
+  padding: 24px 26px;
+  background: var(--bg-card);
+  border: 2px dashed var(--border-bright);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  transition: all 0.3s;
+}
+.mark-complete.done {
+  border-style: solid;
+  border-color: var(--green);
+  background: var(--green-dim);
+}
+.mark-complete .mc-icon {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--sky), var(--cyan));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  color: white;
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+.mark-complete.done .mc-icon { background: linear-gradient(135deg, var(--green), #059669); }
+.mark-complete .mc-text { flex: 1; }
+.mark-complete .mc-text strong { display: block; font-size: 1rem; margin-bottom: 4px; color: var(--text); }
+.mark-complete .mc-text span { font-size: 0.85rem; color: var(--text-dim); }
+.mark-complete button {
+  background: linear-gradient(135deg, var(--sky), var(--cyan));
+  color: white;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: transform 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.mark-complete button:hover { transform: translateY(-2px); }
+.mark-complete.done button {
+  background: transparent;
+  color: var(--green);
+  border: 2px solid var(--green);
+}
+
+/* ============ MODULE SECTIONS ============ */
+.module-section { display: none; animation: fadeIn 0.4s ease; }
+.module-section.active { display: block; }
+
+/* ============ MOBILE MENU ============ */
+.mobile-menu-btn {
+  display: none;
+  position: fixed;
+  top: 16px; left: 16px;
+  z-index: 200;
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 1.2rem;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+@media (max-width: 900px) {
+  .mobile-menu-btn { display: flex; }
+  aside { transform: translateX(-100%); transition: transform 0.3s; width: 280px; }
+  aside.open { transform: translateX(0); }
+  main { margin-left: 0; }
+  .module-hero, .module-content { padding-left: 20px; padding-right: 20px; }
+  .module-hero { padding-top: 80px; }
+}
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 99;
+  backdrop-filter: blur(4px);
+}
+.sidebar-overlay.show { display: block; }
+
+/* ============ CERTIFICATE MODAL ============ */
+#cert-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.9);
+  backdrop-filter: blur(10px);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+#cert-modal.show { display: flex; opacity: 1; }
+.cert-outer {
+  max-width: 900px;
+  width: 100%;
+  max-height: 95vh;
+  overflow-y: auto;
+  transform: scale(0.7) rotateY(-25deg);
+  opacity: 0;
+  transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+#cert-modal.show .cert-outer { transform: scale(1) rotateY(0); opacity: 1; }
+
+.certificate {
+  background:
+    radial-gradient(circle at 20% 10%, rgba(14, 165, 233, 0.12), transparent 50%),
+    radial-gradient(circle at 80% 90%, rgba(139, 92, 246, 0.12), transparent 50%),
+    linear-gradient(135deg, #121212 0%, #0a0a0a 100%);
+  border-radius: 16px;
+  padding: 50px 60px;
+  position: relative;
+  overflow: hidden;
+  color: var(--text);
+  border: 2px solid transparent;
+}
+.certificate::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 16px;
+  padding: 2px;
+  background: linear-gradient(135deg, var(--sky), var(--violet), var(--cyan), var(--green));
+  background-size: 300% 300%;
+  animation: gradientShift 4s ease infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.cert-confetti {
+  position: absolute; inset: 0;
+  pointer-events: none; overflow: hidden;
+}
+.confetti-piece {
+  position: absolute;
+  width: 8px; height: 12px;
+  opacity: 0;
+  animation: confettiFall 3s linear infinite;
+}
+@keyframes confettiFall {
+  0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translateY(650px) rotate(720deg); opacity: 0; }
+}
+.confetti-piece:nth-child(1) { left: 5%; background: var(--green); animation-delay: 0s; }
+.confetti-piece:nth-child(2) { left: 15%; background: var(--sky); animation-delay: 0.4s; }
+.confetti-piece:nth-child(3) { left: 25%; background: var(--violet); animation-delay: 0.8s; }
+.confetti-piece:nth-child(4) { left: 35%; background: var(--amber); animation-delay: 0.2s; }
+.confetti-piece:nth-child(5) { left: 45%; background: var(--cyan); animation-delay: 1.2s; }
+.confetti-piece:nth-child(6) { left: 55%; background: var(--green); animation-delay: 0.6s; }
+.confetti-piece:nth-child(7) { left: 65%; background: var(--sky); animation-delay: 1.6s; }
+.confetti-piece:nth-child(8) { left: 75%; background: var(--violet); animation-delay: 0.9s; }
+.confetti-piece:nth-child(9) { left: 85%; background: var(--amber); animation-delay: 1.4s; }
+.confetti-piece:nth-child(10) { left: 95%; background: var(--cyan); animation-delay: 0.3s; }
+
+.cert-inner { position: relative; z-index: 2; text-align: center; }
+.cert-seal {
+  width: 90px; height: 90px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--sky), var(--violet));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem;
+  box-shadow: 0 0 0 8px rgba(14, 165, 233, 0.15), 0 0 50px var(--sky-glow);
+  animation: sealSpin 8s linear infinite;
+}
+@keyframes sealSpin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.05); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+.cert-title {
+  font-size: 0.85rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--sky-bright);
+  margin-bottom: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+}
+.cert-main {
+  font-size: 2.4rem;
+  font-weight: 900;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #fff, var(--sky-bright), var(--violet));
+  background-size: 200% 200%;
+  animation: gradientShift 4s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+.cert-sub { font-size: 0.95rem; color: var(--text-dim); margin-bottom: 8px; }
+.cert-name {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text);
+  margin: 24px 0 8px;
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--mono);
+  letter-spacing: 0.02em;
+}
+.cert-body {
+  font-size: 0.95rem;
+  color: #c9c9c9;
+  max-width: 620px;
+  margin: 20px auto 24px;
+  line-height: 1.8;
+}
+.cert-stats {
+  display: flex;
+  justify-content: center;
+  gap: 44px;
+  margin: 28px 0 24px;
+  padding: 20px;
+  background: rgba(14, 165, 233, 0.05);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+.cert-stats > div { text-align: center; }
+.cert-stats .val {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--sky-bright);
+  font-family: var(--mono);
+}
+.cert-stats .lbl {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: var(--mono);
+}
+.cert-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  font-family: var(--mono);
+}
+.cert-footer .sig-name {
+  font-size: 1.4rem;
+  color: var(--sky-bright);
+  font-weight: 700;
+  font-family: var(--sans);
+}
+.cert-footer .date { text-align: right; }
+
+.cert-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+.cert-actions button {
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 0.88rem;
+  cursor: pointer;
+  font-family: var(--sans);
+  border: none;
+  transition: all 0.15s;
+}
+.cert-actions .primary {
+  background: linear-gradient(135deg, var(--sky), var(--violet));
+  color: white;
+}
+.cert-actions .secondary-act {
+  background: var(--bg-card);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.cert-actions button:hover { transform: translateY(-2px); }
+
+.cert-name-input {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.cert-name-input input {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: var(--sans);
+  min-width: 280px;
+  transition: all 0.15s;
+  outline: none;
+}
+.cert-name-input input:focus {
+  border-color: var(--sky);
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+}
+
+/* Global confetti */
+#global-confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+  display: none;
+}
+#global-confetti.show { display: block; }
+#global-confetti .cp {
+  position: absolute;
+  top: -20px;
+  width: 10px;
+  height: 14px;
+  opacity: 0;
+  animation: globalConfetti 4s ease-in forwards;
+}
+@keyframes globalConfetti {
+  0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+  100% { transform: translateY(105vh) rotate(900deg) scale(0.6); opacity: 0; }
 }
 </style>
 </head>
 <body>
 
-<!-- Ambient background blobs -->
-<div class="bg-blobs" aria-hidden="true">
-  <div class="blob b1"></div>
-  <div class="blob b2"></div>
-  <div class="blob b3"></div>
+<div id="top-progress"><div class="fill" id="topProgressFill"></div></div>
+<div id="global-confetti"></div>
+<button class="mobile-menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- ==================== SIDEBAR ==================== -->
+<aside id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <div class="logo-icon"><i class="fas fa-server"></i></div>
+      <span>Web Hosting</span>
+    </div>
+    <div class="subtitle">// Free Hosting Course</div>
+  </div>
+
+  <div class="sidebar-progress">
+    <div class="label">
+      <span>Progress</span>
+      <strong id="sidebarPercent">0%</strong>
+    </div>
+    <div class="bar"><div class="fill" id="sidebarFill"></div></div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Getting Started</div>
+    <a class="nav-item" data-module="m0" onclick="showModule('m0')">
+      <span class="nav-icon">00</span>
+      <span class="nav-title">What is Web Hosting?</span>
+    </a>
+    <a class="nav-item" data-module="m1" onclick="showModule('m1')">
+      <span class="nav-icon">01</span>
+      <span class="nav-title">GitHub Pages</span>
+    </a>
+    <a class="nav-item" data-module="m2" onclick="showModule('m2')">
+      <span class="nav-icon">02</span>
+      <span class="nav-title">Netlify</span>
+    </a>
+    <a class="nav-item" data-module="m3" onclick="showModule('m3')">
+      <span class="nav-icon">03</span>
+      <span class="nav-title">Vercel</span>
+    </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Intermediate</div>
+    <a class="nav-item" data-module="m4" onclick="showModule('m4')">
+      <span class="nav-icon">04</span>
+      <span class="nav-title">Render + TZ Note</span>
+    </a>
+    <a class="nav-item" data-module="providers" onclick="showModule('providers')">
+      <span class="nav-icon"><i class="fas fa-th"></i></span>
+      <span class="nav-title">All Providers</span>
+    </a>
+    <a class="nav-item" data-module="m5" onclick="showModule('m5')">
+      <span class="nav-icon">05</span>
+      <span class="nav-title">Custom Domains</span>
+    </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Advanced</div>
+    <a class="nav-item" data-module="m6" onclick="showModule('m6')">
+      <span class="nav-icon">06</span>
+      <span class="nav-title">HTTPS &amp; Security</span>
+    </a>
+    <a class="nav-item" data-module="m7" onclick="showModule('m7')">
+      <span class="nav-icon">07</span>
+      <span class="nav-title">CI/CD Pipelines</span>
+    </a>
+    <a class="nav-item" data-module="m8" onclick="showModule('m8')">
+      <span class="nav-icon">08</span>
+      <span class="nav-title">Capstone Project</span>
+    </a>
+  </div>
+
+  <button class="cert-btn" id="certBtn" onclick="openCertificate()" disabled>
+    🎓 Certificate (0/10)
+  </button>
+</aside>
+
+<!-- ==================== MAIN ==================== -->
+<main>
+
+<!-- ========== MODULE 0: INTRO ========== -->
+<div class="module-section active" data-module="m0">
+  <div class="module-hero">
+    <div class="module-badge"><i class="fas fa-cloud"></i> Module 00 — Introduction</div>
+    <h1 class="module-title">What is Web Hosting?</h1>
+    <p class="module-subtitle">Before we deploy anything, let's understand exactly what hosting is, how it works, and the different types of hosting you can use — for free.</p>
+    <div class="module-meta">
+      <div class="meta-item"><i class="fas fa-clock"></i> 8 min read</div>
+      <div class="meta-item"><i class="fas fa-signal"></i> Beginner</div>
+      <div class="meta-item"><i class="fas fa-question-circle"></i> 1 quiz</div>
+    </div>
+  </div>
+
+  <div class="module-content">
+    <h2>What Does "Web Hosting" Actually Mean?</h2>
+    <p>Imagine you build a house. Building it is one thing — but you also need <strong>land to put it on</strong> so people can find it. Web hosting is that land.</p>
+    <p>When you create a website (HTML, CSS, JavaScript files), those files live on your computer. But <em>only your computer</em> can see them. To make the world see them, you need to put them on a <strong>server</strong> — a computer that's always on and connected to the internet. That's hosting.</p>
+
+    <div class="callout">
+      <i class="fas fa-lightbulb"></i>
+      <div class="callout-body">
+        <strong>Simple definition</strong>
+        <p>Web hosting = renting space on a server where your website files live, so anyone on the internet can access them 24/7.</p>
+      </div>
+    </div>
+
+    <h2>How the Web Works — The Big Picture</h2>
+    <p>Before we go deeper, let's understand what happens when someone visits your website:</p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg">
+        <g class="anim-fade-in">
+          <circle cx="100" cy="160" r="45" fill="#1a1a1a" stroke="#0ea5e9" stroke-width="2"/>
+          <text x="100" y="165" text-anchor="middle" fill="#38bdf8" font-size="22" font-family="monospace">👤</text>
+          <text x="100" y="230" text-anchor="middle" fill="#666" font-size="10" font-family="monospace">visitor</text>
+        </g>
+        <g class="anim-fade-in anim-delay-1">
+          <rect x="230" y="120" width="130" height="80" rx="12" fill="#1a1a1a" stroke="#8b5cf6" stroke-width="2"/>
+          <text x="295" y="155" text-anchor="middle" fill="#8b5cf6" font-size="20" font-family="monospace">📖</text>
+          <text x="295" y="180" text-anchor="middle" fill="#a0a0a0" font-size="11" font-family="monospace">DNS</text>
+        </g>
+        <g class="anim-fade-in anim-delay-2">
+          <rect x="420" y="100" width="180" height="120" rx="14" fill="#1a1a1a" stroke="#10b981" stroke-width="2"/>
+          <text x="510" y="145" text-anchor="middle" fill="#10b981" font-size="32" font-family="monospace">🖥️</text>
+          <text x="510" y="180" text-anchor="middle" fill="#10b981" font-size="12" font-family="monospace" font-weight="700">WEB SERVER</text>
+          <text x="510" y="200" text-anchor="middle" fill="#a0a0a0" font-size="10" font-family="monospace">your files live here</text>
+        </g>
+        <g class="anim-fade-in anim-delay-3">
+          <rect x="660" y="130" width="120" height="80" rx="12" fill="#1a1a1a" stroke="#0ea5e9" stroke-width="2"/>
+          <text x="720" y="165" text-anchor="middle" fill="#38bdf8" font-size="22" font-family="monospace">🌐</text>
+          <text x="720" y="190" text-anchor="middle" fill="#38bdf8" font-size="10" font-family="monospace">Your Site</text>
+        </g>
+        <line x1="150" y1="160" x2="225" y2="160" stroke="#0ea5e9" stroke-width="2" class="anim-flow"/>
+        <polygon points="225,160 217,155 217,165" fill="#0ea5e9"/>
+        <text x="185" y="150" text-anchor="middle" fill="#38bdf8" font-size="9" font-family="monospace">1. request</text>
+        <line x1="365" y1="160" x2="415" y2="160" stroke="#8b5cf6" stroke-width="2" class="anim-flow"/>
+        <polygon points="415,160 407,155 407,165" fill="#8b5cf6"/>
+        <text x="390" y="150" text-anchor="middle" fill="#8b5cf6" font-size="9" font-family="monospace">2. route</text>
+        <line x1="605" y1="160" x2="655" y2="160" stroke="#10b981" stroke-width="2" class="anim-flow"/>
+        <polygon points="655,160 647,155 647,165" fill="#10b981"/>
+        <text x="630" y="150" text-anchor="middle" fill="#10b981" font-size="9" font-family="monospace">3. send</text>
+      </svg>
+      <div class="diagram-caption">You → DNS → Server → Website (in milliseconds)</div>
+    </div>
+
+    <h3>Step by step:</h3>
+    <ol>
+      <li><strong>You</strong> open a browser and type <code>mysite.com</code></li>
+      <li><strong>DNS</strong> translates that name into an IP address (like a phone book for the internet)</li>
+      <li>The browser sends a request to the <strong>server</strong> at that IP address</li>
+      <li>The server finds your website files and <strong>sends them back</strong></li>
+      <li>Your browser renders them into the <strong>page you see</strong></li>
+    </ol>
+
+    <h2>Types of Web Hosting</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Type</th><th>What it is</th><th>Cost</th><th>Best for</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Static Hosting</strong></td><td>Your files served directly from a CDN</td><td style="color:var(--green)">Free</td><td>Portfolios, blogs, docs</td></tr>
+          <tr><td><strong>Shared Hosting</strong></td><td>One server, many websites</td><td>$2-10/mo</td><td>Small WordPress sites</td></tr>
+          <tr><td><strong>VPS</strong></td><td>A virtual slice of a server</td><td>$5-50/mo</td><td>Growing apps</td></tr>
+          <tr><td><strong>Dedicated</strong></td><td>An entire physical server</td><td>$100+/mo</td><td>Big apps</td></tr>
+          <tr><td><strong>Cloud</strong></td><td>Distributed across many servers</td><td>Pay per use</td><td>Scalable apps</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>What Can You Host for Free?</h2>
+    <div class="compare-grid">
+      <div class="compare-card" style="--card-color: #0ea5e9;">
+        <div class="cc-icon"><i class="fas fa-user-circle"></i></div>
+        <h4>Personal Portfolio</h4>
+        <p>Show off your work, CV, and projects with a custom domain.</p>
+        <span class="cc-tag">100% Free</span>
+      </div>
+      <div class="compare-card" style="--card-color: #8b5cf6;">
+        <div class="cc-icon"><i class="fas fa-book"></i></div>
+        <h4>Blog or Docs</h4>
+        <p>Static site generators like Hugo, Jekyll, Astro deploy free.</p>
+        <span class="cc-tag">100% Free</span>
+      </div>
+      <div class="compare-card" style="--card-color: #10b981;">
+        <div class="cc-icon"><i class="fas fa-rocket"></i></div>
+        <h4>Landing Page</h4>
+        <p>Product launches, waitlists, marketing pages.</p>
+        <span class="cc-tag">100% Free</span>
+      </div>
+      <div class="compare-card" style="--card-color: #f59e0b;">
+        <div class="cc-icon"><i class="fas fa-gamepad"></i></div>
+        <h4>Small Apps</h4>
+        <p>Client-side apps — games, tools, calculators.</p>
+        <span class="cc-tag">100% Free</span>
+      </div>
+    </div>
+
+    <h2>Common Misconceptions</h2>
+    <h4>❌ "Hosting is expensive"</h4>
+    <p>Wrong. GitHub Pages, Netlify, Vercel, Render, Cloudflare Pages — all offer <strong>permanent free tiers</strong>.</p>
+    <h4>❌ "Free hosting has ads"</h4>
+    <p>Old-school free hosting had ads. Modern platforms (GitHub, Netlify, Vercel) have <strong>zero ads</strong>.</p>
+    <h4>❌ "I need to know Linux"</h4>
+    <p>Nope. Modern platforms are <strong>deploy by push</strong> — you push code, it's live.</p>
+    <h4>❌ "Free = slow"</h4>
+    <p>Free hosting on CDNs is often <strong>faster</strong> than paid shared hosting.</p>
+
+    <h2>Summary</h2>
+    <ul>
+      <li>Web hosting = putting your files on an always-online server</li>
+      <li>DNS turns a domain name into a server address</li>
+      <li>Static hosting is free forever on modern platforms</li>
+      <li>You don't need Linux or server knowledge anymore</li>
+      <li>Free is fast and ad-free on modern platforms</li>
+    </ul>
+
+    <div class="quiz" data-quiz="m0">
+      <div class="quiz-label">✓ Quick Check</div>
+      <div class="q-text">What does DNS do in the web hosting process?</div>
+      <div class="opts">
+        <button class="opt" data-correct="false">It stores your website files on the server</button>
+        <button class="opt" data-correct="true">It translates a domain name into a server's IP address</button>
+        <button class="opt" data-correct="false">It encrypts the connection</button>
+        <button class="opt" data-correct="false">It makes your website load faster</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="mark-complete" data-module="m0">
+      <div class="mc-icon"><i class="fas fa-flag-checkered"></i></div>
+      <div class="mc-text">
+        <strong>Finished Module 00?</strong>
+        <span>Mark it complete to unlock the next module.</span>
+      </div>
+      <button onclick="markComplete('m0')">✓ Mark Complete</button>
+    </div>
+  </div>
 </div>
 
-<div class="page">
-
-  <!-- TOP BAR -->
-  <div class="topbar">
-    <div class="topbar-inner">
-      <span><i class="fas fa-phone"></i> +255 740 706 007</span>
-      <span><i class="fas fa-envelope"></i> Twarvisteh@gmail.com</span>
-      <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
+<!-- ========== MODULE 1: GITHUB PAGES ========== -->
+<div class="module-section" data-module="m1">
+  <div class="module-hero">
+    <div class="module-badge"><i class="fab fa-github"></i> Module 01 — GitHub Pages</div>
+    <h1 class="module-title">Deploy with GitHub Pages</h1>
+    <p class="module-subtitle">The easiest way to get a live website. Push a repo, enable Pages, done. Free forever, fast CDN, HTTPS included.</p>
+    <div class="module-meta">
+      <div class="meta-item"><i class="fas fa-clock"></i> 12 min</div>
+      <div class="meta-item"><i class="fas fa-signal"></i> Beginner</div>
+      <div class="meta-item"><i class="fas fa-question-circle"></i> 2 quizzes</div>
     </div>
   </div>
 
-  <!-- NAV -->
-  <nav class="mainnav">
-    <div class="mainnav-inner">
-      <a href="/" class="logo">
-        <img src="/apple-touch-icon.png" alt="Student Hub" class="logo-img">
-        <span class="logo-text">Student<span>Hub</span></span>
-      </a>
-      <div class="nav-right">
-        <a href="/free_course/" class="btn-back">
-          <i class="fas fa-arrow-left"></i> <span>Back to Courses</span>
-        </a>
-      </div>
-    </div>
-  </nav>
+  <div class="module-content">
+    <h2>What is GitHub Pages?</h2>
+    <p>GitHub Pages is a <strong>free static site hosting service</strong> built into GitHub. Every repository can become a website.</p>
 
-  <!-- MAIN -->
-  <div class="wrap">
-
-    <div class="hero">
-      <span class="badge"><span class="dot"></span> Under Maintenance</span>
-
-      <div class="course-icon">
-        <i class="fas fa-server"></i>
-      </div>
-
-      <h1>Free Web Hosting <span class="accent">is coming soon</span></h1>
-      <p>
-        We're building a complete, beginner-friendly course that teaches you how to
-        <strong>deploy real websites online for free</strong> — GitHub Pages, Netlify,
-        Vercel, custom domains, HTTPS, and DNS. Zero cost. Real skills.
-      </p>
-
-      <!-- PROGRESS -->
-      <div class="progress-wrap">
-        <div class="label">
-          <span><i class="fas fa-tools"></i> Building the course</span>
-          <strong id="progress-pct">0%</strong>
-        </div>
-        <div class="progress-track">
-          <div class="progress-fill" id="progress-fill"></div>
-        </div>
+    <div class="callout">
+      <i class="fas fa-gift"></i>
+      <div class="callout-body">
+        <strong>What you get for free</strong>
+        <p>• 1 GB storage per repo<br>• 100 GB bandwidth per month<br>• Automatic HTTPS<br>• Custom domain support<br>• Unlimited repos, unlimited sites</p>
       </div>
     </div>
 
-    <!-- ROADMAP -->
-    <div class="roadmap">
-      <div class="roadmap-title">What's Being Built</div>
-      <div class="roadmap-grid">
+    <div class="diagram">
+      <svg viewBox="0 0 800 260" xmlns="http://www.w3.org/2000/svg">
+        <g class="anim-fade-in">
+          <rect x="40" y="80" width="160" height="100" rx="12" fill="#1a1a1a" stroke="#10b981" stroke-width="2"/>
+          <text x="120" y="125" text-anchor="middle" fill="#10b981" font-size="24" font-family="monospace">💻</text>
+          <text x="120" y="155" text-anchor="middle" fill="#10b981" font-size="11" font-family="monospace">YOUR COMPUTER</text>
+        </g>
+        <line x1="210" y1="130" x2="290" y2="130" stroke="#0ea5e9" stroke-width="3" class="anim-flow"/>
+        <polygon points="290,130 280,124 280,136" fill="#0ea5e9"/>
+        <text x="250" y="118" text-anchor="middle" fill="#38bdf8" font-size="11" font-family="monospace">git push</text>
+        <g class="anim-fade-in anim-delay-1">
+          <rect x="300" y="60" width="180" height="140" rx="14" fill="#1a1a1a" stroke="#0ea5e9" stroke-width="2"/>
+          <text x="390" y="115" text-anchor="middle" fill="#38bdf8" font-size="32" font-family="monospace">🐙</text>
+          <text x="390" y="150" text-anchor="middle" fill="#38bdf8" font-size="12" font-family="monospace" font-weight="700">GITHUB</text>
+          <text x="390" y="170" text-anchor="middle" fill="#a0a0a0" font-size="10" font-family="monospace">stores your code</text>
+        </g>
+        <line x1="490" y1="130" x2="570" y2="130" stroke="#10b981" stroke-width="3" class="anim-flow"/>
+        <polygon points="570,130 560,124 560,136" fill="#10b981"/>
+        <text x="530" y="118" text-anchor="middle" fill="#10b981" font-size="11" font-family="monospace">auto</text>
+        <g class="anim-fade-in anim-delay-2">
+          <rect x="580" y="80" width="180" height="100" rx="12" fill="#1a1a1a" stroke="#8b5cf6" stroke-width="2"/>
+          <text x="670" y="125" text-anchor="middle" fill="#8b5cf6" font-size="24" font-family="monospace">🌐</text>
+          <text x="670" y="155" text-anchor="middle" fill="#8b5cf6" font-size="11" font-family="monospace">LIVE SITE</text>
+        </g>
+      </svg>
+      <div class="diagram-caption">Push to GitHub → Pages deploys automatically → Live site</div>
+    </div>
 
-        <div class="step">
-          <span class="step-num">01</span>
-          <i class="fab fa-github step-icon"></i>
-          <h3>Deploy with GitHub Pages</h3>
-          <p>Push a repo, enable Pages, and see your site live at <em>username.github.io</em> in minutes.</p>
-          <span class="step-status"><span class="dot"></span> In progress</span>
-        </div>
+    <h2>Step-by-Step: Deploy Your First Site</h2>
 
-        <div class="step">
-          <span class="step-num">02</span>
-          <i class="fas fa-bolt step-icon"></i>
-          <h3>Netlify &amp; Vercel</h3>
-          <p>Connect a Git repo, get auto-deploys, preview URLs, and instant rollbacks — all free.</p>
-          <span class="step-status"><span class="dot"></span> In progress</span>
-        </div>
+    <h3>Step 1: Create a Repository</h3>
+    <ol>
+      <li>Go to <a href="https://github.com/new" target="_blank">github.com/new</a></li>
+      <li>Name it <code>my-first-site</code></li>
+      <li>Choose <strong>Public</strong></li>
+      <li>Click <strong>Create repository</strong></li>
+    </ol>
 
-        <div class="step">
-          <span class="step-num">03</span>
-          <i class="fas fa-globe step-icon"></i>
-          <h3>Custom Domains</h3>
-          <p>Buy a cheap domain, point it to your host, and configure DNS records the right way.</p>
-          <span class="step-status"><span class="dot"></span> Planned</span>
-        </div>
+    <h3>Step 2: Create index.html</h3>
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-flag">&lt;!DOCTYPE html&gt;</span>
+<span class="c-flag">&lt;html</span> <span class="c-str">lang</span>=<span class="c-str">"en"</span><span class="c-flag">&gt;</span>
+<span class="c-flag">&lt;head&gt;</span>
+  <span class="c-flag">&lt;meta</span> <span class="c-str">charset</span>=<span class="c-str">"UTF-8"</span><span class="c-flag">&gt;</span>
+  <span class="c-flag">&lt;title&gt;</span>My First Site<span class="c-flag">&lt;/title&gt;</span>
+<span class="c-flag">&lt;/head&gt;</span>
+<span class="c-flag">&lt;body&gt;</span>
+  <span class="c-flag">&lt;h1&gt;</span>🎉 Hello World!<span class="c-flag">&lt;/h1&gt;</span>
+  <span class="c-flag">&lt;p&gt;</span>Live on GitHub Pages!<span class="c-flag">&lt;/p&gt;</span>
+<span class="c-flag">&lt;/body&gt;</span>
+<span class="c-flag">&lt;/html&gt;</span></code></pre>
 
-        <div class="step">
-          <span class="step-num">04</span>
-          <i class="fas fa-shield-alt step-icon"></i>
-          <h3>HTTPS &amp; Security</h3>
-          <p>Free SSL certificates, redirect rules, security headers, and best practices.</p>
-          <span class="step-status"><span class="dot"></span> Planned</span>
-        </div>
+    <h3>Step 3: Push to GitHub</h3>
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-cmd">git init</span>
+<span class="c-cmd">git add</span> index.html
+<span class="c-cmd">git commit</span> <span class="c-flag">-m</span> <span class="c-str">"Initial commit"</span>
+<span class="c-cmd">git branch</span> <span class="c-flag">-M</span> main
+<span class="c-cmd">git remote add</span> origin https://github.com/YOUR-USERNAME/my-first-site.git
+<span class="c-cmd">git push</span> <span class="c-flag">-u</span> origin main</code></pre>
 
-        <div class="step">
-          <span class="step-num">05</span>
-          <i class="fas fa-code-branch step-icon"></i>
-          <h3>CI/CD Pipelines</h3>
-          <p>Automatic deploys from a branch push. Preview environments for every PR.</p>
-          <span class="step-status"><span class="dot"></span> Planned</span>
-        </div>
+    <h3>Step 4: Enable GitHub Pages</h3>
+    <ol>
+      <li>Repo → <strong>Settings</strong> → <strong>Pages</strong></li>
+      <li>Source: <strong>Deploy from a branch</strong></li>
+      <li>Branch: <code>main</code>, Folder: <code>/ (root)</code></li>
+      <li>Save</li>
+    </ol>
 
-        <div class="step">
-          <span class="step-num">06</span>
-          <i class="fas fa-rocket step-icon"></i>
-          <h3>Capstone Project</h3>
-          <p>Ship a full portfolio site to a custom domain — proof of your new skills.</p>
-          <span class="step-status"><span class="dot"></span> Planned</span>
-        </div>
+    <h3>Step 5: Visit Your Site</h3>
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>https://YOUR-USERNAME.github.io/my-first-site/</code></pre>
 
+    <h2>User Site vs Project Site</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Type</th><th>Repo name</th><th>URL</th></tr></thead>
+        <tbody>
+          <tr><td><strong>User site</strong></td><td><code>USERNAME.github.io</code></td><td><code>https://USERNAME.github.io</code></td></tr>
+          <tr><td><strong>Project site</strong></td><td>Any name</td><td><code>https://USERNAME.github.io/repo/</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Updating Your Site</h2>
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-cmd">git add</span> .
+<span class="c-cmd">git commit</span> <span class="c-flag">-m</span> <span class="c-str">"Update homepage"</span>
+<span class="c-cmd">git push</span></code></pre>
+
+    <div class="quiz" data-quiz="m1-a">
+      <div class="quiz-label">✓ Quick Check</div>
+      <div class="q-text">What must your main page be named?</div>
+      <div class="opts">
+        <button class="opt" data-correct="false">main.html</button>
+        <button class="opt" data-correct="false">home.html</button>
+        <button class="opt" data-correct="true">index.html</button>
+        <button class="opt" data-correct="false">default.html</button>
       </div>
+      <div class="feedback"></div>
     </div>
 
-    <!-- NOTIFY ME -->
-    <div class="notify">
-      <h2>🔔 Get notified when it launches</h2>
-      <p>Drop your email and we'll ping you the moment this course goes live. No spam — just one launch announcement.</p>
-
-      <form class="notify-form" id="notifyForm" autocomplete="off">
-        <input type="email" id="notifyEmail" placeholder="you@example.com" required>
-        <button type="submit" id="notifyBtn">
-          <i class="fas fa-bell"></i> Notify Me
-        </button>
-      </form>
-
-      <div class="status-msg" id="notifyStatus"></div>
-    </div>
-
-    <!-- INFO BANNER -->
-    <div class="info">
-      <i class="fas fa-circle-info"></i>
-      <div class="info-text">
-        <strong>Meanwhile — try the GitHub course</strong>
-        Free Web Hosting relies heavily on GitHub concepts. Start with
-        <a href="/free_course/github/" style="color:var(--sky);font-weight:700;">GitHub: Zero to Hero</a>
-        to get a head start — it's already live with 9 modules, quizzes, and a certificate.
+    <div class="quiz" data-quiz="m1-b">
+      <div class="quiz-label">✓ Quick Check</div>
+      <div class="q-text">Free GitHub Pages requires the repo to be:</div>
+      <div class="opts">
+        <button class="opt" data-correct="false">Private</button>
+        <button class="opt" data-correct="true">Public</button>
+        <button class="opt" data-correct="false">Either</button>
+        <button class="opt" data-correct="false">Invitation only</button>
       </div>
+      <div class="feedback"></div>
     </div>
 
-    <!-- CONTACT -->
-    <div class="contact">
-      <p>Questions? Reach out</p>
-      <div class="contact-links">
-        <a href="https://wa.me/255740706007" target="_blank" rel="noopener">
-          <i class="fab fa-whatsapp"></i> WhatsApp
-        </a>
-        <a href="mailto:Twarvisteh@gmail.com">
-          <i class="fas fa-envelope"></i> Email
-        </a>
-        <a href="https://www.instagram.com/twarvis_" target="_blank" rel="noopener">
-          <i class="fab fa-instagram"></i> Instagram
-        </a>
-        <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener">
-          <i class="fab fa-tiktok"></i> TikTok
-        </a>
+    <div class="mark-complete" data-module="m1">
+      <div class="mc-icon"><i class="fas fa-flag-checkered"></i></div>
+      <div class="mc-text">
+        <strong>Finished Module 01?</strong>
+        <span>Mark complete to unlock Netlify.</span>
       </div>
+      <button onclick="markComplete('m1')">✓ Mark Complete</button>
     </div>
+  </div>
+</div>
 
+<!-- ========== MODULE 2: NETLIFY ========== -->
+<div class="module-section" data-module="m2">
+  <div class="module-hero">
+    <div class="module-badge"><i class="fas fa-bolt"></i> Module 02 — Netlify</div>
+    <h1 class="module-title">Deploy with Netlify</h1>
+    <p class="module-subtitle">Netlify takes static hosting to the next level — drag and drop deploys, form handling, serverless functions, and instant rollbacks.</p>
+    <div class="module-meta">
+      <div class="meta-item"><i class="fas fa-clock"></i> 12 min</div>
+      <div class="meta-item"><i class="fas fa-signal"></i> Beginner+</div>
+      <div class="meta-item"><i class="fas fa-question-circle"></i> 2 quizzes</div>
+    </div>
   </div>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-inner">
-      <p>© 2026 Student Hub · All rights reserved.</p>
-      <div class="footer-socials">
-        <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
-        <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
-        <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+  <div class="module-content">
+    <h2>Why Netlify?</h2>
+    <div class="compare-grid">
+      <div class="compare-card" style="--card-color: #0ea5e9;">
+        <div class="cc-icon"><i class="fas fa-mouse-pointer"></i></div>
+        <h4>Drag &amp; Drop Deploy</h4>
+        <p>Drop a folder — it's live. No Git required.</p>
+      </div>
+      <div class="compare-card" style="--card-color: #8b5cf6;">
+        <div class="cc-icon"><i class="fas fa-clock-rotate-left"></i></div>
+        <h4>Instant Rollbacks</h4>
+        <p>Every deploy is saved. One click to go back.</p>
+      </div>
+      <div class="compare-card" style="--card-color: #10b981;">
+        <div class="cc-icon"><i class="fas fa-envelope"></i></div>
+        <h4>Form Handling</h4>
+        <p>Collect form submissions — no backend code.</p>
+      </div>
+      <div class="compare-card" style="--card-color: #f59e0b;">
+        <div class="cc-icon"><i class="fas fa-code-branch"></i></div>
+        <h4>Preview Deploys</h4>
+        <p>Every PR gets its own live URL for testing.</p>
       </div>
     </div>
-  </footer>
 
+    <h2>Method 1: Drag &amp; Drop</h2>
+    <ol>
+      <li>Go to <a href="https://app.netlify.com/drop" target="_blank">app.netlify.com/drop</a></li>
+      <li>Drag your project folder</li>
+      <li>Live at <code>random-name.netlify.app</code> in 10 seconds</li>
+    </ol>
+
+    <h2>Method 2: Connect Git (Recommended)</h2>
+    <ol>
+      <li>Sign up at <a href="https://netlify.com" target="_blank">netlify.com</a> with GitHub</li>
+      <li><strong>Add new site → Import from GitHub</strong></li>
+      <li>Branch: <code>main</code>, Build command empty, Publish directory empty</li>
+      <li>Deploy</li>
+    </ol>
+
+    <h2>Netlify Forms (No Backend)</h2>
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-flag">&lt;form</span> <span class="c-str">name</span>=<span class="c-str">"contact"</span> <span class="c-str">netlify</span><span class="c-flag">&gt;</span>
+  <span class="c-flag">&lt;input</span> <span class="c-str">type</span>=<span class="c-str">"text"</span> <span class="c-str">name</span>=<span class="c-str">"name"</span> <span class="c-flag">/&gt;</span>
+  <span class="c-flag">&lt;input</span> <span class="c-str">type</span>=<span class="c-str">"email"</span> <span class="c-str">name</span>=<span class="c-str">"email"</span> <span class="c-flag">/&gt;</span>
+  <span class="c-flag">&lt;textarea</span> <span class="c-str">name</span>=<span class="c-str">"message"</span><span class="c-flag">&gt;&lt;/textarea&gt;</span>
+  <span class="c-flag">&lt;button</span> <span class="c-str">type</span>=<span class="c-str">"submit"</span><span class="c-flag">&gt;</span>Send<span class="c-flag">&lt;/button&gt;</span>
+<span class="c-flag">&lt;/form&gt;</span></code></pre>
+
+    <div class="quiz" data-quiz="m2-a">
+      <div class="quiz-label">✓ Quick Check</div>
+      <div class="q-text">What does Netlify generate for every pull request?</div>
+      <div class="opts">
+        <button class="opt" data-correct="false">An email notification</button>
+        <button class="opt" data-correct="true">A preview deploy with its own URL</button>
+        <button class="opt" data-correct="false">A backup of the main branch</button>
+        <button class="opt" data-correct="false">A screenshot</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="quiz" data-quiz="m2-b">
+      <div class="quiz-label">✓ Quick Check</div>
+      <div class="q-text">How do you enable form handling on Netlify?</div>
+      <div class="opts">
+        <button class="opt" data-correct="false">Enable in Site Settings</button>
+        <button class="opt" data-correct="false">Install a plugin</button>
+        <button class="opt" data-correct="true">Add <code>netlify</code> to form tag</button>
+        <button class="opt" data-correct="false">Write a serverless function</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="mark-complete" data-module="m2">
+      <div class="mc-icon"><i class="fas fa-flag-checkered"></i></div>
+      <div class="mc-text">
+        <strong>Finished Module 02?</strong>
+        <span>Continue to Vercel.</span>
+      </div>
+      <button onclick="markComplete('m2')">✓ Mark Complete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODULE 3: VERCEL ========== -->
+<div class="module-section" data-module="m3">
+  <div class="module-hero">
+    <div class="module-badge"><i class="fas fa-triangle"></i> Module 03 — Vercel</div>
+    <h1 class="module-title">Deploy with Vercel</h1>
+    <p class="module-subtitle">Vercel is the platform behind Next.js. Optimized for modern frontend frameworks with serverless functions and a global edge network.</p>
+    <div class="module-meta">
+      <div class="meta-item"><i class="fas fa-clock"></i> 11 min</div>
+      <div class="meta-item"><i class="fas fa-signal"></i> Intermediate</div>
+      <div class="meta-item"><i class="fas fa-question-circle"></i> 1 quiz</div>
+    </div>
+  </div>
+
+  <div class="module-content">
+    <h2>Why Vercel?</h2>
+    <ul>
+      <li>⚡ <strong>Speed</strong> — edge network, millisecond loads</li>
+      <li>🔧 <strong>Framework support</strong> — built by Next.js creators</li>
+      <li>🧩 <strong>Serverless functions</strong> — API routes with zero config</li>
+    </ul>
+
+    <h2>Deploy in 60 Seconds</h2>
+    <ol>
+      <li>Sign up at <a href="https://vercel.com/signup" target="_blank">vercel.com/signup</a> with GitHub</li>
+      <li>Click <strong>Add New → Project</strong></li>
+      <li>Import your repo</li>
+      <li>Click <strong>Deploy</strong> — live at <code>your-project.vercel.app</code></li>
+    </ol>
+
+    <h2>CLI Deploy</h2>
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-cmd">npm install</span> <span class="c-flag">-g</span> vercel
+<span class="c-cmd">vercel login</span>
+<span class="c-cmd">vercel</span>              <span class="c-comment"># preview</span>
+<span class="c-cmd">vercel</span> <span class="c-flag">--prod</span>       <span class="c-comment"># production</span></code></pre>
+
+    <h2>Serverless Functions</h2>
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-comment">// api/hello.js</span>
+<span class="c-flag">export default function</span> handler(req, res) {
+  res.status(<span class="c-str">200</span>).json({ message: <span class="c-str">"Hello!"</span> });
+}</code></pre>
+    <p>Accessible at <code>your-site.vercel.app/api/hello</code>.</p>
+
+    <div class="quiz" data-quiz="m3">
+      <div class="quiz-label">✓ Quick Check</div>
+      <div class="q-text">Where do you put serverless function files in a Vercel project?</div>
+      <div class="opts">
+        <button class="opt" data-correct="false">In a <code>server/</code> folder</button>
+        <button class="opt" data-correct="true">In an <code>api/</code> folder</button>
+        <button class="opt" data-correct="false">Anywhere</button>
+        <button class="opt" data-correct="false">Only in Next.js</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="mark-complete" data-module="m3">
+      <div class="mc-icon"><i class="fas fa-flag-checkered"></i></div>
+      <div class="mc-text">
+        <strong>Finished Module 03?</strong>
+        <span>Next: Render + TZ note.</span>
+      </div>
+      <button onclick="markComplete('m3')">✓ Mark Complete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODULE 4: RENDER ========== -->
+<div class="module-section" data-module="m4">
+  <div class="module-hero">
+    <div class="module-badge"><i class="fas fa-layer-group"></i> Module 04 — Render</div>
+    <h1 class="module-title">Deploy Full-Stack Apps with Render</h1>
+    <p class="module-subtitle">Render hosts everything — Python, Node, Django, Docker. Perfect for real apps with databases and APIs.</p>
+    <div class="module-meta">
+      <div class="meta-item"><i class="fas fa-clock"></i> 14 min</div>
+      <div class="meta-item"><i class="fas fa-signal"></i> Intermediate</div>
+      <div class="meta-item"><i class="fas fa-exclamation-triangle"></i> Region note</div>
+    </div>
+  </div>
+
+  <div class="module-content">
+    <h2>What is Render?</h2>
+    <p>Full-stack cloud platform. Unlike static hosts, Render runs <em>real applications</em>:</p>
+    <div class="compare-grid">
+      <div class="compare-card" style="--card-color: #8b5cf6;">
+        <div class="cc-icon"><i class="fab fa-python"></i></div>
+        <h4>Python / Django</h4>
+        <p>Full backend apps with databases.</p>
+      </div>
+      <div class="compare-card" style="--card-color: #10b981;">
+        <div class="cc-icon"><i class="fab fa-node-js"></i></div>
+        <h4>Node.js</h4>
+        <p>JavaScript backends, APIs.</p>
+      </div>
+      <div class="compare-card" style="--card-color: #0ea5e9;">
+        <div class="cc-icon"><i class="fab fa-docker"></i></div>
+        <h4>Docker</h4>
+        <p>Any language, any framework.</p>
+      </div>
+      <div class="compare-card" style="--card-color: #f59e0b;">
+        <div class="cc-icon"><i class="fas fa-database"></i></div>
+        <h4>PostgreSQL</h4>
+        <p>Free 1 GB database included.</p>
+      </div>
+    </div>
+
+    <h2>⚠️ Important Note for Tanzania Users</h2>
+
+    <div class="render-warning">
+      <div class="rw-header">
+        <div class="rw-icon"><i class="fas fa-exclamation-triangle"></i></div>
+        <h3>Render may be slow or unreachable on some networks</h3>
+      </div>
+      <p>Users on <strong>Halotel Tanzania</strong> (and a few other regional ISPs) have reported that <code>onrender.com</code> sites sometimes fail to load or take 50+ seconds.</p>
+      <p>This is <em>not</em> a Render problem — it's a <strong>network routing issue</strong> between some Tanzanian ISPs and Cloudflare/AWS.</p>
+      <h4 style="color: var(--text); margin-top: 18px;">What you can do:</h4>
+      <ul>
+        <li>✅ <strong>Use a VPN</strong> — bypasses the issue 90% of the time</li>
+        <li>✅ <strong>Try mobile data</strong> — Vodacom, Airtel, Tigo usually work</li>
+        <li>✅ <strong>Deploy on Netlify/Vercel</strong> — better local reliability</li>
+        <li>✅ <strong>Add Cloudflare proxy</strong> — put Cloudflare in front of Render</li>
+      </ul>
+      <p style="margin-top: 16px;"><strong>Bottom line:</strong> Render works great, but test on Halotel before committing if your audience is in Tanzania.</p>
+    </div>
+
+    <h2>Deploy a Python App</h2>
+    <ol>
+      <li>Sign up at <a href="https://render.com" target="_blank">render.com</a></li>
+      <li><strong>New + → Web Service</strong></li>
+      <li>Connect GitHub repo</li>
+      <li>Region: <strong>Frankfurt</strong> (closest to TZ)</li>
+      <li>Build Command: <code>pip install -r requirements.txt</code></li>
+      <li>Start Command: <code>gunicorn app:app</code></li>
+      <li>Instance Type: <strong>Free</strong></li>
+    </ol>
+
+    <h2>Free Tier Limitations</h2>
+    <div class="callout warning">
+      <i class="fas fa-hourglass-half"></i>
+      <div class="callout-body">
+        <strong>The "cold start" problem</strong>
+        <p>Free tier apps <strong>spin down after 15 minutes of inactivity</strong>. Next request takes <strong>30-50 seconds</strong> to wake.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Limit</th><th>Free Tier</th></tr></thead>
+        <tbody>
+          <tr><td>App sleeps after</td><td>15 minutes</td></tr>
+          <tr><td>Wake-up time</td><td>~30-50 seconds</td></tr>
+          <tr><td>Bandwidth</td><td>100 GB/month</td></tr>
+          <tr><td>PostgreSQL</td><td>1 GB</td></tr>
+          <tr><td>Build minutes</td><td>500/month</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Keep-Alive Trick</h2>
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-comment"># .github/workflows/keep-alive.yml</span>
+<span class="c-flag">name:</span> Keep Alive
+<span class="c-flag">on:</span>
+  <span class="c-flag">schedule:</span>
+    - <span class="c-flag">cron:</span> <span class="c-str">'*/14 * * * *'</span>
+<span class="c-flag">jobs:</span>
+  <span class="c-flag">ping:</span>
+    <span class="c-flag">runs-on:</span> ubuntu-latest
+    <span class="c-flag">steps:</span>
+      - <span class="c-flag">run:</span> <span class="c-str">curl -s https://my-app.onrender.com</span></code></pre>
+
+    <div class="quiz" data-quiz="m4-a">
+      <div class="quiz-label">✓ Quick Check</div>
+      <div class="q-text">What happens to a free Render app after 15 minutes of inactivity?</div>
+      <div class="opts">
+        <button class="opt" data-correct="false">It gets deleted</button>
+        <button class="opt" data-correct="true">It spins down and takes 30-50s to wake up</button>
+        <button class="opt" data-correct="false">It switches to paid</button>
+        <button class="opt" data-correct="false">It gets slower but stays online</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="quiz" data-quiz="m4-b">
+      <div class="quiz-label">✓ Quick Check</div>
+      <div class="q-text">Which provider may have routing issues on Halotel Tanzania?</div>
+      <div class="opts">
+        <button class="opt" data-correct="false">GitHub Pages</button>
+        <button class="opt" data-correct="false">Netlify</button>
+        <button class="opt" data-correct="true">Render</button>
+        <button class="opt" data-correct="false">Vercel</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="mark-complete" data-module="m4">
+      <div class="mc-icon"><i class="fas fa-flag-checkered"></i></div>
+      <div class="mc-text">
+        <strong>Finished Module 04?</strong>
+        <span>Ready for the provider showcase!</span>
+      </div>
+      <button onclick="markComplete('m4')">✓ Mark Complete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== PROVIDER SHOWCASE ========== -->
+<div class="module-section" data-module="providers">
+  <div class="module-hero">
+    <div class="module-badge"><i class="fas fa-th"></i> Bonus — All Providers</div>
+    <h1 class="module-title">Free Hosting Providers — Visual Guide</h1>
+    <p class="module-subtitle">Logos, features, links, na jinsi ya kutumia kila platform. Chagua moja kulingana na project yako.</p>
+    <div class="module-meta">
+      <div class="meta-item"><i class="fas fa-clock"></i> 10 min</div>
+      <div class="meta-item"><i class="fas fa-signal"></i> Reference</div>
+      <div class="meta-item"><i class="fas fa-link"></i> Direct links</div>
+    </div>
+  </div>
+
+  <div class="module-content">
+    <h2>Quick Comparison</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Provider</th><th>Best for</th><th>Free tier</th><th>Custom domain</th><th>HTTPS</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>GitHub Pages</strong></td><td>Static sites</td><td style="color:var(--green)">1 GB, 100 GB BW</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
+          <tr><td><strong>Netlify</strong></td><td>Static + forms</td><td style="color:var(--green)">100 GB BW, 300 min</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
+          <tr><td><strong>Vercel</strong></td><td>Next.js / React</td><td style="color:var(--green)">100 GB BW, 6000 min</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
+          <tr><td><strong>Render</strong></td><td>Python / Django</td><td style="color:var(--green)">750 hrs, sleeps</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
+          <tr><td><strong>Cloudflare Pages</strong></td><td>Unlimited BW</td><td style="color:var(--green)">Unlimited BW</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>GitHub Pages</h2>
+    <div class="provider-card">
+      <div class="provider-logo" style="--logo-color: #ffffff;">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+          <path fill="#ffffff" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+        </svg>
+      </div>
+      <div class="provider-info">
+        <div class="provider-head">
+          <h3>GitHub Pages</h3>
+          <span class="provider-tag">Free forever</span>
+        </div>
+        <p>Free static site hosting from any GitHub repo. Requires public repo for free accounts.</p>
+        <h4>How to use it:</h4>
+        <ol>
+          <li>Create repo at <a href="https://github.com/new" target="_blank">github.com/new</a></li>
+          <li>Add <code>index.html</code></li>
+          <li><strong>Settings → Pages → Deploy from branch → main</strong></li>
+          <li>Live at <code>username.github.io/repo</code></li>
+        </ol>
+        <div class="provider-actions">
+          <a href="https://pages.github.com" target="_blank" class="provider-btn primary"><i class="fab fa-github"></i> Home</a>
+          <a href="https://docs.github.com/en/pages" target="_blank" class="provider-btn"><i class="fas fa-book"></i> Docs</a>
+          <a href="https://github.com/new" target="_blank" class="provider-btn"><i class="fas fa-plus"></i> New Repo</a>
+        </div>
+      </div>
+    </div>
+
+    <h2>Netlify</h2>
+    <div class="provider-card">
+      <div class="provider-logo" style="--logo-color: #00C7B7;">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+          <path fill="#00C7B7" d="M16.934 8.519a1.044 1.044 0 0 1 .303.23l2.349-1.045-2.267-.789a1.042 1.042 0 0 1-.385.373zm-1.27.662a1.042 1.042 0 0 1-1.207-.266l-1.3.687a1.045 1.045 0 0 1 .01.985l1.5.798a1.042 1.042 0 0 1 .998-.013l1.5-.92a1.043 1.043 0 0 1-.016-.278zM12 18.5a6.5 6.5 0 1 1 0-13 6.5 6.5 0 0 1 0 13zm0-15.5a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"/>
+        </svg>
+      </div>
+      <div class="provider-info">
+        <div class="provider-head">
+          <h3>Netlify</h3>
+          <span class="provider-tag" style="background: rgba(0,199,183,0.15); color: #00C7B7;">Best free tier</span>
+        </div>
+        <p>Static hosting with superpowers — drag &amp; drop, forms, functions, instant rollbacks.</p>
+        <h4>How to use it:</h4>
+        <ol>
+          <li><strong>Fast:</strong> <a href="https://app.netlify.com/drop" target="_blank">app.netlify.com/drop</a> — drag folder</li>
+          <li><strong>Pro:</strong> <a href="https://netlify.com" target="_blank">netlify.com</a> → Add new site → Import from GitHub</li>
+          <li>Live in ~30 seconds</li>
+        </ol>
+        <div class="provider-actions">
+          <a href="https://app.netlify.com/drop" target="_blank" class="provider-btn primary" style="--btn-color: #00C7B7;"><i class="fas fa-upload"></i> Drop Deploy</a>
+          <a href="https://docs.netlify.com" target="_blank" class="provider-btn"><i class="fas fa-book"></i> Docs</a>
+          <a href="https://netlify.com" target="_blank" class="provider-btn"><i class="fas fa-user-plus"></i> Sign Up</a>
+        </div>
+      </div>
+    </div>
+
+    <h2>Vercel</h2>
+    <div class="provider-card">
+      <div class="provider-logo" style="--logo-color: #ffffff;">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+          <path fill="#ffffff" d="M12 1L24 22H0L12 1z"/>
+        </svg>
+      </div>
+      <div class="provider-info">
+        <div class="provider-head">
+          <h3>Vercel</h3>
+          <span class="provider-tag" style="background: rgba(139,92,246,0.15); color: #8b5cf6;">Framework-first</span>
+        </div>
+        <p>Built by Next.js creators. Best for React, Next.js, Vue, Svelte, Astro.</p>
+        <h4>How to use it:</h4>
+        <ol>
+          <li>Sign up at <a href="https://vercel.com/signup" target="_blank">vercel.com/signup</a> with GitHub</li>
+          <li><strong>Add New → Project</strong> → Import repo</li>
+          <li>Live at <code>your-project.vercel.app</code></li>
+        </ol>
+        <div class="provider-actions">
+          <a href="https://vercel.com/signup" target="_blank" class="provider-btn primary" style="--btn-color: #8b5cf6;"><i class="fas fa-user-plus"></i> Sign Up</a>
+          <a href="https://vercel.com/docs" target="_blank" class="provider-btn"><i class="fas fa-book"></i> Docs</a>
+          <a href="https://vercel.com/new" target="_blank" class="provider-btn"><i class="fas fa-plus"></i> Deploy</a>
+        </div>
+      </div>
+    </div>
+
+    <h2>Render</h2>
+    <div class="provider-card">
+      <div class="provider-logo" style="--logo-color: #46E3B7;">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+          <path fill="#46E3B7" d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2.4c5.302 0 9.6 4.298 9.6 9.6s-4.298 9.6-9.6 9.6-9.6-4.298-9.6-9.6 4.298-9.6 9.6-9.6zm3.6 9.6a3.6 3.6 0 1 1-7.2 0 3.6 3.6 0 0 1 7.2 0z"/>
+        </svg>
+      </div>
+      <div class="provider-info">
+        <div class="provider-head">
+          <h3>Render</h3>
+          <span class="provider-tag" style="background: rgba(244,63,94,0.15); color: #f43f5e;">Full-stack</span>
+        </div>
+        <p>Full-stack cloud — Python, Node, Docker, free PostgreSQL. ⚠️ TZ network note above.</p>
+        <h4>How to use it:</h4>
+        <ol>
+          <li>Sign up at <a href="https://render.com" target="_blank">render.com</a></li>
+          <li><strong>New + → Web Service</strong></li>
+          <li>Build: <code>pip install -r requirements.txt</code></li>
+          <li>Start: <code>gunicorn app:app</code></li>
+        </ol>
+        <div class="provider-actions">
+          <a href="https://render.com" target="_blank" class="provider-btn primary" style="--btn-color: #46E3B7;"><i class="fas fa-user-plus"></i> Sign Up</a>
+          <a href="https://render.com/docs" target="_blank" class="provider-btn"><i class="fas fa-book"></i> Docs</a>
+          <a href="https://dashboard.render.com" target="_blank" class="provider-btn"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        </div>
+      </div>
+    </div>
+
+    <h2>Cloudflare Pages</h2>
+    <div class="provider-card">
+      <div class="provider-logo" style="--logo-color: #F38020;">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+          <path fill="#F38020" d="M10.715 14.32H5.442l-.64-1.203L13.673 0l1.397.579-1.752 9.112h5.24l.648 1.192L10.719 24l-1.412-.54ZM4.091 5.448a.5787.5787 0 1 1 0-1.1574.5787.5787 0 0 1 0 1.1574zm1.543 0a.5787.5787 0 1 1 0-1.1574.5787.5787 0 0 1 0 1.1574zm1.544 0a.5787.5787 0 1 1 0-1.1574.5787.5787 0 0 1 0 1.1574zm8.657-2.7h5.424l.772.771v16.975l-.772.772h-7.392l.374-.579h6.779l.432-.432V3.758l-.432-.432h-4.676l-.552 2.85h-.59l.529-2.877.108-.552Z"/>
+        </svg>
+      </div>
+      <div class="provider-info">
+        <div class="provider-head">
+          <h3>Cloudflare Pages</h3>
+          <span class="provider-tag" style="background: rgba(243,128,32,0.15); color: #F38020;">Unlimited bandwidth</span>
+        </div>
+        <p>Static + edge functions on Cloudflare's network. <strong>Unlimited bandwidth</strong> free tier — no other provider offers this.</p>
+        <h4>How to use it:</h4>
+        <ol>
+          <li>Sign up at <a href="https://dash.cloudflare.com/sign-up" target="_blank">dash.cloudflare.com</a></li>
+          <li><strong>Workers &amp; Pages → Create → Pages</strong></li>
+          <li>Connect GitHub repo</li>
+          <li>Deploy at <code>your-project.pages.dev</code></li>
+        </ol>
+        <div class="provider-actions">
+          <a href="https://dash.cloudflare.com/sign-up" target="_blank" class="provider-btn primary" style="--btn-color: #F38020;"><i class="fas fa-user-plus"></i> Sign Up</a>
+          <a href="https://developers.cloudflare.com/pages/" target="_blank" class="provider-btn"><i class="fas fa-book"></i> Docs</a>
+        </div>
+      </div>
+    </div>
+
+    <h2>Which One Should You Choose?</h2>
+    <div class="compare-grid">
+      <div class="compare-card" style="--card-color: #ffffff;">
+        <div class="cc-icon"><i class="fas fa-user"></i></div>
+        <h4>Portfolio / Blog</h4>
+        <p><strong>GitHub Pages</strong> or <strong>Netlify</strong></p>
+      </div>
+      <div class="compare-card" style="--card-color: #00C7B7;">
+        <div class="cc-icon"><i class="fas fa-wpforms"></i></div>
+        <h4>Forms / Contact</h4>
+        <p><strong>Netlify</strong> — built-in forms</p>
+      </div>
+      <div class="compare-card" style="--card-color: #8b5cf6;">
+        <div class="cc-icon"><i class="fab fa-react"></i></div>
+        <h4>React / Next.js</h4>
+        <p><strong>Vercel</strong></p>
+      </div>
+      <div class="compare-card" style="--card-color: #46E3B7;">
+        <div class="cc-icon"><i class="fab fa-python"></i></div>
+        <h4>Python / Django</h4>
+        <p><strong>Render</strong></p>
+      </div>
+      <div class="compare-card" style="--card-color: #F38020;">
+        <div class="cc-icon"><i class="fas fa-infinity"></i></div>
+        <h4>High Traffic</h4>
+        <p><strong>Cloudflare Pages</strong></p>
+      </div>
+      <div class="compare-card" style="--card-color: #38bdf8;">
+        <div class="cc-icon"><i class="fas fa-globe-africa"></i></div>
+        <h4>Tanzania Audience</h4>
+        <p><strong>Netlify</strong> or <strong>Vercel</strong></p>
+      </div>
+    </div>
+
+    <div class="mark-complete" data-module="providers">
+      <div class="mc-icon"><i class="fas fa-flag-checkered"></i></div>
+      <div class="mc-text">
+        <strong>Reviewed all providers?</strong>
+        <span>Continue to Module 05.</span>
+      </div>
+      <button onclick="markComplete('providers')">✓ Mark Complete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODULE 5: CUSTOM DOMAINS ========== -->
+<div class="module-section" data-module="m5">
+  <div class="module-hero">
+    <div class="module-badge"><i class="fas fa-globe"></i> Module 05 — Custom Domains</div>
+    <h1 class="module-title">Custom Domains &amp; DNS</h1>
+    <p class="module-subtitle">Replace <code>username.github.io</code> with <code>yourname.com</code>. Learn how domains, DNS records, and nameservers work.</p>
+    <div class="module-meta">
+      <div class="meta-item"><i class="fas fa-clock"></i> 15 min</div>
+      <div class="meta-item"><i class="fas fa-signal"></i> Intermediate</div>
+      <div class="meta-item"><i class="fas fa-question-circle"></i> 2 quizzes</div>
+    </div>
+  </div>
+
+  <div class="module-content">
+    <h2>Why a Custom Domain?</h2>
+    <ul>
+      <li>🔒 <strong>Professional</strong> — <code>yourname.com</code> looks better than <code>yourname.github.io</code></li>
+      <li>📧 <strong>Email</strong> — you can have <code>you@yourname.com</code></li>
+      <li>🎨 <strong>Branding</strong> — own your online identity</li>
+      <li>🔗 <strong>Portable</strong> — switch hosts without changing URL</li>
+    </ul>
+
+    <h2>How Domains Work</h2>
+
+    <div class="diagram">
+      <svg viewBox="0 0 800 380" xmlns="http://www.w3.org/2000/svg">
+        <!-- Domain registrar -->
+        <g class="anim-fade-in">
+          <rect x="40" y="40" width="200" height="100" rx="12" fill="#1a1a1a" stroke="#f59e0b" stroke-width="2"/>
+          <text x="140" y="80" text-anchor="middle" fill="#f59e0b" font-size="24" font-family="monospace">🏢</text>
+          <text x="140" y="110" text-anchor="middle" fill="#f59e0b" font-size="11" font-family="monospace" font-weight="700">REGISTRAR</text>
+          <text x="140" y="128" text-anchor="middle" fill="#a0a0a0" font-size="9" font-family="monospace">Namecheap, Cloudflare</text>
+        </g>
+
+        <!-- You -->
+        <g class="anim-fade-in anim-delay-1">
+          <rect x="40" y="220" width="200" height="100" rx="12" fill="#1a1a1a" stroke="#0ea5e9" stroke-width="2"/>
+          <text x="140" y="260" text-anchor="middle" fill="#0ea5e9" font-size="24" font-family="monospace">👤</text>
+          <text x="140" y="290" text-anchor="middle" fill="#38bdf8" font-size="11" font-family="monospace" font-weight="700">YOU</text>
+          <text x="140" y="308" text-anchor="middle" fill="#a0a0a0" font-size="9" font-family="monospace">buy domain</text>
+        </g>
+
+        <!-- Arrow -->
+        <line x1="245" y1="90" x2="330" y2="160" stroke="#f59e0b" stroke-width="2" class="anim-flow"/>
+        <polygon points="330,160 320,158 325,152" fill="#f59e0b"/>
+
+        <!-- DNS server -->
+        <g class="anim-fade-in anim-delay-2">
+          <rect x="340" y="120" width="180" height="140" rx="14" fill="#1a1a1a" stroke="#8b5cf6" stroke-width="2"/>
+          <text x="430" y="165" text-anchor="middle" fill="#8b5cf6" font-size="28" font-family="monospace">📖</text>
+          <text x="430" y="200" text-anchor="middle" fill="#8b5cf6" font-size="12" font-family="monospace" font-weight="700">DNS RECORDS</text>
+          <text x="430" y="220" text-anchor="middle" fill="#a0a0a0" font-size="9" font-family="monospace">A, CNAME, MX...</text>
+          <text x="430" y="240" text-anchor="middle" fill="#666" font-size="8" font-family="monospace">who points where</text>
+        </g>
+
+        <!-- Arrow -->
+        <line x1="525" y1="190" x2="600" y2="190" stroke="#8b5cf6" stroke-width="2" class="anim-flow"/>
+        <polygon points="600,190 592,185 592,195" fill="#8b5cf6"/>
+
+        <!-- Website -->
+        <g class="anim-fade-in anim-delay-3">
+          <rect x="610" y="140" width="160" height="100" rx="12" fill="#1a1a1a" stroke="#10b981" stroke-width="2"/>
+          <text x="690" y="180" text-anchor="middle" fill="#10b981" font-size="24" font-family="monospace">🌐</text>
+          <text x="690" y="210" text-anchor="middle" fill="#10b981" font-size="11" font-family="monospace" font-weight="700">YOUR SITE</text>
+        </g>
+
+        <!-- Bottom text -->
+        <text x="400" y="360" text-anchor="middle" fill="#666" font-size="11" font-family="monospace" font-style="italic">You buy → Registrar configures → DNS points → Website loads</text>
+      </svg>
+      <div class="diagram-caption">Domain → DNS → Website flow</div>
+    </div>
+
+    <h2>Where to Buy a Domain</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Registrar</th><th>.com price</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Cloudflare</strong></td><td>$10/yr</td><td>Cheapest, no markup, best DNS</td></tr>
+          <tr><td><strong>Namecheap</strong></td><td>$11/yr</td><td>Free WHOIS privacy</td></tr>
+          <tr><td><strong>Porkbun</strong></td><td>$9/yr</td><td>Cheap, no upsells</td></tr>
+          <tr><td><strong>Google Domains</strong></td><td>N/A</td><td>Closed, moved to Squarespace</td></tr>
+          <tr><td><strong>GoDaddy</strong></td><td>$12+/yr</td><td>Aggressive upselling — avoid</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Pointing a Domain to Your Host</h2>
+
+    <h3>Common DNS Records</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Type</th><th>Name</th><th>Points to</th><th>Use case</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>A</code></td>
+            <td><code>@</code></td>
+            <td>IP address</td>
+            <td>Root domain → server IP</td>
+          </tr>
+          <tr>
+            <td><code>CNAME</code></td>
+            <td><code>www</code></td>
+            <td>domain.name</td>
+            <td>www subdomain → main domain</td>
+          </tr>
+          <tr>
+            <td><code>CNAME</code></td>
+            <td><code>@</code></td>
+            <td>provider domain</td>
+            <td>Root → Vercel/Netlify (if supported)</td>
+          </tr>
+          <tr>
+            <td><code>MX</code></td>
+            <td><code>@</code></td>
+            <td>mail server</td>
+            <td>Email routing</td>
+          </tr>
+          <tr>
+            <td><code>TXT</code></td>
+            <td><code>@</code></td>
+            <td>verification string</td>
+            <td>Domain ownership proof</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Setup Example: Netlify</h2>
+    <ol>
+      <li>Buy domain at Cloudflare / Namecheap</li>
+      <li>Netlify → Site settings → <strong>Domain management → Add custom domain</strong></li>
+      <li>Enter <code>yourname.com</code> and <code>www.yourname.com</code></li>
+      <li>Netlify shows DNS records to add</li>
+      <li>Go to registrar, add those records</li>
+      <li>Wait 5 min - 48 hr (usually ~10 min)</li>
+      <li>HTTPS provisions automatically</li>
+    </ol>
+
+    <h3>Records for Netlify</h3>
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-comment"># Root domain</span>
+Type:  A
+Name:  @
+Value: 75.2.60.5
+
+<span class="c-comment"># www subdomain</span>
+Type:  CNAME
+Name:  www
+Value: your-site.netlify.app</code></pre>
+
+    <h3>Records for Vercel</h3>
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-comment"># Root domain</span>
+Type:  A
+Name:  @
+Value: 76.76.21.21
+
+<span class="c-comment"># www subdomain</span>
+Type:  CNAME
+Name:  www
+Value: cname.vercel-dns.com</code></pre>
+
+    <h3>Records for GitHub Pages</h3>
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-comment"># Root domain</span>
+Type:  A
+Name:  @
+Value: 185.199.108.153
+       185.199.109.153
+       185.199.110.153
+       185.199.111.153
+
+<span class="c-comment"># www subdomain</span>
+Type:  CNAME
+Name:  www
+Value: YOUR-USERNAME.github.io</code></pre>
+
+    <div class="callout warning">
+      <i class="fas fa-clock"></i>
+      <div class="callout-body">
+        <strong>DNS propagation time</strong>
+        <p>DNS changes can take up to 48 hours, but usually complete in 10-30 minutes. Use <a href="https://dnschecker.org" target="_blank">dnschecker.org</a> to see progress.</p>
+      </div>
+    </div>
+
+    <h2>Free Domains — Reality Check</h2>
+    <div class="callout danger">
+      <i class="fas fa-exclamation-circle"></i>
+      <div class="callout-body">
+        <strong>There are no truly free .com domains</strong>
+        <p>You can get free subdomains like <code>yourname.netlify.app</code> or <code>yourname.github.io</code>. For a real domain like <code>yourname.com</code>, you must pay ~$10/year. This is worth it.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Free options</th><th>Cost</th></tr></thead>
+        <tbody>
+          <tr><td>Free subdomain from host</td><td>Free forever</td></tr>
+          <tr><td><code>.tk</code>, <code>.ml</code>, <code>.ga</code> (Freenom)</td><td>Free 1 yr, unreliable</td></tr>
+          <tr><td>Own domain (<code>.com</code>)</td><td>~$10/year</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="quiz" data-quiz="m5-a">
+      <div class="quiz-label">✓ Quick Check</div>
+      <div class="q-text">Which DNS record type points a subdomain to another domain?</div>
+      <div class="opts">
+        <button class="opt" data-correct="false">A</button>
+        <button class="opt" data-correct="true">CNAME</button>
+        <button class="opt" data-correct="false">MX</button>
+        <button class="opt" data-correct="false">TXT</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="quiz" data-quiz="m5-b">
+      <div class="quiz-label">✓ Quick Check</div>
+      <div class="q-text">How long can DNS propagation take?</div>
+      <div class="opts">
+        <button class="opt" data-correct="false">1 second</button>
+        <button class="opt" data-correct="false">1 minute</button>
+        <button class="opt" data-correct="true">Up to 48 hours</button>
+        <button class="opt" data-correct="false">6 months</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="mark-complete" data-module="m5">
+      <div class="mc-icon"><i class="fas fa-flag-checkered"></i></div>
+      <div class="mc-text">
+        <strong>Finished Module 05?</strong>
+        <span>Continue to HTTPS &amp; Security.</span>
+      </div>
+      <button onclick="markComplete('m5')">✓ Mark Complete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODULE 6: HTTPS ========== -->
+<div class="module-section" data-module="m6">
+  <div class="module-hero">
+    <div class="module-badge"><i class="fas fa-lock"></i> Module 06 — HTTPS &amp; Security</div>
+    <h1 class="module-title">HTTPS &amp; Security</h1>
+    <p class="module-subtitle">HTTPS inalinda data yako kwa encrypt ya SSL/TLS. Modern hosts wanatoa bure — lakini lazima ujue kinachoendelea nyuma.</p>
+    <div class="module-meta">
+      <div class="meta-item"><i class="fas fa-clock"></i> 12 min</div>
+      <div class="meta-item"><i class="fas fa-signal"></i> Intermediate</div>
+      <div class="meta-item"><i class="fas fa-question-circle"></i> 2 quizzes</div>
+    </div>
+  </div>
+
+  <div class="module-content">
+    <h2>Why HTTPS?</h2>
+    <ul>
+      <li>🔒 <strong>Encryption</strong> — data in transit is scrambled</li>
+      <li>🛡️ <strong>Authentication</strong> — proves the site is real</li>
+      <li>📊 <strong>SEO</strong> — Google ranks HTTPS higher</li>
+      <li>⚠️ <strong>Browser warnings</strong> — HTTP sites show "Not Secure"</li>
+      <li>🚀 <strong>HTTP/2</strong> — requires HTTPS</li>
+    </ul>
+
+    <div class="diagram">
+      <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg">
+        <!-- Visitor -->
+        <g class="anim-fade-in">
+          <rect x="40" y="90" width="140" height="100" rx="12" fill="#1a1a1a" stroke="#0ea5e9" stroke-width="2"/>
+          <text x="110" y="135" text-anchor="middle" fill="#0ea5e9" font-size="24" font-family="monospace">👤</text>
+          <text x="110" y="165" text-anchor="middle" fill="#38bdf8" font-size="11" font-family="monospace">VISITOR</text>
+        </g>
+
+        <!-- HTTPS tunnel -->
+        <g>
+          <path d="M 210 120 Q 400 60 590 120" stroke="#10b981" stroke-width="3" fill="none" class="anim-flow"/>
+          <path d="M 210 160 Q 400 220 590 160" stroke="#10b981" stroke-width="3" fill="none" class="anim-flow"/>
+          <text x="400" y="40" text-anchor="middle" fill="#10b981" font-size="14" font-family="monospace" font-weight="700">🔒 ENCRYPTED TUNNEL</text>
+          <text x="400" y="245" text-anchor="middle" fill="#10b981" font-size="11" font-family="monospace">HTTPS / TLS 1.3</text>
+          <text x="400" y="262" text-anchor="middle" fill="#a0a0a0" font-size="10" font-family="monospace">data cannot be read by attackers</text>
+        </g>
+
+        <!-- Server -->
+        <g class="anim-fade-in anim-delay-2">
+          <rect x="620" y="90" width="140" height="100" rx="12" fill="#1a1a1a" stroke="#8b5cf6" stroke-width="2"/>
+          <text x="690" y="135" text-anchor="middle" fill="#8b5cf6" font-size="24" font-family="monospace">🖥️</text>
+          <text x="690" y="165" text-anchor="middle" fill="#8b5cf6" font-size="11" font-family="monospace">SERVER</text>
+        </g>
+      </svg>
+      <div class="diagram-caption">HTTPS wraps your data in an encrypted tunnel</div>
+    </div>
+
+    <h2>How HTTPS Works (Simplified)</h2>
+    <ol>
+      <li><strong>Certificate Authority</strong> (Let's Encrypt, DigiCert) issues a certificate proving your domain is real</li>
+      <li>When a user visits your site, browser checks the certificate</li>
+      <li>If valid, browser and server <strong>exchange encryption keys</strong></li>
+      <li>All data is now encrypted end-to-end</li>
+    </ol>
+
+    <h2>Free SSL from Let's Encrypt</h2>
+    <p>Let's Encrypt is a free, automated Certificate Authority. All modern hosts integrate it:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Provider</th><th>HTTPS setup</th></tr></thead>
+        <tbody>
+          <tr><td>GitHub Pages</td><td>Automatic, no config</td></tr>
+          <tr><td>Netlify</td><td>Automatic with Let's Encrypt</td></tr>
+          <tr><td>Vercel</td><td>Automatic</td></tr>
+          <tr><td>Render</td><td>Automatic</td></tr>
+          <tr><td>Cloudflare Pages</td><td>Automatic</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout success">
+      <i class="fas fa-check-circle"></i>
+      <div class="callout-body">
+        <strong>You get HTTPS free, automatically</strong>
+        <p>When you add a custom domain to any modern host, HTTPS is provisioned for you in minutes. You don't need to do anything.</p>
+      </div>
+    </div>
+
+    <h2>Force HTTPS</h2>
+    <p>Make sure all traffic uses HTTPS. Modern hosts do this by default. On GitHub Pages:</p>
+    <ol>
+      <li>Settings → Pages</li>
+      <li>Check <strong>Enforce HTTPS</strong></li>
+    </ol>
+
+    <h2>Security Headers (Bonus)</h2>
+    <p>Add these headers for extra security. On Netlify, create a file called <code>_headers</code>:</p>
+
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-comment">/*</span>
+  <span class="c-str">X-Frame-Options</span>: DENY
+  <span class="c-str">X-Content-Type-Options</span>: nosniff
+  <span class="c-str">Referrer-Policy</span>: strict-origin-when-cross-origin
+  <span class="c-str">Permissions-Policy</span>: geolocation=(), microphone=()</code></pre>
+
+    <h2>Common HTTPS Mistakes</h2>
+
+    <h4>❌ Mixed content</h4>
+    <p>Loading HTTP resources (images, scripts) on an HTTPS page. Browsers block these.</p>
+    <p><strong>Fix:</strong> Change all <code>http://</code> to <code>https://</code> in your code.</p>
+
+    <h4>❌ No HTTPS on custom domain</h4>
+    <p>If HTTPS doesn't auto-provision, wait 24 hrs, then check DNS. Or contact host support.</p>
+
+    <h4>❌ Expired certificate</h4>
+    <p>Rare with Let's Encrypt (auto-renews every 90 days), but possible if auto-renew fails.</p>
+
+    <div class="quiz" data-quiz="m6-a">
+      <div class="quiz-label">✓ Quick Check</div>
+      <div class="q-text">What free service provides SSL certificates for modern hosts?</div>
+      <div class="opts">
+        <button class="opt" data-correct="false">Google SSL</button>
+        <button class="opt" data-correct="true">Let's Encrypt</button>
+        <button class="opt" data-correct="false">FreeSSL.org</button>
+        <button class="opt" data-correct="false">Cloudflare Only</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="quiz" data-quiz="m6-b">
+      <div class="quiz-label">✓ Quick Check</div>
+      <div class="q-text">What is "mixed content" on an HTTPS page?</div>
+      <div class="opts">
+        <button class="opt" data-correct="false">Mixing HTML and CSS</button>
+        <button class="opt" data-correct="true">Loading HTTP resources on an HTTPS page</button>
+        <button class="opt" data-correct="false">Using multiple fonts</button>
+        <button class="opt" data-correct="false">Having too many images</button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="mark-complete" data-module="m6">
+      <div class="mc-icon"><i class="fas fa-flag-checkered"></i></div>
+      <div class="mc-text">
+        <strong>Finished Module 06?</strong>
+        <span>Continue to CI/CD Pipelines.</span>
+      </div>
+      <button onclick="markComplete('m6')">✓ Mark Complete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODULE 7: CI/CD ========== -->
+<div class="module-section" data-module="m7">
+  <div class="module-hero">
+    <div class="module-badge"><i class="fas fa-code-branch"></i> Module 07 — CI/CD Pipelines</div>
+    <h1 class="module-title">CI/CD with GitHub Actions</h1>
+    <p class="module-subtitle">Automate deployments, tests, and builds. Every push → automatically deploy. No manual steps.</p>
+    <div class="module-meta">
+      <div class="meta-item"><i class="fas fa-clock"></i> 13 min</div>
+      <div class="meta-item"><i class="fas fa-signal"></i> Advanced</div>
+      <div class="meta-item"><i class="fas fa-question-circle"></i> 1 quiz</div>
+    </div>
+  </div>
+
+  <div class="module-content">
+    <h2>What is CI/CD?</h2>
+    <ul>
+      <li><strong>CI</strong> (Continuous Integration) — auto-run tests on every push</li>
+      <li><strong>CD</strong> (Continuous Deployment) — auto-deploy when tests pass</li>
+    </ul>
+
+    <p>Modern hosts (Netlify, Vercel, Render) already do CD for you. But <strong>GitHub Actions</strong> gives you full control — custom builds, tests, notifications, deployments.</p>
+
+    <h2>GitHub Actions Basics</h2>
+    <p>Workflows live in <code>.github/workflows/</code> in your repo. Each is a YAML file:</p>
+
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-comment"># .github/workflows/deploy.yml</span>
+<span class="c-flag">name:</span> Deploy
+<span class="c-flag">on:</span>
+  <span class="c-flag">push:</span>
+    <span class="c-flag">branches:</span> [ main ]
+
+<span class="c-flag">jobs:</span>
+  <span class="c-flag">build:</span>
+    <span class="c-flag">runs-on:</span> ubuntu-latest
+    <span class="c-flag">steps:</span>
+      - <span class="c-flag">uses:</span> actions/checkout@v4
+      - <span class="c-flag">uses:</span> actions/setup-node@v4
+        <span class="c-flag">with:</span>
+          <span class="c-flag">node-version:</span> <span class="c-str">'20'</span>
+      - <span class="c-flag">run:</span> <span class="c-str">npm ci</span>
+      - <span class="c-flag">run:</span> <span class="c-str">npm run build</span></code></pre>
+
+    <h2>Common Workflows</h2>
+
+    <h3>1. Auto-deploy to GitHub Pages</h3>
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-flag">name:</span> Deploy to Pages
+<span class="c-flag">on:</span>
+  <span class="c-flag">push:</span>
+    <span class="c-flag">branches:</span> [ main ]
+
+<span class="c-flag">permissions:</span>
+  <span class="c-flag">contents:</span> read
+  <span class="c-flag">pages:</span> write
+
+<span class="c-flag">jobs:</span>
+  <span class="c-flag">deploy:</span>
+    <span class="c-flag">runs-on:</span> ubuntu-latest
+    <span class="c-flag">steps:</span>
+      - <span class="c-flag">uses:</span> actions/checkout@v4
+      - <span class="c-flag">uses:</span> actions/configure-pages@v4
+      - <span class="c-flag">uses:</span> actions/upload-pages-artifact@v3
+        <span class="c-flag">with:</span>
+          <span class="c-flag">path:</span> <span class="c-str">'.'</span>
+      - <span class="c-flag">uses:</span> actions/deploy-pages@v4</code></pre>
+
+    <h3>2. Run tests on every PR</h3>
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-flag">name:</span> Tests
+<span class="c-flag">on:</span> [push, pull_request]
+
+<span class="c-flag">jobs:</span>
+  <span class="c-flag">test:</span>
+    <span class="c-flag">runs-on:</span> ubuntu-latest
+    <span class="c-flag">steps:</span>
+      - <span class="c-flag">uses:</span> actions/checkout@v4
+      - <span class="c-flag">uses:</span> actions/setup-node@v4
+        <span class="c-flag">with:</span>
+          <span class="c-flag">node-version:</span> <span class="c-str">'20'</span>
+      - <span class="c-flag">run:</span> <span class="c-str">npm ci</span>
+      - <span class="c-flag">run:</span> <span class="c-str">npm test</span></code></pre>
+
+    <h3>3. Keep Render app awake</h3>
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-flag">name:</span> Keep Alive
+<span class="c-flag">on:</span>
+  <span class="c-flag">schedule:</span>
+    - <span class="c-flag">cron:</span> <span class="c-str">'*/14 * * * *'</span>
+
+<span class="c-flag">jobs:</span>
+  <span class="c-flag">ping:</span>
+    <span class="c-flag">runs-on:</span> ubuntu-latest
+    <span class="c-flag">steps:</span>
+      - <span class="c-flag">run:</span> <span class="c-str">curl -s https://your-app.onrender.com</span></code></pre>
+
+    <h3>4. Auto-deploy to a VPS (SSH)</h3>
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-flag">name:</span> Deploy to VPS
+<span class="c-flag">on:</span>
+  <span class="c-flag">push:</span>
+    <span class="c-flag">branches:</span> [ main ]
+
+<span class="c-flag">jobs:</span>
+  <span class="c-flag">deploy:</span>
+    <span class="c-flag">runs-on:</span> ubuntu-latest
+    <span class="c-flag">steps:</span>
+      - <span class="c-flag">name:</span> SSH Deploy
+        <span class="c-flag">uses:</span> appleboy/ssh-action@v1
+        <span class="c-flag">with:</span>
+          <span class="c-flag">host:</span> <span class="c-str">${{ secrets.VPS_HOST }}</span>
+          <span class="c-flag">username:</span> <span class="c-str">${{ secrets.VPS_USER }}</span>
+          <span class="c-flag">key:</span> <span class="c-str">${{ secrets.VPS_SSH_KEY }}</span>
+          <span class="c-flag">script:</span> <span class="c-str">cd /var/www && git pull && systemctl restart app</span></code></pre>
+
+    <h2>Using Secrets</h2>
+    <p>Never hardcode API keys or SSH keys in workflows. Use GitHub Secrets:</p>
+    <ol>
+      <li>Repo → Settings → <strong>Secrets and variables → Actions</strong></li>
+      <li>Add new secret (e.g. <code>VPS_HOST</code>, <code>API_KEY</code>)</li>
+      <li>Access in workflow via <code>${{ secrets.SECRET_NAME }}</code></li>
+    </ol>
+
+    <div class="quiz" data-quiz="m7">
+      <div class="quiz-label">✓ Quick Check</div>
+      <div class="q-text">Where do GitHub Actions workflows live in a repo?</div>
+      <div class="opts">
+        <button class="opt" data-correct="false">In a <code>workflows/</code> folder at root</button>
+        <button class="opt" data-correct="true">In <code>.github/workflows/</code></button>
+        <button class="opt" data-correct="false">In <code>actions/</code></button>
+        <button class="opt" data-correct="false">In <code>.git/</code></button>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="mark-complete" data-module="m7">
+      <div class="mc-icon"><i class="fas fa-flag-checkered"></i></div>
+      <div class="mc-text">
+        <strong>Finished Module 07?</strong>
+        <span>Final module — the Capstone Project!</span>
+      </div>
+      <button onclick="markComplete('m7')">✓ Mark Complete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODULE 8: CAPSTONE ========== -->
+<div class="module-section" data-module="m8">
+  <div class="module-hero">
+    <div class="module-badge"><i class="fas fa-trophy"></i> Module 08 — Capstone Project</div>
+    <h1 class="module-title">Build &amp; Deploy a Portfolio</h1>
+    <p class="module-subtitle">Put everything you learned into practice. Build a personal portfolio, deploy it, add a custom domain, and share it with the world.</p>
+    <div class="module-meta">
+      <div class="meta-item"><i class="fas fa-clock"></i> 20 min build</div>
+      <div class="meta-item"><i class="fas fa-signal"></i> All levels</div>
+      <div class="meta-item"><i class="fas fa-flag-checkered"></i> Final project</div>
+    </div>
+  </div>
+
+  <div class="module-content">
+    <h2>Your Mission</h2>
+    <p>Build a personal portfolio website and deploy it. This is your chance to actually do what you've learned.</p>
+
+    <h2>Requirements</h2>
+    <ol>
+      <li>✅ A single-page portfolio (HTML + CSS)</li>
+      <li>✅ Sections: About, Skills, Projects, Contact</li>
+      <li>✅ Responsive (works on mobile)</li>
+      <li>✅ Deployed live on GitHub Pages or Netlify</li>
+      <li>✅ (Bonus) Custom domain</li>
+      <li>✅ (Bonus) Auto-deploy via GitHub Actions</li>
+    </ol>
+
+    <h2>Step 1: Create the HTML</h2>
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-flag">&lt;!DOCTYPE html&gt;</span>
+<span class="c-flag">&lt;html</span> <span class="c-str">lang</span>=<span class="c-str">"en"</span><span class="c-flag">&gt;</span>
+<span class="c-flag">&lt;head&gt;</span>
+  <span class="c-flag">&lt;meta</span> <span class="c-str">charset</span>=<span class="c-str">"UTF-8"</span><span class="c-flag">&gt;</span>
+  <span class="c-flag">&lt;meta</span> <span class="c-str">name</span>=<span class="c-str">"viewport"</span> <span class="c-str">content</span>=<span class="c-str">"width=device-width,initial-scale=1"</span><span class="c-flag">&gt;</span>
+  <span class="c-flag">&lt;title&gt;</span>Your Name — Portfolio<span class="c-flag">&lt;/title&gt;</span>
+  <span class="c-flag">&lt;style&gt;</span>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0a0a0a;
+      color: #f5f5f5;
+      line-height: 1.7;
+    }
+    header {
+      padding: 100px 20px;
+      text-align: center;
+      background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+    }
+    header h1 { font-size: 3rem; margin-bottom: 10px; }
+    header p { font-size: 1.2rem; opacity: 0.9; }
+    section { padding: 60px 20px; max-width: 800px; margin: 0 auto; }
+    h2 { font-size: 2rem; margin-bottom: 20px; color: #38bdf8; }
+    .project {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .project h3 { margin-bottom: 8px; }
+    footer {
+      padding: 40px 20px;
+      text-align: center;
+      border-top: 1px solid #2a2a2a;
+      color: #a0a0a0;
+    }
+    a { color: #38bdf8; }
+  <span class="c-flag">&lt;/style&gt;</span>
+<span class="c-flag">&lt;/head&gt;</span>
+<span class="c-flag">&lt;body&gt;</span>
+  <span class="c-flag">&lt;header&gt;</span>
+    <span class="c-flag">&lt;h1&gt;</span>Your Name<span class="c-flag">&lt;/h1&gt;</span>
+    <span class="c-flag">&lt;p&gt;</span>Student Developer · Tanzania<span class="c-flag">&lt;/p&gt;</span>
+  <span class="c-flag">&lt;/header&gt;</span>
+
+  <span class="c-flag">&lt;section&gt;</span>
+    <span class="c-flag">&lt;h2&gt;</span>About Me<span class="c-flag">&lt;/h2&gt;</span>
+    <span class="c-flag">&lt;p&gt;</span>I'm learning web development and building cool things.<span class="c-flag">&lt;/p&gt;</span>
+  <span class="c-flag">&lt;/section&gt;</span>
+
+  <span class="c-flag">&lt;section&gt;</span>
+    <span class="c-flag">&lt;h2&gt;</span>Projects<span class="c-flag">&lt;/h2&gt;</span>
+    <span class="c-flag">&lt;div</span> <span class="c-str">class</span>=<span class="c-str">"project"</span><span class="c-flag">&gt;</span>
+      <span class="c-flag">&lt;h3&gt;</span>Project One<span class="c-flag">&lt;/h3&gt;</span>
+      <span class="c-flag">&lt;p&gt;</span>Description of your project.<span class="c-flag">&lt;/p&gt;</span>
+    <span class="c-flag">&lt;/div&gt;</span>
+  <span class="c-flag">&lt;/section&gt;</span>
+
+  <span class="c-flag">&lt;section&gt;</span>
+    <span class="c-flag">&lt;h2&gt;</span>Contact<span class="c-flag">&lt;/h2&gt;</span>
+    <span class="c-flag">&lt;p&gt;</span>Email: <span class="c-flag">&lt;a</span> <span class="c-str">href</span>=<span class="c-str">"mailto:you@example.com"</span><span class="c-flag">&gt;</span>you@example.com<span class="c-flag">&lt;/a&gt;&lt;/p&gt;</span>
+  <span class="c-flag">&lt;/section&gt;</span>
+
+  <span class="c-flag">&lt;footer&gt;</span>
+    <span class="c-flag">&lt;p&gt;</span>© 2026 Your Name<span class="c-flag">&lt;/p&gt;</span>
+  <span class="c-flag">&lt;/footer&gt;</span>
+<span class="c-flag">&lt;/body&gt;</span>
+<span class="c-flag">&lt;/html&gt;</span></code></pre>
+
+    <h2>Step 2: Deploy to GitHub Pages</h2>
+    <ol>
+      <li>Create a repo: <code>YOUR-USERNAME.github.io</code> (this becomes your main site)</li>
+      <li>Add the <code>index.html</code> file</li>
+      <li>Push to GitHub</li>
+      <li>Site is live at <code>https://YOUR-USERNAME.github.io</code></li>
+    </ol>
+
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-cmd">git init</span>
+<span class="c-cmd">git add</span> index.html
+<span class="c-cmd">git commit</span> <span class="c-flag">-m</span> <span class="c-str">"Deploy portfolio"</span>
+<span class="c-cmd">git branch</span> <span class="c-flag">-M</span> main
+<span class="c-cmd">git remote add</span> origin https://github.com/YOUR-USERNAME/YOUR-USERNAME.github.io.git
+<span class="c-cmd">git push</span> <span class="c-flag">-u</span> origin main</code></pre>
+
+    <h2>Step 3: Add Your Custom Domain (Optional)</h2>
+    <ol>
+      <li>Buy <code>yourname.com</code> at Cloudflare or Namecheap</li>
+      <li>Add DNS records (A + CNAME) as shown in Module 05</li>
+      <li>In GitHub Pages settings, add custom domain</li>
+      <li>Enable "Enforce HTTPS"</li>
+    </ol>
+
+    <h2>Step 4: Auto-Deploy with GitHub Actions (Bonus)</h2>
+    <p>Add <code>.github/workflows/deploy.yml</code> to auto-deploy on every push:</p>
+    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-flag">name:</span> Deploy Portfolio
+<span class="c-flag">on:</span>
+  <span class="c-flag">push:</span>
+    <span class="c-flag">branches:</span> [ main ]
+
+<span class="c-flag">permissions:</span>
+  <span class="c-flag">contents:</span> read
+  <span class="c-flag">pages:</span> write
+
+<span class="c-flag">jobs:</span>
+  <span class="c-flag">deploy:</span>
+    <span class="c-flag">runs-on:</span> ubuntu-latest
+    <span class="c-flag">steps:</span>
+      - <span class="c-flag">uses:</span> actions/checkout@v4
+      - <span class="c-flag">uses:</span> actions/configure-pages@v4
+      - <span class="c-flag">uses:</span> actions/upload-pages-artifact@v3
+        <span class="c-flag">with:</span>
+          <span class="c-flag">path:</span> <span class="c-str">'.'</span>
+      - <span class="c-flag">uses:</span> actions/deploy-pages@v4</code></pre>
+
+    <h2>Step 5: Share It</h2>
+    <ul>
+      <li>Add the link to your GitHub profile README</li>
+      <li>Share on LinkedIn, Twitter, WhatsApp</li>
+      <li>Add it to your CV</li>
+      <li>Submit to your university</li>
+    </ul>
+
+    <div class="callout success">
+      <i class="fas fa-trophy"></i>
+      <div class="callout-body">
+        <strong>You're now a web hosting expert!</strong>
+        <p>You've learned GitHub Pages, Netlify, Vercel, Render, Cloudflare Pages, custom domains, HTTPS, and CI/CD. Deploy anything, anywhere, for free.</p>
+      </div>
+    </div>
+
+    <div class="mark-complete" data-module="m8">
+      <div class="mc-icon"><i class="fas fa-flag-checkered"></i></div>
+      <div class="mc-text">
+        <strong>Completed the Capstone?</strong>
+        <span>You've finished the course — get your certificate! 🎓</span>
+      </div>
+      <button onclick="markComplete('m8')">✓ Mark Complete</button>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- ========== CERTIFICATE MODAL ========== -->
+<div id="cert-modal">
+  <div class="cert-outer">
+    <div class="certificate">
+      <div class="cert-confetti">
+        <div class="confetti-piece"></div><div class="confetti-piece"></div>
+        <div class="confetti-piece"></div><div class="confetti-piece"></div>
+        <div class="confetti-piece"></div><div class="confetti-piece"></div>
+        <div class="confetti-piece"></div><div class="confetti-piece"></div>
+        <div class="confetti-piece"></div><div class="confetti-piece"></div>
+      </div>
+      <div class="cert-inner">
+        <div class="cert-seal">🎓</div>
+        <div class="cert-title">Certificate of Completion</div>
+        <div class="cert-main">Free Web Hosting</div>
+        <div class="cert-sub">This is to certify that</div>
+        <div class="cert-name" id="certDisplayName">Your Name</div>
+        <div class="cert-body">
+          has successfully completed all 10 modules of the Free Web Hosting course — demonstrating proficiency in
+          GitHub Pages, Netlify, Vercel, Render, Cloudflare Pages, custom domains, HTTPS security, CI/CD pipelines,
+          and deploying real projects to production.
+        </div>
+        <div class="cert-stats">
+          <div><span class="val" id="certStatModules">10</span><span class="lbl">Modules</span></div>
+          <div><span class="val">5</span><span class="lbl">Providers</span></div>
+          <div><span class="val">100%</span><span class="lbl">Complete</span></div>
+        </div>
+        <div class="cert-footer">
+          <div>
+            <div class="sig-name">Student Hub</div>
+            <div>Web Hosting Program</div>
+          </div>
+          <div class="date">
+            <div>Issued</div>
+            <div id="certDate">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cert-actions">
+      <button class="primary" onclick="downloadCertificate()">⬇ Download PNG</button>
+      <button class="secondary-act" onclick="printCertificate()">🖨 Print</button>
+      <button class="secondary-act" onclick="closeCertificate()">✕ Close</button>
+    </div>
+  </div>
 </div>
 
 <script>
 /* =========================================================
-   ANIMATED PROGRESS BAR
+   STORAGE
    ========================================================= */
-(function initProgress(){
-  const TARGET = 35; // % complete — change as you build
-  const fill = document.getElementById('progress-fill');
-  const pct = document.getElementById('progress-pct');
+const STORAGE_KEY = 'web-hosting-course-v1';
+const TOTAL_MODULES = 10; // m0-m8 + providers
+const ALL_MODULE_IDS = ['m0','m1','m2','m3','m4','providers','m5','m6','m7','m8'];
+let state = { completed: [], userName: '', completedAt: null };
 
-  // Animate fill after a short delay
-  setTimeout(() => {
-    fill.style.width = TARGET + '%';
-  }, 400);
-
-  // Count up the percentage number
-  let current = 0;
-  const interval = setInterval(() => {
-    current += 1;
-    if (current >= TARGET) {
-      current = TARGET;
-      clearInterval(interval);
-    }
-    pct.textContent = current + '%';
-  }, 1800 / TARGET);
-})();
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) state = { ...state, ...JSON.parse(raw) };
+  } catch (e) {}
+}
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
 
 /* =========================================================
-   NOTIFY FORM (localStorage)
-   — Ready to swap for a real backend / Supabase call later
+   NAVIGATION
    ========================================================= */
-(function initNotify(){
-  const form = document.getElementById('notifyForm');
-  const input = document.getElementById('notifyEmail');
-  const btn = document.getElementById('notifyBtn');
-  const status = document.getElementById('notifyStatus');
-  const STORAGE_KEY = 'sh-web-hosting-waitlist';
+function showModule(moduleId) {
+  document.querySelectorAll('.module-section').forEach(el => {
+    el.classList.remove('active');
+  });
+  const target = document.querySelector(`.module-section[data-module="${moduleId}"]`);
+  if (target) {
+    target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.classList.toggle('active', item.dataset.module === moduleId);
+  });
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('show');
+}
 
-  function showStatus(msg, type){
-    status.textContent = msg;
-    status.className = 'status-msg show ' + type;
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebarOverlay');
+  sb.classList.toggle('open');
+  ov.classList.toggle('show');
+}
+
+/* =========================================================
+   PROGRESS
+   ========================================================= */
+function updateProgress() {
+  const pct = Math.round((state.completed.length / TOTAL_MODULES) * 100);
+
+  document.getElementById('topProgressFill').style.width = pct + '%';
+  document.getElementById('sidebarFill').style.width = pct + '%';
+  document.getElementById('sidebarPercent').textContent = pct + '%';
+
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.classList.toggle('completed', state.completed.includes(item.dataset.module));
+  });
+
+  document.querySelectorAll('.mark-complete').forEach(mc => {
+    const done = state.completed.includes(mc.dataset.module);
+    mc.classList.toggle('done', done);
+    const btn = mc.querySelector('button');
+    if (btn) btn.textContent = done ? '↺ Mark Incomplete' : '✓ Mark Complete';
+  });
+
+  const certBtn = document.getElementById('certBtn');
+  certBtn.disabled = state.completed.length !== TOTAL_MODULES;
+  certBtn.textContent = state.completed.length === TOTAL_MODULES
+    ? '🎓 Generate Certificate'
+    : `🎓 Certificate (${state.completed.length}/${TOTAL_MODULES})`;
+}
+
+function markComplete(moduleId) {
+  const idx = state.completed.indexOf(moduleId);
+  if (idx >= 0) {
+    state.completed.splice(idx, 1);
+  } else {
+    state.completed.push(moduleId);
+    if (state.completed.length === TOTAL_MODULES) {
+      setTimeout(() => {
+        celebrate();
+        setTimeout(() => openCertificate(), 800);
+      }, 400);
+    }
+  }
+  saveState();
+  updateProgress();
+}
+
+/* =========================================================
+   QUIZZES
+   ========================================================= */
+document.querySelectorAll('.quiz').forEach(quiz => {
+  const opts = quiz.querySelectorAll('.opt');
+  const feedback = quiz.querySelector('.feedback');
+  opts.forEach(opt => {
+    opt.addEventListener('click', () => {
+      const isCorrect = opt.dataset.correct === 'true';
+      opts.forEach(o => {
+        o.disabled = true;
+        if (o.dataset.correct === 'true') o.classList.add('correct');
+      });
+      if (!isCorrect) opt.classList.add('wrong');
+      feedback.textContent = isCorrect
+        ? '✅ Correct! Well done.'
+        : '❌ Not quite — correct answer highlighted in green.';
+      feedback.className = 'feedback show ' + (isCorrect ? 'good' : 'bad');
+    });
+  });
+});
+
+/* =========================================================
+   COPY BUTTONS
+   ========================================================= */
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
     setTimeout(() => {
-      status.classList.remove('show');
-    }, 5000);
+      btn.textContent = orig;
+      btn.classList.remove('copied');
+    }, 1800);
+  });
+}
+
+/* =========================================================
+   CERTIFICATE
+   ========================================================= */
+function openCertificate() {
+  if (state.completed.length !== TOTAL_MODULES) return;
+
+  const name = (state.userName || 'Your Name').slice(0, 40);
+  document.getElementById('certDisplayName').textContent = name;
+
+  const d = new Date(state.completedAt || Date.now());
+  document.getElementById('certDate').textContent =
+    d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  document.getElementById('certStatModules').textContent = TOTAL_MODULES;
+
+  const modal = document.getElementById('cert-modal');
+  modal.classList.add('show');
+  document.body.style.overflow = 'hidden';
+
+  const outer = modal.querySelector('.cert-outer');
+  outer.style.transition = 'none';
+  outer.style.transform = 'scale(0.7) rotateY(-25deg)';
+  outer.style.opacity = '0';
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      outer.style.transition = 'all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      outer.style.transform = 'scale(1) rotateY(0)';
+      outer.style.opacity = '1';
+    }, 40);
+  });
+
+  celebrate();
+}
+
+function closeCertificate() {
+  document.getElementById('cert-modal').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+function printCertificate() { window.print(); }
+
+async function downloadCertificate() {
+  const certEl = document.querySelector('.certificate');
+  const btn = event.currentTarget;
+  const orig = btn.textContent;
+  btn.textContent = '⏳ Rendering...';
+
+  try {
+    const rect = certEl.getBoundingClientRect();
+    const scale = 2;
+    const w = Math.round(rect.width);
+    const h = Math.round(rect.height);
+
+    const clone = certEl.cloneNode(true);
+    clone.style.width = w + 'px';
+    clone.style.height = h + 'px';
+    clone.querySelectorAll('.confetti-piece').forEach(p => p.remove());
+
+    inlineStyles(certEl, clone);
+
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('xmlns', svgNS);
+    svg.setAttribute('width', w);
+    svg.setAttribute('height', h);
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+    const fo = document.createElementNS(svgNS, 'foreignObject');
+    fo.setAttribute('x', '0');
+    fo.setAttribute('y', '0');
+    fo.setAttribute('width', w);
+    fo.setAttribute('height', h);
+
+    const wrapper = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
+    wrapper.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+    wrapper.style.width = w + 'px';
+    wrapper.style.height = h + 'px';
+    wrapper.style.background = '#0a0a0a';
+    wrapper.appendChild(clone);
+    fo.appendChild(wrapper);
+    svg.appendChild(fo);
+
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    await new Promise((resolve, reject) => {
+      img.onload = resolve;
+      img.onerror = reject;
+      img.src = url;
+    });
+
+    const canvas = document.createElement('canvas');
+    canvas.width = w * scale;
+    canvas.height = h * scale;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#0a0a0a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.scale(scale, scale);
+    ctx.drawImage(img, 0, 0);
+    URL.revokeObjectURL(url);
+
+    canvas.toBlob((blob) => {
+      const link = document.createElement('a');
+      const safeName = (state.userName || 'certificate').replace(/[^a-z0-9]/gi, '_');
+      link.download = `Web-Hosting-Certificate-${safeName}.png`;
+      link.href = URL.createObjectURL(blob);
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+      btn.textContent = orig;
+    }, 'image/png');
+  } catch (err) {
+    console.error(err);
+    btn.textContent = orig;
+    alert('Could not generate image. Try the Print button and save as PDF.');
+  }
+}
+
+function inlineStyles(src, dst) {
+  const srcNodes = [src, ...src.querySelectorAll('*')];
+  const dstNodes = [dst, ...dst.querySelectorAll('*')];
+  for (let i = 0; i < srcNodes.length; i++) {
+    const cs = getComputedStyle(srcNodes[i]);
+    let str = '';
+    for (const prop of cs) {
+      str += `${prop}:${cs.getPropertyValue(prop)};`;
+    }
+    dstNodes[i].style.cssText = str;
+  }
+}
+
+/* =========================================================
+   CONFETTI
+   ========================================================= */
+function celebrate() {
+  const container = document.getElementById('global-confetti');
+  container.classList.add('show');
+  container.innerHTML = '';
+  const colors = ['#10b981','#0ea5e9','#8b5cf6','#f59e0b','#06b6d4','#38bdf8'];
+
+  for (let i = 0; i < 120; i++) {
+    const cp = document.createElement('div');
+    cp.className = 'cp';
+    cp.style.left = Math.random() * 100 + 'vw';
+    cp.style.background = colors[Math.floor(Math.random() * colors.length)];
+    cp.style.animationDelay = (Math.random() * 1.5) + 's';
+    cp.style.animationDuration = (2.5 + Math.random() * 2) + 's';
+    cp.style.transform = `rotate(${Math.random() * 360}deg)`;
+    if (Math.random() > 0.5) cp.style.borderRadius = '50%';
+    cp.style.width = (6 + Math.random() * 8) + 'px';
+    cp.style.height = (8 + Math.random() * 12) + 'px';
+    container.appendChild(cp);
   }
 
-  // Restore "already subscribed" state
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    if (saved.length > 0) {
-      input.value = saved[saved.length - 1];
-      btn.innerHTML = '<i class="fas fa-check"></i> Already Registered';
-      btn.disabled = true;
-      input.disabled = true;
-      showStatus('You\'re already on the list — we\'ll email you at launch! ✨', 'ok');
-    }
-  } catch (e) { /* ignore */ }
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const email = input.value.trim();
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      showStatus('❌ Please enter a valid email address.', 'err');
-      return;
-    }
-
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-      if (saved.includes(email)) {
-        showStatus('✅ You\'re already on the list!', 'ok');
-        return;
-      }
-      saved.push(email);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
-
-      // Optimistic UI
-      btn.innerHTML = '<i class="fas fa-check"></i> Registered';
-      btn.disabled = true;
-      input.disabled = true;
-      showStatus('🎉 Thanks! We\'ll notify you when the course launches.', 'ok');
-
-      // NOTE: To wire up Supabase, uncomment and adapt:
-      // fetch('/api/waitlist/', {
-      //   method: 'POST',
-      //   headers: {'Content-Type': 'application/json'},
-      //   body: JSON.stringify({ email, course: 'web-hosting' })
-      // });
-    } catch (err) {
-      showStatus('❌ Something went wrong. Please try again.', 'err');
-    }
-  });
-})();
+  setTimeout(() => {
+    container.classList.remove('show');
+    container.innerHTML = '';
+  }, 5000);
+}
 
 /* =========================================================
-   OPTIONAL: PREVENT ACCIDENTAL NAVIGATION WHILE IN MAINTENANCE
-   (uncomment if you want to block all outgoing links except admin/back)
+   BOOT
    ========================================================= */
-// document.querySelectorAll('a:not([data-allow])').forEach(a => {
-//   a.addEventListener('click', e => {
-//     if (!a.href.includes('/free_course/')) {
-//       e.preventDefault();
-//       alert('This course is under maintenance. Please check back soon!');
-//     }
-//   });
-// });
+loadState();
+updateProgress();
 </script>
 
 </body>
