@@ -1,4 +1,4 @@
-# app.py - FULL VERSION — matches free_course/<slug>/index.html structure
+# app.py - FULL VERSION with Cloudflare R2 + Embedded Course Fallback
 import os
 import uuid
 import json
@@ -18,7 +18,7 @@ from botocore.config import Config
 from botocore.exceptions import ClientError
 
 # ============================================================
-# LOAD .env
+# LOAD .env FOR LOCAL DEVELOPMENT
 # ============================================================
 try:
     from dotenv import load_dotenv
@@ -30,6 +30,9 @@ try:
 except ImportError:
     pass
 
+# ============================================================
+# SAFE ENV VAR LOADER
+# ============================================================
 def env(key, default=""):
     val = os.environ.get(key, "").strip()
     return val if val else default
@@ -62,7 +65,7 @@ _csrf = env("CSRF_TRUSTED_ORIGINS", "https://*.onrender.com,http://localhost:800
 CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf.split(",") if o.strip()]
 
 print("=" * 60)
-print("🚀 TWARVIS SCHOOL")
+print("🚀 TWARVIS SCHOOL — FINAL VERSION")
 print("=" * 60)
 print(f"📡 Supabase: {SUPABASE_URL[:50]}")
 print(f"🔑 Supabase Key: {'✅ VALID' if SUPABASE_KEY.startswith('eyJ') else '❌ INVALID'}")
@@ -76,6 +79,7 @@ if not SUPABASE_KEY.startswith("eyJ"):
 # DJANGO SETTINGS
 # ============================================================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+print(f"📂 BASE_DIR: {BASE_DIR}")
 
 if not settings.configured:
     settings.configure(
@@ -389,44 +393,10 @@ def serve_root_file(request, filename):
         print(f"Error serving {safe_name}: {e}")
         return HttpResponse("Error", status=500)
 
-
 # ============================================================
-# COURSE HELPER — points to free_course/<slug>/index.html
+# SERVE SUBFOLDER FILES
 # ============================================================
-def _serve_course_index(course_slug):
-    """
-    Serve free_course/<slug>/index.html
-    Falls back to <slug>/index.html at root (in case folders move)
-    """
-    candidates = [
-        os.path.join(BASE_DIR, "free_course", course_slug, "index.html"),
-        os.path.join(BASE_DIR, course_slug, "index.html"),
-    ]
-
-    print("=" * 60)
-    print(f"🔍 COURSE REQUEST: '{course_slug}'")
-    for path in candidates:
-        print(f"   → {path}   exists={os.path.exists(path)}")
-    print("=" * 60)
-
-    for path in candidates:
-        if os.path.exists(path):
-            try:
-                with open(path, "r", encoding="utf-8") as f:
-                    html = f.read()
-                response = HttpResponse(html, content_type="text/html; charset=utf-8")
-                response["Cache-Control"] = "public, max-age=300"
-                print(f"✅ Served '{course_slug}' from {path}")
-                return response
-            except Exception as e:
-                return HttpResponse(f"Course '{course_slug}' error: {e}", status=500)
-
-    print(f"⚠️  Course '{course_slug}' NOT FOUND anywhere")
-    return None
-
-
 def serve_subfolder_file(request, subpath):
-    """Serve any file inside BASE_DIR (with path traversal protection)"""
     safe_subpath = os.path.normpath(subpath).replace("\\", "/")
     if safe_subpath.startswith("..") or safe_subpath.startswith("/") or ".." in safe_subpath.split("/"):
         return HttpResponse("Not found", status=404)
@@ -469,7 +439,6 @@ def serve_subfolder_file(request, subpath):
         print(f"Error serving {safe_subpath}: {e}")
         return HttpResponse("Error", status=500)
 
-
 # ============================================================
 # FAVICON
 # ============================================================
@@ -485,6 +454,71 @@ def favicon_view(request):
         except Exception as e:
             print(f"Favicon error: {e}")
     return HttpResponse(status=204)
+
+# ============================================================
+# COURSE FALLBACK HTML (embedded)
+# ============================================================
+def _embedded_course_html(course_slug):
+    courses = {
+        "github":       ("🐙", "Learn GitHub",      "Kursa kamili ya GitHub — version control, repositories, branches, pull requests, na collaboration workflows."),
+        "web-hosting":  ("🚀", "Free Web Hosting",  "Deploy website yako bure kwa GitHub Pages, Netlify, Vercel, custom domains, HTTPS, na DNS."),
+        "python":       ("🐍", "Learn Python",      "Lugha rahisi zaidi kwa beginner — variables, loops, functions, files, na real projects."),
+        "html-css":     ("🎨", "Learn HTML & CSS",  "Jenga website halisi — semantic HTML, modern CSS, flexbox, grid, na responsive design."),
+        "english":      ("📖", "Learn English",     "Grammar, vocabulary, pronunciation, na mazungumzo ya kila siku."),
+        "kiswahili":    ("🇹🇿", "Learn Kiswahili",  "Lugha ya taifa — salamu, sarufi, maneno ya kila siku, na utamaduni."),
+    }
+    icon, title, desc = courses.get(course_slug, ("📚", "Course", "Inakuja hivi karibuni."))
+
+    return HttpResponse(f"""<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{title} | Student Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+*{{box-sizing:border-box;margin:0;padding:0}}
+body{{font-family:'Inter',sans-serif;background:#fafaf9;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}}
+.card{{background:#fff;border:1px solid #e7e5e4;border-radius:28px;padding:50px 40px;max-width:520px;box-shadow:0 28px 64px -20px rgba(28,25,23,.15)}}
+.icon{{font-size:4rem;margin-bottom:20px;line-height:1}}
+h1{{color:#1c1917;font-size:1.8rem;font-weight:900;margin-bottom:14px;letter-spacing:-.02em}}
+p{{color:#57534e;font-size:1rem;line-height:1.7;margin-bottom:28px}}
+.badge{{display:inline-block;background:#fef3c7;color:#b45309;font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:6px 16px;border-radius:50px;margin-bottom:18px}}
+a{{background:linear-gradient(120deg,#c2410c,#be185d);color:#fff;padding:13px 30px;border-radius:999px;text-decoration:none;font-weight:800;font-size:.95rem;display:inline-block;box-shadow:0 8px 22px -8px rgba(219,39,119,.5);transition:transform .2s}}
+a:hover{{transform:translateY(-2px)}}
+</style>
+</head><body>
+<div class="card">
+  <div class="icon">{icon}</div>
+  <div class="badge">Coming Soon</div>
+  <h1>{title}</h1>
+  <p>{desc}</p>
+  <a href="/free_course/">← Rudi kwenye Courses</a>
+</div>
+</body></html>""", content_type="text/html; charset=utf-8")
+
+
+def _serve_course_index(course_slug):
+    """Jaribu file kwanza. Kama haipo, tumia embedded HTML."""
+    candidates = [
+        os.path.join(BASE_DIR, "free_course", course_slug, "index.html"),
+        os.path.join(BASE_DIR, course_slug, "index.html"),
+    ]
+
+    for path in candidates:
+        if os.path.exists(path):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    html = f.read()
+                response = HttpResponse(html, content_type="text/html; charset=utf-8")
+                response["Cache-Control"] = "public, max-age=300"
+                print(f"✅ Served '{course_slug}' from {path}")
+                return response
+            except Exception as e:
+                print(f"❌ Error reading {path}: {e}")
+
+    print(f"⚠️  '{course_slug}' file not found — using embedded fallback")
+    return _embedded_course_html(course_slug)
 
 # ============================================================
 # MAIN VIEWS
@@ -858,17 +892,23 @@ urlpatterns = [
     path("free-courses/", free_courses_view),
 
     # ============================================================
-    # FREE COURSE — SPECIFIC COURSES (explicit, ordered)
+    # FREE COURSE — SPECIFIC COURSES
     # ============================================================
-    path("free_course/github/",      lambda r: _serve_course_index("github") or free_courses_view(r), name="free_course_github"),
-    path("free_course/web-hosting/", lambda r: _serve_course_index("web-hosting") or free_courses_view(r), name="free_course_hosting"),
-    path("free_course/python/",      lambda r: _serve_course_index("python") or free_courses_view(r), name="free_course_python"),
-    path("free_course/html-css/",    lambda r: _serve_course_index("html-css") or free_courses_view(r), name="free_course_htmlcss"),
-    path("free_course/english/",     lambda r: _serve_course_index("english") or free_courses_view(r), name="free_course_english"),
-    path("free_course/kiswahili/",   lambda r: _serve_course_index("kiswahili") or free_courses_view(r), name="free_course_kiswahili"),
+    path("free_course/github/",       lambda r: _serve_course_index("github"), name="free_course_github"),
+    path("free_course/github/index.html", lambda r: _serve_course_index("github")),
+    path("free_course/web-hosting/",  lambda r: _serve_course_index("web-hosting"), name="free_course_hosting"),
+    path("free_course/web-hosting/index.html", lambda r: _serve_course_index("web-hosting")),
+    path("free_course/python/",       lambda r: _serve_course_index("python"), name="free_course_python"),
+    path("free_course/python/index.html", lambda r: _serve_course_index("python")),
+    path("free_course/html-css/",     lambda r: _serve_course_index("html-css"), name="free_course_htmlcss"),
+    path("free_course/html-css/index.html", lambda r: _serve_course_index("html-css")),
+    path("free_course/english/",      lambda r: _serve_course_index("english"), name="free_course_english"),
+    path("free_course/english/index.html", lambda r: _serve_course_index("english")),
+    path("free_course/kiswahili/",    lambda r: _serve_course_index("kiswahili"), name="free_course_kiswahili"),
+    path("free_course/kiswahili/index.html", lambda r: _serve_course_index("kiswahili")),
 
     # ============================================================
-    # FREE COURSE — ASSETS INSIDE COURSE FOLDERS
+    # FREE COURSE — ASSETS
     # ============================================================
     path("free_course/<path:subpath>", serve_subfolder_file, name="free_course_assets"),
 
