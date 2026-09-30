@@ -11,7 +11,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 :root{
-  /* Theme 1 · Warm SaaS */
   --bg:#fafaf9;
   --surface:#ffffff;
   --alt:#f5f5f4;
@@ -166,6 +165,45 @@ img{max-width:100%;height:auto;display:block}
 }
 .track:hover::before{opacity:1}
 
+/* NEW badge */
+.track .new-badge{
+  position:absolute;
+  top:14px;right:14px;
+  background:linear-gradient(120deg,#ea580c,#db2777);
+  color:#fff;
+  font-size:.62rem;
+  font-weight:900;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  padding:5px 11px;
+  border-radius:999px;
+  box-shadow:0 6px 18px -6px rgba(219,39,119,.7);
+  z-index:2;
+  display:inline-flex;align-items:center;gap:5px;
+  animation:newPulse 2s ease-in-out infinite;
+}
+.track .new-badge i{font-size:.6rem}
+@keyframes newPulse{
+  0%,100%{transform:scale(1);box-shadow:0 6px 18px -6px rgba(219,39,119,.7)}
+  50%{transform:scale(1.06);box-shadow:0 8px 24px -6px rgba(219,39,119,.9)}
+}
+
+/* Featured (active) track */
+.track.featured{
+  border:1.5px solid var(--accent-color);
+  background:linear-gradient(180deg,#fff,#fdf9f4);
+  box-shadow:0 12px 32px -12px var(--accent-glow),var(--shadow-sm);
+}
+.track.featured:hover{
+  box-shadow:0 28px 60px -18px var(--accent-glow),var(--shadow-lg);
+}
+.track.featured .track-status{
+  color:var(--success);
+  background:var(--green-dim);
+  border-color:#86efac;
+}
+.track.featured .track-status .dot{background:var(--success)}
+
 .track-icon{
   width:64px;height:64px;
   border-radius:var(--radius-md);
@@ -236,6 +274,7 @@ img{max-width:100%;height:auto;display:block}
 .track.python{--accent-color:#15803d;--accent-bg:#dcfce7;--accent-glow:rgba(21,128,61,.2)}
 .track.english{--accent-color:#2563eb;--accent-bg:#dbeafe;--accent-glow:rgba(37,99,235,.2)}
 .track.kiswahili{--accent-color:#0891b2;--accent-bg:#cffafe;--accent-glow:rgba(8,145,178,.2)}
+.track.hosting{--accent-color:#0ea5e9;--accent-bg:#e0f2fe;--accent-glow:rgba(14,165,233,.22)}
 
 /* NOTICE */
 .notice{
@@ -309,7 +348,6 @@ footer{background:var(--ink);padding:26px 20px;border-top:1px solid var(--border
         <span class="logo-text">Student<span>Hub</span></span>
       </a>
       <div class="menu">
-       
         <a href="/">Home</a>
         <a href="/browse/">Browse</a>
         <a href="/upload/">Upload</a>
@@ -332,25 +370,27 @@ footer{background:var(--ink);padding:26px 20px;border-top:1px solid var(--border
     <div class="hero">
       <span class="badge"><span class="dot"></span> System Under Maintenance</span>
       <h1>Learn anything, <span class="accent">at your pace</span>.</h1>
-      <p>Five complete learning tracks — <strong>GitHub</strong>, <strong>HTML &amp; CSS</strong>, <strong>Python</strong>, <strong>English</strong>, and <strong>Kiswahili</strong>. All coming soon with real lessons, projects, and interactive labs.</p>
+      <p>Six complete learning tracks — <strong>GitHub</strong>, <strong>HTML &amp; CSS</strong>, <strong>Python</strong>, <strong>English</strong>, <strong>Kiswahili</strong>, and <strong>Free Web Hosting</strong>. Real lessons, projects, and interactive labs.</p>
     </div>
 
     <!-- TRACKS GRID -->
     <div class="tracks-grid">
 
-      <a href="/free_course/github/" class="track github">
+      <!-- GITHUB — LIVE with NEW badge, links to github/index.html -->
+      <a href="github/index.html" class="track github featured">
+        <span class="new-badge"><i class="fas fa-star"></i> New</span>
         <div class="track-icon">
           <i class="fab fa-github"></i>
         </div>
         <h3>Learn GitHub</h3>
         <p class="track-desc">Version control, repositories, branches, pull requests, and collaboration workflows used by every professional developer.</p>
         <div class="track-meta">
-          <span class="track-status"><span class="dot"></span> Coming soon</span>
-          <span class="track-arrow">Explore <i class="fas fa-arrow-right"></i></span>
+          <span class="track-status"><span class="dot"></span> Live now</span>
+          <span class="track-arrow">Start <i class="fas fa-arrow-right"></i></span>
         </div>
       </a>
 
-      <a href="/free_course/html-css/" class="track htmlcss">
+      <a href="html-css/index.html" class="track htmlcss">
         <div class="track-icon">
           <i class="fas fa-code"></i>
         </div>
@@ -362,7 +402,7 @@ footer{background:var(--ink);padding:26px 20px;border-top:1px solid var(--border
         </div>
       </a>
 
-      <a href="/free_course/python/" class="track python">
+      <a href="python/index.html" class="track python">
         <div class="track-icon">
           <i class="fab fa-python"></i>
         </div>
@@ -374,7 +414,7 @@ footer{background:var(--ink);padding:26px 20px;border-top:1px solid var(--border
         </div>
       </a>
 
-      <a href="/free_course/english/" class="track english">
+      <a href="english/index.html" class="track english">
         <div class="track-icon">
           <i class="fas fa-language"></i>
         </div>
@@ -386,12 +426,26 @@ footer{background:var(--ink);padding:26px 20px;border-top:1px solid var(--border
         </div>
       </a>
 
-      <a href="/free_course/kiswahili/" class="track kiswahili">
+      <a href="kiswahili/index.html" class="track kiswahili">
         <div class="track-icon">
           <i class="fas fa-book"></i>
         </div>
         <h3>Learn Kiswahili</h3>
         <p class="track-desc">Master Tanzania's national language — greetings, grammar, everyday phrases, and cultural context.</p>
+        <div class="track-meta">
+          <span class="track-status"><span class="dot"></span> Coming soon</span>
+          <span class="track-arrow">Explore <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </a>
+
+      <!-- FREE WEB HOSTING — NEW course -->
+      <a href="web-hosting/index.html" class="track hosting">
+        <span class="new-badge"><i class="fas fa-star"></i> New</span>
+        <div class="track-icon">
+          <i class="fas fa-server"></i>
+        </div>
+        <h3>Free Web Hosting</h3>
+        <p class="track-desc">Deploy your website online for free — GitHub Pages, Netlify, Vercel, custom domains, HTTPS, and DNS basics. Zero cost, real results.</p>
         <div class="track-meta">
           <span class="track-status"><span class="dot"></span> Coming soon</span>
           <span class="track-arrow">Explore <i class="fas fa-arrow-right"></i></span>
