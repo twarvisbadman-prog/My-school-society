@@ -10,29 +10,41 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 :root {
-  --bg: #0a0a0a;
-  --bg-alt: #121212;
-  --bg-card: #1a1a1a;
-  --bg-elevated: #222222;
-  --border: #2a2a2a;
-  --border-bright: #3a3a3a;
-  --text: #f5f5f5;
-  --text-dim: #a0a0a0;
-  --text-faint: #666;
-  --sky: #0ea5e9;
-  --sky-bright: #38bdf8;
-  --sky-dark: #0369a1;
-  --sky-glow: rgba(14, 165, 233, 0.35);
-  --cyan: #06b6d4;
-  --green: #10b981;
-  --green-dim: rgba(16, 185, 129, 0.15);
-  --amber: #f59e0b;
-  --rose: #f43f5e;
-  --violet: #8b5cf6;
-  --code-bg: #050505;
+  --bg: #fafaf9;
+  --bg-alt: #f5f5f4;
+  --surface: #ffffff;
+  --surface-hover: #fefefe;
+  --border: #e7e5e4;
+  --border-strong: #d6d3d1;
+  --ink: #1c1917;
+  --text: #1c1917;
+  --text-2: #44403c;
+  --text-3: #57534e;
+  --text-dim: #78716c;
+  --text-faint: #a8a29e;
+  --sky: #0891b2;
+  --sky-bright: #06b6d4;
+  --sky-dim: #cffafe;
+  --sky-glow: rgba(8, 145, 178, 0.2);
+  --cyan: #0ea5e9;
+  --green: #15803d;
+  --green-dim: #dcfce7;
+  --amber: #b45309;
+  --amber-dim: #fef3c7;
+  --rose: #dc2626;
+  --rose-dim: #fee2e2;
+  --violet: #7c3aed;
+  --violet-dim: #f3e8ff;
+  --pink: #db2777;
+  --grad: linear-gradient(120deg, #0891b2, #7c3aed);
+  --grad-cta: linear-gradient(120deg, #c2410c, #be185d);
+  --code-bg: #1c1917;
   --mono: 'JetBrains Mono', 'Courier New', monospace;
   --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --sidebar-w: 300px;
+  --sidebar-w: 320px;
+  --shadow-sm: 0 1px 2px rgba(28,25,23,.06);
+  --shadow-md: 0 10px 28px -12px rgba(28,25,23,.18);
+  --shadow-lg: 0 28px 64px -20px rgba(28,25,23,.22);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
@@ -48,14 +60,14 @@ body {
 /* ============ PROGRESS BAR ============ */
 #top-progress {
   position: fixed; top: 0; left: 0; right: 0;
-  height: 4px;
-  background: rgba(255,255,255,0.05);
+  height: 3px;
+  background: rgba(28,25,23,0.05);
   z-index: 1000;
 }
 #top-progress .fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, var(--sky), var(--cyan), var(--sky-bright));
+  background: var(--grad);
   background-size: 200% 100%;
   animation: gradientShift 3s ease infinite;
   transition: width 0.4s ease;
@@ -66,25 +78,89 @@ body {
   50% { background-position: 100% 50%; }
 }
 
-/* ============ SIDEBAR ============ */
+/* ============ SIDEBAR — INFLUENCING DESIGN ============ */
 aside {
   position: fixed;
   top: 0; left: 0;
   width: var(--sidebar-w);
   height: 100vh;
-  background: var(--bg-alt);
+  background: var(--surface);
   border-right: 1px solid var(--border);
   overflow-y: auto;
   z-index: 100;
-  padding: 24px 0;
+  padding: 20px 0 30px;
   scrollbar-width: thin;
-  scrollbar-color: var(--border-bright) transparent;
+  scrollbar-color: var(--border-strong) transparent;
+  box-shadow: 4px 0 24px -8px rgba(28,25,23,.08);
 }
 aside::-webkit-scrollbar { width: 6px; }
-aside::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
+aside::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
 
+/* Welcome banner — makes sidebar stand out */
+.sidebar-welcome {
+  margin: 0 16px 20px;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, #0891b2 0%, #7c3aed 100%);
+  border-radius: 16px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 28px -8px rgba(8, 145, 178, 0.5);
+  animation: welcomePulse 3s ease-in-out infinite;
+}
+@keyframes welcomePulse {
+  0%, 100% { box-shadow: 0 12px 28px -8px rgba(8, 145, 178, 0.5); }
+  50% { box-shadow: 0 12px 36px -4px rgba(124, 58, 237, 0.65); }
+}
+.sidebar-welcome::before {
+  content: '';
+  position: absolute;
+  top: -20px; right: -20px;
+  width: 100px; height: 100px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 50%;
+  filter: blur(20px);
+}
+.sidebar-welcome .w-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(8px);
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  font-family: var(--mono);
+  position: relative;
+  z-index: 1;
+}
+.sidebar-welcome .w-badge i { font-size: 0.7rem; }
+.sidebar-welcome h3 {
+  font-size: 1rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+  position: relative;
+  z-index: 1;
+  color: white;
+}
+.sidebar-welcome p {
+  font-size: 0.75rem;
+  opacity: 0.9;
+  line-height: 1.5;
+  position: relative;
+  z-index: 1;
+  color: white;
+  margin: 0;
+}
+
+/* Sidebar header */
 .sidebar-header {
-  padding: 0 22px 22px;
+  padding: 0 22px 18px;
   border-bottom: 1px solid var(--border);
   margin-bottom: 18px;
 }
@@ -93,25 +169,29 @@ aside::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius
   font-weight: 900; font-size: 1.15rem;
   letter-spacing: -0.02em;
   margin-bottom: 6px;
+  color: var(--ink);
 }
 .sidebar-header .logo-icon {
-  width: 36px; height: 36px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--sky), var(--cyan));
+  width: 38px; height: 38px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #0891b2, #7c3aed);
   display: flex; align-items: center; justify-content: center;
   font-size: 1.1rem;
   color: white;
-  box-shadow: 0 6px 16px -6px var(--sky-glow);
+  box-shadow: 0 8px 20px -8px rgba(8, 145, 178, 0.6);
 }
 .sidebar-header .subtitle {
   color: var(--text-dim);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-family: var(--mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
-.sidebar-progress { padding: 0 22px 20px; }
+/* Progress */
+.sidebar-progress {
+  padding: 0 22px 20px;
+}
 .sidebar-progress .label {
   display: flex; justify-content: space-between;
   font-size: 0.7rem;
@@ -121,22 +201,25 @@ aside::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
-.sidebar-progress .label strong { color: var(--sky-bright); font-weight: 700; }
+.sidebar-progress .label strong { color: var(--sky); font-weight: 800; }
 .sidebar-progress .bar {
-  height: 6px;
-  background: var(--bg);
-  border-radius: 3px;
+  height: 8px;
+  background: var(--bg-alt);
+  border-radius: 4px;
   overflow: hidden;
   border: 1px solid var(--border);
 }
 .sidebar-progress .bar .fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, var(--sky), var(--cyan));
+  background: var(--grad);
+  background-size: 200% 100%;
+  animation: gradientShift 3s ease infinite;
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 10px var(--sky-glow);
+  border-radius: 4px;
 }
 
+/* Nav sections */
 .nav-section { padding: 0 14px; margin-bottom: 8px; }
 .nav-section-title {
   color: var(--text-faint);
@@ -144,68 +227,140 @@ aside::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius
   font-weight: 800;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  padding: 12px 12px 6px;
+  padding: 12px 12px 8px;
   font-family: var(--mono);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
+.nav-section-title::before {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border), transparent);
+}
+.nav-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(270deg, var(--border), transparent);
+}
+
 .nav-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  color: var(--text-2);
   text-decoration: none;
-  font-size: 0.86rem;
+  font-size: 0.87rem;
   font-weight: 500;
-  transition: all 0.15s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-  margin-bottom: 2px;
-  border-left: 2px solid transparent;
+  margin-bottom: 3px;
+  border: 1px solid transparent;
+  position: relative;
 }
-.nav-item:hover { background: var(--bg-card); color: var(--text); }
+.nav-item:hover {
+  background: var(--bg-alt);
+  color: var(--ink);
+  border-color: var(--border);
+  transform: translateX(3px);
+}
 .nav-item.active {
-  background: var(--bg-card);
-  color: var(--sky-bright);
-  border-left-color: var(--sky);
-}
-.nav-item.completed { color: var(--green); }
-.nav-item.completed .nav-icon::after {
-  content: ' ✓';
-  color: var(--green);
+  background: var(--sky-dim);
+  color: var(--sky);
+  border-color: rgba(8, 145, 178, 0.3);
   font-weight: 700;
+  box-shadow: 0 4px 12px -4px rgba(8, 145, 178, 0.25);
+}
+.nav-item.active .nav-icon {
+  background: var(--sky);
+  color: white;
+  border-color: var(--sky);
+  box-shadow: 0 4px 10px -2px rgba(8, 145, 178, 0.4);
+}
+.nav-item.completed {
+  color: var(--green);
+  background: var(--green-dim);
+  border-color: rgba(21, 128, 61, 0.2);
+}
+.nav-item.completed .nav-icon {
+  background: var(--green);
+  color: white;
+  border-color: var(--green);
 }
 .nav-item .nav-icon {
-  width: 22px;
-  text-align: center;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 7px;
   font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-dim);
   flex-shrink: 0;
+  transition: all 0.2s;
 }
-.nav-item .nav-icon i { font-size: 0.9rem; }
+.nav-item .nav-icon i { font-size: 0.85rem; }
 .nav-item .nav-title {
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.nav-item.completed .nav-title::after {
+  content: ' ✓';
+  color: var(--green);
+  font-weight: 800;
+}
 
+/* Certificate button */
 .cert-btn {
-  display: block;
-  margin: 18px 22px 0;
-  padding: 12px 16px;
-  background: linear-gradient(135deg, var(--sky), var(--violet));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 22px 22px 0;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #0891b2, #7c3aed);
   color: white;
   text-align: center;
-  border-radius: 10px;
+  border-radius: 12px;
   font-weight: 800;
-  font-size: 0.85rem;
-  box-shadow: 0 8px 24px -8px var(--sky-glow);
-  transition: transform 0.15s;
+  font-size: 0.88rem;
+  box-shadow: 0 12px 28px -8px rgba(8, 145, 178, 0.5);
+  transition: transform 0.15s, box-shadow 0.15s;
   border: none;
   width: calc(100% - 44px);
   cursor: pointer;
   font-family: var(--sans);
+  position: relative;
+  overflow: hidden;
 }
-.cert-btn:hover:not(:disabled) { transform: translateY(-2px); }
-.cert-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.cert-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s;
+}
+.cert-btn:hover:not(:disabled)::before { left: 100%; }
+.cert-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px -8px rgba(8, 145, 178, 0.6);
+}
+.cert-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
 
 /* ============ MAIN ============ */
 main { margin-left: var(--sidebar-w); min-height: 100vh; }
@@ -213,9 +368,9 @@ main { margin-left: var(--sidebar-w); min-height: 100vh; }
 .module-hero { padding: 48px 60px 30px; max-width: 1000px; }
 .module-badge {
   display: inline-flex; align-items: center; gap: 8px;
-  background: rgba(14, 165, 233, 0.12);
-  border: 1px solid rgba(14, 165, 233, 0.3);
-  color: var(--sky-bright);
+  background: var(--sky-dim);
+  border: 1px solid rgba(8, 145, 178, 0.25);
+  color: var(--sky);
   padding: 6px 14px;
   border-radius: 50px;
   font-size: 0.7rem;
@@ -232,13 +387,14 @@ main { margin-left: var(--sidebar-w); min-height: 100vh; }
   letter-spacing: -0.03em;
   line-height: 1.1;
   margin-bottom: 14px;
-  background: linear-gradient(135deg, #fff 0%, var(--sky-bright) 100%);
+  color: var(--ink);
+  background: linear-gradient(135deg, #1c1917 0%, #0891b2 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 .module-subtitle {
-  color: var(--text-dim);
+  color: var(--text-2);
   font-size: 1.05rem;
   max-width: 720px;
   line-height: 1.7;
@@ -260,48 +416,48 @@ main { margin-left: var(--sidebar-w); min-height: 100vh; }
   font-weight: 800;
   letter-spacing: -0.02em;
   margin: 48px 0 18px;
-  color: var(--text);
+  color: var(--ink);
   display: flex; align-items: center; gap: 12px;
   scroll-margin-top: 20px;
 }
 .module-content h2::before {
   content: '';
   width: 4px; height: 28px;
-  background: linear-gradient(180deg, var(--sky), var(--cyan));
+  background: var(--grad);
   border-radius: 2px;
 }
-.module-content h3 { font-size: 1.2rem; font-weight: 700; margin: 32px 0 12px; color: var(--text); }
+.module-content h3 { font-size: 1.2rem; font-weight: 700; margin: 32px 0 12px; color: var(--ink); }
 .module-content h4 {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   margin: 22px 0 10px;
-  color: var(--sky-bright);
+  color: var(--sky);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-family: var(--mono);
 }
-.module-content p { color: #c9c9c9; margin-bottom: 16px; line-height: 1.8; }
-.module-content strong { color: var(--text); font-weight: 700; }
-.module-content em { color: var(--sky-bright); font-style: normal; font-weight: 600; }
+.module-content p { color: var(--text-2); margin-bottom: 16px; line-height: 1.8; }
+.module-content strong { color: var(--ink); font-weight: 700; }
+.module-content em { color: var(--sky); font-style: normal; font-weight: 600; }
 .module-content a {
-  color: var(--sky-bright);
+  color: var(--sky);
   text-decoration: none;
-  border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+  border-bottom: 1px solid rgba(8, 145, 178, 0.3);
   transition: all 0.15s;
 }
-.module-content a:hover { border-bottom-color: var(--sky-bright); color: white; }
+.module-content a:hover { border-bottom-color: var(--sky); color: var(--sky-bright); }
 
-.module-content ul, .module-content ol { margin: 16px 0 20px 24px; color: #c9c9c9; }
+.module-content ul, .module-content ol { margin: 16px 0 20px 24px; color: var(--text-2); }
 .module-content li { margin-bottom: 10px; line-height: 1.75; }
-.module-content li::marker { color: var(--sky); }
+.module-content li::marker { color: var(--sky); font-weight: 700; }
 
 code {
   font-family: var(--mono);
-  background: var(--bg-card);
+  background: var(--bg-alt);
   padding: 2px 8px;
   border-radius: 5px;
   font-size: 0.88em;
-  color: var(--cyan);
+  color: var(--pink);
   border: 1px solid var(--border);
 }
 
@@ -309,35 +465,36 @@ pre {
   background: var(--code-bg);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 20px 22px;
+  padding: 22px 24px;
   overflow-x: auto;
   margin: 18px 0 24px;
   position: relative;
   font-size: 0.88rem;
   line-height: 1.75;
   scrollbar-width: thin;
+  box-shadow: var(--shadow-sm);
 }
 pre::-webkit-scrollbar { height: 8px; }
-pre::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 4px; }
+pre::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 4px; }
 pre code {
   background: none;
   padding: 0;
   border: none;
-  color: #e0e0e0;
+  color: #e7e5e4;
   font-size: 0.88rem;
 }
-pre .c-cmd { color: var(--green); }
-pre .c-comment { color: var(--text-faint); font-style: italic; }
-pre .c-str { color: var(--amber); }
-pre .c-flag { color: var(--violet); }
-pre .c-out { color: var(--text-dim); }
+pre .c-cmd { color: #86efac; }
+pre .c-comment { color: #78716c; font-style: italic; }
+pre .c-str { color: #fcd34d; }
+pre .c-flag { color: #c4b5fd; }
+pre .c-out { color: #a8a29e; }
 
 .copy-btn {
   position: absolute;
   top: 12px; right: 12px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  color: var(--text-dim);
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #e7e5e4;
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 0.72rem;
@@ -354,34 +511,33 @@ pre .c-out { color: var(--text-dim); }
 /* ============ CALLOUTS ============ */
 .callout {
   border-left: 4px solid var(--sky);
-  background: rgba(14, 165, 233, 0.08);
+  background: var(--sky-dim);
   padding: 18px 22px;
   border-radius: 0 12px 12px 0;
   margin: 22px 0;
   display: flex; gap: 14px; align-items: flex-start;
 }
-.callout i { color: var(--sky-bright); font-size: 1.1rem; margin-top: 2px; flex-shrink: 0; }
+.callout i { color: var(--sky); font-size: 1.1rem; margin-top: 2px; flex-shrink: 0; }
 .callout .callout-body { flex: 1; }
-.callout .callout-body strong { display: block; color: var(--sky-bright); margin-bottom: 6px; font-size: 0.92rem; }
+.callout .callout-body strong { display: block; color: var(--sky); margin-bottom: 6px; font-size: 0.92rem; }
 .callout .callout-body p:last-child { margin-bottom: 0; }
 
-.callout.warning { border-color: var(--amber); background: rgba(245, 158, 11, 0.08); }
+.callout.warning { border-color: var(--amber); background: var(--amber-dim); }
 .callout.warning i, .callout.warning .callout-body strong { color: var(--amber); }
-.callout.danger { border-color: var(--rose); background: rgba(244, 63, 94, 0.08); }
+.callout.danger { border-color: var(--rose); background: var(--rose-dim); }
 .callout.danger i, .callout.danger .callout-body strong { color: var(--rose); }
-.callout.success { border-color: var(--green); background: rgba(16, 185, 129, 0.08); }
+.callout.success { border-color: var(--green); background: var(--green-dim); }
 .callout.success i, .callout.success .callout-body strong { color: var(--green); }
 
-/* ============ ANIMATED DIAGRAMS ============ */
+/* ============ DIAGRAMS ============ */
 .diagram {
-  background: var(--bg-card);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 32px 24px;
   margin: 28px 0;
   text-align: center;
-  position: relative;
-  overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 .diagram svg { max-width: 100%; height: auto; }
 .diagram-caption {
@@ -402,35 +558,29 @@ pre .c-out { color: var(--text-dim); }
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.anim-pulse { animation: pulse 2s ease-in-out infinite; }
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(1.05); }
-}
+.anim-flow { stroke-dasharray: 12 8; animation: flowMove 1.2s linear infinite; }
+@keyframes flowMove { to { stroke-dashoffset: -20; } }
 .anim-float { animation: float 3s ease-in-out infinite; }
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
 }
-.anim-flow { stroke-dasharray: 12 8; animation: flowMove 1.2s linear infinite; }
-@keyframes flowMove { to { stroke-dashoffset: -20; } }
 
 /* ============ MOCK SCREENSHOTS ============ */
 .gh-mock {
-  background: var(--bg-alt);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
   overflow: hidden;
   margin: 24px 0;
-  box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+  box-shadow: var(--shadow-md);
 }
 .gh-mock .gh-topbar {
-  background: #050505;
+  background: #1c1917;
   padding: 10px 14px;
   display: flex;
   align-items: center;
   gap: 8px;
-  border-bottom: 1px solid var(--border);
 }
 .gh-mock .dot { width: 11px; height: 11px; border-radius: 50%; }
 .dot-r { background: #ff5f57; }
@@ -442,15 +592,16 @@ pre .c-out { color: var(--text-dim); }
   color: var(--text-faint);
   font-family: var(--mono);
 }
-.gh-mock .gh-body { padding: 20px 24px; font-size: 0.88rem; }
+.gh-mock .gh-body { padding: 20px 24px; font-size: 0.88rem; background: var(--bg); }
 .gh-mock .gh-step {
   display: flex; align-items: center; gap: 12px;
   padding: 12px 14px;
-  background: var(--bg-card);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
   margin-bottom: 10px;
   font-size: 0.86rem;
+  color: var(--text-2);
 }
 .gh-mock .gh-step-num {
   width: 24px; height: 24px;
@@ -467,24 +618,25 @@ pre .c-out { color: var(--text-dim); }
 .gh-mock-caption {
   text-align: center;
   font-size: 0.78rem;
-  color: var(--text-faint);
+  color: var(--text-dim);
   margin-top: -12px;
   margin-bottom: 24px;
   font-style: italic;
 }
 
-/* ============ TABLE ============ */
+/* ============ TABLES ============ */
 .table-wrap {
   overflow-x: auto;
   margin: 20px 0 26px;
   border-radius: 12px;
   border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
 }
-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; min-width: 520px; }
+table { width: 100%; border-collapse: collapse; font-size: 0.88rem; min-width: 520px; background: var(--surface); }
 th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--border); }
 th {
-  background: var(--bg-card);
-  color: var(--sky-bright);
+  background: var(--bg-alt);
+  color: var(--sky);
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -492,17 +644,19 @@ th {
   font-family: var(--mono);
 }
 tr:last-child td { border-bottom: none; }
+td { color: var(--text-2); }
 td code { font-size: 0.82rem; }
 
 /* ============ QUIZ ============ */
 .quiz {
-  background: var(--bg-card);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 24px 26px;
+  padding: 26px 28px;
   margin: 30px 0;
   position: relative;
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 .quiz::before {
   content: '';
@@ -515,7 +669,7 @@ td code { font-size: 0.82rem; }
 }
 .quiz-label {
   display: inline-block;
-  background: rgba(139, 92, 246, 0.15);
+  background: var(--violet-dim);
   color: var(--violet);
   padding: 4px 12px;
   border-radius: 50px;
@@ -526,13 +680,13 @@ td code { font-size: 0.82rem; }
   font-family: var(--mono);
   margin-bottom: 12px;
 }
-.quiz .q-text { font-weight: 700; margin-bottom: 16px; font-size: 1rem; color: var(--text); }
+.quiz .q-text { font-weight: 700; margin-bottom: 16px; font-size: 1rem; color: var(--ink); }
 .quiz .opts { display: flex; flex-direction: column; gap: 10px; }
 .quiz .opt {
   background: var(--bg);
   border: 1px solid var(--border);
-  color: var(--text);
-  padding: 12px 16px;
+  color: var(--text-2);
+  padding: 13px 16px;
   border-radius: 10px;
   text-align: left;
   cursor: pointer;
@@ -543,17 +697,18 @@ td code { font-size: 0.82rem; }
 }
 .quiz .opt:hover:not(:disabled) {
   border-color: var(--sky);
-  background: rgba(14, 165, 233, 0.05);
+  background: var(--sky-dim);
   transform: translateX(3px);
 }
 .quiz .opt.correct {
   border-color: var(--green);
   background: var(--green-dim);
   color: var(--green);
+  font-weight: 700;
 }
 .quiz .opt.wrong {
   border-color: var(--rose);
-  background: rgba(244, 63, 94, 0.1);
+  background: var(--rose-dim);
   color: var(--rose);
 }
 .quiz .opt:disabled { cursor: default; }
@@ -566,16 +721,8 @@ td code { font-size: 0.82rem; }
   display: none;
 }
 .quiz .feedback.show { display: block; animation: fadeIn 0.3s; }
-.quiz .feedback.good {
-  background: var(--green-dim);
-  color: var(--green);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-}
-.quiz .feedback.bad {
-  background: rgba(244, 63, 94, 0.1);
-  color: var(--rose);
-  border: 1px solid rgba(244, 63, 94, 0.3);
-}
+.quiz .feedback.good { background: var(--green-dim); color: var(--green); }
+.quiz .feedback.bad { background: var(--rose-dim); color: var(--rose); }
 
 /* ============ COMPARISON CARDS ============ */
 .compare-grid {
@@ -585,13 +732,14 @@ td code { font-size: 0.82rem; }
   margin: 24px 0;
 }
 .compare-card {
-  background: var(--bg-card);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 22px 20px;
   transition: all 0.25s;
   position: relative;
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 .compare-card::before {
   content: '';
@@ -612,7 +760,7 @@ td code { font-size: 0.82rem; }
 .compare-card .cc-icon {
   width: 44px; height: 44px;
   border-radius: 10px;
-  background: rgba(255,255,255,0.05);
+  background: var(--bg-alt);
   display: flex; align-items: center; justify-content: center;
   font-size: 1.3rem;
   color: var(--card-color, var(--sky));
@@ -621,14 +769,14 @@ td code { font-size: 0.82rem; }
 .compare-card h4 {
   font-size: 1rem;
   margin-bottom: 8px;
-  color: var(--text);
+  color: var(--ink);
   text-transform: none;
   letter-spacing: 0;
   font-family: var(--sans);
 }
 .compare-card p {
   font-size: 0.84rem;
-  color: var(--text-dim);
+  color: var(--text-2);
   margin-bottom: 12px;
   line-height: 1.6;
 }
@@ -640,7 +788,7 @@ td code { font-size: 0.82rem; }
   text-transform: uppercase;
   padding: 4px 10px;
   border-radius: 50px;
-  background: rgba(255,255,255,0.05);
+  background: var(--bg-alt);
   color: var(--text-dim);
   font-family: var(--mono);
 }
@@ -649,7 +797,7 @@ td code { font-size: 0.82rem; }
 .provider-card {
   display: flex;
   gap: 24px;
-  background: var(--bg-card);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 28px 26px;
@@ -657,6 +805,7 @@ td code { font-size: 0.82rem; }
   transition: all 0.25s;
   position: relative;
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 .provider-card::before {
   content: '';
@@ -664,19 +813,19 @@ td code { font-size: 0.82rem; }
   top: 0; left: 0; right: 0;
   height: 3px;
   background: var(--logo-color, var(--sky));
-  opacity: 0.6;
+  opacity: 0.8;
 }
 .provider-card:hover {
-  border-color: var(--border-bright);
+  border-color: var(--border-strong);
   transform: translateY(-3px);
-  box-shadow: 0 20px 40px -20px rgba(0,0,0,0.5);
+  box-shadow: var(--shadow-lg);
 }
 .provider-logo {
   flex-shrink: 0;
   width: 80px;
   height: 80px;
   border-radius: 18px;
-  background: linear-gradient(135deg, var(--bg-alt), var(--bg-elevated));
+  background: var(--bg-alt);
   border: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -696,7 +845,7 @@ td code { font-size: 0.82rem; }
   font-size: 1.35rem;
   font-weight: 800;
   margin: 0;
-  color: var(--text);
+  color: var(--ink);
   letter-spacing: -0.02em;
 }
 .provider-tag {
@@ -706,25 +855,25 @@ td code { font-size: 0.82rem; }
   text-transform: uppercase;
   padding: 4px 10px;
   border-radius: 50px;
-  background: rgba(255,255,255,0.05);
+  background: var(--bg-alt);
   color: var(--text-dim);
   font-family: var(--mono);
 }
 .provider-info > p {
-  color: var(--text-dim);
+  color: var(--text-2);
   font-size: 0.9rem;
   margin-bottom: 16px;
   line-height: 1.7;
 }
 .provider-info h4 {
-  color: var(--sky-bright);
+  color: var(--sky);
   font-size: 0.8rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-family: var(--mono);
   margin: 16px 0 8px;
 }
-.provider-info ol { margin: 0 0 16px 22px; color: #c9c9c9; font-size: 0.88rem; }
+.provider-info ol { margin: 0 0 16px 22px; color: var(--text-2); font-size: 0.88rem; }
 .provider-info ol li { margin-bottom: 6px; line-height: 1.6; }
 .provider-actions {
   display: flex;
@@ -742,7 +891,7 @@ td code { font-size: 0.82rem; }
   border-radius: 8px;
   background: var(--bg-alt);
   border: 1px solid var(--border);
-  color: var(--text-dim);
+  color: var(--text-2);
   text-decoration: none;
   font-size: 0.78rem;
   font-weight: 700;
@@ -751,7 +900,7 @@ td code { font-size: 0.82rem; }
 }
 .provider-btn:hover {
   border-color: var(--sky);
-  color: var(--sky-bright);
+  color: var(--sky);
   transform: translateY(-1px);
   text-decoration: none;
 }
@@ -768,8 +917,8 @@ td code { font-size: 0.82rem; }
 
 /* ============ RENDER WARNING ============ */
 .render-warning {
-  background: linear-gradient(135deg, rgba(244, 63, 94, 0.1), rgba(139, 92, 246, 0.1));
-  border: 2px solid rgba(244, 63, 94, 0.3);
+  background: linear-gradient(135deg, var(--rose-dim), var(--violet-dim));
+  border: 2px solid rgba(220, 38, 38, 0.25);
   border-radius: 16px;
   padding: 26px 24px;
   margin: 26px 0;
@@ -790,6 +939,10 @@ td code { font-size: 0.82rem; }
   flex-shrink: 0;
   animation: pulse 2s ease-in-out infinite;
 }
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.05); }
+}
 .render-warning h3 {
   font-size: 1.1rem;
   margin: 0;
@@ -798,15 +951,15 @@ td code { font-size: 0.82rem; }
   letter-spacing: 0;
   font-family: var(--sans);
 }
-.render-warning p { color: #d9d9d9; font-size: 0.92rem; margin-bottom: 12px; }
-.render-warning ul { margin: 12px 0 12px 22px; }
+.render-warning p { color: var(--text-2); font-size: 0.92rem; margin-bottom: 12px; }
+.render-warning ul { margin: 12px 0 12px 22px; color: var(--text-2); }
 
 /* ============ MARK COMPLETE ============ */
 .mark-complete {
   margin: 60px 0 40px;
   padding: 24px 26px;
-  background: var(--bg-card);
-  border: 2px dashed var(--border-bright);
+  background: var(--surface);
+  border: 2px dashed var(--border-strong);
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -821,19 +974,23 @@ td code { font-size: 0.82rem; }
 .mark-complete .mc-icon {
   width: 52px; height: 52px;
   border-radius: 14px;
-  background: linear-gradient(135deg, var(--sky), var(--cyan));
+  background: var(--grad);
   display: flex; align-items: center; justify-content: center;
   font-size: 1.4rem;
   color: white;
   flex-shrink: 0;
   transition: all 0.3s;
+  box-shadow: 0 8px 20px -8px rgba(8, 145, 178, 0.5);
 }
-.mark-complete.done .mc-icon { background: linear-gradient(135deg, var(--green), #059669); }
+.mark-complete.done .mc-icon {
+  background: linear-gradient(135deg, var(--green), #059669);
+  box-shadow: 0 8px 20px -8px rgba(21, 128, 61, 0.5);
+}
 .mark-complete .mc-text { flex: 1; }
-.mark-complete .mc-text strong { display: block; font-size: 1rem; margin-bottom: 4px; color: var(--text); }
-.mark-complete .mc-text span { font-size: 0.85rem; color: var(--text-dim); }
+.mark-complete .mc-text strong { display: block; font-size: 1rem; margin-bottom: 4px; color: var(--ink); }
+.mark-complete .mc-text span { font-size: 0.85rem; color: var(--text-2); }
 .mark-complete button {
-  background: linear-gradient(135deg, var(--sky), var(--cyan));
+  background: var(--grad);
   color: white;
   border: none;
   padding: 12px 22px;
@@ -842,15 +999,20 @@ td code { font-size: 0.82rem; }
   font-size: 0.85rem;
   cursor: pointer;
   font-family: var(--sans);
-  transition: transform 0.15s;
+  transition: transform 0.15s, box-shadow 0.15s;
   white-space: nowrap;
   flex-shrink: 0;
+  box-shadow: 0 8px 20px -8px rgba(8, 145, 178, 0.5);
 }
-.mark-complete button:hover { transform: translateY(-2px); }
+.mark-complete button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -8px rgba(8, 145, 178, 0.6);
+}
 .mark-complete.done button {
   background: transparent;
   color: var(--green);
   border: 2px solid var(--green);
+  box-shadow: none;
 }
 
 /* ============ MODULE SECTIONS ============ */
@@ -863,19 +1025,20 @@ td code { font-size: 0.82rem; }
   position: fixed;
   top: 16px; left: 16px;
   z-index: 200;
-  width: 44px; height: 44px;
-  border-radius: 10px;
-  background: var(--bg-card);
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  background: var(--surface);
   border: 1px solid var(--border);
-  color: var(--text);
+  color: var(--ink);
   font-size: 1.2rem;
   cursor: pointer;
   align-items: center;
   justify-content: center;
+  box-shadow: var(--shadow-md);
 }
 @media (max-width: 900px) {
   .mobile-menu-btn { display: flex; }
-  aside { transform: translateX(-100%); transition: transform 0.3s; width: 280px; }
+  aside { transform: translateX(-100%); transition: transform 0.3s; width: 300px; }
   aside.open { transform: translateX(0); }
   main { margin-left: 0; }
   .module-hero, .module-content { padding-left: 20px; padding-right: 20px; }
@@ -885,17 +1048,160 @@ td code { font-size: 0.82rem; }
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.5);
   z-index: 99;
   backdrop-filter: blur(4px);
 }
 .sidebar-overlay.show { display: block; }
 
+/* ============ ONBOARDING TOUR ============ */
+#tour-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(3px);
+  z-index: 9998;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+#tour-overlay.show { display: block; opacity: 1; }
+.tour-spotlight {
+  position: absolute;
+  border-radius: 12px;
+  box-shadow: 0 0 0 9999px rgba(0,0,0,0.65), 0 0 0 4px var(--sky-bright), 0 0 40px 8px rgba(6, 182, 212, 0.6);
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 9999;
+  animation: spotlightPulse 2s ease-in-out infinite;
+}
+@keyframes spotlightPulse {
+  0%, 100% { box-shadow: 0 0 0 9999px rgba(0,0,0,0.65), 0 0 0 4px var(--sky-bright), 0 0 40px 8px rgba(6, 182, 212, 0.6); }
+  50% { box-shadow: 0 0 0 9999px rgba(0,0,0,0.65), 0 0 0 6px var(--sky-bright), 0 0 60px 12px rgba(6, 182, 212, 0.8); }
+}
+.tour-tooltip {
+  position: fixed;
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 24px 26px;
+  max-width: 380px;
+  box-shadow: 0 30px 60px -20px rgba(0,0,0,0.4), 0 0 0 1px var(--border);
+  z-index: 10000;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: tooltipPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes tooltipPop {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.tour-tooltip .tt-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--sky-dim);
+  color: var(--sky);
+  padding: 5px 12px;
+  border-radius: 50px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  font-family: var(--mono);
+}
+.tour-tooltip .tt-step i { font-size: 0.7rem; }
+.tour-tooltip h4 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+.tour-tooltip p {
+  font-size: 0.9rem;
+  color: var(--text-2);
+  line-height: 1.65;
+  margin-bottom: 18px;
+}
+.tour-tooltip .tt-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.tour-tooltip .tt-progress {
+  display: flex;
+  gap: 5px;
+}
+.tour-tooltip .tt-progress span {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: all 0.3s;
+}
+.tour-tooltip .tt-progress span.active {
+  width: 20px;
+  border-radius: 3px;
+  background: var(--sky);
+}
+.tour-tooltip .tt-buttons {
+  display: flex;
+  gap: 8px;
+}
+.tour-tooltip .tt-btn {
+  padding: 9px 16px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  font-family: var(--sans);
+  transition: all 0.15s;
+}
+.tour-tooltip .tt-btn.skip {
+  background: transparent;
+  color: var(--text-dim);
+}
+.tour-tooltip .tt-btn.skip:hover { color: var(--rose); }
+.tour-tooltip .tt-btn.next {
+  background: var(--grad);
+  color: white;
+  box-shadow: 0 8px 20px -8px rgba(8, 145, 178, 0.5);
+}
+.tour-tooltip .tt-btn.next:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px -8px rgba(8, 145, 178, 0.6);
+}
+.tour-tooltip .tt-arrow {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: var(--surface);
+  transform: rotate(45deg);
+  box-shadow: -3px -3px 6px -2px rgba(0,0,0,0.05);
+}
+.tour-tooltip.arrow-top .tt-arrow {
+  top: -10px;
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+}
+.tour-tooltip.arrow-bottom .tt-arrow {
+  bottom: -10px;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+.tour-tooltip.arrow-right .tt-arrow {
+  right: -10px;
+  border-top: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
 /* ============ CERTIFICATE MODAL ============ */
 #cert-modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.9);
+  background: rgba(28,25,23,0.7);
   backdrop-filter: blur(10px);
   z-index: 10000;
   display: none;
@@ -918,24 +1224,20 @@ td code { font-size: 0.82rem; }
 #cert-modal.show .cert-outer { transform: scale(1) rotateY(0); opacity: 1; }
 
 .certificate {
-  background:
-    radial-gradient(circle at 20% 10%, rgba(14, 165, 233, 0.12), transparent 50%),
-    radial-gradient(circle at 80% 90%, rgba(139, 92, 246, 0.12), transparent 50%),
-    linear-gradient(135deg, #121212 0%, #0a0a0a 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #fafaf9 100%);
   border-radius: 16px;
   padding: 50px 60px;
   position: relative;
   overflow: hidden;
-  color: var(--text);
-  border: 2px solid transparent;
+  color: var(--ink);
 }
 .certificate::before {
   content: '';
   position: absolute;
   inset: -2px;
   border-radius: 16px;
-  padding: 2px;
-  background: linear-gradient(135deg, var(--sky), var(--violet), var(--cyan), var(--green));
+  padding: 3px;
+  background: linear-gradient(135deg, #0891b2, #7c3aed, #06b6d4, #15803d);
   background-size: 300% 300%;
   animation: gradientShift 4s ease infinite;
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -974,10 +1276,10 @@ td code { font-size: 0.82rem; }
   width: 90px; height: 90px;
   margin: 0 auto 20px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--sky), var(--violet));
+  background: linear-gradient(135deg, #0891b2, #7c3aed);
   display: flex; align-items: center; justify-content: center;
   font-size: 2.5rem;
-  box-shadow: 0 0 0 8px rgba(14, 165, 233, 0.15), 0 0 50px var(--sky-glow);
+  box-shadow: 0 0 0 8px rgba(8, 145, 178, 0.15), 0 0 50px rgba(8, 145, 178, 0.4);
   animation: sealSpin 8s linear infinite;
 }
 @keyframes sealSpin {
@@ -989,7 +1291,7 @@ td code { font-size: 0.82rem; }
   font-size: 0.85rem;
   letter-spacing: 5px;
   text-transform: uppercase;
-  color: var(--sky-bright);
+  color: var(--sky);
   margin-bottom: 10px;
   font-family: var(--mono);
   font-weight: 700;
@@ -998,20 +1300,18 @@ td code { font-size: 0.82rem; }
   font-size: 2.4rem;
   font-weight: 900;
   margin-bottom: 12px;
-  background: linear-gradient(135deg, #fff, var(--sky-bright), var(--violet));
-  background-size: 200% 200%;
-  animation: gradientShift 4s ease infinite;
+  background: linear-gradient(135deg, #1c1917 0%, #0891b2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   line-height: 1.2;
   letter-spacing: -0.02em;
 }
-.cert-sub { font-size: 0.95rem; color: var(--text-dim); margin-bottom: 8px; }
+.cert-sub { font-size: 0.95rem; color: var(--text-2); margin-bottom: 8px; }
 .cert-name {
   font-size: 2rem;
   font-weight: 800;
-  color: var(--text);
+  color: var(--ink);
   margin: 24px 0 8px;
   padding: 14px 0;
   border-top: 1px solid var(--border);
@@ -1021,7 +1321,7 @@ td code { font-size: 0.82rem; }
 }
 .cert-body {
   font-size: 0.95rem;
-  color: #c9c9c9;
+  color: var(--text-2);
   max-width: 620px;
   margin: 20px auto 24px;
   line-height: 1.8;
@@ -1032,7 +1332,7 @@ td code { font-size: 0.82rem; }
   gap: 44px;
   margin: 28px 0 24px;
   padding: 20px;
-  background: rgba(14, 165, 233, 0.05);
+  background: var(--bg-alt);
   border-radius: 12px;
   border: 1px solid var(--border);
 }
@@ -1041,7 +1341,7 @@ td code { font-size: 0.82rem; }
   display: block;
   font-size: 1.8rem;
   font-weight: 800;
-  color: var(--sky-bright);
+  color: var(--sky);
   font-family: var(--mono);
 }
 .cert-stats .lbl {
@@ -1064,7 +1364,7 @@ td code { font-size: 0.82rem; }
 }
 .cert-footer .sig-name {
   font-size: 1.4rem;
-  color: var(--sky-bright);
+  color: var(--sky);
   font-weight: 700;
   font-family: var(--sans);
 }
@@ -1088,41 +1388,17 @@ td code { font-size: 0.82rem; }
   transition: all 0.15s;
 }
 .cert-actions .primary {
-  background: linear-gradient(135deg, var(--sky), var(--violet));
+  background: var(--grad);
   color: white;
+  box-shadow: 0 8px 20px -8px rgba(8, 145, 178, 0.5);
 }
 .cert-actions .secondary-act {
-  background: var(--bg-card);
-  color: var(--text);
+  background: var(--surface);
+  color: var(--ink);
   border: 1px solid var(--border);
 }
 .cert-actions button:hover { transform: translateY(-2px); }
 
-.cert-name-input {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-.cert-name-input input {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 14px 20px;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-family: var(--sans);
-  min-width: 280px;
-  transition: all 0.15s;
-  outline: none;
-}
-.cert-name-input input:focus {
-  border-color: var(--sky);
-  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
-}
-
-/* Global confetti */
 #global-confetti {
   position: fixed;
   inset: 0;
@@ -1155,17 +1431,24 @@ td code { font-size: 0.82rem; }
 
 <!-- ==================== SIDEBAR ==================== -->
 <aside id="sidebar">
+  <!-- Welcome banner -->
+  <div class="sidebar-welcome">
+    <div class="w-badge"><i class="fas fa-sparkles"></i> Welcome</div>
+    <h3>Web Hosting Course</h3>
+    <p>Learn to deploy websites free, forever — 10 modules with live demos.</p>
+  </div>
+
   <div class="sidebar-header">
     <div class="logo">
       <div class="logo-icon"><i class="fas fa-server"></i></div>
       <span>Web Hosting</span>
     </div>
-    <div class="subtitle">// Free Hosting Course</div>
+    <div class="subtitle">// Zero → Hero</div>
   </div>
 
   <div class="sidebar-progress">
     <div class="label">
-      <span>Progress</span>
+      <span>Your Progress</span>
       <strong id="sidebarPercent">0%</strong>
     </div>
     <div class="bar"><div class="fill" id="sidebarFill"></div></div>
@@ -1224,7 +1507,7 @@ td code { font-size: 0.82rem; }
   </div>
 
   <button class="cert-btn" id="certBtn" onclick="openCertificate()" disabled>
-    🎓 Certificate (0/10)
+    <i class="fas fa-graduation-cap"></i> Certificate (0/10)
   </button>
 </aside>
 
@@ -1263,47 +1546,38 @@ td code { font-size: 0.82rem; }
     <div class="diagram">
       <svg viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg">
         <g class="anim-fade-in">
-          <circle cx="100" cy="160" r="45" fill="#1a1a1a" stroke="#0ea5e9" stroke-width="2"/>
-          <text x="100" y="165" text-anchor="middle" fill="#38bdf8" font-size="22" font-family="monospace">👤</text>
-          <text x="100" y="230" text-anchor="middle" fill="#666" font-size="10" font-family="monospace">visitor</text>
+          <circle cx="100" cy="160" r="45" fill="#ffffff" stroke="#0891b2" stroke-width="2"/>
+          <text x="100" y="165" text-anchor="middle" fill="#0891b2" font-size="22" font-family="monospace">👤</text>
+          <text x="100" y="230" text-anchor="middle" fill="#78716c" font-size="10" font-family="monospace">visitor</text>
         </g>
         <g class="anim-fade-in anim-delay-1">
-          <rect x="230" y="120" width="130" height="80" rx="12" fill="#1a1a1a" stroke="#8b5cf6" stroke-width="2"/>
-          <text x="295" y="155" text-anchor="middle" fill="#8b5cf6" font-size="20" font-family="monospace">📖</text>
-          <text x="295" y="180" text-anchor="middle" fill="#a0a0a0" font-size="11" font-family="monospace">DNS</text>
+          <rect x="230" y="120" width="130" height="80" rx="12" fill="#ffffff" stroke="#7c3aed" stroke-width="2"/>
+          <text x="295" y="155" text-anchor="middle" fill="#7c3aed" font-size="20" font-family="monospace">📖</text>
+          <text x="295" y="180" text-anchor="middle" fill="#44403c" font-size="11" font-family="monospace">DNS</text>
         </g>
         <g class="anim-fade-in anim-delay-2">
-          <rect x="420" y="100" width="180" height="120" rx="14" fill="#1a1a1a" stroke="#10b981" stroke-width="2"/>
-          <text x="510" y="145" text-anchor="middle" fill="#10b981" font-size="32" font-family="monospace">🖥️</text>
-          <text x="510" y="180" text-anchor="middle" fill="#10b981" font-size="12" font-family="monospace" font-weight="700">WEB SERVER</text>
-          <text x="510" y="200" text-anchor="middle" fill="#a0a0a0" font-size="10" font-family="monospace">your files live here</text>
+          <rect x="420" y="100" width="180" height="120" rx="14" fill="#ffffff" stroke="#15803d" stroke-width="2"/>
+          <text x="510" y="145" text-anchor="middle" fill="#15803d" font-size="32" font-family="monospace">🖥️</text>
+          <text x="510" y="180" text-anchor="middle" fill="#15803d" font-size="12" font-family="monospace" font-weight="700">WEB SERVER</text>
+          <text x="510" y="200" text-anchor="middle" fill="#78716c" font-size="10" font-family="monospace">your files live here</text>
         </g>
         <g class="anim-fade-in anim-delay-3">
-          <rect x="660" y="130" width="120" height="80" rx="12" fill="#1a1a1a" stroke="#0ea5e9" stroke-width="2"/>
-          <text x="720" y="165" text-anchor="middle" fill="#38bdf8" font-size="22" font-family="monospace">🌐</text>
-          <text x="720" y="190" text-anchor="middle" fill="#38bdf8" font-size="10" font-family="monospace">Your Site</text>
+          <rect x="660" y="130" width="120" height="80" rx="12" fill="#ffffff" stroke="#0891b2" stroke-width="2"/>
+          <text x="720" y="165" text-anchor="middle" fill="#0891b2" font-size="22" font-family="monospace">🌐</text>
+          <text x="720" y="190" text-anchor="middle" fill="#0891b2" font-size="10" font-family="monospace">Your Site</text>
         </g>
-        <line x1="150" y1="160" x2="225" y2="160" stroke="#0ea5e9" stroke-width="2" class="anim-flow"/>
-        <polygon points="225,160 217,155 217,165" fill="#0ea5e9"/>
-        <text x="185" y="150" text-anchor="middle" fill="#38bdf8" font-size="9" font-family="monospace">1. request</text>
-        <line x1="365" y1="160" x2="415" y2="160" stroke="#8b5cf6" stroke-width="2" class="anim-flow"/>
-        <polygon points="415,160 407,155 407,165" fill="#8b5cf6"/>
-        <text x="390" y="150" text-anchor="middle" fill="#8b5cf6" font-size="9" font-family="monospace">2. route</text>
-        <line x1="605" y1="160" x2="655" y2="160" stroke="#10b981" stroke-width="2" class="anim-flow"/>
-        <polygon points="655,160 647,155 647,165" fill="#10b981"/>
-        <text x="630" y="150" text-anchor="middle" fill="#10b981" font-size="9" font-family="monospace">3. send</text>
+        <line x1="150" y1="160" x2="225" y2="160" stroke="#0891b2" stroke-width="2" class="anim-flow"/>
+        <polygon points="225,160 217,155 217,165" fill="#0891b2"/>
+        <text x="185" y="150" text-anchor="middle" fill="#0891b2" font-size="9" font-family="monospace">1. request</text>
+        <line x1="365" y1="160" x2="415" y2="160" stroke="#7c3aed" stroke-width="2" class="anim-flow"/>
+        <polygon points="415,160 407,155 407,165" fill="#7c3aed"/>
+        <text x="390" y="150" text-anchor="middle" fill="#7c3aed" font-size="9" font-family="monospace">2. route</text>
+        <line x1="605" y1="160" x2="655" y2="160" stroke="#15803d" stroke-width="2" class="anim-flow"/>
+        <polygon points="655,160 647,155 647,165" fill="#15803d"/>
+        <text x="630" y="150" text-anchor="middle" fill="#15803d" font-size="9" font-family="monospace">3. send</text>
       </svg>
       <div class="diagram-caption">You → DNS → Server → Website (in milliseconds)</div>
     </div>
-
-    <h3>Step by step:</h3>
-    <ol>
-      <li><strong>You</strong> open a browser and type <code>mysite.com</code></li>
-      <li><strong>DNS</strong> translates that name into an IP address (like a phone book for the internet)</li>
-      <li>The browser sends a request to the <strong>server</strong> at that IP address</li>
-      <li>The server finds your website files and <strong>sends them back</strong></li>
-      <li>Your browser renders them into the <strong>page you see</strong></li>
-    </ol>
 
     <h2>Types of Web Hosting</h2>
     <div class="table-wrap">
@@ -1321,25 +1595,25 @@ td code { font-size: 0.82rem; }
 
     <h2>What Can You Host for Free?</h2>
     <div class="compare-grid">
-      <div class="compare-card" style="--card-color: #0ea5e9;">
+      <div class="compare-card" style="--card-color: #0891b2;">
         <div class="cc-icon"><i class="fas fa-user-circle"></i></div>
         <h4>Personal Portfolio</h4>
         <p>Show off your work, CV, and projects with a custom domain.</p>
         <span class="cc-tag">100% Free</span>
       </div>
-      <div class="compare-card" style="--card-color: #8b5cf6;">
+      <div class="compare-card" style="--card-color: #7c3aed;">
         <div class="cc-icon"><i class="fas fa-book"></i></div>
         <h4>Blog or Docs</h4>
         <p>Static site generators like Hugo, Jekyll, Astro deploy free.</p>
         <span class="cc-tag">100% Free</span>
       </div>
-      <div class="compare-card" style="--card-color: #10b981;">
+      <div class="compare-card" style="--card-color: #15803d;">
         <div class="cc-icon"><i class="fas fa-rocket"></i></div>
         <h4>Landing Page</h4>
         <p>Product launches, waitlists, marketing pages.</p>
         <span class="cc-tag">100% Free</span>
       </div>
-      <div class="compare-card" style="--card-color: #f59e0b;">
+      <div class="compare-card" style="--card-color: #b45309;">
         <div class="cc-icon"><i class="fas fa-gamepad"></i></div>
         <h4>Small Apps</h4>
         <p>Client-side apps — games, tools, calculators.</p>
@@ -1351,20 +1625,11 @@ td code { font-size: 0.82rem; }
     <h4>❌ "Hosting is expensive"</h4>
     <p>Wrong. GitHub Pages, Netlify, Vercel, Render, Cloudflare Pages — all offer <strong>permanent free tiers</strong>.</p>
     <h4>❌ "Free hosting has ads"</h4>
-    <p>Old-school free hosting had ads. Modern platforms (GitHub, Netlify, Vercel) have <strong>zero ads</strong>.</p>
+    <p>Old-school free hosting had ads. Modern platforms have <strong>zero ads</strong>.</p>
     <h4>❌ "I need to know Linux"</h4>
     <p>Nope. Modern platforms are <strong>deploy by push</strong> — you push code, it's live.</p>
     <h4>❌ "Free = slow"</h4>
     <p>Free hosting on CDNs is often <strong>faster</strong> than paid shared hosting.</p>
-
-    <h2>Summary</h2>
-    <ul>
-      <li>Web hosting = putting your files on an always-online server</li>
-      <li>DNS turns a domain name into a server address</li>
-      <li>Static hosting is free forever on modern platforms</li>
-      <li>You don't need Linux or server knowledge anymore</li>
-      <li>Free is fast and ad-free on modern platforms</li>
-    </ul>
 
     <div class="quiz" data-quiz="m0">
       <div class="quiz-label">✓ Quick Check</div>
@@ -1414,34 +1679,6 @@ td code { font-size: 0.82rem; }
       </div>
     </div>
 
-    <div class="diagram">
-      <svg viewBox="0 0 800 260" xmlns="http://www.w3.org/2000/svg">
-        <g class="anim-fade-in">
-          <rect x="40" y="80" width="160" height="100" rx="12" fill="#1a1a1a" stroke="#10b981" stroke-width="2"/>
-          <text x="120" y="125" text-anchor="middle" fill="#10b981" font-size="24" font-family="monospace">💻</text>
-          <text x="120" y="155" text-anchor="middle" fill="#10b981" font-size="11" font-family="monospace">YOUR COMPUTER</text>
-        </g>
-        <line x1="210" y1="130" x2="290" y2="130" stroke="#0ea5e9" stroke-width="3" class="anim-flow"/>
-        <polygon points="290,130 280,124 280,136" fill="#0ea5e9"/>
-        <text x="250" y="118" text-anchor="middle" fill="#38bdf8" font-size="11" font-family="monospace">git push</text>
-        <g class="anim-fade-in anim-delay-1">
-          <rect x="300" y="60" width="180" height="140" rx="14" fill="#1a1a1a" stroke="#0ea5e9" stroke-width="2"/>
-          <text x="390" y="115" text-anchor="middle" fill="#38bdf8" font-size="32" font-family="monospace">🐙</text>
-          <text x="390" y="150" text-anchor="middle" fill="#38bdf8" font-size="12" font-family="monospace" font-weight="700">GITHUB</text>
-          <text x="390" y="170" text-anchor="middle" fill="#a0a0a0" font-size="10" font-family="monospace">stores your code</text>
-        </g>
-        <line x1="490" y1="130" x2="570" y2="130" stroke="#10b981" stroke-width="3" class="anim-flow"/>
-        <polygon points="570,130 560,124 560,136" fill="#10b981"/>
-        <text x="530" y="118" text-anchor="middle" fill="#10b981" font-size="11" font-family="monospace">auto</text>
-        <g class="anim-fade-in anim-delay-2">
-          <rect x="580" y="80" width="180" height="100" rx="12" fill="#1a1a1a" stroke="#8b5cf6" stroke-width="2"/>
-          <text x="670" y="125" text-anchor="middle" fill="#8b5cf6" font-size="24" font-family="monospace">🌐</text>
-          <text x="670" y="155" text-anchor="middle" fill="#8b5cf6" font-size="11" font-family="monospace">LIVE SITE</text>
-        </g>
-      </svg>
-      <div class="diagram-caption">Push to GitHub → Pages deploys automatically → Live site</div>
-    </div>
-
     <h2>Step-by-Step: Deploy Your First Site</h2>
 
     <h3>Step 1: Create a Repository</h3>
@@ -1484,22 +1721,6 @@ td code { font-size: 0.82rem; }
     <h3>Step 5: Visit Your Site</h3>
     <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>https://YOUR-USERNAME.github.io/my-first-site/</code></pre>
 
-    <h2>User Site vs Project Site</h2>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Type</th><th>Repo name</th><th>URL</th></tr></thead>
-        <tbody>
-          <tr><td><strong>User site</strong></td><td><code>USERNAME.github.io</code></td><td><code>https://USERNAME.github.io</code></td></tr>
-          <tr><td><strong>Project site</strong></td><td>Any name</td><td><code>https://USERNAME.github.io/repo/</code></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h2>Updating Your Site</h2>
-    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-cmd">git add</span> .
-<span class="c-cmd">git commit</span> <span class="c-flag">-m</span> <span class="c-str">"Update homepage"</span>
-<span class="c-cmd">git push</span></code></pre>
-
     <div class="quiz" data-quiz="m1-a">
       <div class="quiz-label">✓ Quick Check</div>
       <div class="q-text">What must your main page be named?</div>
@@ -1540,7 +1761,7 @@ td code { font-size: 0.82rem; }
   <div class="module-hero">
     <div class="module-badge"><i class="fas fa-bolt"></i> Module 02 — Netlify</div>
     <h1 class="module-title">Deploy with Netlify</h1>
-    <p class="module-subtitle">Netlify takes static hosting to the next level — drag and drop deploys, form handling, serverless functions, and instant rollbacks.</p>
+    <p class="module-subtitle">Drag & drop deploys, form handling, serverless functions, and instant rollbacks — the best all-around free tier.</p>
     <div class="module-meta">
       <div class="meta-item"><i class="fas fa-clock"></i> 12 min</div>
       <div class="meta-item"><i class="fas fa-signal"></i> Beginner+</div>
@@ -1551,22 +1772,22 @@ td code { font-size: 0.82rem; }
   <div class="module-content">
     <h2>Why Netlify?</h2>
     <div class="compare-grid">
-      <div class="compare-card" style="--card-color: #0ea5e9;">
+      <div class="compare-card" style="--card-color: #0891b2;">
         <div class="cc-icon"><i class="fas fa-mouse-pointer"></i></div>
         <h4>Drag &amp; Drop Deploy</h4>
         <p>Drop a folder — it's live. No Git required.</p>
       </div>
-      <div class="compare-card" style="--card-color: #8b5cf6;">
+      <div class="compare-card" style="--card-color: #7c3aed;">
         <div class="cc-icon"><i class="fas fa-clock-rotate-left"></i></div>
         <h4>Instant Rollbacks</h4>
         <p>Every deploy is saved. One click to go back.</p>
       </div>
-      <div class="compare-card" style="--card-color: #10b981;">
+      <div class="compare-card" style="--card-color: #15803d;">
         <div class="cc-icon"><i class="fas fa-envelope"></i></div>
         <h4>Form Handling</h4>
         <p>Collect form submissions — no backend code.</p>
       </div>
-      <div class="compare-card" style="--card-color: #f59e0b;">
+      <div class="compare-card" style="--card-color: #b45309;">
         <div class="cc-icon"><i class="fas fa-code-branch"></i></div>
         <h4>Preview Deploys</h4>
         <p>Every PR gets its own live URL for testing.</p>
@@ -1636,7 +1857,7 @@ td code { font-size: 0.82rem; }
   <div class="module-hero">
     <div class="module-badge"><i class="fas fa-triangle"></i> Module 03 — Vercel</div>
     <h1 class="module-title">Deploy with Vercel</h1>
-    <p class="module-subtitle">Vercel is the platform behind Next.js. Optimized for modern frontend frameworks with serverless functions and a global edge network.</p>
+    <p class="module-subtitle">The platform behind Next.js. Optimized for frontend frameworks with serverless functions and a global edge network.</p>
     <div class="module-meta">
       <div class="meta-item"><i class="fas fa-clock"></i> 11 min</div>
       <div class="meta-item"><i class="fas fa-signal"></i> Intermediate</div>
@@ -1645,13 +1866,6 @@ td code { font-size: 0.82rem; }
   </div>
 
   <div class="module-content">
-    <h2>Why Vercel?</h2>
-    <ul>
-      <li>⚡ <strong>Speed</strong> — edge network, millisecond loads</li>
-      <li>🔧 <strong>Framework support</strong> — built by Next.js creators</li>
-      <li>🧩 <strong>Serverless functions</strong> — API routes with zero config</li>
-    </ul>
-
     <h2>Deploy in 60 Seconds</h2>
     <ol>
       <li>Sign up at <a href="https://vercel.com/signup" target="_blank">vercel.com/signup</a> with GitHub</li>
@@ -1659,12 +1873,6 @@ td code { font-size: 0.82rem; }
       <li>Import your repo</li>
       <li>Click <strong>Deploy</strong> — live at <code>your-project.vercel.app</code></li>
     </ol>
-
-    <h2>CLI Deploy</h2>
-    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-cmd">npm install</span> <span class="c-flag">-g</span> vercel
-<span class="c-cmd">vercel login</span>
-<span class="c-cmd">vercel</span>              <span class="c-comment"># preview</span>
-<span class="c-cmd">vercel</span> <span class="c-flag">--prod</span>       <span class="c-comment"># production</span></code></pre>
 
     <h2>Serverless Functions</h2>
     <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-comment">// api/hello.js</span>
@@ -1713,22 +1921,22 @@ td code { font-size: 0.82rem; }
     <h2>What is Render?</h2>
     <p>Full-stack cloud platform. Unlike static hosts, Render runs <em>real applications</em>:</p>
     <div class="compare-grid">
-      <div class="compare-card" style="--card-color: #8b5cf6;">
+      <div class="compare-card" style="--card-color: #7c3aed;">
         <div class="cc-icon"><i class="fab fa-python"></i></div>
         <h4>Python / Django</h4>
         <p>Full backend apps with databases.</p>
       </div>
-      <div class="compare-card" style="--card-color: #10b981;">
+      <div class="compare-card" style="--card-color: #15803d;">
         <div class="cc-icon"><i class="fab fa-node-js"></i></div>
         <h4>Node.js</h4>
         <p>JavaScript backends, APIs.</p>
       </div>
-      <div class="compare-card" style="--card-color: #0ea5e9;">
+      <div class="compare-card" style="--card-color: #0891b2;">
         <div class="cc-icon"><i class="fab fa-docker"></i></div>
         <h4>Docker</h4>
         <p>Any language, any framework.</p>
       </div>
-      <div class="compare-card" style="--card-color: #f59e0b;">
+      <div class="compare-card" style="--card-color: #b45309;">
         <div class="cc-icon"><i class="fas fa-database"></i></div>
         <h4>PostgreSQL</h4>
         <p>Free 1 GB database included.</p>
@@ -1744,7 +1952,7 @@ td code { font-size: 0.82rem; }
       </div>
       <p>Users on <strong>Halotel Tanzania</strong> (and a few other regional ISPs) have reported that <code>onrender.com</code> sites sometimes fail to load or take 50+ seconds.</p>
       <p>This is <em>not</em> a Render problem — it's a <strong>network routing issue</strong> between some Tanzanian ISPs and Cloudflare/AWS.</p>
-      <h4 style="color: var(--text); margin-top: 18px;">What you can do:</h4>
+      <h4 style="color: var(--ink); margin-top: 18px;">What you can do:</h4>
       <ul>
         <li>✅ <strong>Use a VPN</strong> — bypasses the issue 90% of the time</li>
         <li>✅ <strong>Try mobile data</strong> — Vodacom, Airtel, Tigo usually work</li>
@@ -1765,7 +1973,6 @@ td code { font-size: 0.82rem; }
       <li>Instance Type: <strong>Free</strong></li>
     </ol>
 
-    <h2>Free Tier Limitations</h2>
     <div class="callout warning">
       <i class="fas fa-hourglass-half"></i>
       <div class="callout-body">
@@ -1773,31 +1980,6 @@ td code { font-size: 0.82rem; }
         <p>Free tier apps <strong>spin down after 15 minutes of inactivity</strong>. Next request takes <strong>30-50 seconds</strong> to wake.</p>
       </div>
     </div>
-
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Limit</th><th>Free Tier</th></tr></thead>
-        <tbody>
-          <tr><td>App sleeps after</td><td>15 minutes</td></tr>
-          <tr><td>Wake-up time</td><td>~30-50 seconds</td></tr>
-          <tr><td>Bandwidth</td><td>100 GB/month</td></tr>
-          <tr><td>PostgreSQL</td><td>1 GB</td></tr>
-          <tr><td>Build minutes</td><td>500/month</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <h2>Keep-Alive Trick</h2>
-    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-comment"># .github/workflows/keep-alive.yml</span>
-<span class="c-flag">name:</span> Keep Alive
-<span class="c-flag">on:</span>
-  <span class="c-flag">schedule:</span>
-    - <span class="c-flag">cron:</span> <span class="c-str">'*/14 * * * *'</span>
-<span class="c-flag">jobs:</span>
-  <span class="c-flag">ping:</span>
-    <span class="c-flag">runs-on:</span> ubuntu-latest
-    <span class="c-flag">steps:</span>
-      - <span class="c-flag">run:</span> <span class="c-str">curl -s https://my-app.onrender.com</span></code></pre>
 
     <div class="quiz" data-quiz="m4-a">
       <div class="quiz-label">✓ Quick Check</div>
@@ -1807,18 +1989,6 @@ td code { font-size: 0.82rem; }
         <button class="opt" data-correct="true">It spins down and takes 30-50s to wake up</button>
         <button class="opt" data-correct="false">It switches to paid</button>
         <button class="opt" data-correct="false">It gets slower but stays online</button>
-      </div>
-      <div class="feedback"></div>
-    </div>
-
-    <div class="quiz" data-quiz="m4-b">
-      <div class="quiz-label">✓ Quick Check</div>
-      <div class="q-text">Which provider may have routing issues on Halotel Tanzania?</div>
-      <div class="opts">
-        <button class="opt" data-correct="false">GitHub Pages</button>
-        <button class="opt" data-correct="false">Netlify</button>
-        <button class="opt" data-correct="true">Render</button>
-        <button class="opt" data-correct="false">Vercel</button>
       </div>
       <div class="feedback"></div>
     </div>
@@ -1852,23 +2022,23 @@ td code { font-size: 0.82rem; }
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>Provider</th><th>Best for</th><th>Free tier</th><th>Custom domain</th><th>HTTPS</th></tr>
+          <tr><th>Provider</th><th>Best for</th><th>Free tier</th><th>Custom domain</th></tr>
         </thead>
         <tbody>
-          <tr><td><strong>GitHub Pages</strong></td><td>Static sites</td><td style="color:var(--green)">1 GB, 100 GB BW</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
-          <tr><td><strong>Netlify</strong></td><td>Static + forms</td><td style="color:var(--green)">100 GB BW, 300 min</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
-          <tr><td><strong>Vercel</strong></td><td>Next.js / React</td><td style="color:var(--green)">100 GB BW, 6000 min</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
-          <tr><td><strong>Render</strong></td><td>Python / Django</td><td style="color:var(--green)">750 hrs, sleeps</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
-          <tr><td><strong>Cloudflare Pages</strong></td><td>Unlimited BW</td><td style="color:var(--green)">Unlimited BW</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
+          <tr><td><strong>GitHub Pages</strong></td><td>Static sites</td><td style="color:var(--green)">1 GB, 100 GB BW</td><td style="color:var(--green)">✓</td></tr>
+          <tr><td><strong>Netlify</strong></td><td>Static + forms</td><td style="color:var(--green)">100 GB BW, 300 min</td><td style="color:var(--green)">✓</td></tr>
+          <tr><td><strong>Vercel</strong></td><td>Next.js / React</td><td style="color:var(--green)">100 GB BW, 6000 min</td><td style="color:var(--green)">✓</td></tr>
+          <tr><td><strong>Render</strong></td><td>Python / Django</td><td style="color:var(--green)">750 hrs, sleeps</td><td style="color:var(--green)">✓</td></tr>
+          <tr><td><strong>Cloudflare Pages</strong></td><td>Unlimited BW</td><td style="color:var(--green)">Unlimited BW</td><td style="color:var(--green)">✓</td></tr>
         </tbody>
       </table>
     </div>
 
     <h2>GitHub Pages</h2>
     <div class="provider-card">
-      <div class="provider-logo" style="--logo-color: #ffffff;">
+      <div class="provider-logo" style="--logo-color: #1c1917;">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
-          <path fill="#ffffff" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+          <path fill="#1c1917" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
         </svg>
       </div>
       <div class="provider-info">
@@ -1877,15 +2047,8 @@ td code { font-size: 0.82rem; }
           <span class="provider-tag">Free forever</span>
         </div>
         <p>Free static site hosting from any GitHub repo. Requires public repo for free accounts.</p>
-        <h4>How to use it:</h4>
-        <ol>
-          <li>Create repo at <a href="https://github.com/new" target="_blank">github.com/new</a></li>
-          <li>Add <code>index.html</code></li>
-          <li><strong>Settings → Pages → Deploy from branch → main</strong></li>
-          <li>Live at <code>username.github.io/repo</code></li>
-        </ol>
         <div class="provider-actions">
-          <a href="https://pages.github.com" target="_blank" class="provider-btn primary"><i class="fab fa-github"></i> Home</a>
+          <a href="https://pages.github.com" target="_blank" class="provider-btn primary" style="--btn-color: #1c1917;"><i class="fab fa-github"></i> Home</a>
           <a href="https://docs.github.com/en/pages" target="_blank" class="provider-btn"><i class="fas fa-book"></i> Docs</a>
           <a href="https://github.com/new" target="_blank" class="provider-btn"><i class="fas fa-plus"></i> New Repo</a>
         </div>
@@ -1905,12 +2068,6 @@ td code { font-size: 0.82rem; }
           <span class="provider-tag" style="background: rgba(0,199,183,0.15); color: #00C7B7;">Best free tier</span>
         </div>
         <p>Static hosting with superpowers — drag &amp; drop, forms, functions, instant rollbacks.</p>
-        <h4>How to use it:</h4>
-        <ol>
-          <li><strong>Fast:</strong> <a href="https://app.netlify.com/drop" target="_blank">app.netlify.com/drop</a> — drag folder</li>
-          <li><strong>Pro:</strong> <a href="https://netlify.com" target="_blank">netlify.com</a> → Add new site → Import from GitHub</li>
-          <li>Live in ~30 seconds</li>
-        </ol>
         <div class="provider-actions">
           <a href="https://app.netlify.com/drop" target="_blank" class="provider-btn primary" style="--btn-color: #00C7B7;"><i class="fas fa-upload"></i> Drop Deploy</a>
           <a href="https://docs.netlify.com" target="_blank" class="provider-btn"><i class="fas fa-book"></i> Docs</a>
@@ -1921,25 +2078,19 @@ td code { font-size: 0.82rem; }
 
     <h2>Vercel</h2>
     <div class="provider-card">
-      <div class="provider-logo" style="--logo-color: #ffffff;">
+      <div class="provider-logo" style="--logo-color: #1c1917;">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
-          <path fill="#ffffff" d="M12 1L24 22H0L12 1z"/>
+          <path fill="#1c1917" d="M12 1L24 22H0L12 1z"/>
         </svg>
       </div>
       <div class="provider-info">
         <div class="provider-head">
           <h3>Vercel</h3>
-          <span class="provider-tag" style="background: rgba(139,92,246,0.15); color: #8b5cf6;">Framework-first</span>
+          <span class="provider-tag" style="background: var(--violet-dim); color: var(--violet);">Framework-first</span>
         </div>
         <p>Built by Next.js creators. Best for React, Next.js, Vue, Svelte, Astro.</p>
-        <h4>How to use it:</h4>
-        <ol>
-          <li>Sign up at <a href="https://vercel.com/signup" target="_blank">vercel.com/signup</a> with GitHub</li>
-          <li><strong>Add New → Project</strong> → Import repo</li>
-          <li>Live at <code>your-project.vercel.app</code></li>
-        </ol>
         <div class="provider-actions">
-          <a href="https://vercel.com/signup" target="_blank" class="provider-btn primary" style="--btn-color: #8b5cf6;"><i class="fas fa-user-plus"></i> Sign Up</a>
+          <a href="https://vercel.com/signup" target="_blank" class="provider-btn primary" style="--btn-color: #7c3aed;"><i class="fas fa-user-plus"></i> Sign Up</a>
           <a href="https://vercel.com/docs" target="_blank" class="provider-btn"><i class="fas fa-book"></i> Docs</a>
           <a href="https://vercel.com/new" target="_blank" class="provider-btn"><i class="fas fa-plus"></i> Deploy</a>
         </div>
@@ -1956,20 +2107,12 @@ td code { font-size: 0.82rem; }
       <div class="provider-info">
         <div class="provider-head">
           <h3>Render</h3>
-          <span class="provider-tag" style="background: rgba(244,63,94,0.15); color: #f43f5e;">Full-stack</span>
+          <span class="provider-tag" style="background: var(--rose-dim); color: var(--rose);">Full-stack</span>
         </div>
         <p>Full-stack cloud — Python, Node, Docker, free PostgreSQL. ⚠️ TZ network note above.</p>
-        <h4>How to use it:</h4>
-        <ol>
-          <li>Sign up at <a href="https://render.com" target="_blank">render.com</a></li>
-          <li><strong>New + → Web Service</strong></li>
-          <li>Build: <code>pip install -r requirements.txt</code></li>
-          <li>Start: <code>gunicorn app:app</code></li>
-        </ol>
         <div class="provider-actions">
           <a href="https://render.com" target="_blank" class="provider-btn primary" style="--btn-color: #46E3B7;"><i class="fas fa-user-plus"></i> Sign Up</a>
           <a href="https://render.com/docs" target="_blank" class="provider-btn"><i class="fas fa-book"></i> Docs</a>
-          <a href="https://dashboard.render.com" target="_blank" class="provider-btn"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
         </div>
       </div>
     </div>
@@ -1984,54 +2127,13 @@ td code { font-size: 0.82rem; }
       <div class="provider-info">
         <div class="provider-head">
           <h3>Cloudflare Pages</h3>
-          <span class="provider-tag" style="background: rgba(243,128,32,0.15); color: #F38020;">Unlimited bandwidth</span>
+          <span class="provider-tag" style="background: var(--amber-dim); color: var(--amber);">Unlimited bandwidth</span>
         </div>
-        <p>Static + edge functions on Cloudflare's network. <strong>Unlimited bandwidth</strong> free tier — no other provider offers this.</p>
-        <h4>How to use it:</h4>
-        <ol>
-          <li>Sign up at <a href="https://dash.cloudflare.com/sign-up" target="_blank">dash.cloudflare.com</a></li>
-          <li><strong>Workers &amp; Pages → Create → Pages</strong></li>
-          <li>Connect GitHub repo</li>
-          <li>Deploy at <code>your-project.pages.dev</code></li>
-        </ol>
+        <p>Static + edge functions on Cloudflare's network. <strong>Unlimited bandwidth</strong> free tier.</p>
         <div class="provider-actions">
           <a href="https://dash.cloudflare.com/sign-up" target="_blank" class="provider-btn primary" style="--btn-color: #F38020;"><i class="fas fa-user-plus"></i> Sign Up</a>
           <a href="https://developers.cloudflare.com/pages/" target="_blank" class="provider-btn"><i class="fas fa-book"></i> Docs</a>
         </div>
-      </div>
-    </div>
-
-    <h2>Which One Should You Choose?</h2>
-    <div class="compare-grid">
-      <div class="compare-card" style="--card-color: #ffffff;">
-        <div class="cc-icon"><i class="fas fa-user"></i></div>
-        <h4>Portfolio / Blog</h4>
-        <p><strong>GitHub Pages</strong> or <strong>Netlify</strong></p>
-      </div>
-      <div class="compare-card" style="--card-color: #00C7B7;">
-        <div class="cc-icon"><i class="fas fa-wpforms"></i></div>
-        <h4>Forms / Contact</h4>
-        <p><strong>Netlify</strong> — built-in forms</p>
-      </div>
-      <div class="compare-card" style="--card-color: #8b5cf6;">
-        <div class="cc-icon"><i class="fab fa-react"></i></div>
-        <h4>React / Next.js</h4>
-        <p><strong>Vercel</strong></p>
-      </div>
-      <div class="compare-card" style="--card-color: #46E3B7;">
-        <div class="cc-icon"><i class="fab fa-python"></i></div>
-        <h4>Python / Django</h4>
-        <p><strong>Render</strong></p>
-      </div>
-      <div class="compare-card" style="--card-color: #F38020;">
-        <div class="cc-icon"><i class="fas fa-infinity"></i></div>
-        <h4>High Traffic</h4>
-        <p><strong>Cloudflare Pages</strong></p>
-      </div>
-      <div class="compare-card" style="--card-color: #38bdf8;">
-        <div class="cc-icon"><i class="fas fa-globe-africa"></i></div>
-        <h4>Tanzania Audience</h4>
-        <p><strong>Netlify</strong> or <strong>Vercel</strong></p>
       </div>
     </div>
 
@@ -2046,7 +2148,7 @@ td code { font-size: 0.82rem; }
   </div>
 </div>
 
-<!-- ========== MODULE 5: CUSTOM DOMAINS ========== -->
+<!-- ========== MODULE 5: DOMAINS ========== -->
 <div class="module-section" data-module="m5">
   <div class="module-hero">
     <div class="module-badge"><i class="fas fa-globe"></i> Module 05 — Custom Domains</div>
@@ -2063,60 +2165,10 @@ td code { font-size: 0.82rem; }
     <h2>Why a Custom Domain?</h2>
     <ul>
       <li>🔒 <strong>Professional</strong> — <code>yourname.com</code> looks better than <code>yourname.github.io</code></li>
-      <li>📧 <strong>Email</strong> — you can have <code>you@yourname.com</code></li>
+      <li>📧 <strong>Email</strong> — <code>you@yourname.com</code></li>
       <li>🎨 <strong>Branding</strong> — own your online identity</li>
       <li>🔗 <strong>Portable</strong> — switch hosts without changing URL</li>
     </ul>
-
-    <h2>How Domains Work</h2>
-
-    <div class="diagram">
-      <svg viewBox="0 0 800 380" xmlns="http://www.w3.org/2000/svg">
-        <!-- Domain registrar -->
-        <g class="anim-fade-in">
-          <rect x="40" y="40" width="200" height="100" rx="12" fill="#1a1a1a" stroke="#f59e0b" stroke-width="2"/>
-          <text x="140" y="80" text-anchor="middle" fill="#f59e0b" font-size="24" font-family="monospace">🏢</text>
-          <text x="140" y="110" text-anchor="middle" fill="#f59e0b" font-size="11" font-family="monospace" font-weight="700">REGISTRAR</text>
-          <text x="140" y="128" text-anchor="middle" fill="#a0a0a0" font-size="9" font-family="monospace">Namecheap, Cloudflare</text>
-        </g>
-
-        <!-- You -->
-        <g class="anim-fade-in anim-delay-1">
-          <rect x="40" y="220" width="200" height="100" rx="12" fill="#1a1a1a" stroke="#0ea5e9" stroke-width="2"/>
-          <text x="140" y="260" text-anchor="middle" fill="#0ea5e9" font-size="24" font-family="monospace">👤</text>
-          <text x="140" y="290" text-anchor="middle" fill="#38bdf8" font-size="11" font-family="monospace" font-weight="700">YOU</text>
-          <text x="140" y="308" text-anchor="middle" fill="#a0a0a0" font-size="9" font-family="monospace">buy domain</text>
-        </g>
-
-        <!-- Arrow -->
-        <line x1="245" y1="90" x2="330" y2="160" stroke="#f59e0b" stroke-width="2" class="anim-flow"/>
-        <polygon points="330,160 320,158 325,152" fill="#f59e0b"/>
-
-        <!-- DNS server -->
-        <g class="anim-fade-in anim-delay-2">
-          <rect x="340" y="120" width="180" height="140" rx="14" fill="#1a1a1a" stroke="#8b5cf6" stroke-width="2"/>
-          <text x="430" y="165" text-anchor="middle" fill="#8b5cf6" font-size="28" font-family="monospace">📖</text>
-          <text x="430" y="200" text-anchor="middle" fill="#8b5cf6" font-size="12" font-family="monospace" font-weight="700">DNS RECORDS</text>
-          <text x="430" y="220" text-anchor="middle" fill="#a0a0a0" font-size="9" font-family="monospace">A, CNAME, MX...</text>
-          <text x="430" y="240" text-anchor="middle" fill="#666" font-size="8" font-family="monospace">who points where</text>
-        </g>
-
-        <!-- Arrow -->
-        <line x1="525" y1="190" x2="600" y2="190" stroke="#8b5cf6" stroke-width="2" class="anim-flow"/>
-        <polygon points="600,190 592,185 592,195" fill="#8b5cf6"/>
-
-        <!-- Website -->
-        <g class="anim-fade-in anim-delay-3">
-          <rect x="610" y="140" width="160" height="100" rx="12" fill="#1a1a1a" stroke="#10b981" stroke-width="2"/>
-          <text x="690" y="180" text-anchor="middle" fill="#10b981" font-size="24" font-family="monospace">🌐</text>
-          <text x="690" y="210" text-anchor="middle" fill="#10b981" font-size="11" font-family="monospace" font-weight="700">YOUR SITE</text>
-        </g>
-
-        <!-- Bottom text -->
-        <text x="400" y="360" text-anchor="middle" fill="#666" font-size="11" font-family="monospace" font-style="italic">You buy → Registrar configures → DNS points → Website loads</text>
-      </svg>
-      <div class="diagram-caption">Domain → DNS → Website flow</div>
-    </div>
 
     <h2>Where to Buy a Domain</h2>
     <div class="table-wrap">
@@ -2126,49 +2178,20 @@ td code { font-size: 0.82rem; }
           <tr><td><strong>Cloudflare</strong></td><td>$10/yr</td><td>Cheapest, no markup, best DNS</td></tr>
           <tr><td><strong>Namecheap</strong></td><td>$11/yr</td><td>Free WHOIS privacy</td></tr>
           <tr><td><strong>Porkbun</strong></td><td>$9/yr</td><td>Cheap, no upsells</td></tr>
-          <tr><td><strong>Google Domains</strong></td><td>N/A</td><td>Closed, moved to Squarespace</td></tr>
           <tr><td><strong>GoDaddy</strong></td><td>$12+/yr</td><td>Aggressive upselling — avoid</td></tr>
         </tbody>
       </table>
     </div>
 
-    <h2>Pointing a Domain to Your Host</h2>
-
-    <h3>Common DNS Records</h3>
+    <h2>Common DNS Records</h2>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Type</th><th>Name</th><th>Points to</th><th>Use case</th></tr></thead>
         <tbody>
-          <tr>
-            <td><code>A</code></td>
-            <td><code>@</code></td>
-            <td>IP address</td>
-            <td>Root domain → server IP</td>
-          </tr>
-          <tr>
-            <td><code>CNAME</code></td>
-            <td><code>www</code></td>
-            <td>domain.name</td>
-            <td>www subdomain → main domain</td>
-          </tr>
-          <tr>
-            <td><code>CNAME</code></td>
-            <td><code>@</code></td>
-            <td>provider domain</td>
-            <td>Root → Vercel/Netlify (if supported)</td>
-          </tr>
-          <tr>
-            <td><code>MX</code></td>
-            <td><code>@</code></td>
-            <td>mail server</td>
-            <td>Email routing</td>
-          </tr>
-          <tr>
-            <td><code>TXT</code></td>
-            <td><code>@</code></td>
-            <td>verification string</td>
-            <td>Domain ownership proof</td>
-          </tr>
+          <tr><td><code>A</code></td><td><code>@</code></td><td>IP address</td><td>Root domain → server IP</td></tr>
+          <tr><td><code>CNAME</code></td><td><code>www</code></td><td>domain.name</td><td>www subdomain → main domain</td></tr>
+          <tr><td><code>MX</code></td><td><code>@</code></td><td>mail server</td><td>Email routing</td></tr>
+          <tr><td><code>TXT</code></td><td><code>@</code></td><td>verification string</td><td>Domain ownership proof</td></tr>
         </tbody>
       </table>
     </div>
@@ -2195,59 +2218,6 @@ Type:  CNAME
 Name:  www
 Value: your-site.netlify.app</code></pre>
 
-    <h3>Records for Vercel</h3>
-    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-comment"># Root domain</span>
-Type:  A
-Name:  @
-Value: 76.76.21.21
-
-<span class="c-comment"># www subdomain</span>
-Type:  CNAME
-Name:  www
-Value: cname.vercel-dns.com</code></pre>
-
-    <h3>Records for GitHub Pages</h3>
-    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-comment"># Root domain</span>
-Type:  A
-Name:  @
-Value: 185.199.108.153
-       185.199.109.153
-       185.199.110.153
-       185.199.111.153
-
-<span class="c-comment"># www subdomain</span>
-Type:  CNAME
-Name:  www
-Value: YOUR-USERNAME.github.io</code></pre>
-
-    <div class="callout warning">
-      <i class="fas fa-clock"></i>
-      <div class="callout-body">
-        <strong>DNS propagation time</strong>
-        <p>DNS changes can take up to 48 hours, but usually complete in 10-30 minutes. Use <a href="https://dnschecker.org" target="_blank">dnschecker.org</a> to see progress.</p>
-      </div>
-    </div>
-
-    <h2>Free Domains — Reality Check</h2>
-    <div class="callout danger">
-      <i class="fas fa-exclamation-circle"></i>
-      <div class="callout-body">
-        <strong>There are no truly free .com domains</strong>
-        <p>You can get free subdomains like <code>yourname.netlify.app</code> or <code>yourname.github.io</code>. For a real domain like <code>yourname.com</code>, you must pay ~$10/year. This is worth it.</p>
-      </div>
-    </div>
-
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Free options</th><th>Cost</th></tr></thead>
-        <tbody>
-          <tr><td>Free subdomain from host</td><td>Free forever</td></tr>
-          <tr><td><code>.tk</code>, <code>.ml</code>, <code>.ga</code> (Freenom)</td><td>Free 1 yr, unreliable</td></tr>
-          <tr><td>Own domain (<code>.com</code>)</td><td>~$10/year</td></tr>
-        </tbody>
-      </table>
-    </div>
-
     <div class="quiz" data-quiz="m5-a">
       <div class="quiz-label">✓ Quick Check</div>
       <div class="q-text">Which DNS record type points a subdomain to another domain?</div>
@@ -2256,18 +2226,6 @@ Value: YOUR-USERNAME.github.io</code></pre>
         <button class="opt" data-correct="true">CNAME</button>
         <button class="opt" data-correct="false">MX</button>
         <button class="opt" data-correct="false">TXT</button>
-      </div>
-      <div class="feedback"></div>
-    </div>
-
-    <div class="quiz" data-quiz="m5-b">
-      <div class="quiz-label">✓ Quick Check</div>
-      <div class="q-text">How long can DNS propagation take?</div>
-      <div class="opts">
-        <button class="opt" data-correct="false">1 second</button>
-        <button class="opt" data-correct="false">1 minute</button>
-        <button class="opt" data-correct="true">Up to 48 hours</button>
-        <button class="opt" data-correct="false">6 months</button>
       </div>
       <div class="feedback"></div>
     </div>
@@ -2288,7 +2246,7 @@ Value: YOUR-USERNAME.github.io</code></pre>
   <div class="module-hero">
     <div class="module-badge"><i class="fas fa-lock"></i> Module 06 — HTTPS &amp; Security</div>
     <h1 class="module-title">HTTPS &amp; Security</h1>
-    <p class="module-subtitle">HTTPS inalinda data yako kwa encrypt ya SSL/TLS. Modern hosts wanatoa bure — lakini lazima ujue kinachoendelea nyuma.</p>
+    <p class="module-subtitle">HTTPS inalinda data yako kwa encryption ya SSL/TLS. Modern hosts wanatoa bure — lakini lazima ujue kinachoendelea nyuma.</p>
     <div class="module-meta">
       <div class="meta-item"><i class="fas fa-clock"></i> 12 min</div>
       <div class="meta-item"><i class="fas fa-signal"></i> Intermediate</div>
@@ -2303,44 +2261,7 @@ Value: YOUR-USERNAME.github.io</code></pre>
       <li>🛡️ <strong>Authentication</strong> — proves the site is real</li>
       <li>📊 <strong>SEO</strong> — Google ranks HTTPS higher</li>
       <li>⚠️ <strong>Browser warnings</strong> — HTTP sites show "Not Secure"</li>
-      <li>🚀 <strong>HTTP/2</strong> — requires HTTPS</li>
     </ul>
-
-    <div class="diagram">
-      <svg viewBox="0 0 800 280" xmlns="http://www.w3.org/2000/svg">
-        <!-- Visitor -->
-        <g class="anim-fade-in">
-          <rect x="40" y="90" width="140" height="100" rx="12" fill="#1a1a1a" stroke="#0ea5e9" stroke-width="2"/>
-          <text x="110" y="135" text-anchor="middle" fill="#0ea5e9" font-size="24" font-family="monospace">👤</text>
-          <text x="110" y="165" text-anchor="middle" fill="#38bdf8" font-size="11" font-family="monospace">VISITOR</text>
-        </g>
-
-        <!-- HTTPS tunnel -->
-        <g>
-          <path d="M 210 120 Q 400 60 590 120" stroke="#10b981" stroke-width="3" fill="none" class="anim-flow"/>
-          <path d="M 210 160 Q 400 220 590 160" stroke="#10b981" stroke-width="3" fill="none" class="anim-flow"/>
-          <text x="400" y="40" text-anchor="middle" fill="#10b981" font-size="14" font-family="monospace" font-weight="700">🔒 ENCRYPTED TUNNEL</text>
-          <text x="400" y="245" text-anchor="middle" fill="#10b981" font-size="11" font-family="monospace">HTTPS / TLS 1.3</text>
-          <text x="400" y="262" text-anchor="middle" fill="#a0a0a0" font-size="10" font-family="monospace">data cannot be read by attackers</text>
-        </g>
-
-        <!-- Server -->
-        <g class="anim-fade-in anim-delay-2">
-          <rect x="620" y="90" width="140" height="100" rx="12" fill="#1a1a1a" stroke="#8b5cf6" stroke-width="2"/>
-          <text x="690" y="135" text-anchor="middle" fill="#8b5cf6" font-size="24" font-family="monospace">🖥️</text>
-          <text x="690" y="165" text-anchor="middle" fill="#8b5cf6" font-size="11" font-family="monospace">SERVER</text>
-        </g>
-      </svg>
-      <div class="diagram-caption">HTTPS wraps your data in an encrypted tunnel</div>
-    </div>
-
-    <h2>How HTTPS Works (Simplified)</h2>
-    <ol>
-      <li><strong>Certificate Authority</strong> (Let's Encrypt, DigiCert) issues a certificate proving your domain is real</li>
-      <li>When a user visits your site, browser checks the certificate</li>
-      <li>If valid, browser and server <strong>exchange encryption keys</strong></li>
-      <li>All data is now encrypted end-to-end</li>
-    </ol>
 
     <h2>Free SSL from Let's Encrypt</h2>
     <p>Let's Encrypt is a free, automated Certificate Authority. All modern hosts integrate it:</p>
@@ -2357,42 +2278,6 @@ Value: YOUR-USERNAME.github.io</code></pre>
       </table>
     </div>
 
-    <div class="callout success">
-      <i class="fas fa-check-circle"></i>
-      <div class="callout-body">
-        <strong>You get HTTPS free, automatically</strong>
-        <p>When you add a custom domain to any modern host, HTTPS is provisioned for you in minutes. You don't need to do anything.</p>
-      </div>
-    </div>
-
-    <h2>Force HTTPS</h2>
-    <p>Make sure all traffic uses HTTPS. Modern hosts do this by default. On GitHub Pages:</p>
-    <ol>
-      <li>Settings → Pages</li>
-      <li>Check <strong>Enforce HTTPS</strong></li>
-    </ol>
-
-    <h2>Security Headers (Bonus)</h2>
-    <p>Add these headers for extra security. On Netlify, create a file called <code>_headers</code>:</p>
-
-    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-comment">/*</span>
-  <span class="c-str">X-Frame-Options</span>: DENY
-  <span class="c-str">X-Content-Type-Options</span>: nosniff
-  <span class="c-str">Referrer-Policy</span>: strict-origin-when-cross-origin
-  <span class="c-str">Permissions-Policy</span>: geolocation=(), microphone=()</code></pre>
-
-    <h2>Common HTTPS Mistakes</h2>
-
-    <h4>❌ Mixed content</h4>
-    <p>Loading HTTP resources (images, scripts) on an HTTPS page. Browsers block these.</p>
-    <p><strong>Fix:</strong> Change all <code>http://</code> to <code>https://</code> in your code.</p>
-
-    <h4>❌ No HTTPS on custom domain</h4>
-    <p>If HTTPS doesn't auto-provision, wait 24 hrs, then check DNS. Or contact host support.</p>
-
-    <h4>❌ Expired certificate</h4>
-    <p>Rare with Let's Encrypt (auto-renews every 90 days), but possible if auto-renew fails.</p>
-
     <div class="quiz" data-quiz="m6-a">
       <div class="quiz-label">✓ Quick Check</div>
       <div class="q-text">What free service provides SSL certificates for modern hosts?</div>
@@ -2401,18 +2286,6 @@ Value: YOUR-USERNAME.github.io</code></pre>
         <button class="opt" data-correct="true">Let's Encrypt</button>
         <button class="opt" data-correct="false">FreeSSL.org</button>
         <button class="opt" data-correct="false">Cloudflare Only</button>
-      </div>
-      <div class="feedback"></div>
-    </div>
-
-    <div class="quiz" data-quiz="m6-b">
-      <div class="quiz-label">✓ Quick Check</div>
-      <div class="q-text">What is "mixed content" on an HTTPS page?</div>
-      <div class="opts">
-        <button class="opt" data-correct="false">Mixing HTML and CSS</button>
-        <button class="opt" data-correct="true">Loading HTTP resources on an HTTPS page</button>
-        <button class="opt" data-correct="false">Using multiple fonts</button>
-        <button class="opt" data-correct="false">Having too many images</button>
       </div>
       <div class="feedback"></div>
     </div>
@@ -2448,11 +2321,7 @@ Value: YOUR-USERNAME.github.io</code></pre>
       <li><strong>CD</strong> (Continuous Deployment) — auto-deploy when tests pass</li>
     </ul>
 
-    <p>Modern hosts (Netlify, Vercel, Render) already do CD for you. But <strong>GitHub Actions</strong> gives you full control — custom builds, tests, notifications, deployments.</p>
-
     <h2>GitHub Actions Basics</h2>
-    <p>Workflows live in <code>.github/workflows/</code> in your repo. Each is a YAML file:</p>
-
     <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-comment"># .github/workflows/deploy.yml</span>
 <span class="c-flag">name:</span> Deploy
 <span class="c-flag">on:</span>
@@ -2493,22 +2362,7 @@ Value: YOUR-USERNAME.github.io</code></pre>
           <span class="c-flag">path:</span> <span class="c-str">'.'</span>
       - <span class="c-flag">uses:</span> actions/deploy-pages@v4</code></pre>
 
-    <h3>2. Run tests on every PR</h3>
-    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-flag">name:</span> Tests
-<span class="c-flag">on:</span> [push, pull_request]
-
-<span class="c-flag">jobs:</span>
-  <span class="c-flag">test:</span>
-    <span class="c-flag">runs-on:</span> ubuntu-latest
-    <span class="c-flag">steps:</span>
-      - <span class="c-flag">uses:</span> actions/checkout@v4
-      - <span class="c-flag">uses:</span> actions/setup-node@v4
-        <span class="c-flag">with:</span>
-          <span class="c-flag">node-version:</span> <span class="c-str">'20'</span>
-      - <span class="c-flag">run:</span> <span class="c-str">npm ci</span>
-      - <span class="c-flag">run:</span> <span class="c-str">npm test</span></code></pre>
-
-    <h3>3. Keep Render app awake</h3>
+    <h3>2. Keep Render app awake</h3>
     <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-flag">name:</span> Keep Alive
 <span class="c-flag">on:</span>
   <span class="c-flag">schedule:</span>
@@ -2519,32 +2373,6 @@ Value: YOUR-USERNAME.github.io</code></pre>
     <span class="c-flag">runs-on:</span> ubuntu-latest
     <span class="c-flag">steps:</span>
       - <span class="c-flag">run:</span> <span class="c-str">curl -s https://your-app.onrender.com</span></code></pre>
-
-    <h3>4. Auto-deploy to a VPS (SSH)</h3>
-    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-flag">name:</span> Deploy to VPS
-<span class="c-flag">on:</span>
-  <span class="c-flag">push:</span>
-    <span class="c-flag">branches:</span> [ main ]
-
-<span class="c-flag">jobs:</span>
-  <span class="c-flag">deploy:</span>
-    <span class="c-flag">runs-on:</span> ubuntu-latest
-    <span class="c-flag">steps:</span>
-      - <span class="c-flag">name:</span> SSH Deploy
-        <span class="c-flag">uses:</span> appleboy/ssh-action@v1
-        <span class="c-flag">with:</span>
-          <span class="c-flag">host:</span> <span class="c-str">${{ secrets.VPS_HOST }}</span>
-          <span class="c-flag">username:</span> <span class="c-str">${{ secrets.VPS_USER }}</span>
-          <span class="c-flag">key:</span> <span class="c-str">${{ secrets.VPS_SSH_KEY }}</span>
-          <span class="c-flag">script:</span> <span class="c-str">cd /var/www && git pull && systemctl restart app</span></code></pre>
-
-    <h2>Using Secrets</h2>
-    <p>Never hardcode API keys or SSH keys in workflows. Use GitHub Secrets:</p>
-    <ol>
-      <li>Repo → Settings → <strong>Secrets and variables → Actions</strong></li>
-      <li>Add new secret (e.g. <code>VPS_HOST</code>, <code>API_KEY</code>)</li>
-      <li>Access in workflow via <code>${{ secrets.SECRET_NAME }}</code></li>
-    </ol>
 
     <div class="quiz" data-quiz="m7">
       <div class="quiz-label">✓ Quick Check</div>
@@ -2605,35 +2433,15 @@ Value: YOUR-USERNAME.github.io</code></pre>
   <span class="c-flag">&lt;title&gt;</span>Your Name — Portfolio<span class="c-flag">&lt;/title&gt;</span>
   <span class="c-flag">&lt;style&gt;</span>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: system-ui, sans-serif;
-      background: #0a0a0a;
-      color: #f5f5f5;
-      line-height: 1.7;
-    }
-    header {
-      padding: 100px 20px;
-      text-align: center;
-      background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
-    }
+    body { font-family: system-ui, sans-serif; background: #0a0a0a; color: #f5f5f5; line-height: 1.7; }
+    header { padding: 100px 20px; text-align: center; background: linear-gradient(135deg, #0891b2, #7c3aed); }
     header h1 { font-size: 3rem; margin-bottom: 10px; }
     header p { font-size: 1.2rem; opacity: 0.9; }
     section { padding: 60px 20px; max-width: 800px; margin: 0 auto; }
     h2 { font-size: 2rem; margin-bottom: 20px; color: #38bdf8; }
-    .project {
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 16px;
-    }
+    .project { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
     .project h3 { margin-bottom: 8px; }
-    footer {
-      padding: 40px 20px;
-      text-align: center;
-      border-top: 1px solid #2a2a2a;
-      color: #a0a0a0;
-    }
+    footer { padding: 40px 20px; text-align: center; border-top: 1px solid #2a2a2a; color: #a0a0a0; }
     a { color: #38bdf8; }
   <span class="c-flag">&lt;/style&gt;</span>
 <span class="c-flag">&lt;/head&gt;</span>
@@ -2656,11 +2464,6 @@ Value: YOUR-USERNAME.github.io</code></pre>
     <span class="c-flag">&lt;/div&gt;</span>
   <span class="c-flag">&lt;/section&gt;</span>
 
-  <span class="c-flag">&lt;section&gt;</span>
-    <span class="c-flag">&lt;h2&gt;</span>Contact<span class="c-flag">&lt;/h2&gt;</span>
-    <span class="c-flag">&lt;p&gt;</span>Email: <span class="c-flag">&lt;a</span> <span class="c-str">href</span>=<span class="c-str">"mailto:you@example.com"</span><span class="c-flag">&gt;</span>you@example.com<span class="c-flag">&lt;/a&gt;&lt;/p&gt;</span>
-  <span class="c-flag">&lt;/section&gt;</span>
-
   <span class="c-flag">&lt;footer&gt;</span>
     <span class="c-flag">&lt;p&gt;</span>© 2026 Your Name<span class="c-flag">&lt;/p&gt;</span>
   <span class="c-flag">&lt;/footer&gt;</span>
@@ -2668,13 +2471,6 @@ Value: YOUR-USERNAME.github.io</code></pre>
 <span class="c-flag">&lt;/html&gt;</span></code></pre>
 
     <h2>Step 2: Deploy to GitHub Pages</h2>
-    <ol>
-      <li>Create a repo: <code>YOUR-USERNAME.github.io</code> (this becomes your main site)</li>
-      <li>Add the <code>index.html</code> file</li>
-      <li>Push to GitHub</li>
-      <li>Site is live at <code>https://YOUR-USERNAME.github.io</code></li>
-    </ol>
-
     <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-cmd">git init</span>
 <span class="c-cmd">git add</span> index.html
 <span class="c-cmd">git commit</span> <span class="c-flag">-m</span> <span class="c-str">"Deploy portfolio"</span>
@@ -2682,37 +2478,7 @@ Value: YOUR-USERNAME.github.io</code></pre>
 <span class="c-cmd">git remote add</span> origin https://github.com/YOUR-USERNAME/YOUR-USERNAME.github.io.git
 <span class="c-cmd">git push</span> <span class="c-flag">-u</span> origin main</code></pre>
 
-    <h2>Step 3: Add Your Custom Domain (Optional)</h2>
-    <ol>
-      <li>Buy <code>yourname.com</code> at Cloudflare or Namecheap</li>
-      <li>Add DNS records (A + CNAME) as shown in Module 05</li>
-      <li>In GitHub Pages settings, add custom domain</li>
-      <li>Enable "Enforce HTTPS"</li>
-    </ol>
-
-    <h2>Step 4: Auto-Deploy with GitHub Actions (Bonus)</h2>
-    <p>Add <code>.github/workflows/deploy.yml</code> to auto-deploy on every push:</p>
-    <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="c-flag">name:</span> Deploy Portfolio
-<span class="c-flag">on:</span>
-  <span class="c-flag">push:</span>
-    <span class="c-flag">branches:</span> [ main ]
-
-<span class="c-flag">permissions:</span>
-  <span class="c-flag">contents:</span> read
-  <span class="c-flag">pages:</span> write
-
-<span class="c-flag">jobs:</span>
-  <span class="c-flag">deploy:</span>
-    <span class="c-flag">runs-on:</span> ubuntu-latest
-    <span class="c-flag">steps:</span>
-      - <span class="c-flag">uses:</span> actions/checkout@v4
-      - <span class="c-flag">uses:</span> actions/configure-pages@v4
-      - <span class="c-flag">uses:</span> actions/upload-pages-artifact@v3
-        <span class="c-flag">with:</span>
-          <span class="c-flag">path:</span> <span class="c-str">'.'</span>
-      - <span class="c-flag">uses:</span> actions/deploy-pages@v4</code></pre>
-
-    <h2>Step 5: Share It</h2>
+    <h2>Step 3: Share It</h2>
     <ul>
       <li>Add the link to your GitHub profile README</li>
       <li>Share on LinkedIn, Twitter, WhatsApp</li>
@@ -2740,6 +2506,24 @@ Value: YOUR-USERNAME.github.io</code></pre>
 </div>
 
 </main>
+
+<!-- ==================== ONBOARDING TOUR ==================== -->
+<div id="tour-overlay">
+  <div class="tour-spotlight" id="tourSpotlight"></div>
+  <div class="tour-tooltip" id="tourTooltip">
+    <div class="tt-arrow"></div>
+    <div class="tt-step" id="tourStep"><i class="fas fa-sparkles"></i> Welcome</div>
+    <h4 id="tourTitle">Karibu! 👋</h4>
+    <p id="tourText">This is a guided tour. Let me show you how to navigate the course in 30 seconds.</p>
+    <div class="tt-actions">
+      <div class="tt-progress" id="tourProgress"></div>
+      <div class="tt-buttons">
+        <button class="tt-btn skip" onclick="endTour()">Skip Tour</button>
+        <button class="tt-btn next" id="tourNextBtn" onclick="nextTourStep()">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ========== CERTIFICATE MODAL ========== -->
 <div id="cert-modal">
@@ -2792,8 +2576,9 @@ Value: YOUR-USERNAME.github.io</code></pre>
 /* =========================================================
    STORAGE
    ========================================================= */
-const STORAGE_KEY = 'web-hosting-course-v1';
-const TOTAL_MODULES = 10; // m0-m8 + providers
+const STORAGE_KEY = 'web-hosting-course-v2';
+const TOUR_KEY = 'web-hosting-tour-seen';
+const TOTAL_MODULES = 10;
 const ALL_MODULE_IDS = ['m0','m1','m2','m3','m4','providers','m5','m6','m7','m8'];
 let state = { completed: [], userName: '', completedAt: null };
 
@@ -2856,9 +2641,9 @@ function updateProgress() {
 
   const certBtn = document.getElementById('certBtn');
   certBtn.disabled = state.completed.length !== TOTAL_MODULES;
-  certBtn.textContent = state.completed.length === TOTAL_MODULES
-    ? '🎓 Generate Certificate'
-    : `🎓 Certificate (${state.completed.length}/${TOTAL_MODULES})`;
+  certBtn.innerHTML = state.completed.length === TOTAL_MODULES
+    ? '<i class="fas fa-graduation-cap"></i> Generate Certificate'
+    : `<i class="fas fa-graduation-cap"></i> Certificate (${state.completed.length}/${TOTAL_MODULES})`;
 }
 
 function markComplete(moduleId) {
@@ -2870,7 +2655,15 @@ function markComplete(moduleId) {
     if (state.completed.length === TOTAL_MODULES) {
       setTimeout(() => {
         celebrate();
-        setTimeout(() => openCertificate(), 800);
+        setTimeout(() => {
+          const name = prompt('🎉 You completed the course! Enter your name for the certificate:');
+          if (name && name.trim()) {
+            state.userName = name.trim().slice(0, 40);
+            state.completedAt = Date.now();
+            saveState();
+          }
+          setTimeout(() => openCertificate(), 400);
+        }, 500);
       }, 400);
     }
   }
@@ -2914,6 +2707,186 @@ function copyCode(btn) {
       btn.classList.remove('copied');
     }, 1800);
   });
+}
+
+/* =========================================================
+   ONBOARDING TOUR
+   ========================================================= */
+const tourSteps = [
+  {
+    selector: '.sidebar-welcome',
+    title: 'Karibu! 👋',
+    text: 'Hii ni course ya Free Web Hosting. Tutaenda hatua kwa hatua kukufundisha jinsi ya ku-deploy website bure.',
+    position: 'right',
+    step: 'Welcome'
+  },
+  {
+    selector: '.sidebar-progress',
+    title: 'Fuatilia Maendeleo Yako 📊',
+    text: 'Progress bar inaonyesha modules ngapi umemaliza. Ina-save automatically — unaweza kuendelea baadaye.',
+    position: 'right',
+    step: 'Step 1 of 5'
+  },
+  {
+    selector: '.nav-section:first-of-type .nav-item',
+    title: 'Chagua Module 📚',
+    text: 'Modules zimegawanywa: Getting Started, Intermediate, Advanced. Bonyeza module yoyote kuanza.',
+    position: 'right',
+    step: 'Step 2 of 5'
+  },
+  {
+    selector: '.module-section.active .module-title',
+    title: 'Content Yako 📖',
+    text: 'Hapa ndio utakapopata content — maelezo, diagrams, code snippets, na quizzes. Soma kwa makini!',
+    position: 'bottom',
+    step: 'Step 3 of 5'
+  },
+  {
+    selector: '.mark-complete',
+    title: 'Mark Complete ✅',
+    text: 'Ukimaliza module, bonyeza "Mark Complete" ili kuendelea. Uki-maliza zote, utapata certificate!',
+    position: 'top',
+    step: 'Step 4 of 5'
+  },
+  {
+    selector: '#certBtn',
+    title: 'Certificate Yako 🎓',
+    text: 'Ukimaliza modules zote 10, utaweza kupata certificate yenye jina lako. Download kama PNG au print!',
+    position: 'right',
+    step: 'Step 5 of 5'
+  }
+];
+
+let currentTourStep = 0;
+let tourActive = false;
+
+function startTour() {
+  if (tourActive) return;
+  tourActive = true;
+
+  document.getElementById('tour-overlay').classList.add('show');
+  document.getElementById('tourProgress').innerHTML = tourSteps.map((_, i) =>
+    `<span ${i === 0 ? 'class="active"' : ''}></span>`
+  ).join('');
+
+  currentTourStep = 0;
+  renderTourStep();
+}
+
+function renderTourStep() {
+  const step = tourSteps[currentTourStep];
+  const target = document.querySelector(step.selector);
+
+  if (!target) {
+    nextTourStep();
+    return;
+  }
+
+  // Update tooltip content
+  document.getElementById('tourStep').innerHTML = `<i class="fas fa-sparkles"></i> ${step.step}`;
+  document.getElementById('tourTitle').textContent = step.title;
+  document.getElementById('tourText').textContent = step.text;
+  document.getElementById('tourNextBtn').textContent =
+    currentTourStep === tourSteps.length - 1 ? 'Finish 🎉' : 'Next →';
+
+  // Update progress dots
+  document.querySelectorAll('#tourProgress span').forEach((s, i) => {
+    s.classList.toggle('active', i === currentTourStep);
+  });
+
+  // Position spotlight
+  const rect = target.getBoundingClientRect();
+  const padding = 8;
+  const spotlight = document.getElementById('tourSpotlight');
+  spotlight.style.left = (rect.left - padding) + 'px';
+  spotlight.style.top = (rect.top - padding) + 'px';
+  spotlight.style.width = (rect.width + padding * 2) + 'px';
+  spotlight.style.height = (rect.height + padding * 2) + 'px';
+
+  // Position tooltip
+  const tooltip = document.getElementById('tourTooltip');
+  tooltip.className = 'tour-tooltip';
+  tooltip.style.animation = 'none';
+  tooltip.offsetHeight; // trigger reflow
+  tooltip.style.animation = '';
+
+  const tw = 380;
+  const th = tooltip.offsetHeight || 220;
+  let left, top, arrowClass = '';
+
+  if (step.position === 'right') {
+    left = rect.right + 20;
+    top = rect.top + (rect.height / 2) - (th / 2);
+    arrowClass = 'arrow-left';
+    // Add arrow on left side
+    if (!tooltip.querySelector('.tt-arrow')) {
+      const arrow = document.createElement('div');
+      arrow.className = 'tt-arrow';
+      tooltip.insertBefore(arrow, tooltip.firstChild);
+    }
+    const arrow = tooltip.querySelector('.tt-arrow');
+    arrow.style.left = '-10px';
+    arrow.style.top = '50%';
+    arrow.style.transform = 'translateY(-50%) rotate(45deg)';
+    arrow.style.borderLeft = '1px solid var(--border)';
+    arrow.style.borderBottom = '1px solid var(--border)';
+    arrow.style.borderTop = 'none';
+    arrow.style.borderRight = 'none';
+  } else if (step.position === 'bottom') {
+    left = rect.left + (rect.width / 2) - (tw / 2);
+    top = rect.bottom + 20;
+    const arrow = tooltip.querySelector('.tt-arrow');
+    arrow.style.left = '50%';
+    arrow.style.top = '-10px';
+    arrow.style.transform = 'translateX(-50%) rotate(45deg)';
+    arrow.style.borderLeft = '1px solid var(--border)';
+    arrow.style.borderTop = '1px solid var(--border)';
+    arrow.style.borderRight = 'none';
+    arrow.style.borderBottom = 'none';
+  } else if (step.position === 'top') {
+    left = rect.left + (rect.width / 2) - (tw / 2);
+    top = rect.top - th - 20;
+    const arrow = tooltip.querySelector('.tt-arrow');
+    arrow.style.left = '50%';
+    arrow.style.bottom = '-10px';
+    arrow.style.top = 'auto';
+    arrow.style.transform = 'translateX(-50%) rotate(45deg)';
+    arrow.style.borderRight = '1px solid var(--border)';
+    arrow.style.borderBottom = '1px solid var(--border)';
+    arrow.style.borderLeft = 'none';
+    arrow.style.borderTop = 'none';
+  }
+
+  // Keep tooltip on screen
+  left = Math.max(20, Math.min(left, window.innerWidth - tw - 20));
+  top = Math.max(20, Math.min(top, window.innerHeight - th - 20));
+
+  tooltip.style.left = left + 'px';
+  tooltip.style.top = top + 'px';
+}
+
+function nextTourStep() {
+  currentTourStep++;
+  if (currentTourStep >= tourSteps.length) {
+    endTour();
+  } else {
+    renderTourStep();
+  }
+}
+
+function endTour() {
+  tourActive = false;
+  document.getElementById('tour-overlay').classList.remove('show');
+  try { localStorage.setItem(TOUR_KEY, '1'); } catch (e) {}
+}
+
+function checkTour() {
+  try {
+    const seen = localStorage.getItem(TOUR_KEY);
+    if (!seen) {
+      setTimeout(() => startTour(), 800);
+    }
+  } catch (e) {}
 }
 
 /* =========================================================
@@ -2993,7 +2966,7 @@ async function downloadCertificate() {
     wrapper.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
     wrapper.style.width = w + 'px';
     wrapper.style.height = h + 'px';
-    wrapper.style.background = '#0a0a0a';
+    wrapper.style.background = '#ffffff';
     wrapper.appendChild(clone);
     fo.appendChild(wrapper);
     svg.appendChild(fo);
@@ -3014,7 +2987,7 @@ async function downloadCertificate() {
     canvas.width = w * scale;
     canvas.height = h * scale;
     const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#0a0a0a';
+    ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.scale(scale, scale);
     ctx.drawImage(img, 0, 0);
@@ -3056,9 +3029,9 @@ function celebrate() {
   const container = document.getElementById('global-confetti');
   container.classList.add('show');
   container.innerHTML = '';
-  const colors = ['#10b981','#0ea5e9','#8b5cf6','#f59e0b','#06b6d4','#38bdf8'];
+  const colors = ['#15803d','#0891b2','#7c3aed','#b45309','#06b6d4','#dc2626','#db2777'];
 
-  for (let i = 0; i < 120; i++) {
+  for (let i = 0; i < 150; i++) {
     const cp = document.createElement('div');
     cp.className = 'cp';
     cp.style.left = Math.random() * 100 + 'vw';
@@ -3079,10 +3052,27 @@ function celebrate() {
 }
 
 /* =========================================================
+   KEYBOARD
+   ========================================================= */
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeCertificate();
+    if (tourActive) endTour();
+  }
+  if (tourActive && e.key === 'ArrowRight') nextTourStep();
+});
+
+/* Handle window resize for tour */
+window.addEventListener('resize', () => {
+  if (tourActive) renderTourStep();
+});
+
+/* =========================================================
    BOOT
    ========================================================= */
 loadState();
 updateProgress();
+checkTour();
 </script>
 
 </body>
