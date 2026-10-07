@@ -1349,7 +1349,105 @@ window.addEventListener('load', function() {
         }, delay);
     });
 })();
-</script>
+     // ═══════════════════════════════════════════════════════════
+// TERMS & CONDITIONS POPUP
+// ═══════════════════════════════════════════════════════════
+(function(){
+    const overlay = document.getElementById('tncOverlay');
+    const agreeBtn = document.getElementById('tncAgree');
+    const declineBtn = document.getElementById('tncDecline');
+    if (!overlay) return;
 
+    // Check if user already agreed
+    const accepted = localStorage.getItem('studenthub_tnc_accepted');
+    if (accepted === 'true') {
+        // Already accepted — never show again
+        return;
+    }
+
+    // Show popup after slight delay (so page loads first)
+    setTimeout(() => {
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }, 800);
+
+    // User clicks AGREE
+    agreeBtn.addEventListener('click', () => {
+        localStorage.setItem('studenthub_tnc_accepted', 'true');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+
+    // User clicks DECLINE
+    declineBtn.addEventListener('click', () => {
+        // Show warning and stay on the popup
+        alert('You must accept the Terms & Conditions to use Student Hub.');
+    });
+
+    // Prevent closing by clicking outside
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            // Do nothing — must accept explicitly
+        }
+    });
+
+    // Prevent Escape key from closing
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('active')) {
+            e.preventDefault();
+        }
+    });
+})();
+</script>
+<!-- ═══════════════════════════════════════════════════════════
+     TERMS & CONDITIONS POPUP
+     ═══════════════════════════════════════════════════════════ -->
+<div class="tnc-overlay" id="tncOverlay">
+    <div class="tnc-content">
+        <div class="tnc-icon">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <h2>Welcome to Student Hub</h2>
+        <p class="tnc-subtitle">Please read and accept our terms before continuing</p>
+
+        <div class="tnc-body">
+            <ul>
+                <li>
+                    <i class="fas fa-check-circle"></i>
+                    <span><strong>Free to use:</strong> Student Hub is 100% free for all students. No hidden fees, no subscriptions.</span>
+                </li>
+                <li>
+                    <i class="fas fa-check-circle"></i>
+                    <span><strong>Respect copyright:</strong> Only upload materials you have the right to share. Do not upload paid textbooks or copyrighted content.</span>
+                </li>
+                <li>
+                    <i class="fas fa-check-circle"></i>
+                    <span><strong>Be respectful:</strong> No offensive, harmful, or inappropriate content. We remove anything that violates this rule.</span>
+                </li>
+                <li>
+                    <i class="fas fa-check-circle"></i>
+                    <span><strong>Your responsibility:</strong> You are responsible for the files you upload. Student Hub is not liable for user content.</span>
+                </li>
+                <li>
+                    <i class="fas fa-check-circle"></i>
+                    <span><strong>Privacy:</strong> We store only what is needed to run the platform. We never sell your data.</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="tnc-actions">
+            <button class="tnc-btn decline" id="tncDecline">
+                <i class="fas fa-times"></i> Decline
+            </button>
+            <button class="tnc-btn agree" id="tncAgree">
+                <i class="fas fa-check"></i> I Agree
+            </button>
+        </div>
+
+        <div class="tnc-footer">
+            <i class="fas fa-lock"></i> By clicking "I Agree", you accept our Terms &amp; Privacy Policy.
+        </div>
+    </div>
+</div>
 </body>
 </html>
