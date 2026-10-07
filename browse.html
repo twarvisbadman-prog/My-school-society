@@ -4,14 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Browse Notes | Student Hub</title>
-<link rel="icon" type="image/png" href="/apple-touch-icon.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 :root{
-    /* Theme 1 · Warm SaaS */
     --bg:#fafaf9;
     --surface:#ffffff;
     --alt:#f5f5f4;
@@ -24,9 +23,6 @@
     --accent-bright:#ea580c;
     --accent-pink:#db2777;
     --accent-dim:#fff1e8;
-    --grad:linear-gradient(120deg,#ea580c,#db2777);
-    --grad-cta:linear-gradient(120deg,#c2410c,#be185d);
-    --grad-cta-hover:linear-gradient(120deg,#9a3412,#9d174d);
     --success:#15803d;
     --radius-sm:10px;
     --radius-md:14px;
@@ -35,7 +31,7 @@
     --shadow-sm:0 1px 2px rgba(28,25,23,.06);
     --shadow-md:0 10px 28px -12px rgba(28,25,23,.18);
     --shadow-lg:0 28px 64px -20px rgba(28,25,23,.22);
-    --shadow-cta:0 8px 22px -8px rgba(219,39,119,.5);
+    --shadow-cta:0 8px 22px -8px rgba(194,65,12,.4);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{overflow-x:hidden;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
@@ -50,86 +46,157 @@ img{max-width:100%;height:auto;display:block}
 .topbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;text-align:center}
 .topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:#a8a29e;white-space:nowrap}
 .topbar-inner span i{color:var(--accent-bright);font-size:.78rem}
+.topbar-inner a.whatsapp-link{display:inline-flex;align-items:center;gap:6px;color:#25D366;font-weight:600;transition:all .2s ease}
+.topbar-inner a.whatsapp-link:hover{color:#128C7E;transform:scale(1.05)}
+.topbar-inner a.whatsapp-link i{font-size:1rem}
 
 /* NAV */
 .mainnav{background:rgba(250,250,249,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;width:100%}
-.mainnav-inner{max-width:1200px;margin:0 auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.mainnav-inner{max-width:1300px;margin:0 auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.logo{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
+.logo-full-img { height: 42px; width: auto; display: block; max-width: 200px; object-fit: contain; }
 
-/* ═══════════════════════════════════════════════════════════
-   LOGO — kubwa kidogo + picha yako
-   ═══════════════════════════════════════════════════════════ */
-.logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.3rem;color:var(--ink);letter-spacing:-.02em;flex-shrink:0}
-.logo-img{
-    width:46px;
-    height:46px;
-    border-radius:12px;
-    object-fit:cover;
-    object-position:center;
-    flex-shrink:0;
-    box-shadow:0 6px 16px -6px rgba(219,39,119,.4);
-    display:block;
-    background:#fff;
+/* ONE LINE MENU */
+.menu{
+    display:flex;
+    align-items:center;
+    gap:0px;
+    flex-wrap:nowrap; /* Forces one line */
+    justify-content:center;
+    flex:1;
+    min-width:0;
+    overflow-x:auto;
+    scrollbar-width:none;
 }
-.logo-text span{
-    background:var(--grad);
-    -webkit-background-clip:text;background-clip:text;
-    color:transparent;
+.menu::-webkit-scrollbar{display:none}
+.menu a{
+    padding:6px 8px;
+    font-size:.75rem;
+    font-weight:600;
+    color:var(--text-2);
+    border-radius:6px;
+    white-space:nowrap;
+    transition:all .25s ease;
 }
-
-.menu{display:flex;align-items:center;gap:2px;flex-wrap:wrap;justify-content:center;flex:1;min-width:0}
-.menu a{padding:8px 11px;font-size:.84rem;font-weight:600;color:var(--text-2);border-radius:8px;white-space:nowrap;transition:all .25s ease}
 .menu a:hover{color:var(--ink);background:var(--alt)}
 .menu a.active{color:var(--accent);background:var(--accent-dim);font-weight:700}
 .menu a.course-link{color:var(--accent)}
-.menu a.course-link i{font-size:.75rem;margin-right:5px}
+.menu a.course-link i{font-size:.7rem;margin-right:4px}
 .menu a.hack-link{color:var(--accent-pink)}
-.menu a.hack-link i{font-size:.75rem;margin-right:5px}
-.nav-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
-.btn-quote{background:var(--grad-cta);color:#fff;padding:11px 22px;border-radius:999px;font-weight:700;font-size:.85rem;display:inline-flex;align-items:center;gap:8px;transition:all .25s ease;white-space:nowrap;box-shadow:var(--shadow-cta)}
-.btn-quote:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
+.menu a.hack-link i{font-size:.7rem;margin-right:4px}
 
-/* HERO */
+.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.btn-quote{background:var(--accent);color:#fff;padding:9px 18px;border-radius:999px;font-weight:700;font-size:.78rem;display:inline-flex;align-items:center;gap:6px;transition:all .25s ease;white-space:nowrap;box-shadow:var(--shadow-cta);border:none;cursor:pointer;flex-shrink:0;}
+.btn-quote:hover{background:#9a3412;transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(194,65,12,.5)}
+
+/* ═══════════════════════════════════════════════════════════
+   HERO WITH ROTATING BOOK BACKGROUNDS & TYPING EFFECT
+   ═══════════════════════════════════════════════════════════ */
 .browse-hero{
-    padding:60px 20px 50px;
+    position: relative;
+    padding:100px 20px 80px;
     text-align:center;
-    position:relative;
     overflow:hidden;
-    background:
-        radial-gradient(circle at 20% 30%, rgba(234,88,12,.08) 0%, transparent 55%),
-        radial-gradient(circle at 80% 70%, rgba(219,39,119,.08) 0%, transparent 55%);
-    border-bottom:1px solid var(--border);
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--border);
 }
-.browse-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1}
-.browse-label{color:var(--accent);font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px;display:block}
-.browse-hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;line-height:1.15;letter-spacing:-.025em;margin-bottom:14px;color:var(--ink)}
+
+.hero-bg-container {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.hero-bg-img {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.hero-bg-img.active {
+    opacity: 1;
+}
+
+.browse-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(28, 25, 23, 0.75);
+    z-index: 1;
+}
+
+.browse-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:2;color:#fff}
+.browse-label{color:#fdba8c;font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px;display:block}
+.browse-hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;line-height:1.15;letter-spacing:-.025em;margin-bottom:14px;color:#fff;min-height: 2.2em;}
 .browse-hero h1 .accent{
-    background:var(--grad);
-    -webkit-background-clip:text;background-clip:text;
-    color:transparent;
+    color: #fdba8c;
     text-decoration:underline;
-    text-decoration-color:var(--accent);
+    text-decoration-color:#fdba8c;
     text-underline-offset:6px;
     text-decoration-thickness:4px;
 }
-.browse-hero p{color:var(--text-2);font-size:clamp(.92rem,1.4vw,1.05rem);max-width:560px;margin:0 auto 28px;line-height:1.7}
+.browse-hero p{color:#d6d3d1;font-size:clamp(.92rem,1.4vw,1.05rem);max-width:560px;margin:0 auto 28px;line-height:1.7}
 
-/* SEARCH */
+/* Typing Cursor */
+.typing-cursor {
+    display: inline-block;
+    width: 3px;
+    height: 0.9em;
+    background-color: #fdba8c;
+    margin-left: 4px;
+    animation: blink 0.8s infinite;
+    vertical-align: middle;
+}
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* GLASSY SEARCH BAR */
 .search-bar{
     max-width:560px;margin:0 auto;
     display:flex;align-items:center;
-    background:var(--surface);
-    border:1px solid var(--border);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius:var(--radius-xl);
     overflow:hidden;
-    box-shadow:var(--shadow-lg);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     transition:all .25s;
 }
-.search-bar:focus-within{border-color:var(--accent-bright);box-shadow:var(--shadow-lg),0 0 0 4px rgba(234,88,12,.12)}
-.search-bar i{padding:0 4px 0 20px;color:var(--text-3);font-size:.95rem}
-.search-bar input{flex:1;padding:15px 14px;border:none;outline:none;font-size:.92rem;font-family:inherit;color:var(--ink);background:transparent;min-width:0}
-.search-bar input::placeholder{color:var(--text-3)}
-.search-bar button{padding:15px 26px;background:var(--grad-cta);color:#fff;border:none;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .25s;white-space:nowrap}
-.search-bar button:hover{background:var(--grad-cta-hover)}
+.search-bar:focus-within{
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 4px rgba(255, 255, 255, 0.1);
+}
+.search-bar i{padding:0 4px 0 20px;color:#d6d3d1;font-size:.95rem}
+.search-bar input{flex:1;padding:15px 14px;border:none;outline:none;font-size:.92rem;font-family:inherit;color:#fff;background:transparent;min-width:0}
+.search-bar input::placeholder{color:#a8a29e}
+.search-bar button{
+    padding:15px 26px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color:#fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-left: none;
+    font-weight:700;
+    font-size:.85rem;
+    cursor:pointer;
+    transition:all .25s;
+    white-space:nowrap;
+}
+.search-bar button:hover{
+    background: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.5);
+}
 
 /* STATS BAR */
 .stats-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 20px}
@@ -138,8 +205,54 @@ img{max-width:100%;height:auto;display:block}
 .stats-inner span i{color:var(--accent);font-size:.85rem}
 .stats-inner strong{color:var(--ink);font-weight:800}
 
-/* BROWSE LIST */
-.browse-container{max-width:1000px;margin:0 auto;padding:40px 20px 60px}
+/* ═══════════════════════════════════════════════════════════
+   BROWSE LIST WITH ROTATING BACKGROUND (Buildings, Books, Pen, Cars, Old Schools, Old Classes)
+   ═══════════════════════════════════════════════════════════ */
+.browse-container{
+    position: relative;
+    padding:40px 20px 60px;
+    overflow: hidden;
+    min-height: 100vh;
+}
+
+/* Background Image Container */
+.list-bg-container {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.list-bg-img {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.list-bg-img.active {
+    opacity: 1;
+}
+
+/* Dark Overlay for the list section */
+.browse-container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(28, 25, 23, 0.85);
+    z-index: 1;
+}
+
+/* Content sits on top */
+.browse-content-wrapper {
+    position: relative;
+    z-index: 2;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
 .doc-list{display:flex;flex-direction:column;gap:16px}
 
 .doc-card{
@@ -161,7 +274,7 @@ img{max-width:100%;height:auto;display:block}
 .doc-img{position:relative;min-height:200px;overflow:hidden;background:var(--alt)}
 .doc-img-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.2s ease-in-out}
 .doc-img-bg.active{opacity:1}
-.doc-img::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(234,88,12,.25),rgba(28,25,23,.55));z-index:1;pointer-events:none}
+.doc-img::after{content:'';position:absolute;inset:0;background:rgba(28,25,23,.35);z-index:1;pointer-events:none}
 
 .doc-img-badge{
     position:absolute;top:14px;left:14px;
@@ -221,7 +334,7 @@ img{max-width:100%;height:auto;display:block}
 .btn-view:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
 .btn-download{
     padding:9px 16px;
-    background:var(--grad-cta);
+    background:var(--accent);
     color:#fff;
     border:none;
     border-radius:var(--radius-sm);
@@ -230,36 +343,43 @@ img{max-width:100%;height:auto;display:block}
     cursor:pointer;transition:all .25s;font-family:inherit;
     box-shadow:var(--shadow-cta);
 }
-.btn-download:hover{background:var(--grad-cta-hover);transform:translateY(-1px);box-shadow:0 10px 24px -8px rgba(219,39,119,.6)}
+.btn-download:hover{background:#9a3412;transform:translateY(-1px);box-shadow:0 10px 24px -8px rgba(194,65,12,.5)}
 
 /* EMPTY */
-.empty-state{text-align:center;padding:80px 20px}
-.empty-icon{font-size:3.5rem;color:var(--border-strong);margin-bottom:16px}
-.empty-state h3{font-size:1.2rem;font-weight:800;color:var(--ink);margin-bottom:8px}
-.empty-state p{color:var(--text-2);font-size:.92rem;margin-bottom:20px}
+.empty-state{text-align:center;padding:80px 20px;color:#fff;}
+.empty-icon{font-size:3.5rem;color:#a8a29e;margin-bottom:16px}
+.empty-state h3{font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:8px}
+.empty-state p{color:#d6d3d1;font-size:.92rem;margin-bottom:20px}
 .empty-btn{
     display:inline-flex;align-items:center;gap:8px;
     padding:13px 26px;
-    background:var(--grad-cta);color:#fff;
+    background:var(--accent);color:#fff;
     border-radius:999px;
     font-weight:700;font-size:.88rem;
     transition:all .25s;
     box-shadow:var(--shadow-cta);
 }
-.empty-btn:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
+.empty-btn:hover{background:#9a3412;transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(194,65,12,.5)}
 
 /* CTA */
 .cta{background:var(--ink);padding:60px 20px;color:#fff;position:relative;overflow:hidden}
-.cta::before{
-    content:'';position:absolute;left:0;right:0;bottom:0;height:60%;
-    background:radial-gradient(circle at 50% 100%,#be185d 0%,transparent 70%);
-    opacity:.5;pointer-events:none;
-}
 .cta-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;position:relative;z-index:1}
 .cta h3{color:#fff;font-size:1.5rem;font-weight:800;margin-bottom:6px;letter-spacing:-.02em}
 .cta p{color:#d6d3d1;font-size:.95rem}
-.cta .btn-quote{background:#fff;color:var(--ink);box-shadow:0 12px 32px -10px rgba(0,0,0,.5)}
-.cta .btn-quote:hover{background:var(--alt);transform:translateY(-2px)}
+
+.cta .btn-quote{
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color:#fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+.cta .btn-quote:hover{
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform:translateY(-2px);
+}
 
 /* FOOTER */
 footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;position:relative}
@@ -284,10 +404,10 @@ footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;position:relat
     background:#1c1917;
 }
 .footer-socials a:hover{
-    background:var(--grad-cta);
+    background:var(--accent);
     color:#fff;border-color:transparent;
     transform:translateY(-2px);
-    box-shadow:0 8px 20px -6px rgba(219,39,119,.5);
+    box-shadow:0 8px 20px -6px rgba(194,65,12,.5);
 }
 
 /* RESPONSIVE */
@@ -298,19 +418,22 @@ footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;position:relat
 @media (max-width:720px){
     .mainnav-inner{flex-wrap:wrap;padding:12px 16px;gap:12px}
     .logo{font-size:1.05rem;gap:10px}
-    .logo-img{width:40px;height:40px;border-radius:11px}
-    .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0}
+    .logo-full-img{height:38px}
+    .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0;flex-wrap:nowrap;}
     .menu::-webkit-scrollbar{display:none}
-    .menu a{padding:8px 12px;font-size:.8rem;flex-shrink:0}
-    .browse-hero{padding:50px 18px 40px}
+    .menu a{padding:6px 10px;font-size:.75rem;flex-shrink:0}
+    .browse-hero{padding:80px 18px 60px; min-height: 50vh;}
+    .browse-hero h1{font-size:clamp(1.6rem,6vw,2.2rem)}
+    .browse-hero p{font-size:.9rem}
     .footer-top{gap:26px}
     .doc-card{grid-template-columns:1fr}
     .doc-img{min-height:200px}
+    .search-bar{max-width:100%;}
 }
 @media (max-width:560px){
     .topbar-inner{gap:12px;font-size:.72rem}
     .topbar-inner span:nth-child(3){display:none}
-    .browse-hero{padding:40px 16px 34px}
+    .browse-hero{padding:60px 16px 40px; min-height: 45vh;}
     .browse-hero h1{font-size:1.5rem}
     .browse-hero p{font-size:.88rem}
     .browse-container{padding:24px 14px 50px}
@@ -328,8 +451,7 @@ footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;position:relat
     .btn-view,.btn-download{flex:1;justify-content:center}
 }
 @media (max-width:400px){
-    .logo-text{font-size:.95rem}
-    .logo-img{width:36px;height:36px;border-radius:10px}
+    .logo-full-img{height:32px}
     .topbar-inner span:nth-child(2){display:none}
     .browse-hero h1{font-size:1.3rem}
 }
@@ -343,8 +465,10 @@ footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;position:relat
 <!-- TOP BAR -->
 <div class="topbar">
     <div class="topbar-inner">
-        <span><i class="fas fa-phone"></i> +255 740 706 007</span>
-        <span><i class="fas fa-envelope"></i> twarvis@studenthub.com</span>
+        <a href="https://wa.me/255740706007" target="_blank" rel="noopener" class="whatsapp-link" aria-label="Chat on WhatsApp">
+            <i class="fab fa-whatsapp"></i> WhatsApp
+        </a>
+        <span><i class="fas fa-envelope"></i> Twarvistech@gmail.com</span>
         <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
     </div>
 </div>
@@ -353,8 +477,7 @@ footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;position:relat
 <nav class="mainnav">
     <div class="mainnav-inner">
         <a href="/" class="logo">
-            <img src="/apple-touch-icon.png" alt="Student Hub" class="logo-img">
-            <span class="logo-text">Student<span>Hub</span></span>
+            <img src="logo.png" alt="Student Hub" class="logo-full-img">
         </a>
 
         <div class="menu">
@@ -377,11 +500,18 @@ footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;position:relat
     </div>
 </nav>
 
-<!-- HERO -->
+<!-- HERO WITH ROTATING BOOK BACKGROUNDS & TYPING EFFECT -->
 <section class="browse-hero">
+    <div class="hero-bg-container">
+        <div class="hero-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1600&q=80');"></div>
+        <div class="hero-bg-img" style="background-image: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1600&q=80');"></div>
+        <div class="hero-bg-img" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1600&q=80');"></div>
+        <div class="hero-bg-img" style="background-image: url('https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1600&q=80');"></div>
+    </div>
+
     <div class="browse-hero-inner">
         <span class="browse-label">All Notes &amp; Papers</span>
-        <h1>Browse <span class="accent">Study</span> Materials</h1>
+        <h1 id="typing-heading"></h1>
         <p>Search notes, past papers, and study documents shared by students from universities across Tanzania.</p>
 
         <div class="search-bar">
@@ -401,90 +531,102 @@ footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;position:relat
     </div>
 </div>
 
-<!-- LIST -->
+<!-- BROWSE LIST WITH ROTATING BACKGROUND -->
 <div class="browse-container">
-    <div class="doc-list" id="docList">
-        {% if notes %}
-            {% for note in notes %}
-                <div class="doc-card"
-                     data-search="{{ note.module|default:''|lower }} {{ note.course|default:''|lower }} {{ note.description|default:''|lower }} {{ note.university|default:''|lower }} {{ note.file_type|default:''|lower }}"
-                     data-file-type="{{ note.file_type }}"
-                     data-privacy="{{ note.privacy }}">
+    <!-- Rotating Background Images: Buildings, Books, Pen, Cars, Old Schools, Old Classes -->
+    <div class="list-bg-container">
+        <div class="list-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=80');"></div> <!-- Buildings -->
+        <div class="list-bg-img" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1600&q=80');"></div> <!-- Books -->
+        <div class="list-bg-img" style="background-image: url('https://images.unsplash.com/photo-1585336261022-680e295ce3fe?w=1600&q=80');"></div> <!-- Pen -->
+        <div class="list-bg-img" style="background-image: url('https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1600&q=80');"></div> <!-- Cars -->
+        <div class="list-bg-img" style="background-image: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1600&q=80');"></div> <!-- Old Schools -->
+        <div class="list-bg-img" style="background-image: url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=1600&q=80');"></div> <!-- Old Classes -->
+    </div>
 
-                    <div class="doc-img">
-                        {% if note.file_type == 'pastpaper' %}
-                            <div class="doc-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80');"></div>
-                            <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=800&q=80');"></div>
-                            <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1550399105-c4db5fb85c18?w=800&q=80');"></div>
-                        {% else %}
-                            <div class="doc-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&q=80');"></div>
-                            <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80');"></div>
-                            <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&q=80');"></div>
-                        {% endif %}
+    <div class="browse-content-wrapper">
+        <div class="doc-list" id="docList">
+            {% if notes %}
+                {% for note in notes %}
+                    <div class="doc-card"
+                         data-search="{{ note.module|default:''|lower }} {{ note.course|default:''|lower }} {{ note.description|default:''|lower }} {{ note.university|default:''|lower }} {{ note.file_type|default:''|lower }}"
+                         data-file-type="{{ note.file_type }}"
+                         data-privacy="{{ note.privacy }}">
 
-                        <span class="doc-img-badge">
-                            <i class="fas fa-{% if note.file_type == 'pastpaper' %}file-alt{% else %}sticky-note{% endif %}"></i>
-                            {{ note.file_type|default:"notes"|title }}
-                        </span>
-
-                        {% if note.privacy == 'private' %}
-                            <span class="doc-privacy-badge private"><i class="fas fa-lock"></i> Private</span>
-                        {% else %}
-                            <span class="doc-privacy-badge public"><i class="fas fa-globe"></i> Public</span>
-                        {% endif %}
-
-                        <div class="doc-img-dots">
-                            <span class="active"></span><span></span><span></span>
-                        </div>
-                    </div>
-
-                    <div class="doc-body">
-                        <div class="doc-module">
-                            {% if note.privacy == 'private' %}
-                                <i class="fas fa-lock lock-icon"></i>
+                        <div class="doc-img">
+                            {% if note.file_type == 'pastpaper' %}
+                                <div class="doc-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80');"></div>
+                                <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=800&q=80');"></div>
+                                <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1550399105-c4db5fb85c18?w=800&q=80');"></div>
+                            {% else %}
+                                <div class="doc-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&q=80');"></div>
+                                <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80');"></div>
+                                <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&q=80');"></div>
                             {% endif %}
-                            {{ note.module|default:"Untitled" }}
+
+                            <span class="doc-img-badge">
+                                <i class="fas fa-{% if note.file_type == 'pastpaper' %}file-alt{% else %}sticky-note{% endif %}"></i>
+                                {{ note.file_type|default:"notes"|title }}
+                            </span>
+
+                            {% if note.privacy == 'private' %}
+                                <span class="doc-privacy-badge private"><i class="fas fa-lock"></i> Private</span>
+                            {% else %}
+                                <span class="doc-privacy-badge public"><i class="fas fa-globe"></i> Public</span>
+                            {% endif %}
+
+                            <div class="doc-img-dots">
+                                <span class="active"></span><span></span><span></span>
+                            </div>
                         </div>
 
-                        <div class="doc-meta">
-                            <span class="course"><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
-                            <span><i class="fas fa-university"></i> {{ note.university|default:"Not specified" }}</span>
-                        </div>
-
-                        {% if note.description %}
-                            <div class="doc-description">{{ note.description|truncatechars:140 }}</div>
-                        {% endif %}
-
-                        <div class="doc-footer">
-                            <div class="doc-info">
-                                <span><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
-                                <span><i class="fas fa-file"></i> {{ note.file_size|default:0|filesizeformat }}</span>
+                        <div class="doc-body">
+                            <div class="doc-module">
+                                {% if note.privacy == 'private' %}
+                                    <i class="fas fa-lock lock-icon"></i>
+                                {% endif %}
+                                {{ note.module|default:"Untitled" }}
                             </div>
 
-                            <div class="doc-actions">
-                                {% if note.can_view_inline %}
-                                    <a href="/view/{{ note.id }}/" class="btn-view">
-                                        <i class="fas fa-eye"></i> View
+                            <div class="doc-meta">
+                                <span class="course"><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
+                                <span><i class="fas fa-university"></i> {{ note.university|default:"Not specified" }}</span>
+                            </div>
+
+                            {% if note.description %}
+                                <div class="doc-description">{{ note.description|truncatechars:140 }}</div>
+                            {% endif %}
+
+                            <div class="doc-footer">
+                                <div class="doc-info">
+                                    <span><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
+                                    <span><i class="fas fa-file"></i> {{ note.file_size|default:0|filesizeformat }}</span>
+                                </div>
+
+                                <div class="doc-actions">
+                                    {% if note.can_view_inline %}
+                                        <a href="/view/{{ note.id }}/" class="btn-view">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+                                    {% endif %}
+                                    <a href="/download/{{ note.id }}/" class="btn-download" download>
+                                        <i class="fas fa-download"></i> Download
                                     </a>
-                                {% endif %}
-                                <a href="/download/{{ note.id }}/" class="btn-download" download>
-                                    <i class="fas fa-download"></i> Download
-                                </a>
+                                </div>
                             </div>
                         </div>
                     </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon"><i class="fas fa-book-open"></i></div>
+                    <h3>No files yet</h3>
+                    <p>Be the first to share your study materials with fellow students.</p>
+                    <a href="/upload/" class="empty-btn">
+                        <i class="fas fa-cloud-upload-alt"></i> Upload Now
+                    </a>
                 </div>
-            {% endfor %}
-        {% else %}
-            <div class="empty-state">
-                <div class="empty-icon"><i class="fas fa-book-open"></i></div>
-                <h3>No files yet</h3>
-                <p>Be the first to share your study materials with fellow students.</p>
-                <a href="/upload/" class="empty-btn">
-                    <i class="fas fa-cloud-upload-alt"></i> Upload Now
-                </a>
-            </div>
-        {% endif %}
+            {% endif %}
+        </div>
     </div>
 </div>
 
@@ -505,8 +647,7 @@ footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;position:relat
         <div class="footer-top">
             <div class="footer-brand">
                 <a href="/" class="logo">
-                    <img src="/apple-touch-icon.png" alt="Student Hub" class="logo-img">
-                    <span class="logo-text">Student<span>Hub</span></span>
+                    <img src="logo.png" alt="Student Hub" class="logo-full-img">
                 </a>
                 <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
             </div>
@@ -545,7 +686,88 @@ footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;position:relat
 </footer>
 
 <script>
+// ═══════════════════════════════════════════════════════════
+// ROTATING HERO BOOK BACKGROUNDS
+// ═══════════════════════════════════════════════════════════
+(function(){
+    const bgs = document.querySelectorAll('.hero-bg-img');
+    if(bgs.length === 0) return;
+    let current = 0;
+    const INTERVAL = 4000;
+
+    setInterval(() => {
+        bgs.forEach(b => b.classList.remove('active'));
+        current = (current + 1) % bgs.length;
+        bgs[current].classList.add('active');
+    }, INTERVAL);
+})();
+
+// ═══════════════════════════════════════════════════════════
+// ROTATING LIST BACKGROUNDS (Buildings, Books, Pen, Cars, Old Schools, Old Classes)
+// ═══════════════════════════════════════════════════════════
+(function(){
+    const bgs = document.querySelectorAll('.list-bg-img');
+    if(bgs.length === 0) return;
+    let current = 0;
+    const INTERVAL = 5000;
+
+    setInterval(() => {
+        bgs.forEach(b => b.classList.remove('active'));
+        current = (current + 1) % bgs.length;
+        bgs[current].classList.add('active');
+    }, INTERVAL);
+})();
+
+// ═══════════════════════════════════════════════════════════
+// INFINITE TYPING EFFECT (Types, pauses, deletes, repeats)
+// ═══════════════════════════════════════════════════════════
+(function(){
+    const element = document.getElementById('typing-heading');
+    if (!element) return;
+
+    const fullText = "Browse Study Materials";
+
+    let charIndex = 0;
+    let isDeleting = false;
+    let typingSpeed = 80;
+    let deletingSpeed = 40;
+    let pauseBeforeDelete = 2500;
+    let pauseBeforeType = 600;
+
+    function updateText() {
+        let currentText = fullText.substring(0, charIndex);
+
+        if (currentText.includes("Study")) {
+            currentText = currentText.replace("Study", "<span class='accent'>Study</span>");
+        }
+
+        element.innerHTML = currentText + '<span class="typing-cursor"></span>';
+
+        if (!isDeleting) {
+            if (charIndex < fullText.length) {
+                charIndex++;
+                setTimeout(updateText, typingSpeed);
+            } else {
+                isDeleting = true;
+                setTimeout(updateText, pauseBeforeDelete);
+            }
+        } else {
+            if (charIndex > 0) {
+                charIndex--;
+                setTimeout(updateText, deletingSpeed);
+            } else {
+                isDeleting = false;
+                setTimeout(updateText, pauseBeforeType);
+            }
+        }
+    }
+
+    setTimeout(updateText, 500);
+})();
+
+// ═══════════════════════════════════════════════════════════
 // CARD IMAGE ROTATION
+// ═══════════════════════════════════════════════════════════
 (function(){
     const cards=document.querySelectorAll('.doc-card');
     cards.forEach((card,cardIdx)=>{
@@ -564,7 +786,9 @@ footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;position:relat
     });
 })();
 
+// ═══════════════════════════════════════════════════════════
 // LIVE SEARCH
+// ═══════════════════════════════════════════════════════════
 function filterDocs(){
     const q=(document.getElementById('searchInput').value||'').trim().toLowerCase();
     const cards=document.querySelectorAll('.doc-card');
