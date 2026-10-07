@@ -61,7 +61,7 @@ img{max-width:100%;height:auto;display:block}
     display:flex;
     align-items:center;
     gap:0px;
-    flex-wrap:nowrap; /* Forces one line */
+    flex-wrap:nowrap;
     justify-content:center;
     flex:1;
     min-width:0;
@@ -128,13 +128,13 @@ img{max-width:100%;height:auto;display:block}
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(28, 25, 23, 0.75);
+    background: rgba(28, 25, 23, 0.5);
     z-index: 1;
 }
 
 .browse-hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:2;color:#fff}
 .browse-label{color:#fdba8c;font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px;display:block}
-.browse-hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;line-height:1.15;letter-spacing:-.025em;margin-bottom:14px;color:#fff;min-height: 2.2em;}
+.browse-hero h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;line-height:1.15;letter-spacing:-.025em;margin-bottom:14px;color:#fff;min-height: 2.2em;text-shadow: 0 2px 8px rgba(0,0,0,0.8);}
 .browse-hero h1 .accent{
     color: #fdba8c;
     text-decoration:underline;
@@ -142,7 +142,7 @@ img{max-width:100%;height:auto;display:block}
     text-underline-offset:6px;
     text-decoration-thickness:4px;
 }
-.browse-hero p{color:#d6d3d1;font-size:clamp(.92rem,1.4vw,1.05rem);max-width:560px;margin:0 auto 28px;line-height:1.7}
+.browse-hero p{color:#e7e5e4;font-size:clamp(.92rem,1.4vw,1.05rem);max-width:560px;margin:0 auto 28px;line-height:1.7;text-shadow: 0 2px 6px rgba(0,0,0,0.7);}
 
 /* Typing Cursor */
 .typing-cursor {
@@ -206,7 +206,8 @@ img{max-width:100%;height:auto;display:block}
 .stats-inner strong{color:var(--ink);font-weight:800}
 
 /* ═══════════════════════════════════════════════════════════
-   BROWSE LIST WITH ROTATING BACKGROUND (Buildings, Books, Pen, Cars, Old Schools, Old Classes)
+   BROWSE LIST WITH ROTATING SKYSCRAPER BACKGROUND
+   AND TRANSPARENT GLASSY CARDS
    ═══════════════════════════════════════════════════════════ */
 .browse-container{
     position: relative;
@@ -236,12 +237,12 @@ img{max-width:100%;height:auto;display:block}
     opacity: 1;
 }
 
-/* Dark Overlay for the list section */
+/* Lighter overlay for the section */
 .browse-container::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(28, 25, 23, 0.85);
+    background: rgba(28, 25, 23, 0.4);
     z-index: 1;
 }
 
@@ -255,26 +256,32 @@ img{max-width:100%;height:auto;display:block}
 
 .doc-list{display:flex;flex-direction:column;gap:16px}
 
+/* ═══════════════════════════════════════════════════════════
+   TRANSPARENT GLASSY CARDS WITH BOLD HIGH-CONTRAST TEXT
+   ═══════════════════════════════════════════════════════════ */
 .doc-card{
     display:grid;
     grid-template-columns:260px 1fr;
-    background:var(--surface);
-    border:1px solid var(--border);
+    background: rgba(255, 255, 255, 0.12); /* Very transparent white */
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius:var(--radius-lg);
     overflow:hidden;
     transition:all .25s ease;
-    box-shadow:var(--shadow-sm);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 .doc-card:hover{
-    border-color:#fed7c3;
-    box-shadow:var(--shadow-md);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
     transform:translateY(-3px);
+    background: rgba(255, 255, 255, 0.18);
 }
 
 .doc-img{position:relative;min-height:200px;overflow:hidden;background:var(--alt)}
 .doc-img-bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.2s ease-in-out}
 .doc-img-bg.active{opacity:1}
-.doc-img::after{content:'';position:absolute;inset:0;background:rgba(28,25,23,.35);z-index:1;pointer-events:none}
+.doc-img::after{content:'';position:absolute;inset:0;background:rgba(28,25,23,.15);z-index:1;pointer-events:none}
 
 .doc-img-badge{
     position:absolute;top:14px;left:14px;
@@ -303,50 +310,86 @@ img{max-width:100%;height:auto;display:block}
 .doc-img-dots span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5);transition:all .3s ease}
 .doc-img-dots span.active{background:#fff;width:16px;border-radius:3px}
 
-.doc-body{padding:22px 24px;display:flex;flex-direction:column;gap:10px;min-width:0}
-.doc-module{font-size:1.1rem;font-weight:800;color:var(--ink);letter-spacing:-.01em;line-height:1.3;word-break:break-word}
-.doc-module .lock-icon{color:#b45309;font-size:.85rem;margin-right:6px}
+/* ═══════════ BODY TEXT — BOLD & HIGH CONTRAST ═══════════ */
+.doc-body{padding:22px 24px;display:flex;flex-direction:column;gap:10px;min-width:0; color: #fff;}
 
-.doc-meta{display:flex;flex-wrap:wrap;gap:14px;font-size:.82rem;color:var(--text-2);font-weight:600}
+.doc-module{
+    font-size:1.15rem;
+    font-weight:900; /* Very bold */
+    color:#ffffff;
+    letter-spacing:-.01em;
+    line-height:1.3;
+    word-break:break-word;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+}
+.doc-module .lock-icon{color:#fbbf24;font-size:.9rem;margin-right:6px;text-shadow: 0 1px 4px rgba(0,0,0,0.5);}
+
+.doc-meta{display:flex;flex-wrap:wrap;gap:14px;font-size:.85rem;font-weight:700;color:#f5f5f4; text-shadow: 0 1px 3px rgba(0,0,0,0.5);}
 .doc-meta span{display:inline-flex;align-items:center;gap:5px}
-.doc-meta span i{color:var(--accent);font-size:.78rem}
-.doc-meta .course{color:#b45309}
-.doc-meta .course i{color:#b45309}
+.doc-meta span i{color:#fdba8c;font-size:.8rem;text-shadow: none;}
+.doc-meta .course{color:#fcd34d;font-weight:800;}
+.doc-meta .course i{color:#fcd34d;}
 
-.doc-description{color:var(--text-2);font-size:.88rem;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:2px}
+.doc-description{
+    color:#e7e5e4;
+    font-size:.9rem;
+    font-weight:600;
+    line-height:1.6;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+    margin-top:2px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
 
-.doc-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:auto;padding-top:12px;border-top:1px solid var(--border)}
-.doc-info{display:flex;gap:14px;font-size:.75rem;color:var(--text-3);font-weight:600}
+.doc-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:auto;
+    padding-top:12px;
+    border-top:1px solid rgba(255,255,255,0.2);
+}
+
+.doc-info{display:flex;gap:14px;font-size:.78rem;color:#d6d3d1;font-weight:700; text-shadow: 0 1px 3px rgba(0,0,0,0.5);}
 .doc-info span{display:inline-flex;align-items:center;gap:4px}
-.doc-info i{font-size:.72rem;color:var(--text-3)}
+.doc-info i{font-size:.72rem;color:#a8a29e;}
 
 .doc-actions{display:flex;gap:8px}
 .btn-view{
     padding:9px 16px;
-    background:var(--accent-dim);
-    color:var(--accent);
-    border:1px solid #fed7c3;
+    background:rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color:#fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius:var(--radius-sm);
-    font-size:.75rem;font-weight:700;
+    font-size:.75rem;font-weight:800;
     display:inline-flex;align-items:center;gap:6px;
     cursor:pointer;transition:all .25s;font-family:inherit;
 }
-.btn-view:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-view:hover{
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.6);
+}
 .btn-download{
     padding:9px 16px;
     background:var(--accent);
     color:#fff;
     border:none;
     border-radius:var(--radius-sm);
-    font-size:.75rem;font-weight:700;
+    font-size:.75rem;font-weight:800;
     display:inline-flex;align-items:center;gap:6px;
     cursor:pointer;transition:all .25s;font-family:inherit;
-    box-shadow:var(--shadow-cta);
+    box-shadow:0 4px 14px rgba(194,65,12,.4);
 }
-.btn-download:hover{background:#9a3412;transform:translateY(-1px);box-shadow:0 10px 24px -8px rgba(194,65,12,.5)}
+.btn-download:hover{background:#9a3412;transform:translateY(-1px);box-shadow:0 8px 22px rgba(194,65,12,.5)}
 
 /* EMPTY */
-.empty-state{text-align:center;padding:80px 20px;color:#fff;}
+.empty-state{text-align:center;padding:80px 20px;color:#fff;background: rgba(0,0,0,0.3); border-radius: var(--radius-lg); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1);}
 .empty-icon{font-size:3.5rem;color:#a8a29e;margin-bottom:16px}
 .empty-state h3{font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:8px}
 .empty-state p{color:#d6d3d1;font-size:.92rem;margin-bottom:20px}
@@ -438,8 +481,8 @@ footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;position:relat
     .browse-hero p{font-size:.88rem}
     .browse-container{padding:24px 14px 50px}
     .doc-body{padding:18px 18px}
-    .doc-module{font-size:1rem}
-    .doc-description{font-size:.82rem}
+    .doc-module{font-size:1.05rem}
+    .doc-description{font-size:.85rem}
     .search-bar input{padding:13px 12px;font-size:.88rem}
     .search-bar button{padding:13px 18px;font-size:.78rem}
     .search-bar i{padding:0 3px 0 16px}
@@ -531,16 +574,20 @@ footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;position:relat
     </div>
 </div>
 
-<!-- BROWSE LIST WITH ROTATING BACKGROUND -->
+<!-- BROWSE LIST WITH ROTATING SKYSCRAPER BACKGROUND & TRANSPARENT CARDS -->
 <div class="browse-container">
-    <!-- Rotating Background Images: Buildings, Books, Pen, Cars, Old Schools, Old Classes -->
+    <!-- 10 Rotating Sky Scraper Images -->
     <div class="list-bg-container">
-        <div class="list-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=80');"></div> <!-- Buildings -->
-        <div class="list-bg-img" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1600&q=80');"></div> <!-- Books -->
-        <div class="list-bg-img" style="background-image: url('https://images.unsplash.com/photo-1585336261022-680e295ce3fe?w=1600&q=80');"></div> <!-- Pen -->
-        <div class="list-bg-img" style="background-image: url('https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1600&q=80');"></div> <!-- Cars -->
-        <div class="list-bg-img" style="background-image: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1600&q=80');"></div> <!-- Old Schools -->
-        <div class="list-bg-img" style="background-image: url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=1600&q=80');"></div> <!-- Old Classes -->
+        <div class="list-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=80');"></div>
+        <div class="list-bg-img" style="background-image: url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1600&q=80');"></div>
+        <div class="list-bg-img" style="background-image: url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1600&q=80');"></div>
+        <div class="list-bg-img" style="background-image: url('https://images.unsplash.com/photo-1514565131-fce0801e5785?w=1600&q=80');"></div>
+        <div class="list-bg-img" style="background-image: url('https://images.unsplash.com/photo-1496564203457-11bb12075d90?w=1600&q=80');"></div>
+        <div class="list-bg-img" style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1600&q=80');"></div>
+        <div class="list-bg-img" style="background-image: url('https://images.unsplash.com/photo-1465447142348-e9952c393450?w=1600&q=80');"></div>
+        <div class="list-bg-img" style="background-image: url('https://images.unsplash.com/photo-1444723121867-7a241cacace9?w=1600&q=80');"></div>
+        <div class="list-bg-img" style="background-image: url('https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1600&q=80');"></div>
+        <div class="list-bg-img" style="background-image: url('https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1600&q=80');"></div>
     </div>
 
     <div class="browse-content-wrapper">
@@ -703,7 +750,7 @@ footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;position:relat
 })();
 
 // ═══════════════════════════════════════════════════════════
-// ROTATING LIST BACKGROUNDS (Buildings, Books, Pen, Cars, Old Schools, Old Classes)
+// ROTATING LIST BACKGROUNDS (10 Sky Scrapers)
 // ═══════════════════════════════════════════════════════════
 (function(){
     const bgs = document.querySelectorAll('.list-bg-img');
@@ -719,7 +766,7 @@ footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;position:relat
 })();
 
 // ═══════════════════════════════════════════════════════════
-// INFINITE TYPING EFFECT (Types, pauses, deletes, repeats)
+// INFINITE TYPING EFFECT
 // ═══════════════════════════════════════════════════════════
 (function(){
     const element = document.getElementById('typing-heading');
