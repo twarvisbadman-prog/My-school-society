@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Upload Notes | Student Hub</title>
-<link rel="icon" type="image/png" href="logo.png">
-<link rel="apple-touch-icon" href="logo.png">
-<!-- Preload the first background image for instant display -->
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
 <link rel="preload" as="image" href="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=1600&q=70">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -45,15 +44,12 @@ ul{list-style:none}
 button,input,select,textarea{font-family:inherit}
 img{max-width:100%;height:auto;display:block}
 
-/* ═══════════════════════════════════════════════════════════
-   SPACE BACKGROUND FOR WHOLE PAGE
-   (First image is lightweight for instant load)
-   ═══════════════════════════════════════════════════════════ */
+/* SPACE BACKGROUND */
 .space-bg-container {
     position: fixed;
     inset: 0;
     z-index: -2;
-    background: #0a0a1a; /* Solid fallback dark color */
+    background: #0a0a1a;
 }
 .space-bg-img {
     position: absolute;
@@ -66,8 +62,6 @@ img{max-width:100%;height:auto;display:block}
     will-change: opacity;
 }
 .space-bg-img.active { opacity: 1; }
-
-/* Dark overlay for readability */
 .space-overlay {
     position: fixed;
     inset: 0;
@@ -84,35 +78,41 @@ img{max-width:100%;height:auto;display:block}
 .topbar-inner a.whatsapp-link:hover{color:#128C7E;transform:scale(1.05)}
 .topbar-inner a.whatsapp-link i{font-size:1rem}
 
-/* NAV */
-.mainnav{background:rgba(250,250,249,.15);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.15);position:sticky;top:0;z-index:100;width:100%}
+/* NAV — SOLID WHITE (NOT TRANSPARENT) */
+.mainnav{
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom:1px solid var(--border);
+    position:sticky;
+    top:0;
+    z-index:100;
+    width:100%;
+}
 .mainnav-inner{max-width:1300px;margin:0 auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:16px}
 .logo{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
 .logo-full-img { height: 42px; width: auto; display: block; max-width: 200px; object-fit: contain; }
 
 .menu{display:flex;align-items:center;gap:0px;flex-wrap:nowrap;justify-content:center;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;}
 .menu::-webkit-scrollbar{display:none}
-.menu a{padding:6px 8px;font-size:.75rem;font-weight:700;color:#e7e5e4;border-radius:6px;white-space:nowrap;transition:all .25s ease;text-shadow: 0 1px 3px rgba(0,0,0,.6);}
-.menu a:hover{color:#fff;background:rgba(255,255,255,.15)}
-.menu a.active{color:#fdba8c;background:rgba(234,88,12,.25);font-weight:800}
-.menu a.course-link{color:#fdba8c}
+.menu a{padding:6px 8px;font-size:.75rem;font-weight:600;color:var(--text-2);border-radius:6px;white-space:nowrap;transition:all .25s ease}
+.menu a:hover{color:var(--ink);background:var(--alt)}
+.menu a.active{color:var(--accent);background:var(--accent-dim);font-weight:800}
+.menu a.course-link{color:var(--accent)}
 .menu a.course-link i{font-size:.7rem;margin-right:4px}
-.menu a.hack-link{color:#f9a8d4}
+.menu a.hack-link{color:var(--accent-pink)}
 .menu a.hack-link i{font-size:.7rem;margin-right:4px}
 
 .nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .btn-quote{
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background:#c2410c;
     color:#fff;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding:9px 18px;border-radius:999px;font-weight:800;font-size:.78rem;
+    padding:9px 18px;border-radius:999px;font-weight:700;font-size:.78rem;
     display:inline-flex;align-items:center;gap:6px;transition:all .25s ease;
     white-space:nowrap;cursor:pointer;flex-shrink:0;
-    text-shadow: 0 1px 3px rgba(0,0,0,.5);
+    box-shadow: var(--shadow-cta);
 }
-.btn-quote:hover{background: rgba(255, 255, 255, 0.3);border-color: rgba(255, 255, 255, 0.6);transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,0,0,.4)}
+.btn-quote:hover{background:#9a3412;transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(194,65,12,.5)}
 
 /* HERO */
 .upload-hero{
@@ -135,7 +135,6 @@ img{max-width:100%;height:auto;display:block}
 }
 .upload-hero p{color:#e7e5e4;font-size:clamp(.9rem,1.4vw,1.02rem);max-width:520px;margin:0 auto;line-height:1.7;text-shadow: 0 2px 6px rgba(0,0,0,.7);}
 
-/* Typing Cursor */
 .typing-cursor {
     display: inline-block;
     width: 3px;
@@ -150,9 +149,7 @@ img{max-width:100%;height:auto;display:block}
     50% { opacity: 0; }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   TRANSPARENT GLASSY UPLOAD CARD
-   ═══════════════════════════════════════════════════════════ */
+/* GLASSY UPLOAD CARD */
 .upload-container{max-width:760px;margin:-60px auto 60px;padding:0 20px;position:relative;z-index:2}
 .upload-card{
     background: rgba(255, 255, 255, 0.10);
@@ -165,7 +162,6 @@ img{max-width:100%;height:auto;display:block}
     color: #fff;
 }
 
-/* FORM — BOLD HIGH CONTRAST ON TRANSPARENT */
 .form-group{margin-bottom:22px}
 .form-label{display:block;font-weight:800;color:#ffffff;font-size:.9rem;margin-bottom:10px;letter-spacing:.01em;text-shadow: 0 1px 4px rgba(0,0,0,.6);}
 .form-label i{color:#fdba8c;margin-right:6px;font-size:.9rem;}
@@ -199,7 +195,6 @@ img{max-width:100%;height:auto;display:block}
 }
 .form-select option{background:#1c1917;color:#fff}
 
-/* RADIO */
 .radio-group{display:flex;gap:10px;flex-wrap:wrap}
 .radio-option{flex:1;min-width:120px;position:relative}
 .radio-option input[type="radio"]{position:absolute;opacity:0;width:100%;height:100%;cursor:pointer;z-index:2;margin:0}
@@ -224,7 +219,6 @@ img{max-width:100%;height:auto;display:block}
 }
 .radio-option input[type="radio"]:checked + label i{color:#fdba8c}
 
-/* DROP ZONE */
 .drop-zone{
     border:2px dashed rgba(255,255,255,.4);
     border-radius:var(--radius-md);
@@ -255,7 +249,6 @@ img{max-width:100%;height:auto;display:block}
 }
 .drop-zone .browse-btn:hover{background: rgba(255, 255, 255, 0.35);transform:translateY(-1px)}
 
-/* File list */
 .file-list{margin-top:12px}
 .file-item{
     display:flex;align-items:center;gap:12px;
@@ -280,7 +273,6 @@ img{max-width:100%;height:auto;display:block}
 .file-item .file-remove{background:none;border:none;color:#d6d3d1;font-size:1rem;cursor:pointer;padding:4px 8px;border-radius:6px;transition:.2s}
 .file-item .file-remove:hover{color:#fdba8c;background:rgba(255,255,255,.15)}
 
-/* PASSCODE */
 .passcode-section{
     display:none;
     background:rgba(254,243,199,.15);
@@ -313,7 +305,6 @@ img{max-width:100%;height:auto;display:block}
 .passcode-input input:focus{outline:none;border-color:#fcd34d;box-shadow:0 0 0 4px rgba(252,211,77,.2)}
 .passcode-input input::placeholder{letter-spacing:2px;font-size:.75rem;color:#a8a29e}
 
-/* SUBMIT */
 .btn-submit{
     width:100%;
     padding:16px;
@@ -348,7 +339,6 @@ img{max-width:100%;height:auto;display:block}
 .allowed-types i{color:#4ade80;margin-right:6px}
 .allowed-types span{color:#fff;font-weight:800}
 
-/* MESSAGES */
 .message{
     padding:14px 18px;
     border-radius:var(--radius-sm);
@@ -368,7 +358,6 @@ img{max-width:100%;height:auto;display:block}
 .message.error{background:rgba(239,68,68,.25);border-color:rgba(239,68,68,.5);color:#fca5a5}
 .message.error i{color:#fca5a5}
 
-/* POPUP */
 .success-overlay{
     display:none;
     position:fixed;inset:0;z-index:2000;
@@ -429,13 +418,11 @@ img{max-width:100%;height:auto;display:block}
 .custom-uni-input{display:none;margin-top:10px}
 .custom-uni-input.show{display:block}
 
-/* CTA */
 .cta{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1);padding:50px 20px;color:#fff;position:relative;z-index:5}
 .cta-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
 .cta h3{color:#fff;font-size:1.4rem;font-weight:900;margin-bottom:4px;text-shadow: 0 2px 6px rgba(0,0,0,.5);}
 .cta p{color:#d6d3d1;font-size:.92rem;font-weight:600;}
 
-/* FOOTER */
 footer{background:rgba(28,25,23,.9);backdrop-filter:blur(10px);padding:50px 20px 24px;color:#a8a29e;position:relative;z-index:5}
 .footer-inner{max-width:1200px;margin:0 auto}
 .footer-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:30px}
@@ -451,7 +438,6 @@ footer{background:rgba(28,25,23,.9);backdrop-filter:blur(10px);padding:50px 20px
 .footer-socials a{width:38px;height:38px;border:1px solid rgba(255,255,255,.1);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#a8a29e;font-size:.9rem;transition:all .25s ease;background:rgba(255,255,255,.05)}
 .footer-socials a:hover{background:#c2410c;color:#fff;border-color:transparent;transform:translateY(-2px);box-shadow:0 8px 20px -6px rgba(194,65,12,.5)}
 
-/* RESPONSIVE */
 @media (max-width:900px){.footer-top{grid-template-columns:1fr 1fr}}
 @media (max-width:720px){
     .mainnav-inner{flex-wrap:wrap;padding:12px 16px;gap:12px}
@@ -493,34 +479,19 @@ footer{background:rgba(28,25,23,.9);backdrop-filter:blur(10px);padding:50px 20px
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════════
-     SPACE BACKGROUND 
-     First image = lightweight starfield (loads instantly)
-     Then heavier space images follow
-     ═══════════════════════════════════════════════════════════ -->
 <div class="space-bg-container">
-    <!-- 1. Fast-loading lightweight starfield (active first) -->
     <div class="space-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=1600&q=70');"></div>
-    <!-- 2. Moon -->
     <div class="space-bg-img" style="background-image: url('https://images.unsplash.com/photo-1522030299830-16b8d3d049fe?w=1600&q=80');"></div>
-    <!-- 3. Stars & Galaxy -->
     <div class="space-bg-img" style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=1600&q=80');"></div>
-    <!-- 4. Nebula -->
     <div class="space-bg-img" style="background-image: url('https://images.unsplash.com/photo-1504333638930-c8787321eee0?w=1600&q=80');"></div>
-    <!-- 5. Planets -->
     <div class="space-bg-img" style="background-image: url('https://images.unsplash.com/photo-1614730341194-75c60740a658?w=1600&q=80');"></div>
-    <!-- 6. Sun -->
     <div class="space-bg-img" style="background-image: url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=1600&q=80');"></div>
-    <!-- 7. Spaceship -->
     <div class="space-bg-img" style="background-image: url('https://images.unsplash.com/photo-1516849841032-87cbac4d88f7?w=1600&q=80');"></div>
-    <!-- 8. Comet -->
     <div class="space-bg-img" style="background-image: url('https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=1600&q=80');"></div>
-    <!-- 9. Galaxy -->
     <div class="space-bg-img" style="background-image: url('https://images.unsplash.com/photo-1465101162946-4377e57745c3?w=1600&q=80');"></div>
 </div>
 <div class="space-overlay"></div>
 
-<!-- TOP BAR -->
 <div class="topbar">
     <div class="topbar-inner">
         <a href="https://wa.me/255740706007" target="_blank" rel="noopener" class="whatsapp-link" aria-label="Chat on WhatsApp">
@@ -531,11 +502,10 @@ footer{background:rgba(28,25,23,.9);backdrop-filter:blur(10px);padding:50px 20px
     </div>
 </div>
 
-<!-- NAV -->
 <nav class="mainnav">
     <div class="mainnav-inner">
         <a href="/" class="logo">
-            <img src="logo.png" alt="Student Hub" class="logo-full-img">
+            <img src="/logo.png" alt="Student Hub" class="logo-full-img">
         </a>
 
         <div class="menu">
@@ -558,7 +528,6 @@ footer{background:rgba(28,25,23,.9);backdrop-filter:blur(10px);padding:50px 20px
     </div>
 </nav>
 
-<!-- HERO -->
 <section class="upload-hero">
     <div class="upload-hero-inner">
         <span class="upload-label">Share with the community</span>
@@ -567,7 +536,6 @@ footer{background:rgba(28,25,23,.9);backdrop-filter:blur(10px);padding:50px 20px
     </div>
 </section>
 
-<!-- FORM -->
 <div class="upload-container">
     <div class="upload-card">
 
@@ -681,7 +649,6 @@ footer{background:rgba(28,25,23,.9);backdrop-filter:blur(10px);padding:50px 20px
     </div>
 </div>
 
-<!-- CTA -->
 <section class="cta">
     <div class="cta-inner">
         <div>
@@ -692,13 +659,12 @@ footer{background:rgba(28,25,23,.9);backdrop-filter:blur(10px);padding:50px 20px
     </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
     <div class="footer-inner">
         <div class="footer-top">
             <div class="footer-brand">
                 <a href="/" class="logo">
-                    <img src="logo.png" alt="Student Hub" class="logo-full-img">
+                    <img src="/logo.png" alt="Student Hub" class="logo-full-img">
                 </a>
                 <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
             </div>
@@ -736,7 +702,6 @@ footer{background:rgba(28,25,23,.9);backdrop-filter:blur(10px);padding:50px 20px
     </div>
 </footer>
 
-<!-- POPUP -->
 <div class="success-overlay" id="successOverlay">
     <div class="success-content" id="successContent">
         <div id="uploadingState">
@@ -759,10 +724,6 @@ footer{background:rgba(28,25,23,.9);backdrop-filter:blur(10px);padding:50px 20px
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════
-// ROTATING SPACE BACKGROUND (9 Images)
-// First image is lightweight → loads instantly
-// ═══════════════════════════════════════════════════════════
 (function(){
     const bgs = document.querySelectorAll('.space-bg-img');
     if(bgs.length === 0) return;
@@ -776,9 +737,6 @@ footer{background:rgba(28,25,23,.9);backdrop-filter:blur(10px);padding:50px 20px
     }, INTERVAL);
 })();
 
-// ═══════════════════════════════════════════════════════════
-// INFINITE TYPING EFFECT
-// ═══════════════════════════════════════════════════════════
 (function(){
     const element = document.getElementById('typing-heading');
     if (!element) return;
@@ -823,9 +781,6 @@ footer{background:rgba(28,25,23,.9);backdrop-filter:blur(10px);padding:50px 20px
     setTimeout(updateText, 500);
 })();
 
-// ═══════════════════════════════════════════════════════════
-// PRIVACY TOGGLE
-// ═══════════════════════════════════════════════════════════
 var privacyRadios=document.querySelectorAll('input[name="privacy"]');
 var passcodeSection=document.getElementById('passcodeSection');
 var passcodeInput=document.querySelector('#passcodeSection input');
@@ -848,7 +803,6 @@ if(passcodeInput){
     });
 }
 
-// UNIVERSITY OTHER
 var uniSelect=document.querySelector('#id_university');
 var customUniInput=document.getElementById('customUniInput');
 var customUniText=document.querySelector('#customUniInput input');
@@ -865,7 +819,6 @@ if(uniSelect){
     });
 }
 
-// DRAG & DROP
 var dropZone=document.getElementById('dropZone');
 var fileInput=document.querySelector('#id_file');
 var fileList=document.getElementById('fileList');
@@ -935,7 +888,6 @@ if(dropZone&&fileInput){
     }
 }
 
-// MESSAGES
 function showMessage(text,type){
     var container=document.getElementById('messageContainer');
     var msg=document.createElement('div');
@@ -946,7 +898,6 @@ function showMessage(text,type){
     setTimeout(function(){msg.remove()},5000);
 }
 
-// SUBMIT
 var form=document.getElementById('uploadForm');
 var submitBtn=document.getElementById('submitBtn');
 var successOverlay=document.getElementById('successOverlay');
