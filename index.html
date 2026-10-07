@@ -5,6 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Student Hub | Share Notes, Find Notes</title>
 <link rel="icon" type="image/png" href="/logo.png" />
+
+<!-- ═══════════════════════════════════════════════════════════
+     PRELOAD FIRST IMAGE OF EVERY ROTATING BACKGROUND
+     This removes latency — first image appears instantly
+     ═══════════════════════════════════════════════════════════ -->
+
+<!-- Hero Top video poster -->
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&q=60" />
+
+<!-- What We Do — first engineering background -->
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&q=60" />
+<!-- What We Do — first slide (books) -->
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1200&q=60" />
+
+<!-- Stack section — first forest background -->
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=1200&q=60" />
+<!-- Stack card 1 — first book image -->
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&q=60" />
+
+<!-- Explore — first AI background -->
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=60" />
+
+<!-- Tools — first engineering tools background -->
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1504148455328-c376907d081c?w=1200&q=60" />
+
+<!-- CTA — first old papers background -->
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1524578271613-d550eacf6090?w=1200&q=60" />
+
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
@@ -90,7 +118,7 @@ img{max-width:100%;height:auto;display:block}
 .btn-quote:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
 
 /* HERO */
-.hero-top{position:relative;padding:100px 20px 80px;text-align:center;overflow:hidden;min-height: 80vh;display: flex;align-items: center; justify-content: center;}
+.hero-top{position:relative;padding:100px 20px 80px;text-align:center;overflow:hidden;min-height: 80vh;display: flex; align-items: center; justify-content: center;}
 .hero-top video {position: absolute;top: 50%;left: 50%;min-width: 100%;min-height: 100%;width: auto;height: auto;transform: translate(-50%, -50%);object-fit: cover;z-index: 0;}
 .hero-top::before {content: '';position: absolute;inset: 0;background: rgba(28, 25, 23, 0.75);z-index: 1;}
 .hero-top-inner{max-width:900px;margin:0 auto;position:relative;z-index:2;color:#fff}
@@ -128,13 +156,41 @@ img{max-width:100%;height:auto;display:block}
 .hero-top-stat-num{font-size:clamp(24px,2.8vw,32px);font-weight:900;letter-spacing:-.04em;color:#fdba8c;line-height:1}
 .hero-top-stat-label{font-size:13px;color:#a8a29e;font-weight:600;letter-spacing:.02em}
 
-/* HERO SLIDER */
-.hero-slider-section{padding:60px 20px;background:var(--bg)}
-.hero-slider-section-inner{max-width:1200px;margin:0 auto}
+/* HERO SLIDER SECTION */
+.hero-slider-section{
+    position: relative;
+    padding:60px 20px;
+    overflow: hidden;
+    background: #0a0a0a;
+}
+.hero-section-bg-container {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+.hero-section-bg-img {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+}
+.hero-section-bg-img.active { opacity: 1; }
+.hero-slider-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(28, 25, 23, 0.55);
+    z-index: 1;
+}
+
+.hero-slider-section-inner{max-width:1200px;margin:0 auto;position:relative;z-index:2}
 .hero-slider-head{text-align:center;margin-bottom:36px}
-.hero-slider-label{color:var(--accent);font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px;display:block}
-.hero-slider-head h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:900;color:var(--ink);letter-spacing:-.025em;line-height:1.2}
-.hero-slider-head h2 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-slider-label{color:#fdba8c;font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px;display:block;text-shadow: 0 2px 6px rgba(0,0,0,.9);}
+.hero-slider-head h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:900;color:#fff;letter-spacing:-.025em;line-height:1.2;text-shadow: 0 2px 10px rgba(0,0,0,.9);}
+.hero-slider-head h2 em{font-style:normal;color:#fdba8c;}
 
 .hero-stack{position:relative;height:560px;overflow:hidden;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:pan-y;perspective:1600px;perspective-origin:center center;}
 .hero-stack:active{cursor:grabbing}
@@ -343,25 +399,16 @@ img{max-width:100%;height:auto;display:block}
 .tool strong{display:block;color:#fff;font-size:.92rem;font-weight:800;margin-bottom:2px;letter-spacing:-.01em;text-shadow: 0 2px 6px rgba(0,0,0,.8);}
 .tool small{color:#e7e5e4;font-size:.78rem;font-weight:600;text-shadow: 0 1px 4px rgba(0,0,0,.8);}
 
-/* CTA — OLD PAPERS / OLD BOOKS BACKGROUND */
+/* CTA */
 .cta-section{padding:40px 20px 80px;background:var(--bg)}
 .cta{
-    max-width:1000px;
-    margin:0 auto;
-    border-radius:36px;
-    padding:80px 40px;
-    text-align:center;
-    color:#fff;
-    position:relative;
-    overflow:hidden;
-    background: #1c1917;
-    min-height: 420px;
+    max-width:1000px; margin:0 auto;
+    border-radius:36px; padding:80px 40px;
+    text-align:center; color:#fff;
+    position:relative; overflow:hidden;
+    background: #1c1917; min-height: 420px;
 }
-.cta-bg-container {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-}
+.cta-bg-container { position: absolute; inset: 0; z-index: 0; }
 .cta-bg-img {
     position: absolute; inset: 0;
     background-size: cover; background-position: center; background-repeat: no-repeat;
@@ -369,12 +416,9 @@ img{max-width:100%;height:auto;display:block}
 }
 .cta-bg-img.active { opacity: 1; }
 .cta::before{
-    content:'';
-    position:absolute;
-    inset:0;
+    content:''; position:absolute; inset:0;
     background:rgba(28,25,23,.55);
-    z-index:1;
-    pointer-events:none;
+    z-index:1; pointer-events:none;
 }
 .cta-inner{position:relative;z-index:2;max-width:600px;margin:0 auto}
 .cta-kicker{font-size:1rem;font-weight:600;color:#fdba8c;margin-bottom:16px;display:inline-block;text-shadow: 0 2px 6px rgba(0,0,0,.9);}
@@ -508,7 +552,7 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
 </head>
 <body>
 
-<!-- TOP BAR WITH WHATSAPP ICON -->
+<!-- TOP BAR -->
 <div class="topbar">
     <div class="topbar-inner">
         <a href="https://wa.me/255740706007" target="_blank" rel="noopener" class="whatsapp-link" aria-label="Chat on WhatsApp">
@@ -548,7 +592,7 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
 
 <!-- HERO TOP -->
 <section class="hero-top">
-    <video autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&q=80">
+    <video autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&q=60">
         <source src="https://cdn.coverr.co/videos/coverr-a-student-studying-in-a-library-1571/1080p.mp4" type="video/mp4">
     </video>
 
@@ -581,8 +625,19 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
     </div>
 </section>
 
-<!-- HERO SLIDER — BACKGROUNDS: ENGINEERS AT SITES, BUILDINGS, MINING, OCEANS -->
+<!-- WHAT WE DO -->
 <section class="hero-slider-section">
+    <div class="hero-section-bg-container">
+        <div class="hero-section-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&q=60');"></div>
+        <div class="hero-section-bg-img" style="background-image: url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1200&q=60');"></div>
+        <div class="hero-section-bg-img" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&q=60');"></div>
+        <div class="hero-section-bg-img" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af4607?w=1200&q=60');"></div>
+        <div class="hero-section-bg-img" style="background-image: url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200&q=60');"></div>
+        <div class="hero-section-bg-img" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=60');"></div>
+        <div class="hero-section-bg-img" style="background-image: url('https://images.unsplash.com/photo-1567095761054-7a02e69e5c43?w=1200&q=60');"></div>
+        <div class="hero-section-bg-img" style="background-image: url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&q=60');"></div>
+    </div>
+
     <div class="hero-slider-section-inner">
         <div class="hero-slider-head">
             <span class="hero-slider-label">What we do</span>
@@ -592,9 +647,9 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
         <div class="hero-stack" id="heroSlider">
 
             <div class="slide s1 active">
-                <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1600&q=80');"></div>
-                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1600&q=80');"></div>
-                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=1600&q=80');"></div>
+                <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1200&q=60');"></div>
+                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=1200&q=60');"></div>
+                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1200&q=60');"></div>
                 <div class="slide-overlay"></div>
                 <a href="/browse/" class="slide-btn">
                     <div class="slide-inner">
@@ -606,9 +661,9 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
             </div>
 
             <div class="slide s2">
-                <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=80');"></div>
-                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1600&q=80');"></div>
-                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1600&q=80');"></div>
+                <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=1200&q=60');"></div>
+                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&q=60');"></div>
+                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&q=60');"></div>
                 <div class="slide-overlay"></div>
                 <a href="/upload/" class="slide-btn">
                     <div class="slide-inner">
@@ -620,9 +675,9 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
             </div>
 
             <div class="slide s3">
-                <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af4607?w=1600&q=80');"></div>
-                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1567095761054-7a02e69e5c43?w=1600&q=80');"></div>
-                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1581092918484-8313d3d9d0c0?w=1600&q=80');"></div>
+                <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1200&q=60');"></div>
+                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&q=60');"></div>
+                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?w=1200&q=60');"></div>
                 <div class="slide-overlay"></div>
                 <a href="/calculator/" class="slide-btn">
                     <div class="slide-inner">
@@ -634,9 +689,9 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
             </div>
 
             <div class="slide s4">
-                <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1600&q=80');"></div>
-                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&q=80');"></div>
-                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1439405326854-014607f694d7?w=1600&q=80');"></div>
+                <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1200&q=60');"></div>
+                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=1200&q=60');"></div>
+                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1568224275-4b4bf2d55f8f?w=1200&q=60');"></div>
                 <div class="slide-overlay"></div>
                 <a href="/scanner/" class="slide-btn">
                     <div class="slide-inner">
@@ -648,9 +703,9 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
             </div>
 
             <div class="slide s5">
-                <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=1600&q=80');"></div>
-                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1600&q=80');"></div>
-                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1600&q=80');"></div>
+                <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1200&q=60');"></div>
+                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&q=60');"></div>
+                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1543269865-cbf427effbad?w=1200&q=60');"></div>
                 <div class="slide-overlay"></div>
                 <a href="/free_course/" class="slide-btn">
                     <div class="slide-inner">
@@ -662,9 +717,9 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
             </div>
 
             <div class="slide s6">
-                <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1600&q=80');"></div>
-                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?w=1600&q=80');"></div>
-                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1600&q=80');"></div>
+                <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=60');"></div>
+                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&q=60');"></div>
+                <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&q=60');"></div>
                 <div class="slide-overlay"></div>
                 <a href="/autoquiz/" class="slide-btn">
                     <div class="slide-inner">
@@ -692,15 +747,15 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
 <!-- STACKED CARDS -->
 <section class="stack-section">
     <div class="stack-bg-container">
-        <div class="stack-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=1600&q=80');"></div>
-        <div class="stack-bg-img" style="background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600&q=80');"></div>
-        <div class="stack-bg-img" style="background-image: url('https://images.unsplash.com/photo-1448375240586-882707db888b?w=1600&q=80');"></div>
-        <div class="stack-bg-img" style="background-image: url('https://images.unsplash.com/photo-1589553416260-f586c8f1514f?w=1600&q=80');"></div>
-        <div class="stack-bg-img" style="background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1600&q=80');"></div>
-        <div class="stack-bg-img" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&q=80');"></div>
-        <div class="stack-bg-img" style="background-image: url('https://images.unsplash.com/photo-1517420704952-d9f39e95b43e?w=1600&q=80');"></div>
-        <div class="stack-bg-img" style="background-image: url('https://images.unsplash.com/photo-1552790854-4bb8ed1bb8f7?w=1600&q=80');"></div>
-        <div class="stack-bg-img" style="background-image: url('https://images.unsplash.com/photo-1524721696987-b9527df9e512?w=1600&q=80');"></div>
+        <div class="stack-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=1200&q=60');"></div>
+        <div class="stack-bg-img" style="background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&q=60');"></div>
+        <div class="stack-bg-img" style="background-image: url('https://images.unsplash.com/photo-1448375240586-882707db888b?w=1200&q=60');"></div>
+        <div class="stack-bg-img" style="background-image: url('https://images.unsplash.com/photo-1589553416260-f586c8f1514f?w=1200&q=60');"></div>
+        <div class="stack-bg-img" style="background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=60');"></div>
+        <div class="stack-bg-img" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=60');"></div>
+        <div class="stack-bg-img" style="background-image: url('https://images.unsplash.com/photo-1517420704952-d9f39e95b43e?w=1200&q=60');"></div>
+        <div class="stack-bg-img" style="background-image: url('https://images.unsplash.com/photo-1552790854-4bb8ed1bb8f7?w=1200&q=60');"></div>
+        <div class="stack-bg-img" style="background-image: url('https://images.unsplash.com/photo-1524721696987-b9527df9e512?w=1200&q=60');"></div>
     </div>
 
     <div class="stack-inner">
@@ -712,9 +767,9 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
         <div class="stack-item">
             <div class="stack-card">
                 <div class="stack-img">
-                    <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1000&q=80');"></div>
-                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1000&q=80');"></div>
-                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1000&q=80');"></div>
+                    <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&q=60');"></div>
+                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=600&q=60');"></div>
+                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&q=60');"></div>
                     <span class="stack-img-number">01</span>
                 </div>
                 <div class="stack-content">
@@ -729,9 +784,9 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
         <div class="stack-item">
             <div class="stack-card">
                 <div class="stack-img">
-                    <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=1000&q=80');"></div>
-                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1000&q=80');"></div>
-                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1000&q=80');"></div>
+                    <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=600&q=60');"></div>
+                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=600&q=60');"></div>
+                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&q=60');"></div>
                     <span class="stack-img-number">02</span>
                 </div>
                 <div class="stack-content">
@@ -746,9 +801,9 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
         <div class="stack-item">
             <div class="stack-card">
                 <div class="stack-img">
-                    <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1000&q=80');"></div>
-                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=1000&q=80');"></div>
-                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1568224275-4b4bf2d55f8f?w=1000&q=80');"></div>
+                    <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&q=60');"></div>
+                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=600&q=60');"></div>
+                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1568224275-4b4bf2d55f8f?w=600&q=60');"></div>
                     <span class="stack-img-number">03</span>
                 </div>
                 <div class="stack-content">
@@ -763,9 +818,9 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
         <div class="stack-item">
             <div class="stack-card">
                 <div class="stack-img">
-                    <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1000&q=80');"></div>
-                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1543269865-cbf427effbad?w=1000&q=80');"></div>
-                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1000&q=80');"></div>
+                    <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&q=60');"></div>
+                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1543269865-cbf427effbad?w=600&q=60');"></div>
+                    <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=60');"></div>
                     <span class="stack-img-number">04</span>
                 </div>
                 <div class="stack-content">
@@ -782,12 +837,12 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
 <!-- EXPLORE -->
 <section class="explore">
     <div class="explore-bg-container">
-        <div class="explore-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1600&q=80');"></div>
-        <div class="explore-bg-img" style="background-image: url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1600&q=80');"></div>
-        <div class="explore-bg-img" style="background-image: url('https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=1600&q=80');"></div>
-        <div class="explore-bg-img" style="background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1600&q=80');"></div>
-        <div class="explore-bg-img" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1600&q=80');"></div>
-        <div class="explore-bg-img" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af4607?w=1600&q=80');"></div>
+        <div class="explore-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=60');"></div>
+        <div class="explore-bg-img" style="background-image: url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&q=60');"></div>
+        <div class="explore-bg-img" style="background-image: url('https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=1200&q=60');"></div>
+        <div class="explore-bg-img" style="background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&q=60');"></div>
+        <div class="explore-bg-img" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&q=60');"></div>
+        <div class="explore-bg-img" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af4607?w=1200&q=60');"></div>
     </div>
 
     <div class="explore-inner">
@@ -834,13 +889,13 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
 <!-- TOOLS -->
 <section class="tools">
     <div class="tools-bg-container">
-        <div class="tools-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1504148455328-c376907d081c?w=1600&q=80');"></div>
-        <div class="tools-bg-img" style="background-image: url('https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=1600&q=80');"></div>
-        <div class="tools-bg-img" style="background-image: url('https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1600&q=80');"></div>
-        <div class="tools-bg-img" style="background-image: url('https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?w=1600&q=80');"></div>
-        <div class="tools-bg-img" style="background-image: url('https://images.unsplash.com/photo-1567789884554-0b844b597180?w=1600&q=80');"></div>
-        <div class="tools-bg-img" style="background-image: url('https://images.unsplash.com/photo-1516216628859-9bccecab13ca?w=1600&q=80');"></div>
-        <div class="tools-bg-img" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af4607?w=1600&q=80');"></div>
+        <div class="tools-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1504148455328-c376907d081c?w=1200&q=60');"></div>
+        <div class="tools-bg-img" style="background-image: url('https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=1200&q=60');"></div>
+        <div class="tools-bg-img" style="background-image: url('https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1200&q=60');"></div>
+        <div class="tools-bg-img" style="background-image: url('https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?w=1200&q=60');"></div>
+        <div class="tools-bg-img" style="background-image: url('https://images.unsplash.com/photo-1567789884554-0b844b597180?w=1200&q=60');"></div>
+        <div class="tools-bg-img" style="background-image: url('https://images.unsplash.com/photo-1516216628859-9bccecab13ca?w=1200&q=60');"></div>
+        <div class="tools-bg-img" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af4607?w=1200&q=60');"></div>
     </div>
 
     <div class="tools-inner">
@@ -870,16 +925,16 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
     </div>
 </section>
 
-<!-- CTA — OLD PAPERS / OLD BOOKS / TEXTBOOKS BACKGROUND -->
+<!-- CTA -->
 <section class="cta-section">
     <div class="cta">
         <div class="cta-bg-container">
-            <div class="cta-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1524578271613-d550eacf6090?w=1600&q=80');"></div>
-            <div class="cta-bg-img" style="background-image: url('https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1600&q=80');"></div>
-            <div class="cta-bg-img" style="background-image: url('https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1600&q=80');"></div>
-            <div class="cta-bg-img" style="background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1600&q=80');"></div>
-            <div class="cta-bg-img" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1600&q=80');"></div>
-            <div class="cta-bg-img" style="background-image: url('https://images.unsplash.com/photo-1550399105-c4db5fb85c18?w=1600&q=80');"></div>
+            <div class="cta-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1524578271613-d550eacf6090?w=1200&q=60');"></div>
+            <div class="cta-bg-img" style="background-image: url('https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=60');"></div>
+            <div class="cta-bg-img" style="background-image: url('https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1200&q=60');"></div>
+            <div class="cta-bg-img" style="background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1200&q=60');"></div>
+            <div class="cta-bg-img" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1200&q=60');"></div>
+            <div class="cta-bg-img" style="background-image: url('https://images.unsplash.com/photo-1550399105-c4db5fb85c18?w=1200&q=60');"></div>
         </div>
 
         <div class="cta-inner">
@@ -1072,7 +1127,19 @@ window.addEventListener('load', function() {
     if (window.innerWidth > 800) updateStack();
 })();
 
-// STACK BACKGROUND ROTATION
+// ROTATE HERO SECTION BACKGROUND
+(function(){
+    const bgs = document.querySelectorAll('.hero-section-bg-img');
+    if(bgs.length === 0) return;
+    let idx = 0;
+    setInterval(() => {
+        bgs.forEach(b => b.classList.remove('active'));
+        idx = (idx + 1) % bgs.length;
+        bgs[idx].classList.add('active');
+    }, 4500);
+})();
+
+// ROTATE STACK BACKGROUND
 (function(){
     const bgs = document.querySelectorAll('.stack-bg-img');
     if(bgs.length === 0) return;
@@ -1084,7 +1151,7 @@ window.addEventListener('load', function() {
     }, 5500);
 })();
 
-// EXPLORE BACKGROUND ROTATION
+// ROTATE EXPLORE BACKGROUND
 (function(){
     const bgs = document.querySelectorAll('.explore-bg-img');
     if(bgs.length === 0) return;
@@ -1096,7 +1163,7 @@ window.addEventListener('load', function() {
     }, 5000);
 })();
 
-// TOOLS BACKGROUND ROTATION
+// ROTATE TOOLS BACKGROUND
 (function(){
     const bgs = document.querySelectorAll('.tools-bg-img');
     if(bgs.length === 0) return;
@@ -1108,7 +1175,7 @@ window.addEventListener('load', function() {
     }, 5000);
 })();
 
-// CTA BACKGROUND ROTATION
+// ROTATE CTA BACKGROUND
 (function(){
     const bgs = document.querySelectorAll('.cta-bg-img');
     if(bgs.length === 0) return;
