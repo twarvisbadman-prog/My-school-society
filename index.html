@@ -53,20 +53,65 @@ img{max-width:100%;height:auto;display:block}
 /* NAV */
 .mainnav{background:rgba(250,250,249,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;width:100%}
 .mainnav-inner{max-width:1200px;margin:0 auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:20px}
-.logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.3rem;color:var(--ink);letter-spacing:-.02em;flex-shrink:0}
-.logo-img{width:46px;height:46px;border-radius:12px;object-fit:cover;flex-shrink:0;box-shadow:0 6px 16px -6px rgba(219,39,119,.4);display:block;background:#fff}
-.logo-text span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.logo{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
+/* NEW FULL LOGO STYLES */
+.logo-full-img {
+    height: 48px; 
+    width: auto; 
+    display: block;
+    max-width: 220px; 
+    object-fit: contain;
+}
 
-.menu{display:flex;align-items:center;gap:2px;flex-wrap:wrap;justify-content:center;flex:1;min-width:0}
-.menu a{padding:8px 11px;font-size:.84rem;font-weight:600;color:var(--text-2);border-radius:8px;white-space:nowrap;transition:all .25s ease}
+/* ═══════════════════════════════════════════════════════════
+   UPDATED MENU STYLES FOR ONE LINE
+   ═══════════════════════════════════════════════════════════ */
+.menu{
+    display:flex;
+    align-items:center;
+    gap:0px; 
+    flex-wrap:nowrap; /* Forces them to stay on one line */
+    justify-content:center;
+    flex:1;
+    min-width:0;
+    overflow-x:auto; 
+    scrollbar-width:none; 
+}
+.menu::-webkit-scrollbar{display:none} 
+
+.menu a{
+    padding:6px 8px; /* Reduced padding to save space */
+    font-size:.78rem; /* Reduced font size to save space */
+    font-weight:600;
+    color:var(--text-2);
+    border-radius:6px;
+    white-space:nowrap;
+    transition:all .25s ease;
+}
 .menu a:hover{color:var(--ink);background:var(--alt)}
 .menu a.active{color:var(--accent);background:var(--accent-dim);font-weight:700}
 .menu a.course-link{color:var(--accent)}
 .menu a.course-link i{font-size:.75rem;margin-right:5px}
 .menu a.hack-link{color:var(--accent-pink)}
 .menu a.hack-link i{font-size:.75rem;margin-right:5px}
+
 .nav-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
-.btn-quote{background:var(--grad-cta);color:#fff;padding:11px 22px;border-radius:999px;font-weight:700;font-size:.85rem;display:inline-flex;align-items:center;gap:8px;transition:all .25s ease;white-space:nowrap;box-shadow:var(--shadow-cta)}
+/* UPDATED BUTTON STYLES FOR ONE LINE */
+.btn-quote{
+    background:var(--grad-cta);
+    color:#fff;
+    padding:9px 16px; /* Smaller padding */
+    border-radius:999px;
+    font-weight:700;
+    font-size:.8rem; /* Smaller font */
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    transition:all .25s ease;
+    white-space:nowrap;
+    box-shadow:var(--shadow-cta);
+    flex-shrink:0; /* Prevents the button from being squished */
+}
 .btn-quote:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
 
 /* ═══════════════════════════════════════════════════════════
@@ -357,10 +402,27 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
 @media (max-width:720px){
     .mainnav-inner{flex-wrap:wrap;padding:12px 16px;gap:12px}
     .logo{font-size:1.05rem;gap:10px}
-    .logo-img{width:40px;height:40px;border-radius:11px}
-    .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0;margin:0 -16px;padding-left:16px;padding-right:16px}
-    .menu::-webkit-scrollbar{display:none}
-    .menu a{padding:8px 12px;font-size:.8rem;flex-shrink:0}
+    .logo-full-img{height:38px} 
+    
+    /* Mobile menu: keeps one line, allows swipe scroll */
+    .menu{
+        order:3;
+        flex-basis:100%;
+        justify-content:flex-start;
+        overflow-x:auto;
+        padding-bottom:4px;
+        scrollbar-width:none;
+        gap:0;
+        margin:0 -16px;
+        padding-left:16px;
+        padding-right:16px;
+        flex-wrap:nowrap; 
+    }
+    .menu a{
+        padding:6px 10px; 
+        font-size:.75rem;
+        flex-shrink:0;
+    }
     .nav-cta{padding:9px 16px;font-size:.78rem}
 
     .hero-top{padding:60px 18px 40px}
@@ -431,8 +493,7 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
     .footer-socials a{width:36px;height:36px}
 }
 @media (max-width:400px){
-    .logo-text{font-size:.95rem}
-    .logo-img{width:36px;height:36px;border-radius:10px}
+    .logo-full-img{height:32px} 
     .topbar-inner span:nth-child(2){display:none}
     .hero-top h1{font-size:1.7rem}
     .hero-stack{height:420px}
@@ -459,11 +520,12 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
 <!-- NAV -->
 <nav class="mainnav">
     <div class="mainnav-inner">
+        <!-- FULL LOGO -->
         <a href="/" class="logo">
-            <img src="/apple-touch-icon.png" alt="Student Hub" class="logo-img">
-            <span class="logo-text">Student<span>Hub</span></span>
+            <img src="student-hub-logo.png" alt="Student Hub - Share notes. Learn together." class="logo-full-img">
         </a>
 
+        <!-- ONE LINE MENU -->
         <div class="menu">
             <a href="/" class="active">Home</a>
             <a href="/browse/">Browse</a>
@@ -760,9 +822,9 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
     <div class="footer-inner">
         <div class="footer-top">
             <div class="footer-brand">
+                <!-- FULL LOGO -->
                 <a href="/" class="logo">
-                    <img src="/apple-touch-icon.png" alt="Student Hub" class="logo-img">
-                    <span class="logo-text">Student<span>Hub</span></span>
+                    <img src="student-hub-logo.png" alt="Student Hub Logo" class="logo-full-img">
                 </a>
                 <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
             </div>
