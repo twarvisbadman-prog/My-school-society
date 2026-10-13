@@ -162,15 +162,11 @@ except Exception as e:
     r2_client = None
 
 # ============================================================
-# SESSION MIDDLEWARE — does NOT touch Supabase auth flow
+# SESSION MIDDLEWARE
 # ============================================================
 class SessionMiddleware(MiddlewareMixin):
-    """
-    Reads the Supabase access/refresh tokens from cookies (set during
-    login/signup) and attaches request.current_user.
-    Silently refreshes expired access tokens using the refresh token.
-    Never touches signup / email verification — that's handled in views.
-    """
+    """Attaches request.current_user + silently refreshes tokens."""
+
     def process_request(self, request):
         request.current_user = None
         request._refresh_cookies = None
@@ -224,14 +220,122 @@ class SessionMiddleware(MiddlewareMixin):
         try:
             p = supabase.table("users").select("*").eq("id", user.id).execute()
             profile_data = p.data[0] if p.data else None
+
+            # ═══════════════════════════════════════════════════════
+            # AUTO-CREATE OR FIX-UP PROFILE
+            # ═══════════════════════════════════════════════════════
+            if not profile_data:
+                # Row doesn't exist → create it
+                profile_data = SessionMiddleware._create_profile(user)
+                if profile_data:
+                    print(f"[session] ✅ Created profile for {user.email}")
+                    # Award first-day streak
+                    try:
+                        update_streak(user.id)
+                        # Re-fetch to include streak fields
+                        p2 = supabase.table("users").select("*").eq("id", user.id).execute()
+                        profile_data = p2.data[0] if p2.data else profile_data
+                    except Exception:
+                        pass
+            else:
+                # Row exists → check if username is missing and fix it
+                if not profile_data.get("username"):
+                    new_username = SessionMiddleware._generate_unique_username(
+                        user.email, user.id
+                    )
+                    try:
+                        supabase.table("users").update({
+                            "username": new_username
+                        }).eq("id", user.id).execute()
+                        profile_data["username"] = new_username
+                        print(f"[session] ✅ Fixed missing username for {user.email} → @{new_username}")
+                    except Exception as e:
+                        print(f"[session] ❌ Failed to fix username: {e}")
+
+                # Also fix missing avatar/full_name from Google
+                meta = getattr(user, "user_metadata", None) or {}
+                updates = {}
+                if not profile_data.get("full_name") and meta.get("name"):
+                    updates["full_name"] = meta.get("name")
+                if not profile_data.get("avatar_url"):
+                    pic = meta.get("avatar_url") or meta.get("picture")
+                    if pic:
+                        updates["avatar_url"] = pic
+                if updates:
+                    try:
+                        supabase.table("users").update(updates).eq("id", user.id).execute()
+                        profile_data.update(updates)
+                    except Exception as e:
+                        print(f"[session] ⚠️ Failed to update missing fields: {e}")
+
         except Exception as e:
-            print(f"[session] profile fetch failed: {e}")
+            print(f"[session] _build_user error: {e}")
+
         return {
             "id": user.id,
             "email": user.email,
             "profile": profile_data,
             "token": token,
         }
+
+    @staticmethod
+    def _generate_unique_username(email, user_id):
+        """Create a unique username from email."""
+        base = (email.split("@")[0] if email else "student").lower()
+        base = base.replace(".", "_").replace("-", "_")
+        base = re.sub(r'[^a-z0-9_]', '', base)[:20] or "student"
+        username = base
+        try:
+            check = supabase.table("users").select("id").eq("username", username).execute()
+            if check.data and check.data[0]["id"] != str(user_id):
+                username = f"{base}_{str(user_id)[:4]}"
+        except Exception:
+            pass
+        return username
+
+    @staticmethod
+    def _create_profile(user):
+        """Create a new row in public.users for the given auth user."""
+        try:
+            meta = getattr(user, "user_metadata", None) or {}
+            email = user.email or ""
+            full_name = (
+                meta.get("full_name")
+                or meta.get("name")
+                or meta.get("user_name")
+                or (email.split("@")[0] if email else "Student")
+            )
+            avatar_url = meta.get("avatar_url") or meta.get("picture") or ""
+            username = SessionMiddleware._generate_unique_username(email, user.id)
+
+            insert_payload = {
+                "id": user.id,
+                "email": email,
+                "full_name": full_name,
+                "username": username,
+                "points": 0,
+                "current_streak": 0,
+                "longest_streak": 0,
+                "uploads_count": 0,
+                "likes_received": 0,
+                "likes_given": 0,
+                "quizzes_taken": 0,
+                "quizzes_correct": 0,
+            }
+            if avatar_url:
+                insert_payload["avatar_url"] = avatar_url
+
+            supabase.table("users").insert(insert_payload).execute()
+            p = supabase.table("users").select("*").eq("id", user.id).execute()
+            return p.data[0] if p.data else None
+        except Exception as e:
+            print(f"[session] _create_profile error: {e}")
+            # Race condition: someone else inserted → just fetch
+            try:
+                p = supabase.table("users").select("*").eq("id", user.id).execute()
+                return p.data[0] if p.data else None
+            except Exception:
+                return None
 
 # ============================================================
 # CONSTANTS
@@ -756,29 +860,21 @@ def favicon_view(request):
     return HttpResponse(status=204)
 
 # ============================================================
-# AUTH VIEWS — SUPABASE HANDLES EMAIL/VERIFICATION
+# AUTH VIEWS
 # ============================================================
 def login_view(request):
     if request.method == "POST":
         email = request.POST.get("username", "").strip().lower() or request.POST.get("email", "").strip().lower()
         password = request.POST.get("password", "")
         try:
-            # Supabase handles the actual auth + session creation
             resp = supabase.auth.sign_in_with_password({"email": email, "password": password})
             user = resp.user
             session = resp.session
 
-            # Make sure a profile row exists in the `users` table
+            # Ensure profile exists with username
             existing = supabase.table("users").select("*").eq("id", user.id).execute()
             if not existing.data:
-                full_name = (user.user_metadata or {}).get("full_name", "") or user.email.split("@")[0]
-                auto_username = auto_username_from_email(user.email, user.id)
-                supabase.table("users").insert({
-                    "id": user.id,
-                    "email": user.email,
-                    "full_name": full_name,
-                    "username": auto_username,
-                }).execute()
+                SessionMiddleware._create_profile(user)
             else:
                 prof = existing.data[0]
                 if not prof.get("username"):
@@ -812,11 +908,6 @@ def login_view(request):
 
 
 def signup_view(request):
-    """
-    Supabase handles signup + sends verification email automatically.
-    We just pass the email/password/full_name to supabase.auth.sign_up().
-    The user gets an email from Supabase to verify their account.
-    """
     if request.method == "POST":
         email = request.POST.get("email", "").strip().lower()
         password = request.POST.get("password", "")
@@ -837,7 +928,6 @@ def signup_view(request):
             })
 
         try:
-            # Supabase sends the verification email here automatically
             supabase.auth.sign_up({
                 "email": email,
                 "password": password,
@@ -875,7 +965,6 @@ def logout_view(request):
 
 
 def oauth_callback(request):
-    """Google/GitHub OAuth — Supabase handles the token exchange in JS."""
     return render(request, "auth_callback.html", {
         "supabase_url": SUPABASE_URL,
         "supabase_anon": SUPABASE_KEY,
