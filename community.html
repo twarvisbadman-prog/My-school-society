@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Community | Student Hub</title>
+<link rel="icon" type="image/png" href="/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+  --bg:#fafaf9;
+  --surface:#fff;
+  --alt:#f5f5f4;
+  --border:#e7e5e4;
+  --border-strong:#d6d3d1;
+  --ink:#1c1917;
+  --text-2:#44403c;
+  --text-3:#57534e;
+  --accent:#c2410c;
+  --accent-bright:#ea580c;
+  --accent-pink:#db2777;
+  --accent-dim:#fff1e8;
+  --grad:linear-gradient(120deg,#ea580c,#db2777);
+  --grad-cta:linear-gradient(120deg,#c2410c,#be185d);
+  --grad-cta-hover:linear-gradient(120deg,#9a3412,#9d174d);
+  --cyan:#06b6d4;
+  --cyan-dim:#cffafe;
+  --gold:#b45309;
+  --gold-dim:#fef3c7;
+  --green:#15803d;
+  --green-dim:#dcfce7;
+  --radius-sm:10px;
+  --radius-md:14px;
+  --radius-lg:20px;
+  --radius-xl:28px;
+  --shadow-sm:0 1px 2px rgba(28,25,23,.06);
+  --shadow-md:0 10px 28px -12px rgba(28,25,23,.18);
+  --shadow-lg:0 28px 64px -20px rgba(28,25,23,.22);
+  --shadow-cta:0 8px 22px -8px rgba(219,39,119,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;overflow-x:hidden;width:100%;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;height:auto;display:block}
+
+/* TOPBAR */
+.topbar{background:var(--ink);color:#f5f5f4;font-size:.82rem;padding:9px 0}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;text-align:center}
+.topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:#a8a29e;white-space:nowrap}
+.topbar-inner span i{color:var(--accent-bright);font-size:.78rem}
+.topbar-inner a.whatsapp-link{display:inline-flex;align-items:center;gap:6px;color:#25D366;font-weight:600;transition:all .2s}
+.topbar-inner a.whatsapp-link:hover{color:#128C7E;transform:scale(1.05)}
+
+/* NAV */
+.mainnav{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;width:100%}
+.mainnav-inner{max-width:100%;margin:0 auto;padding:14px 30px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.logo{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
+.logo-full-img{height:56px;width:auto;display:block;max-width:260px;object-fit:contain}
+.menu{display:flex;align-items:center;gap:0;flex-wrap:nowrap;justify-content:center;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+.menu::-webkit-scrollbar{display:none}
+.menu a{padding:6px 8px;font-size:.75rem;font-weight:600;color:var(--text-2);border-radius:6px;white-space:nowrap;transition:all .25s ease}
+.menu a:hover{color:var(--ink);background:var(--alt)}
+.menu a.active{color:var(--accent);background:var(--accent-dim);font-weight:700}
+.menu a.course-link{color:var(--accent)}
+.menu a.hack-link{color:var(--accent-pink)}
+.menu a.community-link{color:var(--cyan)}
+.menu a i{font-size:.72rem;margin-right:4px}
+
+.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.btn-nav-login{background:transparent;color:var(--ink);padding:9px 16px;border-radius:999px;font-weight:700;font-size:.8rem;display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--border-strong);transition:all .25s ease;white-space:nowrap;text-decoration:none}
+.btn-nav-login:hover{background:var(--alt);color:var(--accent);border-color:var(--accent);transform:translateY(-1px)}
+.btn-nav-join{background:var(--grad-cta);color:#fff;padding:10px 18px;border-radius:999px;font-weight:800;font-size:.8rem;display:inline-flex;align-items:center;gap:6px;box-shadow:var(--shadow-cta);transition:all .25s ease;white-space:nowrap;text-decoration:none}
+.btn-nav-join:hover{background:var(--grad-cta-hover);transform:translateY(-2px)}
+
+.streak-pill{display:inline-flex;align-items:center;gap:6px;background:#fff7ed;color:#ea580c;border:1.5px solid #fed7aa;padding:8px 14px;border-radius:999px;font-weight:800;font-size:.78rem;text-decoration:none;transition:all .25s ease}
+.streak-pill:hover{background:#ffedd5;transform:translateY(-1px)}
+.user-profile-pill{display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 5px;background:var(--alt);border:1.5px solid var(--border);border-radius:999px;text-decoration:none;transition:all .25s ease;max-width:180px}
+.user-profile-pill:hover{border-color:var(--accent);background:#fff;transform:translateY(-1px)}
+.user-avatar{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+.user-avatar-fallback{width:32px;height:32px;border-radius:50%;background:var(--grad-cta);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0;border:2px solid #fff}
+.user-name{font-weight:800;font-size:.82rem;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100px}
+
+/* HERO */
+.hero{padding:70px 20px 50px;text-align:center;background:radial-gradient(circle at 20% 20%, rgba(6,182,212,.08) 0%, transparent 55%),radial-gradient(circle at 80% 70%, rgba(219,39,119,.08) 0%, transparent 55%),linear-gradient(180deg,#fafaf9 0%,#ecfeff 100%);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-100px;right:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(6,182,212,.15),transparent 70%);border-radius:50%;pointer-events:none}
+.hero-inner{max-width:800px;margin:0 auto;position:relative;z-index:1}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--cyan-dim);border:1px solid #a5f3fc;color:var(--cyan);font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:8px 18px;border-radius:50px;margin-bottom:20px}
+.hero-badge i{font-size:.75rem}
+.hero h1{font-size:clamp(2rem,4.5vw,3.2rem);font-weight:900;letter-spacing:-.03em;line-height:1.1;margin-bottom:14px}
+.hero h1 .accent{background:linear-gradient(120deg,#06b6d4,#0891b2);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--text-2);font-size:1.02rem;max-width:600px;margin:0 auto;line-height:1.7}
+
+/* SEARCH BAR */
+.search-wrap{max-width:1000px;margin:-25px auto 30px;padding:0 20px;position:relative;z-index:2}
+.search-bar{background:#fff;border:1px solid var(--border);border-radius:999px;padding:8px 8px 8px 24px;display:flex;align-items:center;box-shadow:var(--shadow-md);transition:border-color .2s}
+.search-bar:focus-within{border-color:var(--cyan)}
+.search-bar i{color:var(--text-3);font-size:1rem}
+.search-bar input{flex:1;border:none;outline:none;padding:12px 14px;font-family:inherit;font-size:.95rem;background:transparent;min-width:0}
+.search-bar input::placeholder{color:var(--text-3)}
+.search-bar button{padding:12px 24px;background:linear-gradient(120deg,#06b6d4,#0891b2);color:#fff;border:none;border-radius:999px;font-weight:700;font-size:.85rem;cursor:pointer;font-family:inherit;transition:all .2s;white-space:nowrap}
+.search-bar button:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(6,182,212,.35)}
+
+/* MAIN */
+.container{max-width:1000px;margin:0 auto;padding:0 20px 60px}
+
+.section-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+.section-head h2{font-size:1.2rem;font-weight:900;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.section-head h2 i{color:var(--cyan)}
+.section-head .count{background:var(--alt);padding:6px 14px;border-radius:30px;color:var(--text-3);font-size:.75rem;font-weight:700;border:1px solid var(--border)}
+
+/* USERS GRID */
+.users-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+
+.user-card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:22px 20px 20px;
+  display:flex;flex-direction:column;gap:14px;
+  transition:all .25s ease;
+  box-shadow:var(--shadow-sm);
+  position:relative;
+  overflow:hidden;
+}
+.user-card:hover{transform:translateY(-3px);border-color:#a5f3fc;box-shadow:var(--shadow-md)}
+.user-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--accent-pink));opacity:0;transition:opacity .3s}
+.user-card:hover::before{opacity:1}
+
+.user-card-header{display:flex;align-items:center;gap:12px}
+.user-card-avatar{
+  width:56px;height:56px;border-radius:50%;
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;color:#fff;font-size:1.3rem;
+  background:var(--grad-cta);overflow:hidden;
+  border:3px solid #fff;
+  box-shadow:0 4px 12px rgba(0,0,0,.1);
+}
+.user-card-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.user-card-info{flex:1;min-width:0}
+.user-card-name{font-weight:800;font-size:1rem;color:var(--ink);line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-card-username{color:var(--text-3);font-size:.78rem;font-family:'JetBrains Mono',monospace;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-card-univ{color:var(--text-3);font-size:.72rem;font-weight:600;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.user-card-stats{display:flex;gap:8px;flex-wrap:wrap}
+.stat-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--alt);border:1px solid var(--border);
+  padding:5px 10px;border-radius:20px;
+  font-size:.7rem;font-weight:700;color:var(--text-2);
+}
+.stat-chip i{font-size:.7rem}
+.stat-chip.points{color:var(--accent);border-color:#fed7c3;background:var(--accent-dim)}
+.stat-chip.points i{color:var(--accent)}
+.stat-chip.streak{color:#ea580c;border-color:#fed7aa;background:#fff7ed}
+.stat-chip.streak i{color:#ea580c}
+.stat-chip.uploads{color:var(--cyan);border-color:#a5f3fc;background:var(--cyan-dim)}
+.stat-chip.uploads i{color:var(--cyan)}
+
+.user-card-actions{display:flex;gap:8px;margin-top:auto}
+.btn-profile{
+  flex:1;
+  padding:10px 16px;
+  background:var(--alt);
+  color:var(--ink);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  font-weight:700;font-size:.82rem;
+  text-align:center;text-decoration:none;
+  transition:all .2s ease;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  cursor:pointer;
+  font-family:inherit;
+}
+.btn-profile:hover{background:#fff;border-color:var(--cyan);color:var(--cyan);transform:translateY(-1px)}
+
+.btn-follow{
+  flex:1;
+  padding:10px 16px;
+  background:linear-gradient(120deg,#06b6d4,#0891b2);
+  color:#fff;
+  border:none;
+  border-radius:var(--radius-sm);
+  font-weight:700;font-size:.82rem;
+  text-align:center;
+  transition:all .2s ease;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  cursor:pointer;
+  font-family:inherit;
+  box-shadow:0 4px 14px rgba(6,182,212,.35);
+}
+.btn-follow:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(6,182,212,.5)}
+.btn-follow.following{background:var(--alt);color:var(--text-2);border:1px solid var(--border);box-shadow:none}
+.btn-follow.following:hover{background:#fee2e2;color:#dc2626;border-color:#fca5a5}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:80px 20px;color:var(--text-3);grid-column:1/-1}
+.empty-state i{font-size:3.5rem;color:var(--border-strong);display:block;margin-bottom:16px}
+.empty-state h3{font-size:1.15rem;font-weight:800;color:var(--ink);margin-bottom:8px}
+.empty-state p{color:var(--text-2);font-size:.9rem;margin-bottom:20px}
+.empty-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--grad-cta);color:#fff;border-radius:999px;font-weight:800;font-size:.85rem;box-shadow:var(--shadow-cta);transition:all .25s;text-decoration:none}
+.empty-btn:hover{background:var(--grad-cta-hover);transform:translateY(-2px)}
+
+/* GUEST CTA */
+.guest-cta{background:linear-gradient(135deg,#ecfeff 0%,#fff1e8 100%);border:1px solid #a5f3fc;border-radius:var(--radius-xl);padding:32px 28px;text-align:center;margin-bottom:30px}
+.guest-cta h3{font-size:1.25rem;font-weight:900;margin-bottom:8px;color:var(--ink)}
+.guest-cta p{color:var(--text-2);font-size:.92rem;margin-bottom:20px}
+.guest-cta .btn-nav-join{padding:12px 26px;font-size:.88rem}
+
+/* FOOTER */
+footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-bottom{border-top:1px solid #292524;padding-top:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.footer-bottom p{color:#78716c;font-size:.83rem}
+.footer-socials{display:flex;gap:8px}
+.footer-socials a{width:38px;height:38px;border:1px solid #292524;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#a8a29e;font-size:.9rem;transition:all .25s ease;background:#1c1917}
+.footer-socials a:hover{background:var(--grad-cta);color:#fff;border-color:transparent;transform:translateY(-2px)}
+
+/* TOAST */
+.sh-toast{
+  position:fixed;bottom:24px;left:50%;
+  transform:translateX(-50%) translateY(120%);
+  background:#1c1917;color:#fff;
+  padding:14px 22px;border-radius:14px;
+  font-weight:700;font-size:.88rem;
+  box-shadow:0 20px 50px rgba(0,0,0,.5);
+  z-index:2000;display:flex;align-items:center;gap:10px;
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;max-width:90vw;
+}
+.sh-toast.show{transform:translateX(-50%) translateY(0);pointer-events:auto}
+.sh-toast i{color:#fdba8c;font-size:1rem}
+.sh-toast a{color:#fdba8c;text-decoration:underline;font-weight:800}
+
+/* RESPONSIVE */
+@media (max-width:720px){
+  .mainnav-inner{flex-wrap:wrap;padding:12px 16px;gap:12px}
+  .logo-full-img{height:46px}
+  .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0;margin:0 -16px;padding-left:16px;padding-right:16px}
+  .menu::-webkit-scrollbar{display:none}
+  .menu a{padding:6px 10px;font-size:.75rem;flex-shrink:0}
+  .user-name{display:none}
+  .user-profile-pill{padding:5px}
+  .hero{padding:50px 18px 40px}
+  .hero h1{font-size:1.8rem}
+  .users-grid{grid-template-columns:1fr}
+}
+@media (max-width:480px){
+  .topbar-inner{gap:12px;font-size:.72rem;padding:0 14px}
+  .topbar-inner span:nth-child(3){display:none}
+  .btn-nav-join span,.btn-nav-login span{display:none}
+  .footer-bottom{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body class="{% if is_authenticated %}logged-in{% endif %}">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="https://wa.me/255740706007" target="_blank" rel="noopener" class="whatsapp-link">
+      <i class="fab fa-whatsapp"></i> WhatsApp
+    </a>
+    <span><i class="fas fa-envelope"></i> Twarvisteh@gmail.com</span>
+    <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
+  </div>
+</div>
+
+<nav class="mainnav">
+  <div class="mainnav-inner">
+    <a href="/" class="logo">
+      <img src="/logo.png" alt="Student Hub" class="logo-full-img">
+    </a>
+    <div class="menu">
+      <a href="/">Home</a>
+      <a href="/browse/">Browse</a>
+      <a href="/upload/">Upload</a>
+      <a href="/quiz/" class="hack-link"><i class="fas fa-fire"></i>Daily Quiz 🔥</a>
+      <a href="/leaderboard/"><i class="fas fa-trophy" style="color:#eab308;margin-right:4px"></i>Leaderboard</a>
+      <a href="/community/" class="community-link active"><i class="fas fa-users"></i>Community</a>
+      <a href="/autoquiz/" class="hack-link"><i class="fas fa-brain"></i>AutoQuiz AI</a>
+      <a href="/free_course/" class="course-link"><i class="fas fa-book-open"></i>Free Courses</a>
+      <a href="/about/">About</a>
+    </div>
+    <div class="nav-right">
+      {% if is_authenticated %}
+        <a href="/quiz/" class="streak-pill" title="Daily Streak">
+          <span>🔥</span> {{ current_student.streak|default:0 }}
+        </a>
+        <a href="/profile/{{ current_student.username }}/" class="user-profile-pill">
+          {% if current_student.avatar_url %}
+            <img src="{{ current_student.avatar_url }}" class="user-avatar" alt="">
+          {% else %}
+            <span class="user-avatar-fallback">{{ current_student.initial|default:"S" }}</span>
+          {% endif %}
+          <span class="user-name">{{ current_student.username|default:"Me" }}</span>
+        </a>
+      {% else %}
+        <a href="/login/" class="btn-nav-login"><i class="fas fa-sign-in-alt"></i> <span>Log In</span></a>
+        <a href="/signup/" class="btn-nav-join"><i class="fas fa-sparkles"></i> <span>Join Free</span></a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <span class="hero-badge"><i class="fas fa-users"></i> Student Network</span>
+    <h1>Meet the <span class="accent">community</span>.</h1>
+    <p>Discover students across Tanzania's universities. Follow your classmates, see their streaks, points, and shared study materials.</p>
+  </div>
+</section>
+
+<div class="search-wrap">
+  <div class="search-bar">
+    <i class="fas fa-search"></i>
+    <input type="text" id="searchInput" placeholder="Search by name, username, or university…" autocomplete="off">
+    <button type="button" onclick="filterUsers()">Search</button>
+  </div>
+</div>
+
+<div class="container">
+
+  {% if not is_authenticated %}
+  <div class="guest-cta">
+    <h3>👋 Join the network</h3>
+    <p>Sign in to follow classmates, build your streak, and connect with other students.</p>
+    <a href="/signup/" class="btn-nav-join"><i class="fas fa-user-plus"></i> Create Free Account</a>
+  </div>
+  {% endif %}
+
+  <div class="section-head">
+    <h2><i class="fas fa-users"></i> All Students</h2>
+    <span class="count" id="userCount">{{ users|length }} student{{ users|length|pluralize }}</span>
+  </div>
+
+  <div class="users-grid" id="usersGrid">
+    {% if users %}
+      {% for u in users %}
+        <div class="user-card"
+             data-search="{{ u.full_name|default:''|lower }} {{ u.username|default:''|lower }} {{ u.university|default:''|lower }}">
+
+          <div class="user-card-header">
+            <div class="user-card-avatar">
+              {% if u.avatar_url %}
+                <img src="{{ u.avatar_url }}" alt="">
+              {% else %}
+                {{ u.full_name|default:u.username|default:"?"|slice:":1"|upper }}
+              {% endif %}
+            </div>
+            <div class="user-card-info">
+              <div class="user-card-name">{{ u.full_name|default:u.username|default:"Anonymous" }}</div>
+              {% if u.username %}
+                <div class="user-card-username">@{{ u.username }}</div>
+              {% endif %}
+              {% if u.university %}
+                <div class="user-card-univ"><i class="fas fa-university" style="font-size:.65rem;color:var(--cyan);margin-right:4px"></i>{{ u.university|truncatechars:32 }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="user-card-stats">
+            <span class="stat-chip points"><i class="fas fa-star"></i> {{ u.points|default:0 }} pts</span>
+            {% if u.current_streak %}
+              <span class="stat-chip streak"><i class="fas fa-fire"></i> {{ u.current_streak }}d</span>
+            {% endif %}
+            {% if u.uploads_count %}
+              <span class="stat-chip uploads"><i class="fas fa-upload"></i> {{ u.uploads_count }}</span>
+            {% endif %}
+          </div>
+
+          <div class="user-card-actions">
+            {% if u.username %}
+              <a href="/profile/{{ u.username }}/" class="btn-profile">
+                <i class="fas fa-user"></i> Profile
+              </a>
+            {% endif %}
+            {% if is_authenticated and current_student and u.id != current_student.id %}
+              <button class="btn-follow {% if u.is_following %}following{% endif %}"
+                      data-user-id="{{ u.id }}"
+                      onclick="toggleFollow(this)">
+                {% if u.is_following %}
+                  <i class="fas fa-check"></i> Following
+                {% else %}
+                  <i class="fas fa-plus"></i> Follow
+                {% endif %}
+              </button>
+            {% elif not is_authenticated %}
+              <a href="/login/?next=/community/" class="btn-follow">
+                <i class="fas fa-plus"></i> Follow
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <i class="fas fa-users"></i>
+        <h3>No students yet</h3>
+        <p>Be the first to join the Student Hub community!</p>
+        <a href="/signup/" class="empty-btn"><i class="fas fa-user-plus"></i> Join Now</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="sh-toast" id="shToast">
+  <i class="fas fa-info-circle"></i>
+  <span id="shToastMsg">Done</span>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-bottom">
+      <p>© 2026 Student Hub · Community</p>
+      <div class="footer-socials">
+        <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+        <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// TOAST
+(function(){
+  const toast = document.getElementById('shToast');
+  const msg = document.getElementById('shToastMsg');
+  let timer;
+  window.showToast = function(html, duration = 2500){
+    msg.innerHTML = html;
+    toast.classList.add('show');
+    clearTimeout(timer);
+    timer = setTimeout(() => toast.classList.remove('show'), duration);
+  };
+})();
+
+// SEARCH FILTER
+function filterUsers(){
+  const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+  const cards = document.querySelectorAll('.user-card');
+  let visible = 0;
+  cards.forEach(card => {
+    const data = (card.dataset.search || '').toLowerCase();
+    if (!q || data.indexOf(q) !== -1) {
+      card.style.display = '';
+      visible++;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+  const countEl = document.getElementById('userCount');
+  if (countEl) countEl.textContent = visible + ' student' + (visible === 1 ? '' : 's');
+}
+
+const searchInput = document.getElementById('searchInput');
+if (searchInput) {
+  let debounce;
+  searchInput.addEventListener('input', () => {
+    clearTimeout(debounce);
+    debounce = setTimeout(filterUsers, 150);
+  });
+  searchInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); filterUsers(); }
+  });
+}
+
+// FOLLOW TOGGLE
+async function toggleFollow(btn){
+  const userId = btn.dataset.userId;
+  if (!userId) return;
+
+  btn.disabled = true;
+  try {
+    let r = await fetch(`/api/follow/${userId}/`, {
+      method: 'POST',
+      headers: {'X-Requested-With': 'XMLHttpRequest'},
+      credentials: 'same-origin',
+    });
+
+    if (r.status === 401) {
+      await new Promise(res => setTimeout(res, 200));
+      r = await fetch(`/api/follow/${userId}/`, {
+        method: 'POST',
+        headers: {'X-Requested-With': 'XMLHttpRequest'},
+        credentials: 'same-origin',
+      });
+    }
+
+    if (r.status === 401) {
+      showToast('Please <a href="/login/?next=/community/">log in</a> to follow students.', 3000);
+      btn.disabled = false;
+      return;
+    }
+
+    const data = await r.json();
+    if (data.error) {
+      showToast(data.error);
+      btn.disabled = false;
+      return;
+    }
+
+    if (data.following) {
+      btn.classList.add('following');
+      btn.innerHTML = '<i class="fas fa-check"></i> Following';
+      showToast('✅ Now following!');
+    } else {
+      btn.classList.remove('following');
+      btn.innerHTML = '<i class="fas fa-plus"></i> Follow';
+      showToast('Unfollowed');
+    }
+  } catch (err) {
+    console.error(err);
+    showToast('Something went wrong.');
+  }
+  btn.disabled = false;
+}
+</script>
+
+</body>
+</html>
