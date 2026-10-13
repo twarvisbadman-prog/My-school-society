@@ -4,8 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Sign In | Student Hub</title>
-<link rel="icon" type="image/png" href="/apple-touch-icon.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -57,14 +57,12 @@ img{max-width:100%;height:auto;display:block}
 .btn-submit:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .divider{display:flex;align-items:center;gap:14px;margin:26px 0 22px;color:var(--text-3);font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
-.social-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
-.social-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);font-weight:700;font-size:.85rem;color:var(--ink);cursor:pointer;transition:all .25s ease;text-decoration:none;font-family:inherit}
-.social-btn i{font-size:1rem}
+.social-btn{width:100%;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);font-weight:700;font-size:.9rem;color:var(--ink);cursor:pointer;transition:all .25s ease;text-decoration:none;font-family:inherit}
+.social-btn i{font-size:1.1rem}
 .social-btn.google i{color:#ea4335}
-.social-btn.github i{color:#333}
-.social-btn:hover{background:var(--alt);border-color:var(--border-strong);transform:translateY(-1px)}
+.social-btn.google:hover{background:#fef2f2;border-color:#fca5a5;transform:translateY(-1px);box-shadow:0 8px 20px -8px rgba(234,67,53,.3)}
 .social-btn:disabled{opacity:.5;cursor:wait;transform:none}
-.signup-text{text-align:center;color:var(--text-2);font-size:.88rem;font-weight:500}
+.signup-text{text-align:center;color:var(--text-2);font-size:.88rem;font-weight:500;margin-top:22px}
 .signup-text a{color:var(--accent);font-weight:800}
 .signup-text a:hover{color:var(--accent-bright);text-decoration:underline}
 .error-box{padding:13px 16px;background:var(--danger-dim);border:1px solid #fca5a5;border-radius:var(--radius-sm);color:var(--danger);font-size:.85rem;font-weight:600;margin-bottom:20px;display:flex;align-items:center;gap:10px;animation:shake .4s ease}
@@ -78,7 +76,19 @@ img{max-width:100%;height:auto;display:block}
 .login-topbar-inner{max-width:1200px;margin:0 auto;padding:0 18px;display:flex;justify-content:center;align-items:center;gap:16px;flex-wrap:wrap;text-align:center}
 .login-topbar-inner span{display:inline-flex;align-items:center;gap:7px;color:#a8a29e;white-space:nowrap}
 .login-topbar-inner span i{color:var(--accent-bright);font-size:.72rem}
-@media (max-width:560px){body{padding:64px 14px 40px;align-items:flex-start}.login-topbar-inner span:nth-child(3){display:none}.login-card{padding:32px 22px;border-radius:var(--radius-lg)}.login-logo .logo-img{width:46px;height:46px;border-radius:12px}.login-logo{font-size:1.2rem;margin-bottom:24px}.login-card h1{font-size:1.4rem}.social-btns{grid-template-columns:1fr}}
+@media (max-width:560px){
+    body{padding:64px 14px 40px;align-items:flex-start}
+    .login-topbar-inner span:nth-child(3){display:none}
+    .login-card{padding:32px 22px;border-radius:var(--radius-lg)}
+    .login-logo .logo-img{width:46px;height:46px;border-radius:12px}
+    .login-logo{font-size:1.2rem;margin-bottom:24px}
+    .login-card h1{font-size:1.4rem}
+}
+@media (max-width:400px){
+    .login-topbar-inner span:nth-child(2){display:none}
+    .login-card{padding:28px 18px}
+    .login-card h1{font-size:1.25rem}
+}
 </style>
 </head>
 <body>
@@ -93,13 +103,13 @@ img{max-width:100%;height:auto;display:block}
 
 <div class="login-wrap">
     <a href="/" class="login-logo">
-        <img src="/apple-touch-icon.png" alt="Student Hub" class="logo-img">
+        <img src="/logo.png" alt="Student Hub" class="logo-img">
         <span class="login-logo-text">Student<span>Hub</span></span>
     </a>
 
     <div class="login-card">
         <h1>Welcome back</h1>
-        <p class="subtitle">Sign in to track streaks, earn points & climb the leaderboard</p>
+        <p class="subtitle">Sign in to track streaks, earn points &amp; climb the leaderboard</p>
 
         {% if error %}
         <div class="error-box"><i class="fas fa-exclamation-circle"></i><span>{{ error }}</span></div>
@@ -132,14 +142,9 @@ img{max-width:100%;height:auto;display:block}
 
         <div class="divider">or continue with</div>
 
-        <div class="social-btns">
-            <button type="button" class="social-btn google" onclick="oauthLogin('google')">
-                <i class="fab fa-google"></i> Google
-            </button>
-            <button type="button" class="social-btn github" onclick="oauthLogin('github')">
-                <i class="fab fa-github"></i> GitHub
-            </button>
-        </div>
+        <button type="button" class="social-btn google" onclick="oauthLogin('google')">
+            <i class="fab fa-google"></i> Continue with Google
+        </button>
 
         <p class="signup-text">Don't have an account? <a href="/signup/">Create one free</a></p>
     </div>
@@ -183,7 +188,6 @@ async function oauthLogin(provider) {
             },
         });
         if (error) throw error;
-        // Supabase will redirect automatically
     } catch (err) {
         console.error(err);
         alert('Sign-in failed: ' + (err.message || 'Unknown error'));
