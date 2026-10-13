@@ -1,4 +1,4 @@
-# app.py - FULL VERSION with Cloudflare R2 + Auth + Gamification
+# app.py - FINAL VERSION with R2 + Supabase Auth + Gamification + Password Reset
 import os
 import uuid
 import json
@@ -72,7 +72,7 @@ CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf.split(",") if o.strip()]
 # SANITY CHECK
 # ============================================================
 print("=" * 60)
-print("🚀 TWARVIS SCHOOL — R2 + Auth + Gamification")
+print("🚀 TWARVIS SCHOOL — Final Build (R2 + Auth + Gamification)")
 print("=" * 60)
 print(f"📡 Supabase URL:  {SUPABASE_URL[:50]}")
 print(f"🔑 Supabase Key:  {'✅ VALID JWT' if SUPABASE_KEY.startswith('eyJ') else '❌ INVALID'}")
@@ -969,40 +969,23 @@ def forgot_password_view(request):
         if not email:
             return render(request, "forgot_password.html", {
                 "error": "Please enter your email.",
-                "supabase_url": SUPABASE_URL,
-                "supabase_anon": SUPABASE_KEY,
             })
         try:
-            # Supabase sends the reset email automatically
             supabase.auth.reset_password_email(
                 email,
                 {"redirect_to": f"{request.scheme}://{request.get_host()}/reset-password/"}
             )
         except Exception as e:
             print(f"[forgot_password] {e}")
-            # Don't reveal whether the email exists — always show success
         return render(request, "forgot_password.html", {
             "message": "If that email is registered, we've sent a reset link. Check your inbox.",
-            "supabase_url": SUPABASE_URL,
-            "supabase_anon": SUPABASE_KEY,
         })
-    return render(request, "forgot_password.html", {
-        "supabase_url": SUPABASE_URL,
-        "supabase_anon": SUPABASE_KEY,
-    })
+    return render(request, "forgot_password.html")
 
 
 def reset_password_view(request):
-    """Handle the password reset token from Supabase.
-
-    Supabase sends users here with tokens in the URL hash.
-    The reset_password.html template exchanges them for a session
-    via Supabase JS, then lets the user set a new password.
-    """
-    return render(request, "reset_password.html", {
-        "supabase_url": SUPABASE_URL,
-        "supabase_anon": SUPABASE_KEY,
-    })
+    """Serve the reset password page (tokens handled in JS)."""
+    return render(request, "reset_password.html")
 
 
 def dashboard_view(request):
