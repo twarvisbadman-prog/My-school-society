@@ -221,24 +221,19 @@ class SessionMiddleware(MiddlewareMixin):
             p = supabase.table("users").select("*").eq("id", user.id).execute()
             profile_data = p.data[0] if p.data else None
 
-            # ═══════════════════════════════════════════════════════
-            # AUTO-CREATE OR FIX-UP PROFILE
-            # ═══════════════════════════════════════════════════════
+            # ── AUTO-CREATE OR FIX-UP PROFILE ──────────────
             if not profile_data:
-                # Row doesn't exist → create it
                 profile_data = SessionMiddleware._create_profile(user)
                 if profile_data:
                     print(f"[session] ✅ Created profile for {user.email}")
-                    # Award first-day streak
                     try:
                         update_streak(user.id)
-                        # Re-fetch to include streak fields
                         p2 = supabase.table("users").select("*").eq("id", user.id).execute()
                         profile_data = p2.data[0] if p2.data else profile_data
                     except Exception:
                         pass
             else:
-                # Row exists → check if username is missing and fix it
+                # Fix missing username
                 if not profile_data.get("username"):
                     new_username = SessionMiddleware._generate_unique_username(
                         user.email, user.id
@@ -248,11 +243,11 @@ class SessionMiddleware(MiddlewareMixin):
                             "username": new_username
                         }).eq("id", user.id).execute()
                         profile_data["username"] = new_username
-                        print(f"[session] ✅ Fixed missing username for {user.email} → @{new_username}")
+                        print(f"[session] ✅ Fixed username for {user.email} → @{new_username}")
                     except Exception as e:
                         print(f"[session] ❌ Failed to fix username: {e}")
 
-                # Also fix missing avatar/full_name from Google
+                # Fix missing avatar/full_name from Google
                 meta = getattr(user, "user_metadata", None) or {}
                 updates = {}
                 if not profile_data.get("full_name") and meta.get("name"):
@@ -280,7 +275,6 @@ class SessionMiddleware(MiddlewareMixin):
 
     @staticmethod
     def _generate_unique_username(email, user_id):
-        """Create a unique username from email."""
         base = (email.split("@")[0] if email else "student").lower()
         base = base.replace(".", "_").replace("-", "_")
         base = re.sub(r'[^a-z0-9_]', '', base)[:20] or "student"
@@ -295,7 +289,6 @@ class SessionMiddleware(MiddlewareMixin):
 
     @staticmethod
     def _create_profile(user):
-        """Create a new row in public.users for the given auth user."""
         try:
             meta = getattr(user, "user_metadata", None) or {}
             email = user.email or ""
@@ -330,7 +323,6 @@ class SessionMiddleware(MiddlewareMixin):
             return p.data[0] if p.data else None
         except Exception as e:
             print(f"[session] _create_profile error: {e}")
-            # Race condition: someone else inserted → just fetch
             try:
                 p = supabase.table("users").select("*").eq("id", user.id).execute()
                 return p.data[0] if p.data else None
@@ -871,7 +863,6 @@ def login_view(request):
             user = resp.user
             session = resp.session
 
-            # Ensure profile exists with username
             existing = supabase.table("users").select("*").eq("id", user.id).execute()
             if not existing.data:
                 SessionMiddleware._create_profile(user)
@@ -966,6 +957,49 @@ def logout_view(request):
 
 def oauth_callback(request):
     return render(request, "auth_callback.html", {
+        "supabase_url": SUPABASE_URL,
+        "supabase_anon": SUPABASE_KEY,
+    })
+
+
+def forgot_password_view(request):
+    """Send password reset email via Supabase."""
+    if request.method == "POST":
+        email = request.POST.get("email", "").strip().lower()
+        if not email:
+            return render(request, "forgot_password.html", {
+                "error": "Please enter your email.",
+                "supabase_url": SUPABASE_URL,
+                "supabase_anon": SUPABASE_KEY,
+            })
+        try:
+            # Supabase sends the reset email automatically
+            supabase.auth.reset_password_email(
+                email,
+                {"redirect_to": f"{request.scheme}://{request.get_host()}/reset-password/"}
+            )
+        except Exception as e:
+            print(f"[forgot_password] {e}")
+            # Don't reveal whether the email exists — always show success
+        return render(request, "forgot_password.html", {
+            "message": "If that email is registered, we've sent a reset link. Check your inbox.",
+            "supabase_url": SUPABASE_URL,
+            "supabase_anon": SUPABASE_KEY,
+        })
+    return render(request, "forgot_password.html", {
+        "supabase_url": SUPABASE_URL,
+        "supabase_anon": SUPABASE_KEY,
+    })
+
+
+def reset_password_view(request):
+    """Handle the password reset token from Supabase.
+
+    Supabase sends users here with tokens in the URL hash.
+    The reset_password.html template exchanges them for a session
+    via Supabase JS, then lets the user set a new password.
+    """
+    return render(request, "reset_password.html", {
         "supabase_url": SUPABASE_URL,
         "supabase_anon": SUPABASE_KEY,
     })
@@ -1750,6 +1784,10 @@ urlpatterns = [
     path("signup/", signup_view, name="signup"),
     path("logout/", logout_view, name="logout"),
     path("auth/callback/", oauth_callback, name="oauth_callback"),
+
+    # PASSWORD RESET
+    path("forgot-password/", forgot_password_view, name="forgot_password"),
+    path("reset-password/", reset_password_view, name="reset_password"),
 
     # USER
     path("dashboard/", dashboard_view, name="dashboard"),
