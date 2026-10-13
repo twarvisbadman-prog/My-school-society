@@ -442,7 +442,7 @@ def auto_username_from_email(email, user_id):
 # STREAK + POINTS
 # ============================================================
 def award_points(user_id, action, points, reference_id=None):
-    """Add points + log activity. Safely casts UUIDs to strings."""
+    """Add points + log activity. UUID-safe."""
     try:
         user_id = str(user_id)
         reference_id = str(reference_id) if reference_id else None
@@ -657,7 +657,7 @@ def get_all_notes(current_user_id=None):
             if current_user_id:
                 try:
                     ul = supabase.table("note_likes").select("id") \
-                        .eq("user_id", current_user_id).eq("note_id", note["id"]).execute()
+                        .eq("user_id", str(current_user_id)).eq("note_id", note["id"]).execute()
                     note["user_liked"] = bool(ul.data)
                 except Exception:
                     pass
@@ -683,7 +683,7 @@ def search_notes(query, current_user_id=None):
             if current_user_id:
                 try:
                     ul = supabase.table("note_likes").select("id") \
-                        .eq("user_id", current_user_id).eq("note_id", note["id"]).execute()
+                        .eq("user_id", str(current_user_id)).eq("note_id", note["id"]).execute()
                     note["user_liked"] = bool(ul.data)
                 except Exception:
                     pass
@@ -1001,7 +1001,7 @@ def dashboard_view(request):
 
     try:
         uploads = supabase.table("notes").select("*") \
-            .eq("uploader_id", me["id"]) \
+            .eq("uploader_id", str(me["id"])) \
             .order("uploaded_at", desc=True) \
             .execute().data or []
     except Exception:
@@ -1010,7 +1010,7 @@ def dashboard_view(request):
     today = date.today().isoformat()
     try:
         quiz = supabase.table("quiz_attempts").select("*") \
-            .eq("user_id", me["id"]).eq("quiz_date", today).execute().data
+            .eq("user_id", str(me["id"])).eq("quiz_date", today).execute().data
         quiz_today = quiz[0] if quiz else None
     except Exception:
         quiz_today = None
@@ -1033,16 +1033,16 @@ def profile_view(request, username):
 
         try:
             uploads = supabase.table("notes").select("*") \
-                .eq("uploader_id", profile["id"]) \
+                .eq("uploader_id", str(profile["id"])) \
                 .order("uploaded_at", desc=True).limit(20).execute().data or []
         except Exception:
             uploads = []
 
         try:
             followers = supabase.table("follows").select("*", count="exact") \
-                .eq("following_id", profile["id"]).execute()
+                .eq("following_id", str(profile["id"])).execute()
             following = supabase.table("follows").select("*", count="exact") \
-                .eq("follower_id", profile["id"]).execute()
+                .eq("follower_id", str(profile["id"])).execute()
             followers_count = followers.count if hasattr(followers, "count") and followers.count is not None else len(followers.data or [])
             following_count = following.count if hasattr(following, "count") and following.count is not None else len(following.data or [])
         except Exception:
@@ -1054,13 +1054,13 @@ def profile_view(request, username):
         is_friend = False
         is_me = False
         if me:
-            is_me = me["id"] == profile["id"]
+            is_me = str(me["id"]) == str(profile["id"])
             if not is_me:
                 try:
                     f1 = supabase.table("follows").select("id") \
-                        .eq("follower_id", me["id"]).eq("following_id", profile["id"]).execute()
+                        .eq("follower_id", str(me["id"])).eq("following_id", str(profile["id"])).execute()
                     f2 = supabase.table("follows").select("id") \
-                        .eq("follower_id", profile["id"]).eq("following_id", me["id"]).execute()
+                        .eq("follower_id", str(profile["id"])).eq("following_id", str(me["id"])).execute()
                     is_following = bool(f1.data)
                     is_friend = bool(f1.data and f2.data)
                 except Exception:
@@ -1068,7 +1068,7 @@ def profile_view(request, username):
 
         try:
             activity = supabase.table("activity_log").select("*") \
-                .eq("user_id", profile["id"]) \
+                .eq("user_id", str(profile["id"])) \
                 .order("created_at", desc=True).limit(10).execute().data or []
         except Exception:
             activity = []
@@ -1090,6 +1090,11 @@ def profile_view(request, username):
 
 
 def leaderboard_view(request):
+    """
+    Leaderboard with all stats: rank, points, likes_received,
+    uploads_count, current_streak, followers_count.
+    Uses the leaderboard SQL view; falls back gracefully.
+    """
     leaders = []
     try:
         rows = supabase.table("leaderboard").select("*").limit(100).execute()
@@ -1150,6 +1155,7 @@ def leaderboard_view(request):
 
 
 def community_view(request):
+    """Browse all students in the community."""
     try:
         rows = supabase.table("users").select(
             "id, username, full_name, avatar_url, university, points, current_streak, uploads_count"
@@ -1163,7 +1169,7 @@ def community_view(request):
     if me:
         try:
             following_resp = supabase.table("follows").select("following_id") \
-                .eq("follower_id", me["id"]).execute()
+                .eq("follower_id", str(me["id"])).execute()
             following_ids = {str(f["following_id"]) for f in (following_resp.data or [])}
             for u in users:
                 u["is_following"] = str(u["id"]) in following_ids
@@ -1231,7 +1237,7 @@ def upload_view(request):
                         print(f"❌ R2 upload failed for {safe_filename}")
                     else:
                         current_user = get_current_user(request)
-                        uploader_id = current_user["id"] if current_user else None
+                        uploader_id = str(current_user["id"]) if current_user else None
 
                         insert_payload = {
                             "filename": safe_filename,
@@ -1292,7 +1298,7 @@ def upload_view(request):
 
 def browse_view(request):
     me = get_current_user(request)
-    current_user_id = me["id"] if me else None
+    current_user_id = str(me["id"]) if me else None
 
     query = request.GET.get("q", "").strip()
     notes = search_notes(query, current_user_id) if query else get_all_notes(current_user_id)
@@ -1614,3 +1620,441 @@ def _serve_course_index(course_slug):
     if not os.path.exists(path):
         return None
     try:
+        with open(path, "r", encoding="utf-8") as f:
+            html = f.read()
+        response = HttpResponse(html, content_type="text/html; charset=utf-8")
+        response["Cache-Control"] = "public, max-age=300"
+        return response
+    except Exception as e:
+        return HttpResponse(f"Course '{course_slug}' error: {e}", status=500)
+
+
+def free_course_detail_view(request, course_slug):
+    if not course_slug or not re.match(r"^[a-z0-9\-]+$", course_slug):
+        return free_courses_view(request)
+    response = _serve_course_index(course_slug)
+    if response is not None:
+        return response
+    return free_courses_view(request)
+
+
+def scanner_view(request):
+    try:
+        return render(request, "scanner.html", build_view_context(request))
+    except Exception as e:
+        return HttpResponse(f"Scanner error: {e}", status=500)
+
+
+def autoquiz_view(request):
+    path = os.path.join(BASE_DIR, "autoquiz.html")
+    if os.path.exists(path):
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                html = f.read()
+            return HttpResponse(html, content_type="text/html")
+        except Exception as e:
+            return HttpResponse(f"Error loading AutoQuiz: {e}", status=500)
+    return HttpResponse("AutoQuiz page not found.", status=404)
+
+
+def quiz_view(request):
+    ctx = build_view_context(request)
+    ctx["today"] = date.today().strftime("%B %d, %Y")
+    return render(request, "quiz.html", ctx)
+
+# ============================================================
+# GAMIFICATION APIs
+# ============================================================
+@csrf_exempt
+def api_me(request):
+    user = get_current_user(request)
+    if not user:
+        return JsonResponse({"logged_in": False})
+    return JsonResponse({"logged_in": True, "profile": user["profile"]})
+
+
+@csrf_exempt
+def api_like_note(request, note_id):
+    """
+    LIKE API — When a user likes a note:
+      +1 point to LIKER (like_given)
+      +1 point to OWNER (like_received)
+      +1 likes_received counter for OWNER
+    Unlike: -1 likes_received counter for OWNER (points stay).
+    """
+    user = get_current_user(request)
+    if not user:
+        return JsonResponse({"error": "login_required", "login_required": True}, status=401)
+
+    # UUID-safe: cast everything to string upfront
+    my_id = str(user["id"])
+    note_id_str = str(note_id)
+
+    try:
+        # ── 1. Fetch note to find owner ────────────────────
+        owner_id = None
+        try:
+            note_resp = supabase.table("notes").select("uploader_id, uploader, filename") \
+                .eq("id", note_id_str).execute()
+            if note_resp.data:
+                note = note_resp.data[0]
+                owner_id = note.get("uploader_id")
+
+                # Fallback: if uploader_id NULL, try email → user lookup
+                if not owner_id:
+                    uploader_email = note.get("uploader")
+                    if uploader_email and "@" in uploader_email:
+                        try:
+                            u_lookup = supabase.table("users").select("id") \
+                                .eq("email", uploader_email.lower()).execute()
+                            if u_lookup.data:
+                                owner_id = u_lookup.data[0]["id"]
+                                try:
+                                    supabase.table("notes").update({
+                                        "uploader_id": str(owner_id)
+                                    }).eq("id", note_id_str).execute()
+                                    print(f"[like] 🔗 Backfilled uploader_id for note {note_id_str}")
+                                except Exception as be:
+                                    print(f"[like] backfill failed: {be}")
+                        except Exception as le:
+                            print(f"[like] email lookup failed: {le}")
+
+                if owner_id:
+                    owner_id = str(owner_id)
+
+                print(f"[like] Note {note_id_str} owner_id={owner_id}")
+        except Exception as e:
+            print(f"[like] note fetch failed: {e}")
+
+        # ── 2. Toggle ─────────────────────────────────────
+        existing = supabase.table("note_likes").select("id") \
+            .eq("user_id", my_id).eq("note_id", note_id_str).execute()
+
+        if existing.data:
+            # ── UNLIKE ────────────────────────────────────
+            supabase.table("note_likes").delete() \
+                .eq("user_id", my_id).eq("note_id", note_id_str).execute()
+            liked = False
+
+            if owner_id and owner_id != my_id:
+                try:
+                    o = supabase.table("users").select("likes_received").eq("id", owner_id).execute()
+                    if o.data:
+                        cur = o.data[0].get("likes_received", 0) or 0
+                        new_val = max(0, cur - 1)
+                        supabase.table("users").update({
+                            "likes_received": new_val
+                        }).eq("id", owner_id).execute()
+                        print(f"[like] ↓ Owner {owner_id} likes_received: {cur} → {new_val}")
+                except Exception as e:
+                    print(f"[like] decrement failed: {e}")
+
+        else:
+            # ── LIKE ──────────────────────────────────────
+            supabase.table("note_likes").insert({
+                "user_id": my_id,
+                "note_id": note_id_str,
+            }).execute()
+            liked = True
+
+            # Owner gets +1 point AND +1 likes_received
+            if owner_id and owner_id != my_id:
+                try:
+                    o = supabase.table("users").select("likes_received, points").eq("id", owner_id).execute()
+                    if o.data:
+                        cur_likes = o.data[0].get("likes_received", 0) or 0
+                        cur_points = o.data[0].get("points", 0) or 0
+                        new_likes = cur_likes + 1
+                        new_points = cur_points + 1
+
+                        supabase.table("users").update({
+                            "likes_received": new_likes,
+                            "points": new_points,
+                        }).eq("id", owner_id).execute()
+
+                        try:
+                            supabase.table("activity_log").insert({
+                                "user_id": owner_id,
+                                "action": "like_received",
+                                "points": 1,
+                                "reference_id": note_id_str,
+                            }).execute()
+                        except Exception as ae:
+                            print(f"[like] activity log failed: {ae}")
+
+                        print(f"[like] ⭐ Owner {owner_id} | likes_received: {cur_likes} → {new_likes} | points: {cur_points} → {new_points}")
+                    else:
+                        print(f"[like] ⚠️ Owner {owner_id} not found in users table")
+                except Exception as e:
+                    print(f"[like] owner credit failed: {e}")
+            elif owner_id and owner_id == my_id:
+                print(f"[like] Self-like detected — skipping owner credit")
+
+            # Liker gets +1 point
+            award_points(my_id, "like_given", 1, note_id_str)
+            print(f"[like] ✓ Liker {my_id} credited +1 point (like_given)")
+
+        # ── 3. Recount ────────────────────────────────────
+        try:
+            count_resp = supabase.table("note_likes").select("*", count="exact") \
+                .eq("note_id", note_id_str).execute()
+            count = count_resp.count if hasattr(count_resp, "count") and count_resp.count is not None else len(count_resp.data or [])
+        except Exception:
+            count = 0
+
+        update_streak(my_id)
+
+        updated = supabase.table("users").select("points").eq("id", my_id).execute()
+        points = updated.data[0]["points"] if updated.data else 0
+
+        return JsonResponse({
+            "liked": bool(liked),
+            "count": int(count),
+            "points": int(points) if points is not None else 0,
+            "owner_credited": bool(owner_id and owner_id != my_id),
+        })
+    except Exception as e:
+        print(f"[api_like_note] FATAL: {e}")
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+@csrf_exempt
+def api_follow_user(request, user_id):
+    """Toggle follow/unfollow a user. UUIDs cast to str for JSON safety."""
+    me = get_current_user(request)
+    if not me:
+        return JsonResponse({"error": "login_required", "login_required": True}, status=401)
+
+    target_user_id = str(user_id)
+    my_id = str(me["id"])
+
+    if my_id == target_user_id:
+        return JsonResponse({"error": "cannot_follow_self"}, status=400)
+
+    try:
+        existing = supabase.table("follows").select("id") \
+            .eq("follower_id", my_id).eq("following_id", target_user_id).execute()
+
+        if existing.data:
+            supabase.table("follows").delete() \
+                .eq("follower_id", my_id).eq("following_id", target_user_id).execute()
+            following = False
+            print(f"[follow] {my_id} unfollowed {target_user_id}")
+        else:
+            supabase.table("follows").insert({
+                "follower_id": my_id,
+                "following_id": target_user_id,
+            }).execute()
+            following = True
+            print(f"[follow] {my_id} followed {target_user_id}")
+
+            try:
+                award_points(target_user_id, "new_follower", 2, my_id)
+            except Exception as ae:
+                print(f"[follow] award_points failed: {ae}")
+
+        try:
+            update_streak(my_id)
+        except Exception as se:
+            print(f"[follow] update_streak failed: {se}")
+
+        return JsonResponse({"following": bool(following)})
+
+    except Exception as e:
+        print(f"[api_follow_user] FATAL: {e}")
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+QUIZ_BANK = [
+    {"q": "What does HTTP stand for?", "a": "HyperText Transfer Protocol",
+     "options": ["HyperText Transfer Protocol", "High Transfer Text Protocol", "HyperText Transmission Protocol", "Host Transfer Protocol"]},
+    {"q": "Which Git command creates a new branch?", "a": "git checkout -b",
+     "options": ["git new-branch", "git branch create", "git checkout -b", "git make branch"]},
+    {"q": "What is 2^10?", "a": "1024", "options": ["512", "1024", "2048", "1000"]},
+    {"q": "Which planet has the most moons?", "a": "Saturn", "options": ["Jupiter", "Saturn", "Uranus", "Neptune"]},
+    {"q": "Who created Python?", "a": "Guido van Rossum", "options": ["Linus Torvalds", "Guido van Rossum", "Dennis Ritchie", "James Gosling"]},
+    {"q": "What does CSS stand for?", "a": "Cascading Style Sheets",
+     "options": ["Cascading Style Sheets", "Creative Style System", "Computer Style Sheets", "Colorful Style Sheets"]},
+    {"q": "In HTML, which tag creates a hyperlink?", "a": "<a>", "options": ["<link>", "<a>", "<href>", "<url>"]},
+    {"q": "What does CPU stand for?", "a": "Central Processing Unit",
+     "options": ["Central Processing Unit", "Computer Personal Unit", "Central Program Utility", "Core Processing Unit"]},
+    {"q": "Which language runs in a web browser?", "a": "JavaScript", "options": ["Java", "C++", "Python", "JavaScript"]},
+    {"q": "What year was JavaScript created?", "a": "1995", "options": ["1993", "1995", "1997", "2000"]},
+]
+
+
+@csrf_exempt
+def api_daily_quiz(request):
+    user = get_current_user(request)
+    today = date.today()
+    idx = today.toordinal() % len(QUIZ_BANK)
+    today_q = QUIZ_BANK[idx]
+
+    if request.method == "GET":
+        already = None
+        if user:
+            try:
+                r = supabase.table("quiz_attempts").select("*") \
+                    .eq("user_id", str(user["id"])).eq("quiz_date", today.isoformat()).execute()
+                already = r.data[0] if r.data else None
+            except Exception:
+                already = None
+        payload = {
+            "question": today_q["q"],
+            "options": today_q["options"],
+            "already_answered": bool(already),
+            "login_required": user is None,
+        }
+        if already:
+            payload["your_answer"] = already.get("user_answer")
+            payload["correct_answer"] = already.get("correct_answer")
+            payload["is_correct"] = already.get("is_correct")
+            payload["points_earned"] = already.get("points_earned", 0)
+        return JsonResponse(payload)
+
+    if not user:
+        return JsonResponse({"error": "login_required", "login_required": True}, status=401)
+
+    try:
+        body = json.loads(request.body or "{}")
+    except Exception:
+        body = {}
+    answer = (body.get("answer") or "").strip()
+
+    try:
+        my_id = str(user["id"])
+        existing = supabase.table("quiz_attempts").select("id") \
+            .eq("user_id", my_id).eq("quiz_date", today.isoformat()).execute()
+        if existing.data:
+            return JsonResponse({"error": "already_answered_today"}, status=400)
+
+        is_correct = (answer == today_q["a"])
+        points = 10 if is_correct else 0
+
+        supabase.table("quiz_attempts").insert({
+            "user_id": my_id,
+            "quiz_date": today.isoformat(),
+            "question": today_q["q"],
+            "user_answer": answer,
+            "correct_answer": today_q["a"],
+            "is_correct": is_correct,
+            "points_earned": points,
+        }).execute()
+
+        ur = supabase.table("users").select("quizzes_taken, quizzes_correct").eq("id", my_id).execute()
+        if ur.data:
+            taken = (ur.data[0].get("quizzes_taken", 0) or 0) + 1
+            correct = (ur.data[0].get("quizzes_correct", 0) or 0) + (1 if is_correct else 0)
+            supabase.table("users").update({
+                "quizzes_taken": taken, "quizzes_correct": correct,
+            }).eq("id", my_id).execute()
+
+        if points:
+            award_points(my_id, "quiz_correct", points, today.isoformat())
+
+        update_streak(my_id)
+
+        return JsonResponse({
+            "correct": is_correct,
+            "correct_answer": today_q["a"],
+            "your_answer": answer,
+            "points_earned": points,
+        })
+    except Exception as e:
+        print(f"[api_daily_quiz] {e}")
+        return JsonResponse({"error": str(e)}, status=500)
+
+# ============================================================
+# URLS
+# ============================================================
+urlpatterns = [
+    path("", index),
+
+    # AUTH
+    path("login/", login_view, name="login"),
+    path("signup/", signup_view, name="signup"),
+    path("logout/", logout_view, name="logout"),
+    path("auth/callback/", oauth_callback, name="oauth_callback"),
+
+    # PASSWORD RESET
+    path("forgot-password/", forgot_password_view, name="forgot_password"),
+    path("reset-password/", reset_password_view, name="reset_password"),
+
+    # USER
+    path("dashboard/", dashboard_view, name="dashboard"),
+    path("leaderboard/", leaderboard_view, name="leaderboard"),
+    path("community/", community_view, name="community"),
+    path("profile/<str:username>/", profile_view, name="profile"),
+
+    # QUIZ
+    path("quiz/", quiz_view, name="quiz"),
+    path("daily-quiz/", quiz_view, name="daily_quiz_alt"),
+
+    # APIs
+    path("api/me/", api_me, name="api_me"),
+    path("api/quiz/daily/", api_daily_quiz, name="api_daily_quiz"),
+    path("api/like/<int:note_id>/", api_like_note, name="api_like_note"),
+    path("api/follow/<str:user_id>/", api_follow_user, name="api_follow_user"),
+
+    # ADMIN
+    path(f"{SECRET_ADMIN_PATH}/", admin_dashboard, name="admin_dashboard"),
+    path(f"{SECRET_ADMIN_PATH}/settings/", admin_settings, name="admin_settings"),
+    path("admin_edit/<int:id>/", admin_edit, name="admin_edit"),
+
+    # ICONS
+    path("apple-touch-icon.png", serve_root_file, {"filename": "apple-touch-icon.png"}, name="apple_icon"),
+    path("apple-touch-icon-precomposed.png", serve_root_file, {"filename": "apple-touch-icon.png"}),
+    path("favicon.ico", favicon_view, name="favicon"),
+    path("favicon.png", favicon_view, name="favicon_png"),
+
+    # MAIN
+    path("upload/", upload_view),
+    path("browse/", browse_view),
+    path("view/<int:id>/", view_file),
+    path("download/<int:id>/", download_file),
+    path("delete/<int:id>/", delete_file),
+    path("update-passcode/<int:id>/", update_passcode, name="update_passcode"),
+    path("update-metadata/<int:id>/", update_metadata, name="update_metadata"),
+
+    # ABOUT
+    path("about.html", about_view, name="about"),
+    path("about/", about_view, name="about_alt"),
+
+    # CALCULATOR
+    path("calculator.html", calculator_view),
+    path("calculator/", calculator_view, name="calculator"),
+
+    # HACKERTHON
+    path("hackerthon.html", hackathon_view),
+    path("hackerthon/", hackathon_view, name="hackerthon"),
+    path("hackathon.html", hackathon_view),
+    path("hackathon/", hackathon_view, name="hackathon"),
+
+    # FREE COURSES
+    path("free_course.html", free_courses_view),
+    path("free_course/", free_courses_view, name="free_course"),
+    path("free_courses.html", free_courses_view),
+    path("free-courses/", free_courses_view, name="free_courses"),
+    path("free_course/<slug:course_slug>/", free_course_detail_view, name="free_course_detail"),
+    path("free_course/<slug:course_slug>/index.html", free_course_detail_view, name="free_course_detail_index"),
+    path("free_course/<path:subpath>", serve_subfolder_file, name="free_course_assets"),
+
+    # AUTOQUIZ
+    path("autoquiz.html", autoquiz_view, name="autoquiz"),
+    path("autoquiz/", autoquiz_view, name="autoquiz_alt"),
+
+    # SCANNER
+    path("scanner.html", scanner_view, name="scanner"),
+    path("scanner/", scanner_view, name="scanner_alt"),
+
+    # ROOT FILE SERVER (must be LAST)
+    path("<str:filename>", serve_root_file, name="root_file"),
+]
+
+application = get_wsgi_application()
+app = application
+
+if __name__ == "__main__":
+    from django.core.management import execute_from_command_line
+    port = os.environ.get("PORT", 8000)
+    execute_from_command_line([__name__, "runserver", f"0.0.0.0:{port}"])
