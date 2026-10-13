@@ -77,6 +77,8 @@ print("=" * 60)
 print(f"📡 Supabase URL:  {SUPABASE_URL[:50]}")
 print(f"🔑 Supabase Key:  {'✅ VALID JWT' if SUPABASE_KEY.startswith('eyJ') else '❌ INVALID'}")
 print(f"☁️  R2 Bucket:    {R2_BUCKET_NAME}")
+print(f"☁️  R2 Endpoint:  {R2_ENDPOINT_URL[:50]}")
+print(f"☁️  R2 Public:    {R2_PUBLIC_URL[:50]}")
 print(f"🔐 Admin URL:     /{SECRET_ADMIN_PATH}/")
 print(f"🐛 Debug:         {DEBUG}")
 print("=" * 60)
@@ -85,7 +87,7 @@ if not SUPABASE_KEY.startswith("eyJ"):
     print("❌ FATAL: SUPABASE_KEY is invalid!")
     raise SystemExit(1)
 
-print("✅ Supabase key format is valid")
+print("✅ Supabase key format is valid (starts with 'eyJ')")
 
 # ============================================================
 # DJANGO SETTINGS
@@ -139,7 +141,7 @@ except Exception as e:
     raise SystemExit(1)
 
 # ============================================================
-# CLOUDFLARE R2
+# CLOUDFLARE R2 CLIENT
 # ============================================================
 r2_client = None
 try:
@@ -165,8 +167,8 @@ except Exception as e:
 class SessionMiddleware(MiddlewareMixin):
     """
     Runs on every request:
-      - Attaches request.current_user (from cookie or Bearer token)
-      - Silently refreshes access token via refresh_token when expired
+      - Attaches request.current_user (from cookie or Bearer)
+      - Silently refreshes expired access tokens via refresh_token
     """
     def process_request(self, request):
         request.current_user = None
@@ -351,7 +353,6 @@ def auto_username_from_email(email, user_id):
         pass
     return base
 
-
 # ============================================================
 # STREAK + POINTS
 # ============================================================
@@ -426,7 +427,6 @@ def update_streak(user_id):
     except Exception as e:
         print(f"[update_streak] {e}")
 
-
 # ============================================================
 # FORMS
 # ============================================================
@@ -456,12 +456,12 @@ class EditForm(forms.Form):
         widget=forms.Select(attrs={"class": "form-select"})
     )
 
-
 # ============================================================
 # R2 HELPERS
 # ============================================================
 def upload_to_r2(file_obj, key, content_type="application/octet-stream"):
     if not r2_client:
+        print("❌ R2 client not initialized")
         return None
     try:
         file_obj.seek(0)
@@ -469,9 +469,14 @@ def upload_to_r2(file_obj, key, content_type="application/octet-stream"):
             file_obj, R2_BUCKET_NAME, key,
             ExtraArgs={"ContentType": content_type, "CacheControl": "max-age=86400"},
         )
-        return f"{R2_PUBLIC_URL}/{key}"
-    except Exception as e:
+        url = f"{R2_PUBLIC_URL}/{key}"
+        print(f"✅ Uploaded to R2: {url}")
+        return url
+    except ClientError as e:
         print(f"❌ R2 upload failed: {e}")
+        return None
+    except Exception as e:
+        print(f"❌ R2 upload exception: {e}")
         return None
 
 
@@ -480,8 +485,9 @@ def delete_from_r2(key):
         return False
     try:
         r2_client.delete_object(Bucket=R2_BUCKET_NAME, Key=key)
+        print(f"✅ Deleted from R2: {key}")
         return True
-    except Exception as e:
+    except ClientError as e:
         print(f"❌ R2 delete failed: {e}")
         return False
 
@@ -496,13 +502,12 @@ def get_r2_file_bytes(key):
     try:
         response = r2_client.get_object(Bucket=R2_BUCKET_NAME, Key=key)
         return response["Body"].read()
-    except Exception as e:
+    except ClientError as e:
         print(f"❌ R2 download failed: {e}")
         return None
 
-
 # ============================================================
-# HELPERS
+# HELPER FUNCTIONS
 # ============================================================
 def get_content_type(filename):
     ext = os.path.splitext(filename)[1].lower()
@@ -595,7 +600,6 @@ def search_notes(query, current_user_id=None):
         print(f"[search_notes] {e}")
         return get_all_notes(current_user_id)
 
-
 # ============================================================
 # PASSCODE HTML
 # ============================================================
@@ -673,7 +677,6 @@ def get_passcode_html(file_id, filename, error=None):
 </html>
 '''
 
-
 # ============================================================
 # SERVE FILES
 # ============================================================
@@ -681,9 +684,11 @@ def serve_root_file(request, filename):
     safe_name = os.path.basename(filename)
     if safe_name != filename or ".." in safe_name or safe_name.startswith("."):
         return HttpResponse("Not found", status=404)
+
     file_path = os.path.join(BASE_DIR, safe_name)
     if not os.path.exists(file_path):
         return HttpResponse("Not found", status=404)
+
     ext = os.path.splitext(safe_name)[1].lower()
     content_types = {
         ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
@@ -693,6 +698,7 @@ def serve_root_file(request, filename):
         ".pdf": "application/pdf", ".woff": "font/woff", ".woff2": "font/woff2",
     }
     content_type = content_types.get(ext, "application/octet-stream")
+
     try:
         with open(file_path, "rb") as f:
             data = f.read()
@@ -708,13 +714,16 @@ def serve_subfolder_file(request, subpath):
     safe_subpath = os.path.normpath(subpath).replace("\\", "/")
     if safe_subpath.startswith("..") or safe_subpath.startswith("/") or ".." in safe_subpath.split("/"):
         return HttpResponse("Not found", status=404)
+
     file_path = os.path.join(BASE_DIR, safe_subpath)
     real_path = os.path.realpath(file_path)
     real_base = os.path.realpath(BASE_DIR)
+
     if not real_path.startswith(real_base):
         return HttpResponse("Not found", status=404)
     if not os.path.exists(real_path) or os.path.isdir(real_path):
         return HttpResponse("Not found", status=404)
+
     ext = os.path.splitext(real_path)[1].lower()
     content_types = {
         ".html": "text/html; charset=utf-8", ".htm": "text/html; charset=utf-8",
@@ -730,6 +739,7 @@ def serve_subfolder_file(request, subpath):
         ".mp3": "audio/mpeg", ".wav": "audio/wav",
     }
     content_type = content_types.get(ext, "application/octet-stream")
+
     try:
         with open(real_path, "rb") as f:
             data = f.read()
@@ -756,7 +766,6 @@ def favicon_view(request):
         except Exception as e:
             print(f"Favicon error: {e}")
     return HttpResponse(status=204)
-
 
 # ============================================================
 # AUTH VIEWS
@@ -984,7 +993,6 @@ def leaderboard_view(request):
     ctx["leaders"] = leaders
     return render(request, "leaderboard.html", ctx)
 
-
 # ============================================================
 # MAIN VIEWS
 # ============================================================
@@ -1034,6 +1042,7 @@ def upload_view(request):
 
                     if not r2_url:
                         error = "Upload to storage failed. Please try again."
+                        print(f"❌ R2 upload failed for {safe_filename}")
                     else:
                         current_user = get_current_user(request)
                         uploader_id = current_user["id"] if current_user else None
@@ -1130,16 +1139,20 @@ def browse_view(request):
 def view_file(request, id):
     try:
         result = supabase.table("notes").select("*").eq("id", id).execute()
+
         if not result.data:
             return HttpResponse("File not found", status=404)
+
         note = result.data[0]
 
         if note.get("privacy") == "private":
             correct_passcode = note.get("passcode", "")
             get_passcode = request.GET.get("passcode", "")
+
             if not get_passcode:
                 html = get_passcode_html(id, note.get("original_filename", note.get("filename", "")))
                 return HttpResponse(html)
+
             if get_passcode != correct_passcode:
                 html = get_passcode_html(id, note.get("original_filename", note.get("filename", "")), "❌ Incorrect passcode. Please try again.")
                 return HttpResponse(html)
@@ -1151,19 +1164,20 @@ def view_file(request, id):
         note["is_pdf"] = os.path.splitext(note.get("filename", ""))[1].lower() == '.pdf'
         note["is_image"] = os.path.splitext(note.get("filename", ""))[1].lower() in ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg']
         note["is_text"] = os.path.splitext(note.get("filename", ""))[1].lower() in ['.txt', '.md', '.csv', '.json', '.xml']
-        note["text_content"] = ""
 
+        note["text_content"] = ""
         if note["is_text"] and file_url:
             try:
                 response = requests.get(file_url, timeout=10)
                 if response.status_code == 200:
                     note["text_content"] = response.text
-            except Exception:
+            except:
                 pass
 
         ctx = {"note": note, "pdf_url": file_url, "admin": ADMIN}
         ctx.update(build_view_context(request))
         return render(request, "view.html", ctx)
+
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", status=500)
 
@@ -1171,20 +1185,25 @@ def view_file(request, id):
 def download_file(request, id):
     try:
         result = supabase.table("notes").select("*").eq("id", id).execute()
+
         if not result.data:
             return HttpResponse("File not found", status=404)
+
         note = result.data[0]
 
         if note.get("privacy") == "private":
             correct_passcode = note.get("passcode", "")
             get_passcode = request.GET.get("passcode", "")
+
             if not get_passcode:
-                return HttpResponse("Access Denied. Please view it first to unlock.", status=403)
+                return HttpResponse("Access Denied. This file is private. Please view it first to unlock.", status=403)
+
             if get_passcode != correct_passcode:
                 return HttpResponse("Access Denied. Incorrect passcode.", status=403)
 
         r2_key = f"notes/{note['filename']}"
         file_data = get_r2_file_bytes(r2_key)
+
         if file_data is None:
             return HttpResponse("File not found in storage", status=404)
 
@@ -1216,24 +1235,34 @@ def favicon(request):
 def update_passcode(request, id):
     if not ADMIN:
         return JsonResponse({"success": False, "error": "Not authorized"}, status=403)
+
     if request.method != "POST":
         return JsonResponse({"success": False, "error": "Method not allowed"}, status=405)
+
     try:
         data = json.loads(request.body)
         new_passcode = data.get("passcode", "").strip()
-        if not new_passcode or not new_passcode.isdigit() or len(new_passcode) != 4:
-            return JsonResponse({"success": False, "error": "Must be exactly 4 digits"})
+
+        if not new_passcode:
+            return JsonResponse({"success": False, "error": "Passcode is required"})
+        if not new_passcode.isdigit():
+            return JsonResponse({"success": False, "error": "Passcode must contain only numbers"})
+        if len(new_passcode) != 4:
+            return JsonResponse({"success": False, "error": "Passcode must be exactly 4 digits"})
 
         check_result = supabase.table("notes").select("*").eq("id", id).execute()
         if not check_result.data:
             return JsonResponse({"success": False, "error": "File not found"})
+
         note = check_result.data[0]
         if note.get("privacy") != "private":
             return JsonResponse({"success": False, "error": "File is not private"})
+
         supabase.table("notes").update({"passcode": new_passcode}).eq("id", id).execute()
-        return JsonResponse({"success": True, "message": "Passcode updated"})
+        return JsonResponse({"success": True, "message": "Passcode updated successfully"})
+
     except json.JSONDecodeError:
-        return JsonResponse({"success": False, "error": "Invalid JSON"}, status=400)
+        return JsonResponse({"success": False, "error": "Invalid JSON data"}, status=400)
     except Exception as e:
         return JsonResponse({"success": False, "error": str(e)}, status=500)
 
@@ -1244,30 +1273,42 @@ def update_metadata(request, id):
         return JsonResponse({"success": False, "error": "Not authorized"}, status=403)
     if request.method != "POST":
         return JsonResponse({"success": False, "error": "Method not allowed"}, status=405)
+
     try:
         data = json.loads(request.body)
         check_result = supabase.table("notes").select("*").eq("id", id).execute()
         if not check_result.data:
             return JsonResponse({"success": False, "error": "File not found"})
+
         allowed_fields = ["module", "course", "description", "university", "file_type"]
-        update_data = {f: str(data[f]).strip() for f in allowed_fields if f in data}
+        update_data = {}
+        for field in allowed_fields:
+            if field in data:
+                update_data[field] = str(data[field]).strip()
+
         if not update_data:
-            return JsonResponse({"success": False, "error": "No valid fields"})
+            return JsonResponse({"success": False, "error": "No valid fields to update"})
         if "file_type" in update_data and update_data["file_type"] not in ["notes", "pastpaper"]:
             return JsonResponse({"success": False, "error": "Invalid file_type"})
+
         supabase.table("notes").update(update_data).eq("id", id).execute()
-        return JsonResponse({"success": True, "updated": update_data})
+        return JsonResponse({"success": True, "message": "Metadata updated", "updated": update_data})
+
+    except json.JSONDecodeError:
+        return JsonResponse({"success": False, "error": "Invalid JSON"}, status=400)
     except Exception as e:
         return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 
 def admin_edit(request, id):
     if not ADMIN:
-        return HttpResponse("Access Denied.", status=403)
+        return HttpResponse("Access Denied. Admin only.", status=403)
+
     try:
         result = supabase.table("notes").select("*").eq("id", id).execute()
         if not result.data:
             return HttpResponse("File not found", status=404)
+
         note = result.data[0]
         error_message = None
 
@@ -1277,11 +1318,13 @@ def admin_edit(request, id):
             description = request.POST.get("description", "").strip()
             university = request.POST.get("university", "").strip()
             file_type = request.POST.get("file_type", "notes").strip()
+
             if not module or not course:
                 error_message = "Module and Course are required."
             else:
                 supabase.table("notes").update({
-                    "module": module, "course": course,
+                    "module": module,
+                    "course": course,
                     "description": description,
                     "university": university or "Not specified",
                     "file_type": file_type,
@@ -1295,14 +1338,21 @@ def admin_edit(request, id):
             "university": note.get("university", ""),
             "file_type": note.get("file_type", "notes"),
         })
-        return render(request, "admin_edit.html", {"note": note, "form": form, "error": error_message})
+
+        return render(request, "admin_edit.html", {
+            "note": note,
+            "form": form,
+            "error": error_message,
+        })
+
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", status=500)
 
 
 def admin_dashboard(request):
     if not ADMIN:
-        return HttpResponse("Access Denied.", status=403)
+        return HttpResponse("Access Denied. Admin only.", status=403)
+
     all_notes = get_all_notes()
     total_files = len(all_notes)
     file_types = {}
@@ -1310,6 +1360,7 @@ def admin_dashboard(request):
     total_size = 0
     private_count = 0
     public_count = 0
+
     for note in all_notes:
         ext = os.path.splitext(note.get("filename", ""))[1].upper()
         if ext:
@@ -1321,6 +1372,7 @@ def admin_dashboard(request):
             private_count += 1
         else:
             public_count += 1
+
     stats = {
         "total_files": total_files,
         "file_types": file_types,
@@ -1329,14 +1381,14 @@ def admin_dashboard(request):
         "private_count": private_count,
         "public_count": public_count
     }
+
     return render(request, "admin.html", {"notes": all_notes, "stats": stats, "admin": ADMIN})
 
 
 def admin_settings(request):
     if not ADMIN:
-        return HttpResponse("Access Denied.", status=403)
+        return HttpResponse("Access Denied. Admin only.", status=403)
     return render(request, "admin_settings.html", {})
-
 
 # ============================================================
 # STATIC PAGES
@@ -1414,7 +1466,6 @@ def quiz_view(request):
     ctx = build_view_context(request)
     ctx["today"] = date.today().strftime("%B %d, %Y")
     return render(request, "quiz.html", ctx)
-
 
 # ============================================================
 # GAMIFICATION APIs
@@ -1605,7 +1656,6 @@ def api_daily_quiz(request):
         print(f"[api_daily_quiz] {e}")
         return JsonResponse({"error": str(e)}, status=500)
 
-
 # ============================================================
 # URLS
 # ============================================================
@@ -1661,7 +1711,7 @@ urlpatterns = [
     path("calculator.html", calculator_view),
     path("calculator/", calculator_view, name="calculator"),
 
-    # HACKATHON
+    # HACKERTHON
     path("hackerthon.html", hackathon_view),
     path("hackerthon/", hackathon_view, name="hackerthon"),
     path("hackathon.html", hackathon_view),
