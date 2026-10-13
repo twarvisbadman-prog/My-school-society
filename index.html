@@ -6,11 +6,6 @@
 <title>Student Hub | Share Notes, Find Notes</title>
 <link rel="icon" type="image/png" href="/logo.png" />
 
-<!-- ═══════════════════════════════════════════════════════════
-     PRELOAD FIRST IMAGE OF EVERY ROTATING BACKGROUND
-     This removes latency — first image appears instantly
-     ═══════════════════════════════════════════════════════════ -->
-
 <link rel="preload" as="image" href="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&q=60" />
 <link rel="preload" as="image" href="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&q=60" />
 <link rel="preload" as="image" href="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1200&q=60" />
@@ -20,10 +15,12 @@
 <link rel="preload" as="image" href="https://images.unsplash.com/photo-1504148455328-c376907d081c?w=1200&q=60" />
 <link rel="preload" as="image" href="https://images.unsplash.com/photo-1524578271613-d550eacf6090?w=1200&q=60" />
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/static/hub-theme.css">
+
 <style>
 :root{
     --bg:#fafaf9;
@@ -533,6 +530,185 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
 .tnc-footer{text-align: center; font-size: .75rem; color: var(--text-3); margin-top: 16px; font-weight: 600;}
 .tnc-footer i{color: #15803d; margin-right: 6px;}
 
+/* ═══════════════════════════════════════════════════════════
+   LOGIN SUGGESTION BANNER (guests only)
+   ═══════════════════════════════════════════════════════════ */
+.login-suggestion-banner{
+    background:linear-gradient(120deg,#fff1e8,#fce7f3);
+    border-bottom:1px solid var(--border);
+    padding:10px 20px;
+}
+.login-suggestion-inner{
+    max-width:1200px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+}
+.login-suggestion-text{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--ink);
+    font-size:.85rem;
+    font-weight:600;
+    flex:1;
+    min-width:240px;
+}
+.login-suggestion-text .sparkle{font-size:1.1rem;animation:sparklePulse 1.6s ease-in-out infinite}
+@keyframes sparklePulse{
+    0%,100%{transform:scale(1) rotate(0)}
+    50%{transform:scale(1.2) rotate(15deg)}
+}
+.login-suggestion-actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+.btn-pill-login{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:7px 16px;
+    border-radius:999px;
+    font-weight:700;
+    font-size:.78rem;
+    background:transparent;
+    color:var(--ink);
+    border:1.5px solid var(--border-strong);
+    text-decoration:none;
+    transition:all .25s ease;
+}
+.btn-pill-login:hover{background:#fff;border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+.btn-pill-signup{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 18px;
+    border-radius:999px;
+    font-weight:800;
+    font-size:.78rem;
+    background:var(--grad-cta);
+    color:#fff;
+    text-decoration:none;
+    box-shadow:var(--shadow-cta);
+    transition:all .25s ease;
+}
+.btn-pill-signup:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
+
+/* ═══════════════════════════════════════════════════════════
+   FLOATING CTA — bottom right
+   ═══════════════════════════════════════════════════════════ */
+.floating-cta{
+    position:fixed;
+    bottom:24px;
+    right:24px;
+    z-index:900;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    align-items:flex-end;
+    pointer-events:none;
+}
+.floating-cta > *{pointer-events:auto}
+.fab-main{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:14px 24px;
+    background:var(--grad-cta);
+    color:#fff;
+    border-radius:999px;
+    font-weight:800;
+    font-size:.9rem;
+    box-shadow:0 20px 44px -10px rgba(194,65,12,.6), 0 0 0 0 rgba(194,65,12,.7);
+    transition:all .3s cubic-bezier(.34,1.56,.64,1);
+    text-decoration:none;
+    white-space:nowrap;
+    border:none;
+    cursor:pointer;
+    animation:pulseCTA 2.4s ease-in-out infinite;
+}
+@keyframes pulseCTA{
+    0%,100%{box-shadow:0 20px 44px -10px rgba(194,65,12,.6), 0 0 0 0 rgba(194,65,12,.6)}
+    50%{box-shadow:0 20px 44px -10px rgba(194,65,12,.6), 0 0 0 12px rgba(194,65,12,0)}
+}
+.fab-main:hover{
+    transform:translateY(-3px) scale(1.03);
+    background:var(--grad-cta-hover);
+    animation:none;
+    box-shadow:0 24px 52px -8px rgba(194,65,12,.75);
+}
+.fab-main i{font-size:1rem}
+.fab-secondary{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:52px;
+    height:52px;
+    background:rgba(255,255,255,.95);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border:1px solid var(--border);
+    color:var(--ink);
+    border-radius:50%;
+    box-shadow:0 14px 32px -10px rgba(28,25,23,.35);
+    transition:all .25s ease;
+    text-decoration:none;
+    font-size:1.05rem;
+    position:relative;
+}
+.fab-secondary:hover{
+    transform:translateY(-3px) scale(1.08);
+    background:var(--accent);
+    color:#fff;
+    border-color:var(--accent);
+    box-shadow:0 20px 40px -10px rgba(194,65,12,.6);
+}
+.fab-secondary[data-tooltip]::after{
+    content:attr(data-tooltip);
+    position:absolute;
+    right:calc(100% + 12px);
+    top:50%;
+    transform:translateY(-50%) translateX(8px);
+    background:var(--ink);
+    color:#fff;
+    font-size:.72rem;
+    font-weight:700;
+    padding:7px 12px;
+    border-radius:8px;
+    white-space:nowrap;
+    opacity:0;
+    pointer-events:none;
+    transition:all .25s;
+}
+.fab-secondary:hover::after{
+    opacity:1;
+    transform:translateY(-50%) translateX(0);
+}
+.fab-close{
+    position:absolute;
+    top:-8px;
+    right:-8px;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:var(--ink);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:.6rem;
+    cursor:pointer;
+    border:2px solid #fff;
+    box-shadow:0 4px 10px rgba(0,0,0,.25);
+    transition:all .2s;
+}
+.fab-close:hover{background:#dc2626;transform:scale(1.15)}
+.fab-wrap{position:relative;display:inline-flex}
+
 /* RESPONSIVE */
 @media (max-width:1000px){
     .tools-grid{grid-template-columns:repeat(2,1fr)}
@@ -587,6 +763,10 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
 
     .tnc-content{padding:32px 22px 26px;border-radius:20px;}
     .tnc-content h2{font-size:1.25rem;}
+
+    .floating-cta{bottom:16px;right:14px;gap:10px}
+    .fab-main{padding:12px 20px;font-size:.85rem}
+    .fab-secondary{width:46px;height:46px;font-size:.95rem}
 }
 @media (max-width:560px){
     .topbar{padding:7px 0}
@@ -630,6 +810,9 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
 
     .tnc-actions{flex-direction:column;}
     .tnc-btn{width:100%;}
+
+    .login-suggestion-inner{flex-direction:column;text-align:center}
+    .login-suggestion-text{justify-content:center}
 }
 @media (max-width:400px){
     .logo-full-img{height:44px}
@@ -639,6 +822,9 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
     .slide h1{font-size:1.3rem}
     .slide p{font-size:.78rem}
     .stack-hint{display:none}
+
+    .fab-main span.long{display:none}
+    .fab-main{padding:12px 16px}
 }
 @media (prefers-reduced-motion:reduce){
     *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
@@ -647,56 +833,44 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════════
-     TERMS & CONDITIONS POPUP
-     ═══════════════════════════════════════════════════════════ -->
+<!-- TNC POPUP -->
 <div class="tnc-overlay" id="tncOverlay">
     <div class="tnc-content">
-        <div class="tnc-icon">
-            <i class="fas fa-shield-alt"></i>
-        </div>
+        <div class="tnc-icon"><i class="fas fa-shield-alt"></i></div>
         <h2>Welcome to Student Hub</h2>
         <p class="tnc-subtitle">Please read and accept our terms before continuing</p>
-
         <div class="tnc-body">
             <ul>
-                <li>
-                    <i class="fas fa-check-circle"></i>
-                    <span><strong>Free to use:</strong> Student Hub is 100% free for all students. No hidden fees, no subscriptions.</span>
-                </li>
-                <li>
-                    <i class="fas fa-check-circle"></i>
-                    <span><strong>Respect copyright:</strong> Only upload materials you have the right to share. Do not upload paid textbooks or copyrighted content.</span>
-                </li>
-                <li>
-                    <i class="fas fa-check-circle"></i>
-                    <span><strong>Be respectful:</strong> No offensive, harmful, or inappropriate content. We remove anything that violates this rule.</span>
-                </li>
-                <li>
-                    <i class="fas fa-check-circle"></i>
-                    <span><strong>Your responsibility:</strong> You are responsible for the files you upload. Student Hub is not liable for user content.</span>
-                </li>
-                <li>
-                    <i class="fas fa-check-circle"></i>
-                    <span><strong>Privacy:</strong> We store only what is needed to run the platform. We never sell your data.</span>
-                </li>
+                <li><i class="fas fa-check-circle"></i><span><strong>Free to use:</strong> Student Hub is 100% free for all students. No hidden fees, no subscriptions.</span></li>
+                <li><i class="fas fa-check-circle"></i><span><strong>Respect copyright:</strong> Only upload materials you have the right to share. Do not upload paid textbooks or copyrighted content.</span></li>
+                <li><i class="fas fa-check-circle"></i><span><strong>Be respectful:</strong> No offensive, harmful, or inappropriate content. We remove anything that violates this rule.</span></li>
+                <li><i class="fas fa-check-circle"></i><span><strong>Your responsibility:</strong> You are responsible for the files you upload. Student Hub is not liable for user content.</span></li>
+                <li><i class="fas fa-check-circle"></i><span><strong>Privacy:</strong> We store only what is needed to run the platform. We never sell your data.</span></li>
             </ul>
         </div>
-
         <div class="tnc-actions">
-            <button class="tnc-btn decline" id="tncDecline">
-                <i class="fas fa-times"></i> Decline
-            </button>
-            <button class="tnc-btn agree" id="tncAgree">
-                <i class="fas fa-check"></i> I Agree
-            </button>
+            <button class="tnc-btn decline" id="tncDecline"><i class="fas fa-times"></i> Decline</button>
+            <button class="tnc-btn agree" id="tncAgree"><i class="fas fa-check"></i> I Agree</button>
         </div>
+        <div class="tnc-footer"><i class="fas fa-lock"></i> By clicking "I Agree", you accept our Terms &amp; Privacy Policy.</div>
+    </div>
+</div>
 
-        <div class="tnc-footer">
-            <i class="fas fa-lock"></i> By clicking "I Agree", you accept our Terms &amp; Privacy Policy.
+<!-- LOGIN SUGGESTION BANNER FOR GUESTS -->
+{% if not is_authenticated %}
+<div class="login-suggestion-banner">
+    <div class="login-suggestion-inner">
+        <div class="login-suggestion-text">
+            <span class="sparkle">🔥</span>
+            <span>Join 5,000+ university scholars! Sign in to keep daily streaks alive, unlock animal &amp; player tokens, and follow classmates!</span>
+        </div>
+        <div class="login-suggestion-actions">
+            <a href="/login/" class="btn-pill-login"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+            <a href="/signup/" class="btn-pill-signup">Create Account</a>
         </div>
     </div>
 </div>
+{% endif %}
 
 <!-- TOP BAR -->
 <div class="topbar">
@@ -718,20 +892,34 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
 
         <div class="menu">
             <a href="/" class="active">Home</a>
-            <a href="/browse/">Browse</a>
+            <a href="/browse/">Browse Notes</a>
             <a href="/upload/">Upload</a>
+            <a href="/daily-quiz/" class="hack-link"><i class="fas fa-fire"></i>Daily Quiz 🔥</a>
+            <a href="/leaderboard/"><i class="fas fa-trophy" style="color:#eab308; margin-right:4px;"></i>Leaderboard</a>
+            <a href="/community/"><i class="fas fa-users" style="color:#06b6d4; margin-right:4px;"></i>Community</a>
             <a href="/autoquiz/" class="quiz-link"><i class="fas fa-brain"></i>AutoQuiz AI</a>
-            <a href="/calculator/">Calculator</a>
-            <a href="/scanner/">Scanner</a>
             <a href="/free_course/" class="course-link"><i class="fas fa-book-open"></i>Free Courses</a>
-            <a href="/hackerthon/" class="hack-link"><i class="fas fa-code"></i>Hackathon</a>
-            <a href="/about/">About</a>
+            {% if is_authenticated %}
+            <a href="/dashboard/">Dashboard</a>
+            {% endif %}
         </div>
 
         <div class="nav-right">
-            <a href="/upload/" class="btn-quote">
-                <span>Upload File</span> <i class="fas fa-arrow-right"></i>
-            </a>
+            {% if is_authenticated %}
+                <a href="/daily-quiz/" class="streak-pill" title="Daily Streak">
+                    <span class="flame-icon">🔥</span> {{ current_student.streak|default:0 }}
+                </a>
+                <a href="/dashboard/" class="token-badge {{ current_student.token_details.badge_class|default:'tier-starter' }}">
+                    {{ current_student.token_details.emoji|default:'🐣' }} {{ current_student.username|default:'Student' }}
+                </a>
+            {% else %}
+                <a href="/login/" class="btn-pill-login" style="padding: 9px 18px; font-size:.8rem;">
+                    <i class="fas fa-sign-in-alt"></i> Log In
+                </a>
+                <a href="/signup/" class="btn-pill-signup" style="padding: 10px 20px; font-size:.8rem;">
+                    <i class="fas fa-sparkles"></i> Join Free
+                </a>
+            {% endif %}
         </div>
     </div>
 </nav>
@@ -744,9 +932,7 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
 
     <div class="hero-top-inner">
         <span class="hero-top-pill"><span class="dot"></span> Built by students, for students</span>
-
         <h1 id="typing-text"></h1>
-
         <p>The free platform where students upload, discover, and organize study materials — past papers, notes, slides, and more. Built in Tanzania.</p>
 
         <div class="hero-top-btns">
@@ -791,7 +977,6 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
         </div>
 
         <div class="hero-stack" id="heroSlider">
-
             <div class="slide s1 active">
                 <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1200&q=60');"></div>
                 <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=1200&q=60');"></div>
@@ -1028,6 +1213,46 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
                     <span class="explore-cta">Join hackathon <i class="fas fa-arrow-right"></i></span>
                 </div>
             </a>
+
+            <a href="/daily-quiz/" class="explore-card">
+                <div class="explore-icon quiz" style="background:#fff7ed; color:#ea580c;"><i class="fas fa-fire"></i></div>
+                <div class="explore-body">
+                    <span class="explore-tag quiz" style="background:#fff7ed; color:#ea580c; border-color:#fed7aa;">Daily Streak Quiz</span>
+                    <h3>Subject Quizzes &amp; Streak Flames</h3>
+                    <p>Bite-sized daily questions tailored to your field of study. Maintain your active streak, earn XP, and unlock rare animal and player tokens!</p>
+                    <span class="explore-cta">Take daily quiz <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <a href="/leaderboard/" class="explore-card">
+                <div class="explore-icon" style="background:#fefce8; color:#ca8a04;"><i class="fas fa-trophy"></i></div>
+                <div class="explore-body">
+                    <span class="explore-tag" style="background:#fefce8; color:#ca8a04; border-color:#fde047;">Campus Rankings</span>
+                    <h3>Leaderboard &amp; Student Ranks</h3>
+                    <p>Compete with scholars across Tanzania's top universities. See the podium champions, compare study streaks, and claim the #1 rank!</p>
+                    <span class="explore-cta">View rankings <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <a href="/community/" class="explore-card">
+                <div class="explore-icon" style="background:#ecfeff; color:#0891b2;"><i class="fas fa-users"></i></div>
+                <div class="explore-body">
+                    <span class="explore-tag" style="background:#ecfeff; color:#0891b2; border-color:#a5f3fc;">Student Network</span>
+                    <h3>Connect &amp; Follow Study Buddies</h3>
+                    <p>Follow classmates from your university and across the country. See their streaks, equipped animal/player badges, and uploaded study materials.</p>
+                    <span class="explore-cta">Discover peers <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+
+            <a href="/dashboard/" class="explore-card">
+                <div class="explore-icon" style="background:#fdf2f8; color:#db2777;"><i class="fas fa-medal"></i></div>
+                <div class="explore-body">
+                    <span class="explore-tag" style="background:#fdf2f8; color:#db2777; border-color:#fbcfe8;">Student Workspace</span>
+                    <h3>Personal Account &amp; Token Vault</h3>
+                    <p>Track your upload history, save favourite books and past papers, monitor daily study progress, and equip unlocked badges on your profile!</p>
+                    <span class="explore-cta">Open dashboard <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
         </div>
     </div>
 </section>
@@ -1136,7 +1361,56 @@ footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
     </div>
 </footer>
 
+<!-- ═══════════════════════════════════════════════════════════
+     FLOATING ACTION PILLS — bottom right
+     ═══════════════════════════════════════════════════════════ -->
+<div class="floating-cta" id="floatingCTA">
+    <div class="fab-wrap">
+        {% if is_authenticated %}
+            <a href="/dashboard/" class="fab-main">
+                <i class="fas fa-user-circle"></i>
+                <span class="long">My Dashboard</span>
+            </a>
+        {% else %}
+            <a href="/signup/" class="fab-main">
+                <i class="fas fa-sparkles"></i>
+                <span class="long">Join Free</span>
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="fab-wrap">
+        {% if is_authenticated %}
+            <a href="/leaderboard/" class="fab-secondary" data-tooltip="Leaderboard">
+                <i class="fas fa-trophy"></i>
+            </a>
+        {% else %}
+            <a href="/login/" class="fab-secondary" data-tooltip="Log In">
+                <i class="fas fa-sign-in-alt"></i>
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="fab-wrap">
+        <a href="/daily-quiz/" class="fab-secondary" data-tooltip="Daily Quiz 🔥">
+            <i class="fas fa-fire"></i>
+        </a>
+    </div>
+
+    <button class="fab-close" onclick="document.getElementById('floatingCTA').style.display='none'; localStorage.setItem('sh_fab_hidden','1')" aria-label="Hide">
+        <i class="fas fa-times"></i>
+    </button>
+</div>
+
 <script>
+// Hide FAB if previously dismissed
+(function(){
+    if (localStorage.getItem('sh_fab_hidden') === '1') {
+        var f = document.getElementById('floatingCTA');
+        if (f) f.style.display = 'none';
+    }
+})();
+
 // ═══════════════════════════════════════════════════════════
 // TERMS & CONDITIONS POPUP
 // ═══════════════════════════════════════════════════════════
@@ -1194,7 +1468,7 @@ function startTyping(elementId, textToType, delay = 0) {
             typingElement.classList.add('vibrate');
             setTimeout(() => typingElement.classList.remove('vibrate'), 50);
             index++;
-            setTimeout(type, Math.random() * 80 + 40); 
+            setTimeout(type, Math.random() * 80 + 40);
         } else {
             setTimeout(() => { typingElement.innerHTML = currentHTML; }, 2000);
         }
@@ -1216,6 +1490,7 @@ window.addEventListener('load', function() {
     const dots = document.querySelectorAll('#heroDots button');
     const swipeHint = document.getElementById('swipeHint');
     const total = slides.length;
+    if (!hero || total === 0) return;
     let current = 0, timer = null;
     let startX=0, startY=0, isDragging=false, moved=false;
     const SLIDE_INTERVAL = 5000;
@@ -1320,8 +1595,6 @@ window.addEventListener('load', function() {
 // ═══════════════════════════════════════════════════════════
 // ALL BACKGROUND ROTATIONS
 // ═══════════════════════════════════════════════════════════
-
-// Hero section background
 (function(){
     const bgs = document.querySelectorAll('.hero-section-bg-img');
     if(bgs.length === 0) return;
@@ -1333,7 +1606,6 @@ window.addEventListener('load', function() {
     }, 4500);
 })();
 
-// Stack background
 (function(){
     const bgs = document.querySelectorAll('.stack-bg-img');
     if(bgs.length === 0) return;
@@ -1345,7 +1617,6 @@ window.addEventListener('load', function() {
     }, 5500);
 })();
 
-// Explore background
 (function(){
     const bgs = document.querySelectorAll('.explore-bg-img');
     if(bgs.length === 0) return;
@@ -1357,7 +1628,6 @@ window.addEventListener('load', function() {
     }, 5000);
 })();
 
-// Tools background
 (function(){
     const bgs = document.querySelectorAll('.tools-bg-img');
     if(bgs.length === 0) return;
@@ -1369,7 +1639,6 @@ window.addEventListener('load', function() {
     }, 5000);
 })();
 
-// CTA background
 (function(){
     const bgs = document.querySelectorAll('.cta-bg-img');
     if(bgs.length === 0) return;
@@ -1381,7 +1650,6 @@ window.addEventListener('load', function() {
     }, 4500);
 })();
 
-// Stack card small image rotation
 (function(){
     const cards = document.querySelectorAll('.stack-card');
     cards.forEach((card, cardIdx) => {
@@ -1397,6 +1665,6 @@ window.addEventListener('load', function() {
     });
 })();
 </script>
-
+<script src="/static/hub.js"></script>
 </body>
 </html>
