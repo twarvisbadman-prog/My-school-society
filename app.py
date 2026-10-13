@@ -1,4 +1,4 @@
-# app.py - FULL VERSION with R2 + Auth + Gamification + Session Persistence
+# app.py - FULL VERSION with Cloudflare R2 + Auth + Gamification
 import os
 import uuid
 import json
@@ -105,7 +105,7 @@ if not settings.configured:
             "django.middleware.common.CommonMiddleware",
             "django.middleware.csrf.CsrfViewMiddleware",
             "django.middleware.clickjacking.XFrameOptionsMiddleware",
-            "__main__.SessionMiddleware",
+            "app.SessionMiddleware",
         ],
         TEMPLATES=[{
             "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -162,14 +162,10 @@ except Exception as e:
     r2_client = None
 
 # ============================================================
-# SESSION MIDDLEWARE — persistent login across pages
+# SESSION MIDDLEWARE
 # ============================================================
 class SessionMiddleware(MiddlewareMixin):
-    """
-    Runs on every request:
-      - Attaches request.current_user (from cookie or Bearer)
-      - Silently refreshes expired access tokens via refresh_token
-    """
+    """Attaches request.current_user + silently refreshes tokens."""
     def process_request(self, request):
         request.current_user = None
         request._refresh_cookies = None
@@ -178,7 +174,6 @@ class SessionMiddleware(MiddlewareMixin):
                 request.META.get("HTTP_AUTHORIZATION", "").replace("Bearer ", "").strip()
         refresh = request.COOKIES.get("sb-refresh-token")
 
-        # 1) Try access token
         if token:
             try:
                 resp = supabase.auth.get_user(token)
@@ -188,7 +183,6 @@ class SessionMiddleware(MiddlewareMixin):
             except Exception as e:
                 print(f"[session] access token invalid: {e}")
 
-        # 2) Try refresh token
         if refresh:
             try:
                 sess = supabase.auth.refresh_session(refresh)
@@ -291,15 +285,11 @@ UNIVERSITIES = [
 # AUTH HELPERS
 # ============================================================
 def get_current_user(request):
-    """Reads user attached by SessionMiddleware."""
     return getattr(request, "current_user", None)
 
 
 def build_view_context(request):
-    """
-    Returns dict with is_authenticated + current_student.
-    Spread into every render() context.
-    """
+    """Returns is_authenticated + current_student for templates."""
     me = get_current_user(request)
     if not me or not me.get("profile"):
         return {"is_authenticated": False, "current_student": None}
@@ -307,7 +297,6 @@ def build_view_context(request):
     p = me["profile"]
     streak = p.get("current_streak", 0) or 0
 
-    # Token tier by streak
     if streak >= 100:
         token = {"emoji": "🐉", "badge_class": "tier-legendary"}
     elif streak >= 30:
@@ -342,7 +331,6 @@ def build_view_context(request):
 
 
 def auto_username_from_email(email, user_id):
-    """Generate a unique username from email."""
     base = email.split("@")[0].lower().replace(".", "_").replace("-", "_")[:20]
     base = re.sub(r'[^a-z0-9_]', '', base) or "student"
     try:
@@ -357,7 +345,6 @@ def auto_username_from_email(email, user_id):
 # STREAK + POINTS
 # ============================================================
 def award_points(user_id, action, points, reference_id=None):
-    """Add points + log activity."""
     try:
         row = supabase.table("users").select("points").eq("id", user_id).execute()
         if not row.data:
@@ -375,7 +362,6 @@ def award_points(user_id, action, points, reference_id=None):
 
 
 def update_streak(user_id):
-    """Update daily streak + bonus points."""
     try:
         row = supabase.table("users").select(
             "current_streak, longest_streak, last_active_date, points"
@@ -554,13 +540,11 @@ def get_all_notes(current_user_id=None):
             note["university"] = note.get("university", "Not specified")
             note["passcode"] = note.get("passcode", "")
             note["can_view_inline"] = can_view_inline(note.get("filename", ""))
-
             try:
                 lk = supabase.table("note_likes").select("*", count="exact").eq("note_id", note["id"]).execute()
                 note["like_count"] = lk.count if hasattr(lk, "count") and lk.count is not None else len(lk.data or [])
             except Exception:
                 note["like_count"] = 0
-
             note["user_liked"] = False
             if current_user_id:
                 try:
@@ -779,7 +763,6 @@ def login_view(request):
             user = resp.user
             session = resp.session
 
-            # Ensure profile exists with username
             existing = supabase.table("users").select("*").eq("id", user.id).execute()
             if not existing.data:
                 full_name = (user.user_metadata or {}).get("full_name", "") or user.email.split("@")[0]
@@ -1394,9 +1377,8 @@ def admin_settings(request):
 # STATIC PAGES
 # ============================================================
 def about_view(request):
-    ctx = build_view_context(request)
     try:
-        return render(request, "about.html", ctx)
+        return render(request, "about.html", build_view_context(request))
     except Exception as e:
         return HttpResponse(f"About page error: {e}", status=500)
 
@@ -1462,7 +1444,6 @@ def autoquiz_view(request):
 
 
 def quiz_view(request):
-    """Serve quiz.html with auth context + today's date."""
     ctx = build_view_context(request)
     ctx["today"] = date.today().strftime("%B %d, %Y")
     return render(request, "quiz.html", ctx)
