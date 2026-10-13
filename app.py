@@ -162,10 +162,15 @@ except Exception as e:
     r2_client = None
 
 # ============================================================
-# SESSION MIDDLEWARE
+# SESSION MIDDLEWARE — does NOT touch Supabase auth flow
 # ============================================================
 class SessionMiddleware(MiddlewareMixin):
-    """Attaches request.current_user + silently refreshes tokens."""
+    """
+    Reads the Supabase access/refresh tokens from cookies (set during
+    login/signup) and attaches request.current_user.
+    Silently refreshes expired access tokens using the refresh token.
+    Never touches signup / email verification — that's handled in views.
+    """
     def process_request(self, request):
         request.current_user = None
         request._refresh_cookies = None
@@ -289,7 +294,6 @@ def get_current_user(request):
 
 
 def build_view_context(request):
-    """Returns is_authenticated + current_student for templates."""
     me = get_current_user(request)
     if not me or not me.get("profile"):
         return {"is_authenticated": False, "current_student": None}
@@ -752,17 +756,19 @@ def favicon_view(request):
     return HttpResponse(status=204)
 
 # ============================================================
-# AUTH VIEWS
+# AUTH VIEWS — SUPABASE HANDLES EMAIL/VERIFICATION
 # ============================================================
 def login_view(request):
     if request.method == "POST":
         email = request.POST.get("username", "").strip().lower() or request.POST.get("email", "").strip().lower()
         password = request.POST.get("password", "")
         try:
+            # Supabase handles the actual auth + session creation
             resp = supabase.auth.sign_in_with_password({"email": email, "password": password})
             user = resp.user
             session = resp.session
 
+            # Make sure a profile row exists in the `users` table
             existing = supabase.table("users").select("*").eq("id", user.id).execute()
             if not existing.data:
                 full_name = (user.user_metadata or {}).get("full_name", "") or user.email.split("@")[0]
@@ -806,6 +812,11 @@ def login_view(request):
 
 
 def signup_view(request):
+    """
+    Supabase handles signup + sends verification email automatically.
+    We just pass the email/password/full_name to supabase.auth.sign_up().
+    The user gets an email from Supabase to verify their account.
+    """
     if request.method == "POST":
         email = request.POST.get("email", "").strip().lower()
         password = request.POST.get("password", "")
@@ -826,6 +837,7 @@ def signup_view(request):
             })
 
         try:
+            # Supabase sends the verification email here automatically
             supabase.auth.sign_up({
                 "email": email,
                 "password": password,
@@ -863,6 +875,7 @@ def logout_view(request):
 
 
 def oauth_callback(request):
+    """Google/GitHub OAuth — Supabase handles the token exchange in JS."""
     return render(request, "auth_callback.html", {
         "supabase_url": SUPABASE_URL,
         "supabase_anon": SUPABASE_KEY,
