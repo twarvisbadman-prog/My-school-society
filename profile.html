@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>{{ profile.full_name|default:profile.username }} | Student Hub</title>
+<link rel="icon" type="image/png" href="/apple-touch-icon.png" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+    --bg:#fafaf9;--surface:#fff;--alt:#f5f5f4;--border:#e7e5e4;
+    --ink:#1c1917;--text-2:#44403c;--text-3:#57534e;
+    --accent:#c2410c;--accent-bright:#ea580c;--accent-dim:#fff1e8;
+    --grad:linear-gradient(120deg,#ea580c,#db2777);
+    --grad-cta:linear-gradient(120deg,#c2410c,#be185d);
+    --grad-cta-hover:linear-gradient(120deg,#9a3412,#9d174d);
+    --gold:#b45309;--gold-dim:#fef3c7;
+    --green:#15803d;--green-dim:#dcfce7;
+    --radius-sm:10px;--radius-md:14px;--radius-lg:20px;--radius-xl:28px;
+    --shadow-sm:0 1px 2px rgba(28,25,23,.06);
+    --shadow-md:0 10px 28px -12px rgba(28,25,23,.18);
+    --shadow-lg:0 28px 64px -20px rgba(28,25,23,.22);
+    --shadow-cta:0 8px 22px -8px rgba(219,39,119,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+
+.topbar{background:var(--ink);color:#f5f5f4;font-size:.82rem;padding:9px 0}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap;text-align:center}
+.topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:#a8a29e}
+.topbar-inner span i{color:var(--accent-bright);font-size:.78rem}
+
+.mainnav{background:rgba(250,250,249,.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.mainnav-inner{max-width:1200px;margin:0 auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.3rem;letter-spacing:-.02em;flex-shrink:0}
+.logo-img{width:46px;height:46px;border-radius:12px;object-fit:cover;box-shadow:0 6px 16px -6px rgba(219,39,119,.4);background:#fff}
+.logo-text span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.menu{display:flex;align-items:center;gap:2px;flex-wrap:wrap;justify-content:center;flex:1;min-width:0}
+.menu a{padding:8px 11px;font-size:.84rem;font-weight:600;color:var(--text-2);border-radius:8px;white-space:nowrap;transition:all .25s ease}
+.menu a:hover{color:var(--ink);background:var(--alt)}
+.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.btn-nav{background:var(--grad-cta);color:#fff;padding:10px 20px;border-radius:999px;font-weight:700;font-size:.82rem;display:inline-flex;align-items:center;gap:8px;transition:all .25s ease;box-shadow:var(--shadow-cta);cursor:pointer;border:none;font-family:inherit}
+.btn-nav:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
+.btn-nav.outline{background:transparent;color:var(--ink);border:1px solid var(--border);box-shadow:none}
+.btn-nav.outline:hover{background:var(--alt);color:var(--accent);border-color:var(--accent)}
+.btn-nav.following{background:var(--alt);color:var(--text-2);border:1px solid var(--border);box-shadow:none}
+.btn-nav.following:hover{background:#fee2e2;color:#dc2626;border-color:#fca5a5}
+
+/* PROFILE HERO */
+.hero{padding:48px 20px 32px}
+.hero-inner{max-width:1000px;margin:0 auto}
+.hero-card{background:linear-gradient(135deg,#1c1917 0%,#3f1d0d 100%);border-radius:var(--radius-xl);padding:40px 36px;position:relative;overflow:hidden;box-shadow:var(--shadow-lg);color:#fff}
+.hero-card::before{content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(219,39,119,.18),transparent 60%);pointer-events:none}
+.hero-content{position:relative;z-index:1;display:grid;grid-template-columns:auto 1fr auto;gap:28px;align-items:center}
+.avatar{width:110px;height:110px;border-radius:50%;background:var(--grad-cta);display:flex;align-items:center;justify-content:center;font-size:2.6rem;font-weight:900;flex-shrink:0;border:4px solid rgba(255,255,255,.2);box-shadow:0 12px 32px rgba(219,39,119,.4);overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.hero-info h1{font-size:clamp(1.5rem,3vw,2rem);font-weight:900;letter-spacing:-.03em;margin-bottom:6px;line-height:1.2}
+.hero-info .username{color:#fdba8c;font-weight:700;font-size:.95rem;font-family:'JetBrains Mono',monospace;margin-bottom:10px}
+.hero-info .bio{color:#d6d3d1;font-size:.9rem;line-height:1.6;margin-bottom:14px;max-width:520px}
+.hero-info .univ{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);padding:6px 14px;border-radius:50px;font-size:.78rem;font-weight:700;color:#e7e5e4;border:1px solid rgba(255,255,255,.15)}
+.hero-info .univ i{color:#fdba8c}
+.hero-actions{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+
+/* STATS */
+.stats-grid{max-width:1000px;margin:0 auto 30px;padding:0 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 18px;text-align:center;transition:all .25s ease;box-shadow:var(--shadow-sm)}
+.stat-card:hover{transform:translateY(-3px);border-color:#fed7c3;box-shadow:var(--shadow-md)}
+.stat-icon{font-size:1.6rem;display:block;margin-bottom:6px}
+.stat-num{font-size:1.6rem;font-weight:900;letter-spacing:-.03em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1;font-family:'JetBrains Mono',monospace}
+.stat-label{color:var(--text-3);font-size:.72rem;margin-top:4px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+
+/* SECTION */
+.section{max-width:1000px;margin:0 auto 30px;padding:0 20px}
+.section-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;box-shadow:var(--shadow-sm)}
+.section-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.section-head h2{font-size:1.15rem;font-weight:900;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.section-head h2 i{color:var(--accent)}
+.section-head .count{background:var(--alt);padding:5px 12px;border-radius:30px;color:var(--text-3);font-size:.75rem;font-weight:700;border:1px solid var(--border)}
+
+/* UPLOADS */
+.upload-item{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--radius-md);border-bottom:1px solid var(--border);transition:background .2s;flex-wrap:wrap}
+.upload-item:last-child{border-bottom:none}
+.upload-item:hover{background:var(--alt)}
+.upload-info{flex:1;min-width:200px}
+.upload-name{font-weight:800;font-size:.9rem;margin-bottom:4px;word-break:break-word}
+.upload-meta{display:flex;gap:14px;flex-wrap:wrap;color:var(--text-3);font-size:.72rem;font-weight:600}
+.upload-meta span{display:inline-flex;align-items:center;gap:4px}
+.upload-meta i{color:var(--accent)}
+.upload-actions{display:flex;gap:6px}
+
+.btn-sm{padding:7px 14px;border-radius:30px;font-size:.72rem;font-weight:700;display:inline-flex;align-items:center;gap:5px;cursor:pointer;border:1px solid transparent;transition:all .25s;text-decoration:none;white-space:nowrap;background:var(--blue-dim);color:var(--blue)}
+.btn-sm.view{background:#dbeafe;color:#2563eb;border-color:#bfdbfe}
+.btn-sm.view:hover{background:#2563eb;color:#fff;border-color:#2563eb}
+.btn-sm.download{background:#dcfce7;color:#15803d;border-color:#86efac}
+.btn-sm.download:hover{background:#15803d;color:#fff;border-color:#15803d}
+
+/* ACTIVITY */
+.activity-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);font-size:.85rem}
+.activity-item:last-child{border-bottom:none}
+.activity-icon{width:36px;height:36px;border-radius:10px;background:var(--accent-dim);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9rem}
+.activity-text{flex:1}
+.activity-text strong{color:var(--ink);font-weight:700}
+.activity-points{background:var(--green-dim);color:var(--green);padding:3px 10px;border-radius:30px;font-size:.7rem;font-weight:800;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.activity-time{color:var(--text-3);font-size:.72rem;font-weight:600;margin-top:2px}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:50px 20px;color:var(--text-3)}
+.empty-state i{font-size:3rem;color:var(--border-strong);display:block;margin-bottom:14px}
+.empty-state h3{color:var(--ink);font-size:1.05rem;font-weight:800;margin-bottom:6px}
+.empty-state p{font-size:.88rem;color:var(--text-2)}
+
+footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;margin-top:60px}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-bottom{border-top:1px solid #292524;padding-top:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.footer-bottom p{color:#78716c;font-size:.83rem}
+.footer-socials{display:flex;gap:8px}
+.footer-socials a{width:38px;height:38px;border:1px solid #292524;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#a8a29e;font-size:.9rem;transition:all .25s ease;background:#1c1917}
+.footer-socials a:hover{background:var(--grad-cta);color:#fff;border-color:transparent;transform:translateY(-2px)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120%);background:var(--ink);color:#fff;padding:14px 22px;border-radius:14px;font-weight:700;font-size:.88rem;box-shadow:var(--shadow-lg);z-index:2000;display:flex;align-items:center;gap:10px;transition:transform .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast i{color:#fdba8c}
+
+@media (max-width:720px){
+    .mainnav-inner{flex-wrap:wrap;padding:12px 16px;gap:12px}
+    .logo{font-size:1.05rem;gap:10px}
+    .logo-img{width:40px;height:40px}
+    .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0;margin:0 -16px;padding-left:16px;padding-right:16px}
+    .menu::-webkit-scrollbar{display:none}
+    .menu a{padding:8px 12px;font-size:.8rem;flex-shrink:0}
+    .hero-card{padding:28px 22px}
+    .hero-content{grid-template-columns:1fr;text-align:center;gap:20px}
+    .avatar{margin:0 auto}
+    .hero-actions{align-items:stretch;width:100%}
+    .btn-nav{justify-content:center}
+    .stats-grid{grid-template-columns:repeat(2,1fr)}
+    .section-card{padding:22px 18px}
+}
+@media (max-width:480px){
+    .topbar-inner span:nth-child(3){display:none}
+    .stat-num{font-size:1.3rem}
+    .btn-nav span{display:none}
+    .avatar{width:88px;height:88px;font-size:2rem}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="topbar-inner">
+        <span><i class="fas fa-user"></i> Student Profile</span>
+        <span><i class="fas fa-envelope"></i> Twarvistech@gmail.com</span>
+        <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
+    </div>
+</div>
+
+<nav class="mainnav">
+    <div class="mainnav-inner">
+        <a href="/" class="logo">
+            <img src="/apple-touch-icon.png" alt="Student Hub" class="logo-img">
+            <span class="logo-text">Student<span>Hub</span></span>
+        </a>
+        <div class="menu">
+            <a href="/">Home</a>
+            <a href="/browse/">Browse</a>
+            <a href="/upload/">Upload</a>
+            <a href="/leaderboard/">Leaderboard</a>
+            <a href="/about/">About</a>
+        </div>
+        <div class="nav-right">
+            {% if is_logged_in %}
+                <a href="/dashboard/" class="btn-nav outline"><i class="fas fa-user"></i> <span>Dashboard</span></a>
+            {% else %}
+                <a href="/login/" class="btn-nav"><i class="fas fa-sign-in-alt"></i> <span>Sign In</span></a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-card">
+            <div class="hero-content">
+                <div class="avatar">
+                    {% if profile.avatar_url %}
+                        <img src="{{ profile.avatar_url }}" alt="{{ profile.full_name }}">
+                    {% else %}
+                        {{ profile.full_name|default:profile.username|slice:":1"|upper }}
+                    {% endif %}
+                </div>
+                <div class="hero-info">
+                    <h1>{{ profile.full_name|default:profile.username|default:"Anonymous" }}</h1>
+                    {% if profile.username %}
+                        <div class="username">@{{ profile.username }}</div>
+                    {% endif %}
+                    {% if profile.bio %}
+                        <p class="bio">{{ profile.bio }}</p>
+                    {% endif %}
+                    <div class="univ"><i class="fas fa-university"></i> {{ profile.university|default:"Not specified" }}</div>
+                </div>
+                <div class="hero-actions">
+                    {% if is_me %}
+                        <a href="/dashboard/" class="btn-nav outline"><i class="fas fa-cog"></i> Dashboard</a>
+                    {% elif is_logged_in %}
+                        <button class="btn-nav {% if is_following %}following{% endif %}" id="followBtn" data-user-id="{{ profile.id }}">
+                            {% if is_following %}
+                                <i class="fas fa-check"></i> <span id="followText">Following</span>
+                            {% else %}
+                                <i class="fas fa-plus"></i> <span id="followText">Follow</span>
+                            {% endif %}
+                        </button>
+                        {% if is_friend %}
+                            <div style="color:#fdba8c;font-size:.8rem;font-weight:700;text-align:center;margin-top:6px"><i class="fas fa-user-friends"></i> Friends</div>
+                        {% endif %}
+                    {% else %}
+                        <a href="/login/?next=/profile/{{ profile.username }}/" class="btn-nav"><i class="fas fa-plus"></i> <span>Follow</span></a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-icon">⭐</span>
+        <div class="stat-num">{{ profile.points|default:0 }}</div>
+        <div class="stat-label">Points</div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">🔥</span>
+        <div class="stat-num">{{ profile.current_streak|default:0 }}</div>
+        <div class="stat-label">Day Streak</div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">📤</span>
+        <div class="stat-num">{{ profile.uploads_count|default:0 }}</div>
+        <div class="stat-label">Uploads</div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">❤️</span>
+        <div class="stat-num">{{ profile.likes_received|default:0 }}</div>
+        <div class="stat-label">Likes</div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">👥</span>
+        <div class="stat-num">{{ followers_count }}</div>
+        <div class="stat-label">Followers</div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">➡️</span>
+        <div class="stat-num">{{ following_count }}</div>
+        <div class="stat-label">Following</div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">🧠</span>
+        <div class="stat-num">{{ profile.quizzes_correct|default:0 }}</div>
+        <div class="stat-label">Quiz Wins</div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">🏆</span>
+        <div class="stat-num">{{ profile.longest_streak|default:0 }}</div>
+        <div class="stat-label">Best Streak</div>
+    </div>
+</div>
+
+<!-- UPLOADS -->
+<section class="section">
+    <div class="section-card">
+        <div class="section-head">
+            <h2><i class="fas fa-file-upload"></i> Uploads</h2>
+            <span class="count">{{ uploads|length }} files</span>
+        </div>
+        {% if uploads %}
+            {% for note in uploads %}
+            <div class="upload-item">
+                <div class="upload-info">
+                    <div class="upload-name">{{ note.module|default:"Untitled" }}</div>
+                    <div class="upload-meta">
+                        <span><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
+                        <span><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
+                        <span><i class="fas fa-{% if note.file_type == 'pastpaper' %}file-alt{% else %}sticky-note{% endif %}"></i> {{ note.file_type|default:"notes"|title }}</span>
+                    </div>
+                </div>
+                <div class="upload-actions">
+                    <a href="/view/{{ note.id }}/" class="btn-sm view"><i class="fas fa-eye"></i> View</a>
+                    <a href="/download/{{ note.id }}/" class="btn-sm download"><i class="fas fa-download"></i> Download</a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-folder-open"></i>
+                <h3>No uploads yet</h3>
+                <p>This user hasn't shared any notes yet.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- ACTIVITY -->
+{% if activity %}
+<section class="section">
+    <div class="section-card">
+        <div class="section-head">
+            <h2><i class="fas fa-bolt"></i> Recent Activity</h2>
+        </div>
+        {% for a in activity %}
+        <div class="activity-item">
+            <div class="activity-icon">
+                {% if a.action == 'upload' %}<i class="fas fa-upload"></i>
+                {% elif a.action == 'like_received' %}<i class="fas fa-heart"></i>
+                {% elif a.action == 'new_follower' %}<i class="fas fa-user-plus"></i>
+                {% elif a.action == 'quiz_correct' %}<i class="fas fa-brain"></i>
+                {% elif a.action == 'streak_day' %}<i class="fas fa-fire"></i>
+                {% elif a.action == 'like_given' %}<i class="fas fa-thumbs-up"></i>
+                {% else %}<i class="fas fa-star"></i>{% endif %}
+            </div>
+            <div class="activity-text">
+                <strong>{{ a.action|title|cut:"_"|default:"Activity" }}</strong>
+                <div class="activity-time">{{ a.created_at|slice:":10" }}</div>
+            </div>
+            {% if a.points %}
+            <div class="activity-points">+{{ a.points }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<footer>
+    <div class="footer-inner">
+        <div class="footer-bottom">
+            <p>© 2026 Student Hub. All rights reserved.</p>
+            <div class="footer-socials">
+                <a href="https://www.instagram.com/twarvis_" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+                <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Done</span></div>
+
+<script>
+const followBtn = document.getElementById('followBtn');
+const toast = document.getElementById('toast');
+const toastMsg = document.getElementById('toastMsg');
+
+function showToast(msg) {
+    toastMsg.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+if (followBtn) {
+    followBtn.addEventListener('click', async () => {
+        const userId = followBtn.dataset.userId;
+        followBtn.disabled = true;
+        try {
+            const r = await fetch(`/api/follow/${userId}/`, {
+                method: 'POST',
+                headers: {'X-Requested-With': 'XMLHttpRequest'},
+                credentials: 'same-origin',
+            });
+            if (r.status === 401) {
+                window.location.href = '/login/?next=' + encodeURIComponent(window.location.pathname);
+                return;
+            }
+            const data = await r.json();
+            if (data.following) {
+                followBtn.classList.add('following');
+                followBtn.innerHTML = '<i class="fas fa-check"></i> <span id="followText">Following</span>';
+                showToast('Now following! 🎉');
+            } else {
+                followBtn.classList.remove('following');
+                followBtn.innerHTML = '<i class="fas fa-plus"></i> <span id="followText">Follow</span>';
+                showToast('Unfollowed');
+            }
+        } catch (e) {
+            console.error(e);
+            showToast('Something went wrong');
+        }
+        followBtn.disabled = false;
+    });
+}
+</script>
+</body>
+</html>
