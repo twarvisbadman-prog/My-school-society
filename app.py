@@ -1,4 +1,4 @@
-# app.py - FINAL VERSION with R2 + Supabase Auth + Gamification + Password Reset + Community
+# app.py - FINAL VERSION with R2 + Supabase Auth + Gamification + Community + Leaderboard
 import os
 import uuid
 import json
@@ -72,7 +72,7 @@ CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf.split(",") if o.strip()]
 # SANITY CHECK
 # ============================================================
 print("=" * 60)
-print("🚀 TWARVIS SCHOOL — Final Build (R2 + Auth + Gamification + Community)")
+print("🚀 TWARVIS SCHOOL — Final Build (R2 + Auth + Gamification + Community + Leaderboard)")
 print("=" * 60)
 print(f"📡 Supabase URL:  {SUPABASE_URL[:50]}")
 print(f"🔑 Supabase Key:  {'✅ VALID JWT' if SUPABASE_KEY.startswith('eyJ') else '❌ INVALID'}")
@@ -221,7 +221,6 @@ class SessionMiddleware(MiddlewareMixin):
             p = supabase.table("users").select("*").eq("id", user.id).execute()
             profile_data = p.data[0] if p.data else None
 
-            # ── AUTO-CREATE OR FIX-UP PROFILE ──────────────
             if not profile_data:
                 profile_data = SessionMiddleware._create_profile(user)
                 if profile_data:
@@ -233,7 +232,6 @@ class SessionMiddleware(MiddlewareMixin):
                     except Exception:
                         pass
             else:
-                # Fix missing username
                 if not profile_data.get("username"):
                     new_username = SessionMiddleware._generate_unique_username(
                         user.email, user.id
@@ -247,7 +245,6 @@ class SessionMiddleware(MiddlewareMixin):
                     except Exception as e:
                         print(f"[session] ❌ Failed to fix username: {e}")
 
-                # Fix missing avatar/full_name from Google
                 meta = getattr(user, "user_metadata", None) or {}
                 updates = {}
                 if not profile_data.get("full_name") and meta.get("name"):
@@ -1089,12 +1086,69 @@ def profile_view(request, username):
 
 
 def leaderboard_view(request):
+    """
+    Leaderboard with all stats: rank, points, likes_received,
+    uploads_count, current_streak, followers_count.
+    Uses the leaderboard SQL view; falls back gracefully if
+    followers_count isn't included yet.
+    """
+    leaders = []
     try:
         rows = supabase.table("leaderboard").select("*").limit(100).execute()
         leaders = rows.data or []
+
+        # ── Fallback: compute followers_count if the view doesn't have it ──
+        if leaders and "followers_count" not in leaders[0]:
+            try:
+                followers_resp = supabase.table("follows").select("following_id").execute()
+                counts = {}
+                for f in (followers_resp.data or []):
+                    fid = str(f.get("following_id"))
+                    counts[fid] = counts.get(fid, 0) + 1
+                for l in leaders:
+                    l["followers_count"] = counts.get(str(l["id"]), 0)
+            except Exception as fe:
+                print(f"[leaderboard] followers fallback failed: {fe}")
+                for l in leaders:
+                    l.setdefault("followers_count", 0)
+
+        # ── Ensure optional fields exist with defaults ──
+        for l in leaders:
+            l.setdefault("likes_received", 0)
+            l.setdefault("uploads_count", 0)
+            l.setdefault("current_streak", 0)
+            l.setdefault("followers_count", 0)
+            l.setdefault("points", 0)
+
     except Exception as e:
         print(f"[leaderboard] {e}")
-        leaders = []
+        # Fallback: build the leaderboard manually from `users`
+        try:
+            rows = supabase.table("users").select(
+                "id, username, full_name, avatar_url, university, points, current_streak, longest_streak, uploads_count, likes_received"
+            ).not_.is_("username", "null").order("points", desc=True).limit(100).execute()
+            raw_users = rows.data or []
+
+            # Get followers counts
+            try:
+                followers_resp = supabase.table("follows").select("following_id").execute()
+                counts = {}
+                for f in (followers_resp.data or []):
+                    fid = str(f.get("following_id"))
+                    counts[fid] = counts.get(fid, 0) + 1
+            except Exception:
+                counts = {}
+
+            for i, u in enumerate(raw_users):
+                u["rank"] = i + 1
+                u["followers_count"] = counts.get(str(u["id"]), 0)
+                u.setdefault("likes_received", 0)
+                u.setdefault("uploads_count", 0)
+                u.setdefault("current_streak", 0)
+                leaders.append(u)
+        except Exception as e2:
+            print(f"[leaderboard] manual fallback failed: {e2}")
+            leaders = []
 
     ctx = build_view_context(request)
     ctx["leaders"] = leaders
@@ -1624,18 +1678,17 @@ def api_me(request):
 def api_like_note(request, note_id):
     """
     LIKE API — When a user likes a note:
-      +1 point to the LIKER (like_given)
-      +1 point to the OWNER (like_received)
-      +1 likes_received counter to the OWNER
-    When a user unlikes:
-      -1 likes_received counter for the OWNER (points stay, to prevent abuse)
+      +1 point to LIKER (like_given)
+      +1 point to OWNER (like_received)
+      +1 likes_received counter for OWNER
+    Unlike: -1 likes_received counter for OWNER (points stay).
     """
     user = get_current_user(request)
     if not user:
         return JsonResponse({"error": "login_required", "login_required": True}, status=401)
 
     try:
-        # ── 1. Fetch note FIRST to find owner ─────────────
+        # ── 1. Fetch note to find owner ────────────────────
         owner_id = None
         try:
             note_resp = supabase.table("notes").select("uploader_id, uploader, filename").eq("id", note_id).execute()
@@ -1643,7 +1696,7 @@ def api_like_note(request, note_id):
                 note = note_resp.data[0]
                 owner_id = note.get("uploader_id")
 
-                # Fallback: if uploader_id is NULL, try email → user lookup
+                # Fallback: if uploader_id NULL, try email → user lookup
                 if not owner_id:
                     uploader_email = note.get("uploader")
                     if uploader_email and "@" in uploader_email:
@@ -1652,7 +1705,6 @@ def api_like_note(request, note_id):
                                 .eq("email", uploader_email.lower()).execute()
                             if u_lookup.data:
                                 owner_id = u_lookup.data[0]["id"]
-                                # Backfill the note for future fast lookups
                                 try:
                                     supabase.table("notes").update({
                                         "uploader_id": owner_id
@@ -1667,7 +1719,7 @@ def api_like_note(request, note_id):
         except Exception as e:
             print(f"[like] note fetch failed: {e}")
 
-        # ── 2. Toggle like ────────────────────────────────
+        # ── 2. Toggle ─────────────────────────────────────
         existing = supabase.table("note_likes").select("id") \
             .eq("user_id", user["id"]).eq("note_id", note_id).execute()
 
@@ -1698,7 +1750,7 @@ def api_like_note(request, note_id):
             }).execute()
             liked = True
 
-            # ── Owner gets +1 point AND +1 likes_received ──
+            # Owner gets +1 point AND +1 likes_received
             if owner_id and str(owner_id) != str(user["id"]):
                 try:
                     o = supabase.table("users").select("likes_received, points").eq("id", owner_id).execute()
@@ -1708,13 +1760,11 @@ def api_like_note(request, note_id):
                         new_likes = cur_likes + 1
                         new_points = cur_points + 1
 
-                        # ⭐ BOTH counters incremented here
                         supabase.table("users").update({
                             "likes_received": new_likes,
                             "points": new_points,
                         }).eq("id", owner_id).execute()
 
-                        # Log the activity for the owner
                         try:
                             supabase.table("activity_log").insert({
                                 "user_id": owner_id,
@@ -1733,21 +1783,19 @@ def api_like_note(request, note_id):
             elif owner_id and str(owner_id) == str(user["id"]):
                 print(f"[like] Self-like detected — skipping owner credit")
 
-            # ── Liker gets +1 point ────────────────────────
+            # Liker gets +1 point
             award_points(user["id"], "like_given", 1, note_id)
             print(f"[like] ✓ Liker {user['id']} credited +1 point (like_given)")
 
-        # ── 3. Recount total likes on the note ────────────
+        # ── 3. Recount ────────────────────────────────────
         try:
             count_resp = supabase.table("note_likes").select("*", count="exact").eq("note_id", note_id).execute()
             count = count_resp.count if hasattr(count_resp, "count") and count_resp.count is not None else len(count_resp.data or [])
         except Exception:
             count = 0
 
-        # Update liker streak
         update_streak(user["id"])
 
-        # Return new liker points
         updated = supabase.table("users").select("points").eq("id", user["id"]).execute()
         points = updated.data[0]["points"] if updated.data else 0
 
