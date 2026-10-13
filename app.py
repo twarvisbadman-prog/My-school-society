@@ -1,10 +1,10 @@
-# app.py - FULL VERSION with Cloudflare R2 + Correct Supabase Keys
+# app.py - FULL VERSION with Cloudflare R2 + Auth + Gamification
 import os
 import uuid
 import json
 import re
 import requests
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from django.conf import settings
 from django.core.wsgi import get_wsgi_application
 from django.http import HttpResponse, JsonResponse
@@ -39,7 +39,7 @@ def env(key, default=""):
     return val if val else default
 
 # ============================================================
-# CONFIGURATION — CORRECT KEYS
+# CONFIGURATION
 # ============================================================
 
 # ---------- Django ----------
@@ -89,14 +89,11 @@ print(f"🔐 Admin URL:     /{SECRET_ADMIN_PATH}/")
 print(f"🐛 Debug:         {DEBUG}")
 print("=" * 60)
 
-# Verify Supabase key format
 if not SUPABASE_KEY.startswith("eyJ"):
     print("❌ FATAL: SUPABASE_KEY is invalid!")
-    print(f"   Got: {SUPABASE_KEY[:40]}...")
-    print("   Expected: a JWT starting with 'eyJ'")
     raise SystemExit(1)
 
-print("✅ Supabase key format is valid (starts with 'eyJ')")
+print("✅ Supabase key format is valid")
 
 # ============================================================
 # DJANGO SETTINGS
@@ -132,6 +129,8 @@ if not settings.configured:
         X_FRAME_OPTIONS="SAMEORIGIN",
         USE_TZ=True,
         TIME_ZONE="Africa/Dar_es_Salaam",
+        SESSION_COOKIE_SAMESITE="Lax",
+        SESSION_COOKIE_HTTPONLY=True,
     )
 
 from django import forms
@@ -221,6 +220,138 @@ UNIVERSITIES = [
 ]
 
 # ============================================================
+# AUTH HELPERS
+# ============================================================
+
+def get_supabase_admin():
+    """Service-role client (optional)."""
+    service_key = env("SUPABASE_SERVICE_KEY", "")
+    if not service_key:
+        return None
+    try:
+        return create_client(SUPABASE_URL, service_key)
+    except Exception:
+        return None
+
+
+def get_current_user(request):
+    """
+    Read user from Supabase token in cookie or Authorization header.
+    Returns dict {'id', 'email', 'profile', 'token'} or None.
+    """
+    token = request.COOKIES.get("sb-access-token") or \
+            request.META.get("HTTP_AUTHORIZATION", "").replace("Bearer ", "").strip()
+    if not token:
+        return None
+    try:
+        user_resp = supabase.auth.get_user(token)
+        if not user_resp or not user_resp.user:
+            return None
+        user_id = user_resp.user.id
+        email = user_resp.user.email
+        profile = supabase.table("users").select("*").eq("id", user_id).execute()
+        profile_data = profile.data[0] if profile.data else None
+        return {"id": user_id, "email": email, "profile": profile_data, "token": token}
+    except Exception as e:
+        print(f"[auth] token error: {e}")
+        return None
+
+
+def require_auth(view_func):
+    """Decorator: 401 for API, redirect for HTML."""
+    def wrapper(request, *args, **kwargs):
+        user = get_current_user(request)
+        if not user:
+            is_api = (
+                request.headers.get("Accept", "").startswith("application/json") or
+                request.headers.get("X-Requested-With") == "XMLHttpRequest" or
+                request.path.startswith("/api/")
+            )
+            if is_api:
+                return JsonResponse({"error": "login_required", "login_required": True}, status=401)
+            return redirect(f"/login/?next={request.path}")
+        request.user_data = user
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+
+# ============================================================
+# STREAK + POINTS
+# ============================================================
+
+def award_points(user_id, action, points, reference_id=None):
+    """Add points + log activity."""
+    try:
+        row = supabase.table("users").select("points").eq("id", user_id).execute()
+        if not row.data:
+            return
+        current = row.data[0].get("points", 0) or 0
+        supabase.table("users").update({"points": current + points}).eq("id", user_id).execute()
+        supabase.table("activity_log").insert({
+            "user_id": user_id,
+            "action": action,
+            "points": points,
+            "reference_id": str(reference_id) if reference_id else None,
+        }).execute()
+    except Exception as e:
+        print(f"[award_points] {e}")
+
+
+def update_streak(user_id):
+    """Update daily streak + bonus points."""
+    try:
+        row = supabase.table("users").select(
+            "current_streak, longest_streak, last_active_date, points"
+        ).eq("id", user_id).execute()
+        if not row.data:
+            return
+        u = row.data[0]
+        today = date.today()
+        last = u.get("last_active_date")
+        if last:
+            try:
+                last = date.fromisoformat(str(last))
+            except Exception:
+                last = None
+        current = u.get("current_streak", 0) or 0
+        longest = u.get("longest_streak", 0) or 0
+
+        if last == today:
+            return
+
+        points_awarded = 0
+        if last == today - timedelta(days=1):
+            current += 1
+            points_awarded = 5
+        else:
+            current = 1
+            points_awarded = 2
+
+        if current > longest:
+            longest = current
+
+        if current in (7, 30, 100, 365):
+            points_awarded += current
+
+        supabase.table("users").update({
+            "current_streak": current,
+            "longest_streak": longest,
+            "last_active_date": today.isoformat(),
+            "points": (u.get("points", 0) or 0) + points_awarded,
+        }).eq("id", user_id).execute()
+
+        if points_awarded > 0:
+            supabase.table("activity_log").insert({
+                "user_id": user_id,
+                "action": "streak_day",
+                "points": points_awarded,
+                "reference_id": today.isoformat(),
+            }).execute()
+    except Exception as e:
+        print(f"[update_streak] {e}")
+
+
+# ============================================================
 # FORMS
 # ============================================================
 class UploadForm(forms.Form):
@@ -249,24 +380,18 @@ class EditForm(forms.Form):
         widget=forms.Select(attrs={"class": "form-select"})
     )
 
+
 # ============================================================
-# R2 HELPER FUNCTIONS
+# R2 HELPERS
 # ============================================================
 def upload_to_r2(file_obj, key, content_type="application/octet-stream"):
-    """Upload a file to Cloudflare R2. Returns public URL or None."""
     if not r2_client:
-        print("❌ R2 client not initialized")
         return None
     try:
         file_obj.seek(0)
         r2_client.upload_fileobj(
-            file_obj,
-            R2_BUCKET_NAME,
-            key,
-            ExtraArgs={
-                "ContentType": content_type,
-                "CacheControl": "max-age=86400",
-            },
+            file_obj, R2_BUCKET_NAME, key,
+            ExtraArgs={"ContentType": content_type, "CacheControl": "max-age=86400"},
         )
         url = f"{R2_PUBLIC_URL}/{key}"
         print(f"✅ Uploaded to R2: {url}")
@@ -280,12 +405,10 @@ def upload_to_r2(file_obj, key, content_type="application/octet-stream"):
 
 
 def delete_from_r2(key):
-    """Delete a file from R2 by its key."""
     if not r2_client:
         return False
     try:
         r2_client.delete_object(Bucket=R2_BUCKET_NAME, Key=key)
-        print(f"✅ Deleted from R2: {key}")
         return True
     except ClientError as e:
         print(f"❌ R2 delete failed: {e}")
@@ -293,12 +416,10 @@ def delete_from_r2(key):
 
 
 def get_r2_public_url(key):
-    """Build the public URL for an R2 object."""
     return f"{R2_PUBLIC_URL}/{key}"
 
 
 def get_r2_file_bytes(key):
-    """Download a file from R2 and return bytes, or None."""
     if not r2_client:
         return None
     try:
@@ -307,6 +428,7 @@ def get_r2_file_bytes(key):
     except ClientError as e:
         print(f"❌ R2 download failed: {e}")
         return None
+
 
 # ============================================================
 # HELPER FUNCTIONS
@@ -319,17 +441,15 @@ def get_content_type(filename):
         '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         '.doc': 'application/msword',
         '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        '.txt': 'text/plain',
-        '.md': 'text/markdown',
+        '.txt': 'text/plain', '.md': 'text/markdown',
         '.xls': 'application/vnd.ms-excel',
         '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         '.csv': 'text/csv',
-        '.jpg': 'image/jpeg',
-        '.jpeg': 'image/jpeg',
-        '.png': 'image/png',
-        '.gif': 'image/gif',
+        '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
+        '.png': 'image/png', '.gif': 'image/gif',
     }
     return types.get(ext, 'application/octet-stream')
+
 
 def get_file_icon(filename):
     ext = os.path.splitext(filename)[1].lower()
@@ -340,12 +460,13 @@ def get_file_icon(filename):
     }
     return icons.get(ext, '📁')
 
+
 def can_view_inline(filename):
     ext = os.path.splitext(filename)[1].lower()
-    viewable = ['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg', '.txt', '.md', '.csv']
-    return ext in viewable
+    return ext in ['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg', '.txt', '.md', '.csv']
 
-def get_all_notes():
+
+def get_all_notes(current_user_id=None):
     try:
         response = supabase.table("notes").select("*").order("uploaded_at", desc=True).execute()
         notes = response.data if response.data else []
@@ -357,17 +478,53 @@ def get_all_notes():
             note["university"] = note.get("university", "Not specified")
             note["passcode"] = note.get("passcode", "")
             note["can_view_inline"] = can_view_inline(note.get("filename", ""))
+
+            # like count
+            try:
+                lk = supabase.table("note_likes").select("*", count="exact").eq("note_id", note["id"]).execute()
+                note["like_count"] = lk.count if hasattr(lk, "count") and lk.count is not None else len(lk.data or [])
+            except Exception:
+                note["like_count"] = 0
+
+            # has user liked?
+            note["user_liked"] = False
+            if current_user_id:
+                try:
+                    ul = supabase.table("note_likes").select("id") \
+                        .eq("user_id", current_user_id).eq("note_id", note["id"]).execute()
+                    note["user_liked"] = bool(ul.data)
+                except Exception:
+                    pass
         return notes
     except Exception as e:
         print(f"Error: {e}")
         return []
 
-def search_notes(query):
+
+def search_notes(query, current_user_id=None):
     try:
-        response = supabase.table("notes").select("*").or_(f"module.ilike.%{query}%,course.ilike.%{query}%,description.ilike.%{query}%").order("uploaded_at", desc=True).execute()
-        return response.data if response.data else []
+        response = supabase.table("notes").select("*").or_(
+            f"module.ilike.%{query}%,course.ilike.%{query}%,description.ilike.%{query}%"
+        ).order("uploaded_at", desc=True).execute()
+        notes = response.data if response.data else []
+        for note in notes:
+            try:
+                lk = supabase.table("note_likes").select("*", count="exact").eq("note_id", note["id"]).execute()
+                note["like_count"] = lk.count if hasattr(lk, "count") and lk.count is not None else len(lk.data or [])
+            except Exception:
+                note["like_count"] = 0
+            note["user_liked"] = False
+            if current_user_id:
+                try:
+                    ul = supabase.table("note_likes").select("id") \
+                        .eq("user_id", current_user_id).eq("note_id", note["id"]).execute()
+                    note["user_liked"] = bool(ul.data)
+                except Exception:
+                    pass
+        return notes
     except Exception as e:
-        return get_all_notes()
+        return get_all_notes(current_user_id)
+
 
 # ============================================================
 # PASSCODE HTML
@@ -383,7 +540,7 @@ def get_passcode_html(file_id, filename, error=None):
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Passcode Required | Student Hub</title>
     <link rel="icon" type="image/png" href="/apple-touch-icon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * {{ margin:0; padding:0; box-sizing:border-box; }}
@@ -446,18 +603,17 @@ def get_passcode_html(file_id, filename, error=None):
 </html>
 '''
 
+
 # ============================================================
-# SERVE ROOT FILES
+# SERVE FILES
 # ============================================================
 def serve_root_file(request, filename):
     safe_name = os.path.basename(filename)
     if safe_name != filename or ".." in safe_name or safe_name.startswith("."):
         return HttpResponse("Not found", status=404)
-
     file_path = os.path.join(BASE_DIR, safe_name)
     if not os.path.exists(file_path):
         return HttpResponse("Not found", status=404)
-
     ext = os.path.splitext(safe_name)[1].lower()
     content_types = {
         ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
@@ -467,7 +623,6 @@ def serve_root_file(request, filename):
         ".pdf": "application/pdf", ".woff": "font/woff", ".woff2": "font/woff2",
     }
     content_type = content_types.get(ext, "application/octet-stream")
-
     try:
         with open(file_path, "rb") as f:
             data = f.read()
@@ -479,79 +634,46 @@ def serve_root_file(request, filename):
         return HttpResponse("Error", status=500)
 
 
-# ============================================================
-# SERVE FILES FROM SUBFOLDERS
-# ============================================================
 def serve_subfolder_file(request, subpath):
-    """
-    Safely serve any file from within BASE_DIR subfolders.
-    Used for free_course/<course>/index.html and assets.
-    """
     safe_subpath = os.path.normpath(subpath).replace("\\", "/")
     if safe_subpath.startswith("..") or safe_subpath.startswith("/") or ".." in safe_subpath.split("/"):
         return HttpResponse("Not found", status=404)
-
     file_path = os.path.join(BASE_DIR, safe_subpath)
     real_path = os.path.realpath(file_path)
     real_base = os.path.realpath(BASE_DIR)
-
     if not real_path.startswith(real_base):
         return HttpResponse("Not found", status=404)
-
     if not os.path.exists(real_path) or os.path.isdir(real_path):
         return HttpResponse("Not found", status=404)
-
     ext = os.path.splitext(real_path)[1].lower()
     content_types = {
-        ".html": "text/html; charset=utf-8",
-        ".htm": "text/html; charset=utf-8",
-        ".css": "text/css; charset=utf-8",
-        ".js": "application/javascript; charset=utf-8",
-        ".mjs": "application/javascript; charset=utf-8",
-        ".json": "application/json",
-        ".png": "image/png",
-        ".jpg": "image/jpeg",
-        ".jpeg": "image/jpeg",
-        ".gif": "image/gif",
-        ".svg": "image/svg+xml",
-        ".webp": "image/webp",
-        ".ico": "image/x-icon",
-        ".woff": "font/woff",
-        ".woff2": "font/woff2",
-        ".ttf": "font/ttf",
-        ".otf": "font/otf",
-        ".pdf": "application/pdf",
-        ".txt": "text/plain; charset=utf-8",
-        ".md": "text/markdown; charset=utf-8",
-        ".xml": "application/xml",
-        ".map": "application/json",
-        ".mp4": "video/mp4",
-        ".webm": "video/webm",
-        ".mp3": "audio/mpeg",
-        ".wav": "audio/wav",
+        ".html": "text/html; charset=utf-8", ".htm": "text/html; charset=utf-8",
+        ".css": "text/css; charset=utf-8", ".js": "application/javascript; charset=utf-8",
+        ".mjs": "application/javascript; charset=utf-8", ".json": "application/json",
+        ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+        ".gif": "image/gif", ".svg": "image/svg+xml", ".webp": "image/webp",
+        ".ico": "image/x-icon", ".woff": "font/woff", ".woff2": "font/woff2",
+        ".ttf": "font/ttf", ".otf": "font/otf", ".pdf": "application/pdf",
+        ".txt": "text/plain; charset=utf-8", ".md": "text/markdown; charset=utf-8",
+        ".xml": "application/xml", ".map": "application/json",
+        ".mp4": "video/mp4", ".webm": "video/webm",
+        ".mp3": "audio/mpeg", ".wav": "audio/wav",
     }
     content_type = content_types.get(ext, "application/octet-stream")
-
     try:
         with open(real_path, "rb") as f:
             data = f.read()
-
         response = HttpResponse(data, content_type=content_type)
-
         if ext in (".html", ".htm"):
             response["Cache-Control"] = "public, max-age=300"
         else:
             response["Cache-Control"] = "public, max-age=2592000"
-
         return response
     except Exception as e:
         print(f"Error serving {safe_subpath}: {e}")
         return HttpResponse("Error", status=500)
 
 
-# ============================================================
-# FAVICON
-# ============================================================
 def favicon_view(request):
     icon_path = os.path.join(BASE_DIR, "apple-touch-icon.png")
     if os.path.exists(icon_path):
@@ -567,10 +689,131 @@ def favicon_view(request):
 
 
 # ============================================================
-# VIEWS
+# AUTH VIEWS
+# ============================================================
+def login_view(request):
+    if request.method == "POST":
+        email = request.POST.get("username", "").strip().lower() or request.POST.get("email", "").strip().lower()
+        password = request.POST.get("password", "")
+        try:
+            resp = supabase.auth.sign_in_with_password({"email": email, "password": password})
+            user = resp.user
+            session = resp.session
+
+            # Ensure profile exists
+            existing = supabase.table("users").select("id").eq("id", user.id).execute()
+            if not existing.data:
+                supabase.table("users").insert({
+                    "id": user.id,
+                    "email": user.email,
+                    "full_name": (user.user_metadata or {}).get("full_name", ""),
+                }).execute()
+
+            update_streak(user.id)
+
+            next_url = request.GET.get("next", "/dashboard/")
+            response = redirect(next_url)
+            response.set_cookie(
+                "sb-access-token", session.access_token,
+                httponly=True, max_age=60 * 60 * 24 * 7, samesite="Lax",
+            )
+            response.set_cookie(
+                "sb-refresh-token", session.refresh_token,
+                httponly=True, max_age=60 * 60 * 24 * 30, samesite="Lax",
+            )
+            return response
+        except Exception as e:
+            print(f"[login] {e}")
+            return render(request, "login.html", {"error": "Invalid email or password."})
+    return render(request, "login.html")
+
+
+def signup_view(request):
+    if request.method == "POST":
+        email = request.POST.get("email", "").strip().lower()
+        password = request.POST.get("password", "")
+        full_name = request.POST.get("full_name", "").strip()
+        confirm = request.POST.get("confirm_password", "")
+
+        if password != confirm:
+            return render(request, "signup.html", {"error": "Passwords do not match."})
+        if len(password) < 6:
+            return render(request, "signup.html", {"error": "Password must be at least 6 characters."})
+
+        try:
+            supabase.auth.sign_up({
+                "email": email,
+                "password": password,
+                "options": {"data": {"full_name": full_name}},
+            })
+            return render(request, "signup.html", {
+                "message": "Account created! Check your email to verify, then log in."
+            })
+        except Exception as e:
+            err = str(e)
+            if "already registered" in err.lower() or "already exists" in err.lower():
+                err = "This email is already registered. Try logging in."
+            return render(request, "signup.html", {"error": err})
+    return render(request, "signup.html")
+
+
+def logout_view(request):
+    try:
+        supabase.auth.sign_out()
+    except Exception:
+        pass
+    response = redirect("/")
+    response.delete_cookie("sb-access-token")
+    response.delete_cookie("sb-refresh-token")
+    return response
+
+
+def oauth_callback(request):
+    return render(request, "auth_callback.html", {
+        "supabase_url": SUPABASE_URL,
+        "supabase_anon": SUPABASE_KEY,
+    })
+
+
+def dashboard_view(request):
+    me = get_current_user(request)
+    if not me:
+        return redirect(f"/login/?next=/dashboard/")
+
+    try:
+        uploads = supabase.table("notes").select("*") \
+            .eq("uploader_id", me["id"]) \
+            .order("uploaded_at", desc=True) \
+            .execute().data or []
+    except Exception:
+        uploads = []
+
+    today = date.today().isoformat()
+    try:
+        quiz = supabase.table("quiz_attempts").select("*") \
+            .eq("user_id", me["id"]).eq("quiz_date", today).execute().data
+        quiz_today = quiz[0] if quiz else None
+    except Exception:
+        quiz_today = None
+
+    return render(request, "dashboard.html", {
+        "me": me["profile"],
+        "uploads": uploads,
+        "quiz_today": quiz_today,
+        "is_logged_in": True,
+    })
+
+
+# ============================================================
+# INDEX / UPLOAD / BROWSE
 # ============================================================
 def index(request):
-    return render(request, "index.html")
+    me = get_current_user(request)
+    return render(request, "index.html", {
+        "is_logged_in": bool(me),
+        "me": me["profile"] if me else None,
+    })
+
 
 def upload_view(request):
     message = None
@@ -616,7 +859,10 @@ def upload_view(request):
                         error = "Upload to storage failed. Please try again."
                         print(f"❌ R2 upload failed for {safe_filename}")
                     else:
-                        supabase.table("notes").insert({
+                        current_user = get_current_user(request)
+                        uploader_id = current_user["id"] if current_user else None
+
+                        insert_payload = {
                             "filename": safe_filename,
                             "original_filename": file.name,
                             "module": module,
@@ -628,8 +874,29 @@ def upload_view(request):
                             "university": university,
                             "uploader": "user",
                             "uploaded_at": datetime.now().isoformat(),
-                            "file_size": file_size
-                        }).execute()
+                            "file_size": file_size,
+                        }
+                        if uploader_id:
+                            insert_payload["uploader_id"] = uploader_id
+
+                        try:
+                            supabase.table("notes").insert(insert_payload).execute()
+                        except Exception as e:
+                            print(f"[upload] uploader_id insert failed, retrying without: {e}")
+                            insert_payload.pop("uploader_id", None)
+                            supabase.table("notes").insert(insert_payload).execute()
+
+                        if uploader_id:
+                            award_points(uploader_id, "upload", 15, safe_filename)
+                            try:
+                                u = supabase.table("users").select("uploads_count").eq("id", uploader_id).execute()
+                                if u.data:
+                                    supabase.table("users").update({
+                                        "uploads_count": (u.data[0].get("uploads_count", 0) or 0) + 1
+                                    }).eq("id", uploader_id).execute()
+                            except Exception:
+                                pass
+                            update_streak(uploader_id)
 
                         message = f"✅ {file.name} uploaded successfully!"
                         form = UploadForm()
@@ -642,11 +909,19 @@ def upload_view(request):
     else:
         form = UploadForm()
 
-    return render(request, "upload.html", {"form": form, "message": message, "error": error})
+    me = get_current_user(request)
+    return render(request, "upload.html", {
+        "form": form, "message": message, "error": error,
+        "is_logged_in": bool(me),
+    })
+
 
 def browse_view(request):
+    me = get_current_user(request)
+    current_user_id = me["id"] if me else None
+
     query = request.GET.get("q", "").strip()
-    notes = search_notes(query) if query else get_all_notes()
+    notes = search_notes(query, current_user_id) if query else get_all_notes(current_user_id)
 
     for note in notes:
         ext = os.path.splitext(note.get("filename", ""))[1].upper().replace(".", "")
@@ -673,12 +948,19 @@ def browse_view(request):
         if not note.get("course"):
             note["course"] = "N/A"
 
-    return render(request, "browse.html", {"notes": notes, "query": query})
+    return render(request, "browse.html", {
+        "notes": notes, "query": query,
+        "is_logged_in": bool(me),
+        "me": me["profile"] if me else None,
+    })
 
+
+# ============================================================
+# VIEW / DOWNLOAD / DELETE
+# ============================================================
 def view_file(request, id):
     try:
         result = supabase.table("notes").select("*").eq("id", id).execute()
-
         if not result.data:
             return HttpResponse("File not found", status=404)
 
@@ -687,11 +969,9 @@ def view_file(request, id):
         if note.get("privacy") == "private":
             correct_passcode = note.get("passcode", "")
             get_passcode = request.GET.get("passcode", "")
-
             if not get_passcode:
                 html = get_passcode_html(id, note.get("original_filename", note.get("filename", "")))
                 return HttpResponse(html)
-
             if get_passcode != correct_passcode:
                 html = get_passcode_html(id, note.get("original_filename", note.get("filename", "")), "❌ Incorrect passcode. Please try again.")
                 return HttpResponse(html)
@@ -703,49 +983,39 @@ def view_file(request, id):
         note["is_pdf"] = os.path.splitext(note.get("filename", ""))[1].lower() == '.pdf'
         note["is_image"] = os.path.splitext(note.get("filename", ""))[1].lower() in ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg']
         note["is_text"] = os.path.splitext(note.get("filename", ""))[1].lower() in ['.txt', '.md', '.csv', '.json', '.xml']
-
         note["text_content"] = ""
+
         if note["is_text"] and file_url:
             try:
                 response = requests.get(file_url, timeout=10)
                 if response.status_code == 200:
                     note["text_content"] = response.text
-            except:
+            except Exception:
                 pass
 
-        context = {
-            "note": note,
-            "pdf_url": file_url,
-            "admin": ADMIN
-        }
-
+        context = {"note": note, "pdf_url": file_url, "admin": ADMIN}
         return render(request, "view.html", context)
-
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", status=500)
+
 
 def download_file(request, id):
     try:
         result = supabase.table("notes").select("*").eq("id", id).execute()
-
         if not result.data:
             return HttpResponse("File not found", status=404)
-
         note = result.data[0]
 
         if note.get("privacy") == "private":
             correct_passcode = note.get("passcode", "")
             get_passcode = request.GET.get("passcode", "")
-
             if not get_passcode:
-                return HttpResponse("Access Denied. This file is private. Please view it first to unlock.", status=403)
-
+                return HttpResponse("Access Denied. Please view it first to unlock.", status=403)
             if get_passcode != correct_passcode:
                 return HttpResponse("Access Denied. Incorrect passcode.", status=403)
 
         r2_key = f"notes/{note['filename']}"
         file_data = get_r2_file_bytes(r2_key)
-
         if file_data is None:
             return HttpResponse("File not found in storage", status=404)
 
@@ -756,111 +1026,79 @@ def download_file(request, id):
     except Exception as e:
         return HttpResponse(f"Download failed: {str(e)}", status=500)
 
+
 def delete_file(request, id):
     if not ADMIN:
         return HttpResponse("Not authorized.", status=403)
     try:
         note = supabase.table("notes").select("*").eq("id", id).execute().data[0]
-
         delete_from_r2(f"notes/{note['filename']}")
-
         supabase.table("notes").delete().eq("id", id).execute()
-
         return redirect(f"/{SECRET_ADMIN_PATH}/")
     except Exception as e:
         return HttpResponse(f"Delete failed: {str(e)}", status=500)
 
+
 def favicon(request):
     return HttpResponse(status=204)
+
 
 @csrf_exempt
 def update_passcode(request, id):
     if not ADMIN:
         return JsonResponse({"success": False, "error": "Not authorized"}, status=403)
-
     if request.method != "POST":
         return JsonResponse({"success": False, "error": "Method not allowed"}, status=405)
-
     try:
         data = json.loads(request.body)
         new_passcode = data.get("passcode", "").strip()
-
-        if not new_passcode:
-            return JsonResponse({"success": False, "error": "Passcode is required"})
-
-        if not new_passcode.isdigit():
-            return JsonResponse({"success": False, "error": "Passcode must contain only numbers"})
-
-        if len(new_passcode) != 4:
-            return JsonResponse({"success": False, "error": "Passcode must be exactly 4 digits"})
+        if not new_passcode or not new_passcode.isdigit() or len(new_passcode) != 4:
+            return JsonResponse({"success": False, "error": "Must be exactly 4 digits"})
 
         check_result = supabase.table("notes").select("*").eq("id", id).execute()
         if not check_result.data:
             return JsonResponse({"success": False, "error": "File not found"})
-
         note = check_result.data[0]
         if note.get("privacy") != "private":
             return JsonResponse({"success": False, "error": "File is not private"})
-
         supabase.table("notes").update({"passcode": new_passcode}).eq("id", id).execute()
-
-        return JsonResponse({"success": True, "message": "Passcode updated successfully"})
-
-    except json.JSONDecodeError:
-        return JsonResponse({"success": False, "error": "Invalid JSON data"}, status=400)
-    except Exception as e:
-        return JsonResponse({"success": False, "error": str(e)}, status=500)
-
-
-@csrf_exempt
-def update_metadata(request, id):
-    """Admin — update module, course, description, university, file_type."""
-    if not ADMIN:
-        return JsonResponse({"success": False, "error": "Not authorized"}, status=403)
-
-    if request.method != "POST":
-        return JsonResponse({"success": False, "error": "Method not allowed"}, status=405)
-
-    try:
-        data = json.loads(request.body)
-
-        check_result = supabase.table("notes").select("*").eq("id", id).execute()
-        if not check_result.data:
-            return JsonResponse({"success": False, "error": "File not found"})
-
-        allowed_fields = ["module", "course", "description", "university", "file_type"]
-        update_data = {}
-        for field in allowed_fields:
-            if field in data:
-                value = str(data[field]).strip()
-                update_data[field] = value
-
-        if not update_data:
-            return JsonResponse({"success": False, "error": "No valid fields to update"})
-
-        if "file_type" in update_data and update_data["file_type"] not in ["notes", "pastpaper"]:
-            return JsonResponse({"success": False, "error": "Invalid file_type"})
-
-        supabase.table("notes").update(update_data).eq("id", id).execute()
-
-        return JsonResponse({"success": True, "message": "Metadata updated", "updated": update_data})
-
+        return JsonResponse({"success": True, "message": "Passcode updated"})
     except json.JSONDecodeError:
         return JsonResponse({"success": False, "error": "Invalid JSON"}, status=400)
     except Exception as e:
         return JsonResponse({"success": False, "error": str(e)}, status=500)
 
 
-def admin_edit(request, id):
-    """Admin — edit note metadata with a full page form."""
+@csrf_exempt
+def update_metadata(request, id):
     if not ADMIN:
-        return HttpResponse("Access Denied. Admin only.", status=403)
+        return JsonResponse({"success": False, "error": "Not authorized"}, status=403)
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "Method not allowed"}, status=405)
+    try:
+        data = json.loads(request.body)
+        check_result = supabase.table("notes").select("*").eq("id", id).execute()
+        if not check_result.data:
+            return JsonResponse({"success": False, "error": "File not found"})
+        allowed_fields = ["module", "course", "description", "university", "file_type"]
+        update_data = {f: str(data[f]).strip() for f in allowed_fields if f in data}
+        if not update_data:
+            return JsonResponse({"success": False, "error": "No valid fields"})
+        if "file_type" in update_data and update_data["file_type"] not in ["notes", "pastpaper"]:
+            return JsonResponse({"success": False, "error": "Invalid file_type"})
+        supabase.table("notes").update(update_data).eq("id", id).execute()
+        return JsonResponse({"success": True, "updated": update_data})
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)}, status=500)
 
+
+def admin_edit(request, id):
+    if not ADMIN:
+        return HttpResponse("Access Denied.", status=403)
     try:
         result = supabase.table("notes").select("*").eq("id", id).execute()
         if not result.data:
             return HttpResponse("File not found", status=404)
-
         note = result.data[0]
         error_message = None
 
@@ -870,18 +1108,15 @@ def admin_edit(request, id):
             description = request.POST.get("description", "").strip()
             university = request.POST.get("university", "").strip()
             file_type = request.POST.get("file_type", "notes").strip()
-
             if not module or not course:
                 error_message = "Module and Course are required."
             else:
                 supabase.table("notes").update({
-                    "module": module,
-                    "course": course,
+                    "module": module, "course": course,
                     "description": description,
                     "university": university or "Not specified",
                     "file_type": file_type,
                 }).eq("id", id).execute()
-
                 return redirect(f"/{SECRET_ADMIN_PATH}/")
 
         form = EditForm(initial={
@@ -891,21 +1126,14 @@ def admin_edit(request, id):
             "university": note.get("university", ""),
             "file_type": note.get("file_type", "notes"),
         })
-
-        return render(request, "admin_edit.html", {
-            "note": note,
-            "form": form,
-            "error": error_message,
-        })
-
+        return render(request, "admin_edit.html", {"note": note, "form": form, "error": error_message})
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", status=500)
 
 
 def admin_dashboard(request):
     if not ADMIN:
-        return HttpResponse("Access Denied. Admin only.", status=403)
-
+        return HttpResponse("Access Denied.", status=403)
     all_notes = get_all_notes()
     total_files = len(all_notes)
     file_types = {}
@@ -913,7 +1141,6 @@ def admin_dashboard(request):
     total_size = 0
     private_count = 0
     public_count = 0
-
     for note in all_notes:
         ext = os.path.splitext(note.get("filename", ""))[1].upper()
         if ext:
@@ -921,12 +1148,10 @@ def admin_dashboard(request):
         module = note.get("module", "Unknown")
         modules[module] = modules.get(module, 0) + 1
         total_size += note.get("file_size", 0)
-
         if note.get("privacy") == "private":
             private_count += 1
         else:
             public_count += 1
-
     stats = {
         "total_files": total_files,
         "file_types": file_types,
@@ -935,16 +1160,18 @@ def admin_dashboard(request):
         "private_count": private_count,
         "public_count": public_count
     }
-
     return render(request, "admin.html", {"notes": all_notes, "stats": stats, "admin": ADMIN})
+
 
 def admin_settings(request):
     if not ADMIN:
-        return HttpResponse("Access Denied. Admin only.", status=403)
+        return HttpResponse("Access Denied.", status=403)
     return render(request, "admin_settings.html", {})
 
 
-# ========== ABOUT VIEW ==========
+# ============================================================
+# ABOUT / CALCULATOR / HACKATHON / FREE COURSES / SCANNER / AUTOQUIZ
+# ============================================================
 def about_view(request):
     try:
         return render(request, "about.html")
@@ -952,12 +1179,10 @@ def about_view(request):
         return HttpResponse(f"About page error: {e}", status=500)
 
 
-# ========== CALCULATOR VIEW ==========
 def calculator_view(request):
     return render(request, "calculator.html")
 
 
-# ========== HACKATHON VIEW ==========
 def hackathon_view(request):
     try:
         return render(request, "hackerthon.html")
@@ -965,7 +1190,6 @@ def hackathon_view(request):
         return HttpResponse(f"Hackathon page error: {e}", status=500)
 
 
-# ========== FREE COURSES VIEW ==========
 def free_courses_view(request):
     try:
         return render(request, "free_course.html")
@@ -973,9 +1197,7 @@ def free_courses_view(request):
         return HttpResponse(f"Free courses error: {e}", status=500)
 
 
-# ========== FREE COURSES — GENERIC COURSE LOADER ==========
 def _serve_course_index(course_slug):
-    """Serve free_course/<slug>/index.html"""
     path = os.path.join(BASE_DIR, "free_course", course_slug, "index.html")
     if not os.path.exists(path):
         return None
@@ -990,18 +1212,14 @@ def _serve_course_index(course_slug):
 
 
 def free_course_detail_view(request, course_slug):
-    """Serve free_course/<slug>/index.html for any course."""
     if not course_slug or not re.match(r"^[a-z0-9\-]+$", course_slug):
         return free_courses_view(request)
-
     response = _serve_course_index(course_slug)
     if response is not None:
         return response
-
     return free_courses_view(request)
 
 
-# ========== SCANNER VIEW ==========
 def scanner_view(request):
     try:
         return render(request, "scanner.html")
@@ -1009,7 +1227,6 @@ def scanner_view(request):
         return HttpResponse(f"Scanner error: {e}", status=500)
 
 
-# ========== AUTOQUIZ VIEW ==========
 def autoquiz_view(request):
     path = os.path.join(BASE_DIR, "autoquiz.html")
     if os.path.exists(path):
@@ -1023,23 +1240,312 @@ def autoquiz_view(request):
 
 
 # ============================================================
+# GAMIFICATION APIs
+# ============================================================
+@csrf_exempt
+def api_like_note(request, note_id):
+    user = get_current_user(request)
+    if not user:
+        return JsonResponse({"error": "login_required", "login_required": True}, status=401)
+
+    try:
+        existing = supabase.table("note_likes").select("id") \
+            .eq("user_id", user["id"]).eq("note_id", note_id).execute()
+
+        if existing.data:
+            supabase.table("note_likes").delete() \
+                .eq("user_id", user["id"]).eq("note_id", note_id).execute()
+            liked = False
+        else:
+            supabase.table("note_likes").insert({
+                "user_id": user["id"], "note_id": note_id,
+            }).execute()
+            liked = True
+            try:
+                note_resp = supabase.table("notes").select("uploader_id").eq("id", note_id).execute()
+                if note_resp.data and note_resp.data[0].get("uploader_id"):
+                    owner_id = note_resp.data[0]["uploader_id"]
+                    if owner_id != user["id"]:
+                        award_points(owner_id, "like_received", 1, note_id)
+                        o = supabase.table("users").select("likes_received").eq("id", owner_id).execute()
+                        if o.data:
+                            supabase.table("users").update({
+                                "likes_received": (o.data[0].get("likes_received", 0) or 0) + 1
+                            }).eq("id", owner_id).execute()
+            except Exception as e:
+                print(f"[like → owner] {e}")
+            award_points(user["id"], "like_given", 1, note_id)
+
+        try:
+            count_resp = supabase.table("note_likes").select("*", count="exact").eq("note_id", note_id).execute()
+            count = count_resp.count if hasattr(count_resp, "count") and count_resp.count is not None else len(count_resp.data or [])
+        except Exception:
+            count = 0
+
+        update_streak(user["id"])
+
+        updated = supabase.table("users").select("points").eq("id", user["id"]).execute()
+        points = updated.data[0]["points"] if updated.data else 0
+
+        return JsonResponse({"liked": liked, "count": count, "points": points})
+    except Exception as e:
+        print(f"[api_like_note] {e}")
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+@csrf_exempt
+def api_follow_user(request, user_id):
+    me = get_current_user(request)
+    if not me:
+        return JsonResponse({"error": "login_required", "login_required": True}, status=401)
+    if me["id"] == str(user_id):
+        return JsonResponse({"error": "cannot_follow_self"}, status=400)
+
+    try:
+        existing = supabase.table("follows").select("id") \
+            .eq("follower_id", me["id"]).eq("following_id", user_id).execute()
+
+        if existing.data:
+            supabase.table("follows").delete() \
+                .eq("follower_id", me["id"]).eq("following_id", user_id).execute()
+            following = False
+        else:
+            supabase.table("follows").insert({
+                "follower_id": me["id"], "following_id": user_id,
+            }).execute()
+            following = True
+            award_points(user_id, "new_follower", 2, me["id"])
+
+        update_streak(me["id"])
+        return JsonResponse({"following": following})
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+QUIZ_BANK = [
+    {"q": "What does HTTP stand for?", "a": "HyperText Transfer Protocol",
+     "options": ["HyperText Transfer Protocol", "High Transfer Text Protocol", "HyperText Transmission Protocol", "Host Transfer Protocol"]},
+    {"q": "Which Git command creates a new branch?", "a": "git checkout -b",
+     "options": ["git new-branch", "git branch create", "git checkout -b", "git make branch"]},
+    {"q": "What is 2^10?", "a": "1024", "options": ["512", "1024", "2048", "1000"]},
+    {"q": "Which planet has the most moons?", "a": "Saturn", "options": ["Jupiter", "Saturn", "Uranus", "Neptune"]},
+    {"q": "Who created Python?", "a": "Guido van Rossum", "options": ["Linus Torvalds", "Guido van Rossum", "Dennis Ritchie", "James Gosling"]},
+    {"q": "What does CSS stand for?", "a": "Cascading Style Sheets",
+     "options": ["Cascading Style Sheets", "Creative Style System", "Computer Style Sheets", "Colorful Style Sheets"]},
+    {"q": "In HTML, which tag creates a hyperlink?", "a": "<a>", "options": ["<link>", "<a>", "<href>", "<url>"]},
+    {"q": "What does CPU stand for?", "a": "Central Processing Unit",
+     "options": ["Central Processing Unit", "Computer Personal Unit", "Central Program Utility", "Core Processing Unit"]},
+    {"q": "Which language runs in a web browser?", "a": "JavaScript", "options": ["Java", "C++", "Python", "JavaScript"]},
+    {"q": "What year was JavaScript created?", "a": "1995", "options": ["1993", "1995", "1997", "2000"]},
+]
+
+
+@csrf_exempt
+def api_daily_quiz(request):
+    user = get_current_user(request)
+    today = date.today()
+    idx = today.toordinal() % len(QUIZ_BANK)
+    today_q = QUIZ_BANK[idx]
+
+    if request.method == "GET":
+        already = None
+        if user:
+            try:
+                r = supabase.table("quiz_attempts").select("*") \
+                    .eq("user_id", user["id"]).eq("quiz_date", today.isoformat()).execute()
+                already = r.data[0] if r.data else None
+            except Exception:
+                already = None
+        payload = {
+            "question": today_q["q"],
+            "options": today_q["options"],
+            "already_answered": bool(already),
+            "login_required": user is None,
+        }
+        if already:
+            payload["your_answer"] = already.get("user_answer")
+            payload["correct_answer"] = already.get("correct_answer")
+            payload["is_correct"] = already.get("is_correct")
+        return JsonResponse(payload)
+
+    if not user:
+        return JsonResponse({"error": "login_required", "login_required": True}, status=401)
+
+    try:
+        body = json.loads(request.body or "{}")
+    except Exception:
+        body = {}
+    answer = (body.get("answer") or "").strip()
+
+    try:
+        existing = supabase.table("quiz_attempts").select("id") \
+            .eq("user_id", user["id"]).eq("quiz_date", today.isoformat()).execute()
+        if existing.data:
+            return JsonResponse({"error": "already_answered_today"}, status=400)
+
+        is_correct = (answer == today_q["a"])
+        points = 10 if is_correct else 0
+
+        supabase.table("quiz_attempts").insert({
+            "user_id": user["id"],
+            "quiz_date": today.isoformat(),
+            "question": today_q["q"],
+            "user_answer": answer,
+            "correct_answer": today_q["a"],
+            "is_correct": is_correct,
+            "points_earned": points,
+        }).execute()
+
+        ur = supabase.table("users").select("quizzes_taken, quizzes_correct").eq("id", user["id"]).execute()
+        if ur.data:
+            taken = (ur.data[0].get("quizzes_taken", 0) or 0) + 1
+            correct = (ur.data[0].get("quizzes_correct", 0) or 0) + (1 if is_correct else 0)
+            supabase.table("users").update({
+                "quizzes_taken": taken, "quizzes_correct": correct,
+            }).eq("id", user["id"]).execute()
+
+        if points:
+            award_points(user["id"], "quiz_correct", points, today.isoformat())
+
+        update_streak(user["id"])
+
+        return JsonResponse({
+            "correct": is_correct,
+            "correct_answer": today_q["a"],
+            "your_answer": answer,
+            "points_earned": points,
+        })
+    except Exception as e:
+        print(f"[api_daily_quiz] {e}")
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+@csrf_exempt
+def api_me(request):
+    user = get_current_user(request)
+    if not user:
+        return JsonResponse({"logged_in": False})
+    return JsonResponse({"logged_in": True, "profile": user["profile"]})
+
+
+# ============================================================
+# LEADERBOARD + PROFILE
+# ============================================================
+def leaderboard_view(request):
+    try:
+        rows = supabase.table("leaderboard").select("*").limit(100).execute()
+        leaders = rows.data or []
+    except Exception as e:
+        print(f"[leaderboard] {e}")
+        leaders = []
+
+    me = get_current_user(request)
+    return render(request, "leaderboard.html", {
+        "leaders": leaders,
+        "me": me["profile"] if me else None,
+        "is_logged_in": bool(me),
+    })
+
+
+def profile_view(request, username):
+    try:
+        row = supabase.table("users").select("*").eq("username", username).execute()
+        if not row.data:
+            return HttpResponse("User not found", status=404)
+        profile = row.data[0]
+
+        try:
+            uploads = supabase.table("notes").select("*") \
+                .eq("uploader_id", profile["id"]) \
+                .order("uploaded_at", desc=True).limit(20).execute().data or []
+        except Exception:
+            uploads = []
+
+        try:
+            followers = supabase.table("follows").select("*", count="exact") \
+                .eq("following_id", profile["id"]).execute()
+            following = supabase.table("follows").select("*", count="exact") \
+                .eq("follower_id", profile["id"]).execute()
+            followers_count = followers.count if hasattr(followers, "count") and followers.count is not None else len(followers.data or [])
+            following_count = following.count if hasattr(following, "count") and following.count is not None else len(following.data or [])
+        except Exception:
+            followers_count = 0
+            following_count = 0
+
+        me = get_current_user(request)
+        is_following = False
+        is_friend = False
+        is_me = False
+        if me:
+            is_me = me["id"] == profile["id"]
+            if not is_me:
+                try:
+                    f1 = supabase.table("follows").select("id") \
+                        .eq("follower_id", me["id"]).eq("following_id", profile["id"]).execute()
+                    f2 = supabase.table("follows").select("id") \
+                        .eq("follower_id", profile["id"]).eq("following_id", me["id"]).execute()
+                    is_following = bool(f1.data)
+                    is_friend = bool(f1.data and f2.data)
+                except Exception:
+                    pass
+
+        try:
+            activity = supabase.table("activity_log").select("*") \
+                .eq("user_id", profile["id"]) \
+                .order("created_at", desc=True).limit(10).execute().data or []
+        except Exception:
+            activity = []
+
+        return render(request, "profile.html", {
+            "profile": profile,
+            "uploads": uploads,
+            "followers_count": followers_count,
+            "following_count": following_count,
+            "is_following": is_following,
+            "is_friend": is_friend,
+            "activity": activity,
+            "is_me": is_me,
+            "is_logged_in": bool(me),
+        })
+    except Exception as e:
+        return HttpResponse(f"Error: {e}", status=500)
+
+
+# ============================================================
 # URLS
 # ============================================================
 urlpatterns = [
     path("", index),
 
-    # 🔐 SECRET ADMIN ROUTES
+    # ========== AUTH ==========
+    path("login/", login_view, name="login"),
+    path("signup/", signup_view, name="signup"),
+    path("logout/", logout_view, name="logout"),
+    path("auth/callback/", oauth_callback, name="oauth_callback"),
+
+    # ========== USER ==========
+    path("dashboard/", dashboard_view, name="dashboard"),
+    path("leaderboard/", leaderboard_view, name="leaderboard"),
+    path("profile/<str:username>/", profile_view, name="profile"),
+
+    # ========== APIs ==========
+    path("api/me/", api_me, name="api_me"),
+    path("api/quiz/daily/", api_daily_quiz, name="api_daily_quiz"),
+    path("api/like/<int:note_id>/", api_like_note, name="api_like_note"),
+    path("api/follow/<uuid:user_id>/", api_follow_user, name="api_follow_user"),
+
+    # ========== SECRET ADMIN ==========
     path(f"{SECRET_ADMIN_PATH}/", admin_dashboard, name="admin_dashboard"),
     path(f"{SECRET_ADMIN_PATH}/settings/", admin_settings, name="admin_settings"),
     path("admin_edit/<int:id>/", admin_edit, name="admin_edit"),
 
-    # ========== ICON / FAVICON / ROOT FILES ==========
+    # ========== ICONS ==========
     path("apple-touch-icon.png", serve_root_file, {"filename": "apple-touch-icon.png"}, name="apple_icon"),
     path("apple-touch-icon-precomposed.png", serve_root_file, {"filename": "apple-touch-icon.png"}),
     path("favicon.ico", favicon_view, name="favicon"),
     path("favicon.png", favicon_view, name="favicon_png"),
 
-    # ========== MAIN PAGES ==========
+    # ========== MAIN ==========
     path("upload/", upload_view),
     path("browse/", browse_view),
     path("view/<int:id>/", view_file),
@@ -1048,7 +1554,7 @@ urlpatterns = [
     path("update-passcode/<int:id>/", update_passcode, name="update_passcode"),
     path("update-metadata/<int:id>/", update_metadata, name="update_metadata"),
 
-    # ABOUT PAGE
+    # ABOUT
     path("about.html", about_view, name="about"),
     path("about/", about_view, name="about_alt"),
 
@@ -1062,35 +1568,24 @@ urlpatterns = [
     path("hackathon.html", hackathon_view),
     path("hackathon/", hackathon_view, name="hackathon"),
 
-    # ============================================================
-    # FREE_COURSE — LANDING PAGE
-    # ============================================================
+    # FREE_COURSE
     path("free_course.html", free_courses_view),
     path("free_course/", free_courses_view, name="free_course"),
     path("free_courses.html", free_courses_view),
     path("free-courses/", free_courses_view, name="free_courses"),
-
-    # ============================================================
-    # FREE_COURSE — COURSE INDEX (specific courses)
-    # Works for: github, web-hosting, python, html-css, english, kiswahili
-    # ============================================================
     path("free_course/<slug:course_slug>/", free_course_detail_view, name="free_course_detail"),
     path("free_course/<slug:course_slug>/index.html", free_course_detail_view, name="free_course_detail_index"),
-
-    # ============================================================
-    # FREE_COURSE — ASSET SERVER (CSS, JS, images)
-    # ============================================================
     path("free_course/<path:subpath>", serve_subfolder_file, name="free_course_assets"),
 
     # AUTOQUIZ
     path("autoquiz.html", autoquiz_view, name="autoquiz"),
     path("autoquiz/", autoquiz_view, name="autoquiz_alt"),
 
-    # SCANNER ROUTE
+    # SCANNER
     path("scanner.html", scanner_view, name="scanner"),
     path("scanner/", scanner_view, name="scanner_alt"),
 
-    # ========== GENERIC ROOT FILE SERVER (must be LAST) ==========
+    # ========== ROOT FILE SERVER (must be LAST) ==========
     path("<str:filename>", serve_root_file, name="root_file"),
 ]
 
