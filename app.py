@@ -1,4 +1,4 @@
-# app.py - FINAL VERSION with R2 + Supabase Auth + Gamification + Password Reset
+# app.py - FINAL VERSION with R2 + Supabase Auth + Gamification + Password Reset + Community
 import os
 import uuid
 import json
@@ -72,7 +72,7 @@ CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf.split(",") if o.strip()]
 # SANITY CHECK
 # ============================================================
 print("=" * 60)
-print("🚀 TWARVIS SCHOOL — Final Build (R2 + Auth + Gamification)")
+print("🚀 TWARVIS SCHOOL — Final Build (R2 + Auth + Gamification + Community)")
 print("=" * 60)
 print(f"📡 Supabase URL:  {SUPABASE_URL[:50]}")
 print(f"🔑 Supabase Key:  {'✅ VALID JWT' if SUPABASE_KEY.startswith('eyJ') else '❌ INVALID'}")
@@ -445,18 +445,22 @@ def auto_username_from_email(email, user_id):
 # STREAK + POINTS
 # ============================================================
 def award_points(user_id, action, points, reference_id=None):
+    """Add points + log activity."""
     try:
         row = supabase.table("users").select("points").eq("id", user_id).execute()
         if not row.data:
             return
         current = row.data[0].get("points", 0) or 0
         supabase.table("users").update({"points": current + points}).eq("id", user_id).execute()
-        supabase.table("activity_log").insert({
-            "user_id": user_id,
-            "action": action,
-            "points": points,
-            "reference_id": str(reference_id) if reference_id else None,
-        }).execute()
+        try:
+            supabase.table("activity_log").insert({
+                "user_id": user_id,
+                "action": action,
+                "points": points,
+                "reference_id": str(reference_id) if reference_id else None,
+            }).execute()
+        except Exception as log_err:
+            print(f"[award_points] activity log failed (ignored): {log_err}")
     except Exception as e:
         print(f"[award_points] {e}")
 
@@ -504,12 +508,15 @@ def update_streak(user_id):
         }).eq("id", user_id).execute()
 
         if points_awarded > 0:
-            supabase.table("activity_log").insert({
-                "user_id": user_id,
-                "action": "streak_day",
-                "points": points_awarded,
-                "reference_id": today.isoformat(),
-            }).execute()
+            try:
+                supabase.table("activity_log").insert({
+                    "user_id": user_id,
+                    "action": "streak_day",
+                    "points": points_awarded,
+                    "reference_id": today.isoformat(),
+                }).execute()
+            except Exception:
+                pass
     except Exception as e:
         print(f"[update_streak] {e}")
 
@@ -1093,6 +1100,38 @@ def leaderboard_view(request):
     ctx["leaders"] = leaders
     return render(request, "leaderboard.html", ctx)
 
+
+def community_view(request):
+    """Browse all students in the community."""
+    try:
+        rows = supabase.table("users").select(
+            "id, username, full_name, avatar_url, university, points, current_streak, uploads_count"
+        ).not_.is_("username", "null").order("points", desc=True).limit(200).execute()
+        users = rows.data or []
+    except Exception as e:
+        print(f"[community] {e}")
+        users = []
+
+    me = get_current_user(request)
+    if me:
+        try:
+            following_resp = supabase.table("follows").select("following_id") \
+                .eq("follower_id", me["id"]).execute()
+            following_ids = {str(f["following_id"]) for f in (following_resp.data or [])}
+            for u in users:
+                u["is_following"] = str(u["id"]) in following_ids
+        except Exception as e:
+            print(f"[community] follows lookup failed: {e}")
+            for u in users:
+                u["is_following"] = False
+    else:
+        for u in users:
+            u["is_following"] = False
+
+    ctx = build_view_context(request)
+    ctx["users"] = users
+    return render(request, "community.html", ctx)
+
 # ============================================================
 # MAIN VIEWS
 # ============================================================
@@ -1583,6 +1622,14 @@ def api_me(request):
 
 @csrf_exempt
 def api_like_note(request, note_id):
+    """
+    LIKE API — When a user likes a note:
+      +1 point to the LIKER (like_given)
+      +1 point to the OWNER (like_received)
+      +1 likes_received counter to the OWNER
+    When a user unlikes:
+      -1 likes_received counter for the OWNER (points stay, to prevent abuse)
+    """
     user = get_current_user(request)
     if not user:
         return JsonResponse({"error": "login_required", "login_required": True}, status=401)
@@ -1625,12 +1672,11 @@ def api_like_note(request, note_id):
             .eq("user_id", user["id"]).eq("note_id", note_id).execute()
 
         if existing.data:
-            # Unlike
+            # ── UNLIKE ────────────────────────────────────
             supabase.table("note_likes").delete() \
                 .eq("user_id", user["id"]).eq("note_id", note_id).execute()
             liked = False
 
-            # Decrement owner's likes_received
             if owner_id and str(owner_id) != str(user["id"]):
                 try:
                     o = supabase.table("users").select("likes_received").eq("id", owner_id).execute()
@@ -1645,14 +1691,14 @@ def api_like_note(request, note_id):
                     print(f"[like] decrement failed: {e}")
 
         else:
-            # Like
+            # ── LIKE ──────────────────────────────────────
             supabase.table("note_likes").insert({
                 "user_id": user["id"],
                 "note_id": note_id,
             }).execute()
             liked = True
 
-            # Credit owner
+            # ── Owner gets +1 point AND +1 likes_received ──
             if owner_id and str(owner_id) != str(user["id"]):
                 try:
                     o = supabase.table("users").select("likes_received, points").eq("id", owner_id).execute()
@@ -1662,11 +1708,13 @@ def api_like_note(request, note_id):
                         new_likes = cur_likes + 1
                         new_points = cur_points + 1
 
+                        # ⭐ BOTH counters incremented here
                         supabase.table("users").update({
                             "likes_received": new_likes,
                             "points": new_points,
                         }).eq("id", owner_id).execute()
 
+                        # Log the activity for the owner
                         try:
                             supabase.table("activity_log").insert({
                                 "user_id": owner_id,
@@ -1677,25 +1725,29 @@ def api_like_note(request, note_id):
                         except Exception as ae:
                             print(f"[like] activity log failed: {ae}")
 
-                        print(f"[like] ↑ Owner {owner_id} likes_received: {cur_likes} → {new_likes}, points: {cur_points} → {new_points}")
+                        print(f"[like] ⭐ Owner {owner_id} | likes_received: {cur_likes} → {new_likes} | points: {cur_points} → {new_points}")
                     else:
                         print(f"[like] ⚠️ Owner {owner_id} not found in users table")
                 except Exception as e:
-                    print(f"[like] increment failed: {e}")
+                    print(f"[like] owner credit failed: {e}")
             elif owner_id and str(owner_id) == str(user["id"]):
-                print(f"[like] Self-like, skipping owner credit")
+                print(f"[like] Self-like detected — skipping owner credit")
 
+            # ── Liker gets +1 point ────────────────────────
             award_points(user["id"], "like_given", 1, note_id)
+            print(f"[like] ✓ Liker {user['id']} credited +1 point (like_given)")
 
-        # ── 3. Recount ────────────────────────────────────
+        # ── 3. Recount total likes on the note ────────────
         try:
             count_resp = supabase.table("note_likes").select("*", count="exact").eq("note_id", note_id).execute()
             count = count_resp.count if hasattr(count_resp, "count") and count_resp.count is not None else len(count_resp.data or [])
         except Exception:
             count = 0
 
+        # Update liker streak
         update_streak(user["id"])
 
+        # Return new liker points
         updated = supabase.table("users").select("points").eq("id", user["id"]).execute()
         points = updated.data[0]["points"] if updated.data else 0
 
@@ -1856,6 +1908,7 @@ urlpatterns = [
     # USER
     path("dashboard/", dashboard_view, name="dashboard"),
     path("leaderboard/", leaderboard_view, name="leaderboard"),
+    path("community/", community_view, name="community"),
     path("profile/<str:username>/", profile_view, name="profile"),
 
     # QUIZ
