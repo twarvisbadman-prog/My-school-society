@@ -963,7 +963,6 @@ def oauth_callback(request):
 
 
 def forgot_password_view(request):
-    """Send password reset email via Supabase."""
     if request.method == "POST":
         email = request.POST.get("email", "").strip().lower()
         if not email:
@@ -984,7 +983,6 @@ def forgot_password_view(request):
 
 
 def reset_password_view(request):
-    """Serve the reset password page (tokens handled in JS)."""
     return render(request, "reset_password.html")
 
 
@@ -1163,30 +1161,35 @@ def upload_view(request):
                             "uploaded_at": datetime.now().isoformat(),
                             "file_size": file_size,
                         }
+
                         if uploader_id:
                             insert_payload["uploader_id"] = uploader_id
+                            insert_payload["uploader"] = current_user["email"]
+                            print(f"[upload] 🔗 Note will be linked to {current_user['email']} ({uploader_id})")
+                        else:
+                            print(f"[upload] ⚠️ No logged-in user — note will have no owner")
 
                         try:
                             supabase.table("notes").insert(insert_payload).execute()
                         except Exception as e:
-                            print(f"[upload] uploader_id insert failed, retrying without: {e}")
-                            insert_payload.pop("uploader_id", None)
-                            supabase.table("notes").insert(insert_payload).execute()
+                            print(f"[upload] ❌ Insert failed: {e}")
+                            error = f"Upload failed: {str(e)}"
 
-                        if uploader_id:
-                            award_points(uploader_id, "upload", 15, safe_filename)
-                            try:
-                                u = supabase.table("users").select("uploads_count").eq("id", uploader_id).execute()
-                                if u.data:
-                                    supabase.table("users").update({
-                                        "uploads_count": (u.data[0].get("uploads_count", 0) or 0) + 1
-                                    }).eq("id", uploader_id).execute()
-                            except Exception:
-                                pass
-                            update_streak(uploader_id)
+                        if not error:
+                            if uploader_id:
+                                award_points(uploader_id, "upload", 15, safe_filename)
+                                try:
+                                    u = supabase.table("users").select("uploads_count").eq("id", uploader_id).execute()
+                                    if u.data:
+                                        supabase.table("users").update({
+                                            "uploads_count": (u.data[0].get("uploads_count", 0) or 0) + 1
+                                        }).eq("id", uploader_id).execute()
+                                except Exception:
+                                    pass
+                                update_streak(uploader_id)
 
-                        message = f"✅ {file.name} uploaded successfully!"
-                        form = UploadForm()
+                            message = f"✅ {file.name} uploaded successfully!"
+                            form = UploadForm()
 
             except Exception as e:
                 error = f"Upload failed: {str(e)}"
@@ -1585,33 +1588,106 @@ def api_like_note(request, note_id):
         return JsonResponse({"error": "login_required", "login_required": True}, status=401)
 
     try:
+        # ── 1. Fetch note FIRST to find owner ─────────────
+        owner_id = None
+        try:
+            note_resp = supabase.table("notes").select("uploader_id, uploader, filename").eq("id", note_id).execute()
+            if note_resp.data:
+                note = note_resp.data[0]
+                owner_id = note.get("uploader_id")
+
+                # Fallback: if uploader_id is NULL, try email → user lookup
+                if not owner_id:
+                    uploader_email = note.get("uploader")
+                    if uploader_email and "@" in uploader_email:
+                        try:
+                            u_lookup = supabase.table("users").select("id") \
+                                .eq("email", uploader_email.lower()).execute()
+                            if u_lookup.data:
+                                owner_id = u_lookup.data[0]["id"]
+                                # Backfill the note for future fast lookups
+                                try:
+                                    supabase.table("notes").update({
+                                        "uploader_id": owner_id
+                                    }).eq("id", note_id).execute()
+                                    print(f"[like] 🔗 Backfilled uploader_id for note {note_id}")
+                                except Exception as be:
+                                    print(f"[like] backfill failed: {be}")
+                        except Exception as le:
+                            print(f"[like] email lookup failed: {le}")
+
+                print(f"[like] Note {note_id} owner_id={owner_id}")
+        except Exception as e:
+            print(f"[like] note fetch failed: {e}")
+
+        # ── 2. Toggle like ────────────────────────────────
         existing = supabase.table("note_likes").select("id") \
             .eq("user_id", user["id"]).eq("note_id", note_id).execute()
 
         if existing.data:
+            # Unlike
             supabase.table("note_likes").delete() \
                 .eq("user_id", user["id"]).eq("note_id", note_id).execute()
             liked = False
+
+            # Decrement owner's likes_received
+            if owner_id and str(owner_id) != str(user["id"]):
+                try:
+                    o = supabase.table("users").select("likes_received").eq("id", owner_id).execute()
+                    if o.data:
+                        cur = o.data[0].get("likes_received", 0) or 0
+                        new_val = max(0, cur - 1)
+                        supabase.table("users").update({
+                            "likes_received": new_val
+                        }).eq("id", owner_id).execute()
+                        print(f"[like] ↓ Owner {owner_id} likes_received: {cur} → {new_val}")
+                except Exception as e:
+                    print(f"[like] decrement failed: {e}")
+
         else:
+            # Like
             supabase.table("note_likes").insert({
-                "user_id": user["id"], "note_id": note_id,
+                "user_id": user["id"],
+                "note_id": note_id,
             }).execute()
             liked = True
-            try:
-                note_resp = supabase.table("notes").select("uploader_id").eq("id", note_id).execute()
-                if note_resp.data and note_resp.data[0].get("uploader_id"):
-                    owner_id = note_resp.data[0]["uploader_id"]
-                    if owner_id != user["id"]:
-                        award_points(owner_id, "like_received", 1, note_id)
-                        o = supabase.table("users").select("likes_received").eq("id", owner_id).execute()
-                        if o.data:
-                            supabase.table("users").update({
-                                "likes_received": (o.data[0].get("likes_received", 0) or 0) + 1
-                            }).eq("id", owner_id).execute()
-            except Exception as e:
-                print(f"[like → owner] {e}")
+
+            # Credit owner
+            if owner_id and str(owner_id) != str(user["id"]):
+                try:
+                    o = supabase.table("users").select("likes_received, points").eq("id", owner_id).execute()
+                    if o.data:
+                        cur_likes = o.data[0].get("likes_received", 0) or 0
+                        cur_points = o.data[0].get("points", 0) or 0
+                        new_likes = cur_likes + 1
+                        new_points = cur_points + 1
+
+                        supabase.table("users").update({
+                            "likes_received": new_likes,
+                            "points": new_points,
+                        }).eq("id", owner_id).execute()
+
+                        try:
+                            supabase.table("activity_log").insert({
+                                "user_id": owner_id,
+                                "action": "like_received",
+                                "points": 1,
+                                "reference_id": str(note_id),
+                            }).execute()
+                        except Exception as ae:
+                            print(f"[like] activity log failed: {ae}")
+
+                        print(f"[like] ↑ Owner {owner_id} likes_received: {cur_likes} → {new_likes}, points: {cur_points} → {new_points}")
+                    else:
+                        print(f"[like] ⚠️ Owner {owner_id} not found in users table")
+                except Exception as e:
+                    print(f"[like] increment failed: {e}")
+            elif owner_id and str(owner_id) == str(user["id"]):
+                print(f"[like] Self-like, skipping owner credit")
+
             award_points(user["id"], "like_given", 1, note_id)
 
+        # ── 3. Recount ────────────────────────────────────
         try:
             count_resp = supabase.table("note_likes").select("*", count="exact").eq("note_id", note_id).execute()
             count = count_resp.count if hasattr(count_resp, "count") and count_resp.count is not None else len(count_resp.data or [])
@@ -1623,9 +1699,14 @@ def api_like_note(request, note_id):
         updated = supabase.table("users").select("points").eq("id", user["id"]).execute()
         points = updated.data[0]["points"] if updated.data else 0
 
-        return JsonResponse({"liked": liked, "count": count, "points": points})
+        return JsonResponse({
+            "liked": liked,
+            "count": count,
+            "points": points,
+            "owner_credited": bool(owner_id and str(owner_id) != str(user["id"])),
+        })
     except Exception as e:
-        print(f"[api_like_note] {e}")
+        print(f"[api_like_note] FATAL: {e}")
         return JsonResponse({"error": str(e)}, status=500)
 
 
