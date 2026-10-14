@@ -1,58 +1,48 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Free Courses | Student Hub</title>
-<link rel="icon" type="image/png" href="/logo.png">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>{{ profile.full_name|default:profile.username }} | Student Hub</title>
+<link rel="icon" type="image/png" href="/logo.png" />
 <link rel="apple-touch-icon" href="/logo.png">
-
 <link rel="preload" as="image" href="/pic.png" />
 <link rel="preload" as="image" href="/pic2.png" />
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 :root{
-  --surface:#ffffff;
-  --alt:#f5f5f4;
-  --border:#e7e5e4;
-  --ink:#1c1917;
-  --text-2:#44403c;
-  --text-3:#57534e;
-  --accent:#c2410c;
-  --accent-bright:#ea580c;
-  --accent-pink:#db2777;
-  --accent-dim:#fff1e8;
-  --success:#15803d;
-  --success-dim:#dcfce7;
-  --gold:#b45309;
-  --gold-dim:#fef3c7;
-  --gold-border:#fde68a;
-  --radius-sm:10px;
-  --radius-md:14px;
-  --radius-lg:20px;
-  --radius-xl:28px;
-  --shadow-sm:0 1px 2px rgba(28,25,23,.06);
-  --shadow-md:0 10px 28px -12px rgba(28,25,23,.18);
-  --shadow-lg:0 28px 64px -20px rgba(28,25,23,.22);
-  --shadow-cta:0 8px 22px -8px rgba(194,65,12,.4);
+    --surface:#fff;--alt:#f5f5f4;--border:#e7e5e4;--border-strong:#d6d3d1;
+    --ink:#1c1917;--text-2:#44403c;--text-3:#57534e;
+    --accent:#c2410c;--accent-bright:#ea580c;--accent-pink:#db2777;--accent-dim:#fff1e8;
+    --grad:linear-gradient(120deg,#ea580c,#db2777);
+    --grad-cta:linear-gradient(120deg,#c2410c,#be185d);
+    --grad-cta-hover:linear-gradient(120deg,#9a3412,#9d174d);
+    --gold:#b45309;--gold-dim:#fef3c7;--gold-border:#fde68a;
+    --green:#15803d;--green-dim:#dcfce7;
+    --cyan:#06b6d4;--cyan-dim:#cffafe;
+    --blue:#2563eb;--blue-dim:#dbeafe;
+    --radius-sm:10px;--radius-md:14px;--radius-lg:20px;--radius-xl:28px;
+    --shadow-sm:0 1px 2px rgba(28,25,23,.06);
+    --shadow-md:0 10px 28px -12px rgba(28,25,23,.18);
+    --shadow-lg:0 28px 64px -20px rgba(28,25,23,.22);
+    --shadow-cta:0 8px 22px -8px rgba(219,39,119,.5);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{font-family:'Inter',sans-serif;background:#0a0a14;color:var(--ink);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;width:100%}
+body{font-family:'Inter',sans-serif;background:#0a0a14;color:var(--ink);min-height:100vh;line-height:1.5;overflow-x:hidden;width:100%;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 a{color:inherit;text-decoration:none}
-img{max-width:100%;height:auto;display:block}
+img{max-width:100%;display:block}
 .page{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh}
 
-/* BG */
+/* PAGE BACKGROUND — pic2.png wallpaper */
 .page-bg{position:fixed;inset:0;z-index:-2;background-image:url('/pic2.png');background-size:cover;background-position:center;background-repeat:no-repeat;background-color:#0a0a14}
 .page-bg-overlay{position:fixed;inset:0;z-index:-1;background:rgba(10,10,20,0.45);pointer-events:none}
 
-/* TOP BAR */
+/* TOPBAR */
 .topbar{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);color:#f5f5f4;font-size:.82rem;padding:9px 0;position:relative;z-index:5}
-.topbar-inner{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;text-align:center}
+.topbar-inner{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap;text-align:center}
 .topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:#a8a29e;white-space:nowrap}
 .topbar-inner span i{color:var(--accent-bright);font-size:.78rem}
 .topbar-inner a.whatsapp-link{display:inline-flex;align-items:center;gap:6px;color:#25D366;font-weight:600;transition:all .2s}
@@ -70,289 +60,464 @@ img{max-width:100%;height:auto;display:block}
 .menu a.active{color:var(--accent);background:var(--accent-dim);font-weight:700}
 .menu a.course-link{color:var(--accent)}
 .menu a.hack-link{color:var(--accent-pink)}
-.menu a.course-link i,.menu a.hack-link i{font-size:.7rem;margin-right:4px}
+.menu a.community-link{color:var(--cyan)}
+.menu a i{font-size:.72rem;margin-right:4px}
 
 .nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
-.btn-quote{background:var(--accent);color:#fff;padding:9px 18px;border-radius:999px;font-weight:700;font-size:.78rem;display:inline-flex;align-items:center;gap:6px;transition:all .25s ease;white-space:nowrap;box-shadow:var(--shadow-cta);border:none;cursor:pointer;flex-shrink:0}
-.btn-quote:hover{background:#9a3412;transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(194,65,12,.5)}
-
-/* AUTH PILLS */
 .btn-nav-login{background:transparent;color:var(--ink);padding:9px 16px;border-radius:999px;font-weight:700;font-size:.8rem;display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--border-strong);transition:all .25s ease;white-space:nowrap;text-decoration:none}
 .btn-nav-login:hover{background:var(--alt);color:var(--accent);border-color:var(--accent);transform:translateY(-1px)}
-.btn-nav-join{background:linear-gradient(120deg,#c2410c,#be185d);color:#fff;padding:10px 18px;border-radius:999px;font-weight:800;font-size:.8rem;display:inline-flex;align-items:center;gap:6px;box-shadow:var(--shadow-cta);transition:all .25s ease;white-space:nowrap;text-decoration:none}
-.btn-nav-join:hover{background:linear-gradient(120deg,#9a3412,#9d174d);transform:translateY(-2px)}
+.btn-nav-join{background:var(--grad-cta);color:#fff;padding:10px 18px;border-radius:999px;font-weight:800;font-size:.8rem;display:inline-flex;align-items:center;gap:6px;box-shadow:var(--shadow-cta);transition:all .25s ease;white-space:nowrap;text-decoration:none}
+.btn-nav-join:hover{background:var(--grad-cta-hover);transform:translateY(-2px)}
 .streak-pill{display:inline-flex;align-items:center;gap:6px;background:#fff7ed;color:#ea580c;border:1.5px solid #fed7aa;padding:8px 14px;border-radius:999px;font-weight:800;font-size:.78rem;text-decoration:none;transition:all .25s ease}
 .streak-pill:hover{background:#ffedd5;transform:translateY(-1px)}
 .user-profile-pill{display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 5px;background:var(--alt);border:1.5px solid var(--border);border-radius:999px;text-decoration:none;transition:all .25s ease;max-width:180px}
 .user-profile-pill:hover{border-color:var(--accent);background:#fff;transform:translateY(-1px)}
 .user-avatar{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #fff}
-.user-avatar-fallback{width:32px;height:32px;border-radius:50%;background:linear-gradient(120deg,#c2410c,#be185d);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0;border:2px solid #fff}
+.user-avatar-fallback{width:32px;height:32px;border-radius:50%;background:var(--grad-cta);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0;border:2px solid #fff}
 .user-name{font-weight:800;font-size:.82rem;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100px}
 
 /* MAIN */
-.wrap{flex:1;max-width:1280px;margin:0 auto;padding:40px 20px 70px;width:100%;position:relative;z-index:2}
+.wrap{flex:1;max-width:1100px;margin:0 auto;padding:40px 20px 60px;width:100%;position:relative;z-index:2}
 
-/* HERO */
-.hero{position:relative;margin-bottom:32px;padding:60px 30px;border-radius:var(--radius-xl);overflow:hidden;min-height:340px;display:flex;align-items:center;justify-content:center;background:#1c1917;box-shadow:0 24px 60px -20px rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.18)}
+/* HERO — pic.png inside the card */
+.hero{margin-bottom:26px;position:relative;border-radius:var(--radius-xl);overflow:hidden;min-height:300px;display:flex;align-items:center;box-shadow:0 24px 60px -20px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.18);background:#1c1917}
 .hero-bg{position:absolute;inset:0;background-image:url('/pic.png');background-size:cover;background-position:center 30%;background-repeat:no-repeat;z-index:0}
-.hero::before{content:'';position:absolute;inset:0;background:rgba(15,15,25,.42);z-index:1;backdrop-filter:blur(2px)}
-.hero-inner{position:relative;z-index:2;max-width:760px;margin:0 auto;text-align:center}
-.hero .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(254,243,199,.75);backdrop-filter:blur(8px);border:1px solid rgba(253,230,138,.9);color:var(--gold);font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:8px 18px;border-radius:50px;margin-bottom:20px}
-.hero .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--gold)}
-.hero h1{font-size:clamp(1.75rem,4.5vw,2.6rem);font-weight:900;letter-spacing:-.025em;margin-bottom:16px;line-height:1.2;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.9)}
-.hero h1 .accent{color:#fdba8c;text-decoration:underline;text-decoration-color:#fdba8c;text-underline-offset:6px;text-decoration-thickness:4px}
-.hero p{color:#f5f5f4;font-size:1rem;line-height:1.7;max-width:640px;margin:0 auto;text-shadow:0 2px 8px rgba(0,0,0,.85)}
-.hero p strong{color:#fff;font-weight:800}
+.hero::before{content:'';position:absolute;inset:0;background:rgba(15,15,25,.55);z-index:1;backdrop-filter:blur(2px)}
+.hero-content{position:relative;z-index:2;display:grid;grid-template-columns:auto 1fr auto;gap:26px;align-items:center;padding:34px 36px;width:100%;color:#fff}
+.avatar{width:110px;height:110px;border-radius:50%;background:var(--grad-cta);display:flex;align-items:center;justify-content:center;font-size:2.6rem;font-weight:900;flex-shrink:0;border:4px solid rgba(255,255,255,.35);box-shadow:0 12px 32px rgba(0,0,0,.5);overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.hero-info h1{font-size:clamp(1.5rem,3vw,2rem);font-weight:900;letter-spacing:-.03em;margin-bottom:6px;line-height:1.2;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.9)}
+.hero-info .username{color:#fdba8c;font-weight:700;font-size:.95rem;font-family:'JetBrains Mono',monospace;margin-bottom:10px;text-shadow:0 1px 6px rgba(0,0,0,.7)}
+.hero-info .bio{color:#f5f5f4;font-size:.9rem;line-height:1.6;margin-bottom:14px;max-width:520px;text-shadow:0 1px 6px rgba(0,0,0,.8)}
+.hero-info .univ{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.16);backdrop-filter:blur(10px);padding:6px 14px;border-radius:50px;font-size:.78rem;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,.3);text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.hero-info .univ i{color:#fdba8c}
+.hero-actions{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
 
-.hero-stats{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:28px}
-.hero-stat{display:inline-flex;align-items:center;gap:7px;font-size:.82rem;color:#fff;font-weight:600;white-space:nowrap;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(10px);padding:8px 16px;border-radius:999px;text-shadow:0 1px 4px rgba(0,0,0,.6)}
-.hero-stat i{color:#fdba8c;font-size:.8rem}
-.hero-stat strong{color:#fff;font-weight:900;font-family:'JetBrains Mono',monospace;font-size:.92rem}
+.btn-hero{background:var(--grad-cta);color:#fff;padding:12px 22px;border-radius:999px;font-weight:800;font-size:.85rem;display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:var(--shadow-cta);transition:all .25s ease;border:none;cursor:pointer;font-family:inherit;white-space:nowrap}
+.btn-hero:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
+.btn-hero.outline{background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;border:1.5px solid rgba(255,255,255,.35);box-shadow:none}
+.btn-hero.outline:hover{background:rgba(255,255,255,.25);border-color:#fff}
+.btn-hero.following{background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#e7e5e4;border:1.5px solid rgba(255,255,255,.3);box-shadow:none}
+.btn-hero.following:hover{background:rgba(220,38,38,.25);color:#fca5a5;border-color:rgba(220,38,38,.6)}
 
-/* TRACKS GRID */
-.tracks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
+.stat-card{background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.6);border-radius:var(--radius-lg);padding:20px 18px;text-align:center;transition:all .25s ease;box-shadow:0 12px 30px -14px rgba(0,0,0,.45)}
+.stat-card:hover{transform:translateY(-3px);border-color:#fed7c3;box-shadow:0 20px 44px -16px rgba(0,0,0,.55)}
+.stat-icon{font-size:1.6rem;display:block;margin-bottom:6px}
+.stat-num{font-size:1.6rem;font-weight:900;letter-spacing:-.03em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1;font-family:'JetBrains Mono',monospace}
+.stat-label{color:var(--text-3);font-size:.72rem;margin-top:4px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
 
-.track{position:relative;border-radius:var(--radius-xl);padding:28px 26px 24px;display:flex;flex-direction:column;transition:all .3s cubic-bezier(.4,0,.2,1);overflow:hidden;cursor:pointer;min-height:330px;box-shadow:0 16px 44px -18px rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.25);color:#fff;background:#1c1917}
-.track-bg{position:absolute;inset:0;background-image:url('/pic.png');background-size:cover;background-repeat:no-repeat;z-index:0;transition:transform .6s ease}
-.track:hover .track-bg{transform:scale(1.06)}
-.track.github .track-bg{background-position:20% 20%}
-.track.hosting .track-bg{background-position:80% 20%}
-.track.python .track-bg{background-position:20% 60%}
-.track.htmlcss .track-bg{background-position:80% 60%}
-.track.english .track-bg{background-position:50% 15%}
-.track.kiswahili .track-bg{background-position:50% 85%}
-.track::after{content:'';position:absolute;inset:0;background:rgba(15,15,25,.45);backdrop-filter:blur(3px);z-index:1;border-radius:var(--radius-xl);pointer-events:none}
-.track::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--accent-color);opacity:0;transition:opacity .3s;z-index:3;border-radius:var(--radius-xl) var(--radius-xl) 0 0}
-.track:hover{transform:translateY(-6px);box-shadow:0 28px 64px -18px rgba(0,0,0,.7);border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.05)}
-.track:hover::before{opacity:1}
-.track > *{position:relative;z-index:2}
+/* SECTION */
+.section{margin-bottom:26px}
+.section-card{background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.6);border-radius:var(--radius-xl);padding:28px;box-shadow:0 12px 30px -14px rgba(0,0,0,.45)}
+.section-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.section-head h2{font-size:1.15rem;font-weight:900;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.section-head h2 i{color:var(--accent)}
+.section-head .count{background:var(--alt);padding:5px 12px;border-radius:30px;color:var(--text-3);font-size:.75rem;font-weight:700;border:1px solid var(--border)}
 
-.track .new-badge{position:absolute;top:14px;right:14px;background:var(--accent);color:#fff;font-size:.6rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;padding:5px 10px;border-radius:999px;box-shadow:0 6px 18px -6px rgba(194,65,12,.8);z-index:4;display:inline-flex;align-items:center;gap:5px}
-.track .new-badge i{font-size:.55rem}
-.track.featured{border:1.5px solid var(--accent-color)}
-.track.featured .track-status{background:rgba(21,128,61,.85);border-color:rgba(74,222,128,.7);color:#fff;backdrop-filter:blur(6px)}
-.track.featured .track-status .dot{background:#fff}
+/* UPLOADS */
+.upload-item{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--radius-md);border-bottom:1px solid var(--border);transition:background .2s;flex-wrap:wrap}
+.upload-item:last-child{border-bottom:none}
+.upload-item:hover{background:var(--alt)}
+.upload-info{flex:1;min-width:200px}
+.upload-name{font-weight:800;font-size:.9rem;margin-bottom:4px;word-break:break-word}
+.upload-meta{display:flex;gap:14px;flex-wrap:wrap;color:var(--text-3);font-size:.72rem;font-weight:600}
+.upload-meta span{display:inline-flex;align-items:center;gap:4px}
+.upload-meta i{color:var(--accent)}
+.upload-actions{display:flex;gap:6px}
 
-.track-icon{width:58px;height:58px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:1.55rem;margin-bottom:16px;flex-shrink:0;background:rgba(255,255,255,.18);color:#fff;backdrop-filter:blur(10px);box-shadow:0 6px 20px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.3);transition:transform .3s}
-.track:hover .track-icon{transform:scale(1.08)}
+.btn-sm{padding:7px 14px;border-radius:30px;font-size:.72rem;font-weight:700;display:inline-flex;align-items:center;gap:5px;cursor:pointer;border:1px solid transparent;transition:all .25s;text-decoration:none;white-space:nowrap}
+.btn-sm.view{background:var(--blue-dim);color:var(--blue);border-color:#bfdbfe}
+.btn-sm.view:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-sm.download{background:var(--green-dim);color:var(--green);border-color:#86efac}
+.btn-sm.download:hover{background:var(--green);color:#fff;border-color:var(--green)}
 
-.track h3{font-size:1.2rem;font-weight:800;letter-spacing:-.01em;margin-bottom:8px;color:#fff;line-height:1.25;text-shadow:0 2px 10px rgba(0,0,0,.9)}
-.track .track-desc{color:#f5f5f4;font-size:.88rem;line-height:1.6;margin-bottom:16px;flex:1;text-shadow:0 1px 6px rgba(0,0,0,.85)}
+/* ACTIVITY */
+.activity-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);font-size:.85rem}
+.activity-item:last-child{border-bottom:none}
+.activity-icon{width:36px;height:36px;border-radius:10px;background:var(--accent-dim);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9rem}
+.activity-text{flex:1}
+.activity-text strong{color:var(--ink);font-weight:700;text-transform:capitalize}
+.activity-points{background:var(--green-dim);color:var(--green);padding:3px 10px;border-radius:30px;font-size:.7rem;font-weight:800;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.activity-time{color:var(--text-3);font-size:.72rem;font-weight:600;margin-top:2px}
 
-.track-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:14px;border-top:1px solid rgba(255,255,255,.25)}
-.track-status{display:inline-flex;align-items:center;gap:6px;font-size:.65rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fcd34d;background:rgba(180,83,9,.55);border:1px solid rgba(253,230,138,.5);backdrop-filter:blur(6px);padding:4px 10px;border-radius:50px;white-space:nowrap}
-.track-status .dot{width:5px;height:5px;border-radius:50%;background:#fcd34d}
-.track-arrow{color:#fdba8c;font-size:.82rem;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:gap .25s;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.8)}
-.track:hover .track-arrow{gap:12px}
-
-.track.github{--accent-color:#7c3aed}
-.track.htmlcss{--accent-color:#c2410c}
-.track.python{--accent-color:#15803d}
-.track.english{--accent-color:#2563eb}
-.track.kiswahili{--accent-color:#0891b2}
-.track.hosting{--accent-color:#0ea5e9}
-
-/* NOTICE */
-.notice{margin-top:32px;background:rgba(254,243,199,.85);backdrop-filter:blur(10px);border:1px solid rgba(253,230,138,.9);border-left:4px solid var(--gold);border-radius:var(--radius-md);padding:18px 22px;display:flex;align-items:flex-start;gap:14px;box-shadow:0 12px 32px -14px rgba(0,0,0,.45)}
-.notice i{color:var(--gold);font-size:1.15rem;margin-top:2px;flex-shrink:0}
-.notice-text{color:#78350f;font-size:.88rem;line-height:1.7}
-.notice-text strong{color:#78350f;display:block;margin-bottom:4px;font-size:.92rem}
+/* EMPTY */
+.empty-state{text-align:center;padding:50px 20px;color:var(--text-3)}
+.empty-state i{font-size:3rem;color:var(--border-strong);display:block;margin-bottom:14px}
+.empty-state h3{color:var(--ink);font-size:1.05rem;font-weight:800;margin-bottom:6px}
+.empty-state p{font-size:.88rem;color:var(--text-2)}
 
 /* FOOTER */
-footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20px;border-top:1px solid rgba(255,255,255,.08);position:relative;z-index:1}
+footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20px;border-top:1px solid rgba(255,255,255,.08);position:relative;z-index:1;margin-top:auto}
 .footer-inner{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
 .footer-inner p{color:#a8a29e;font-size:.8rem}
 .footer-socials{display:flex;gap:8px}
 .footer-socials a{width:38px;height:38px;border:1px solid rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#d6d3d1;font-size:.9rem;transition:all .25s ease;background:rgba(255,255,255,.08);backdrop-filter:blur(6px)}
 .footer-socials a:hover{background:var(--accent);color:#fff;border-color:transparent;transform:translateY(-2px)}
 
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120%);background:var(--ink);color:#fff;padding:14px 22px;border-radius:14px;font-weight:700;font-size:.88rem;box-shadow:var(--shadow-lg);z-index:2000;display:flex;align-items:center;gap:10px;transition:transform .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none;max-width:90vw}
+.toast.show{transform:translateX(-50%) translateY(0);pointer-events:auto}
+.toast i{color:#fdba8c}
+
 /* RESPONSIVE */
-@media(max-width:720px){
-  .mainnav-inner{flex-wrap:wrap;padding:12px 16px;gap:12px}
-  .logo-full-img{height:46px}
-  .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0;margin:0 -16px;padding-left:16px;padding-right:16px}
-  .menu::-webkit-scrollbar{display:none}
-  .menu a{padding:8px 12px;font-size:.78rem;flex-shrink:0}
-  .wrap{padding:28px 14px 55px}
-  .hero{padding:38px 22px;min-height:auto;margin-bottom:24px;border-radius:var(--radius-lg)}
-  .hero h1{font-size:1.55rem}
-  .tracks-grid{grid-template-columns:1fr;gap:16px}
-  .track{padding:22px 20px 20px;min-height:auto}
-  .user-name{display:none}
-  .user-profile-pill{padding:5px}
+@media (max-width:900px){.stats-grid{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:720px){
+    .mainnav-inner{flex-wrap:wrap;padding:12px 16px;gap:12px}
+    .logo-full-img{height:46px}
+    .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0;margin:0 -16px;padding-left:16px;padding-right:16px}
+    .menu::-webkit-scrollbar{display:none}
+    .menu a{padding:8px 12px;font-size:.78rem;flex-shrink:0}
+    .user-name{display:none}
+    .user-profile-pill{padding:5px}
+    .wrap{padding:28px 14px 50px}
+    .hero-content{grid-template-columns:1fr;text-align:center;gap:20px;padding:28px 22px}
+    .avatar{margin:0 auto}
+    .hero-actions{align-items:stretch;width:100%}
+    .btn-hero{justify-content:center;width:100%}
+    .stats-grid{grid-template-columns:repeat(2,1fr)}
+    .section-card{padding:22px 18px}
 }
-@media(max-width:480px){
-  .topbar-inner{gap:12px;font-size:.7rem;padding:0 14px}
-  .topbar-inner span:nth-child(3){display:none}
-  .btn-quote span{display:none}
-  .hero h1{font-size:1.35rem}
-  .footer-inner{flex-direction:column;text-align:center}
+@media (max-width:480px){
+    .topbar-inner{gap:12px;font-size:.72rem;padding:0 14px}
+    .topbar-inner span:nth-child(3){display:none}
+    .stat-num{font-size:1.3rem}
+    .avatar{width:88px;height:88px;font-size:2rem}
+    .footer-inner{flex-direction:column;text-align:center}
+}
+@media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
 }
 </style>
 </head>
 <body>
 
+<!-- ═══ PAGE BACKGROUND (pic2.png) ═══ -->
 <div class="page-bg"></div>
 <div class="page-bg-overlay"></div>
 
 <div class="page">
 
-  <div class="topbar">
+<!-- TOPBAR -->
+<div class="topbar">
     <div class="topbar-inner">
-      <a href="https://wa.me/255740706007" target="_blank" rel="noopener" class="whatsapp-link">
-        <i class="fab fa-whatsapp"></i> WhatsApp
-      </a>
-      <span><i class="fas fa-envelope"></i> Twarvisteh@gmail.com</span>
-      <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
+        <a href="https://wa.me/255740706007" target="_blank" rel="noopener" class="whatsapp-link">
+            <i class="fab fa-whatsapp"></i> WhatsApp
+        </a>
+        <span><i class="fas fa-envelope"></i> Twarvistech@gmail.com</span>
+        <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
     </div>
-  </div>
-
-  <nav class="mainnav">
-    <div class="mainnav-inner">
-      <a href="/" class="logo">
-        <img src="/logo.png" alt="Student Hub" class="logo-full-img">
-      </a>
-      <div class="menu">
-        <a href="/">Home</a>
-        <a href="/browse/">Browse</a>
-        <a href="/upload/">Upload</a>
-        <a href="/quiz/" class="hack-link"><i class="fas fa-fire"></i>Daily Quiz 🔥</a>
-        <a href="/leaderboard/"><i class="fas fa-trophy" style="color:#eab308;margin-right:4px"></i>Leaderboard</a>
-        <a href="/community/"><i class="fas fa-users" style="color:#06b6d4;margin-right:4px"></i>Community</a>
-        <a href="/free_course/" class="course-link active"><i class="fas fa-book-open"></i>Free Courses</a>
-        <a href="/about/">About</a>
-      </div>
-      <div class="nav-right">
-        {% if is_authenticated %}
-          <a href="/quiz/" class="streak-pill" title="Daily Streak">
-            <span>🔥</span> {{ current_student.streak|default:0 }}
-          </a>
-          <a href="/profile/{{ current_student.username }}/" class="user-profile-pill">
-            {% if current_student.avatar_url %}
-              <img src="{{ current_student.avatar_url }}" class="user-avatar" alt="">
-            {% else %}
-              <span class="user-avatar-fallback">{{ current_student.initial|default:"S" }}</span>
-            {% endif %}
-            <span class="user-name">{{ current_student.username|default:"Me" }}</span>
-          </a>
-        {% else %}
-          <a href="/login/" class="btn-nav-login"><i class="fas fa-sign-in-alt"></i> Log In</a>
-          <a href="/signup/" class="btn-nav-join"><i class="fas fa-sparkles"></i> Join Free</a>
-        {% endif %}
-      </div>
-    </div>
-  </nav>
-
-  <div class="wrap">
-
-    <div class="hero">
-      <div class="hero-bg"></div>
-      <div class="hero-inner">
-        <span class="badge"><span class="dot"></span> Free Learning Tracks</span>
-        <h1>Learn anything, <span class="accent">at your pace</span>.</h1>
-        <p>Six complete learning tracks — <strong>GitHub</strong>, <strong>Free Web Hosting</strong>, <strong>Python</strong>, <strong>HTML &amp; CSS</strong>, <strong>English</strong>, and <strong>Kiswahili</strong>.</p>
-        <div class="hero-stats">
-          <span class="hero-stat"><i class="fas fa-book-open"></i> <strong>6</strong> Tracks</span>
-          <span class="hero-stat"><i class="fas fa-circle-check"></i> <strong>2</strong> Live</span>
-          <span class="hero-stat"><i class="fas fa-clock"></i> <strong>4</strong> Coming</span>
-          <span class="hero-stat"><i class="fas fa-gift"></i> Free Forever</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="tracks-grid">
-
-      <a href="/free_course/github/" class="track github featured">
-        <div class="track-bg"></div>
-        <div class="track-icon"><i class="fab fa-github"></i></div>
-        <h3>Learn GitHub</h3>
-        <p class="track-desc">Version control, repositories, branches, pull requests, and collaboration workflows used by every professional developer.</p>
-        <div class="track-meta">
-          <span class="track-status"><span class="dot"></span> Live now</span>
-          <span class="track-arrow">Start <i class="fas fa-arrow-right"></i></span>
-        </div>
-      </a>
-
-      <a href="/free_course/web-hosting/" class="track hosting featured">
-        <span class="new-badge"><i class="fas fa-star"></i> New</span>
-        <div class="track-bg"></div>
-        <div class="track-icon"><i class="fas fa-server"></i></div>
-        <h3>Free Web Hosting</h3>
-        <p class="track-desc">Deploy your website online for free — GitHub Pages, Netlify, Vercel, custom domains, HTTPS, and DNS basics.</p>
-        <div class="track-meta">
-          <span class="track-status"><span class="dot"></span> Live now</span>
-          <span class="track-arrow">Start <i class="fas fa-arrow-right"></i></span>
-        </div>
-      </a>
-
-      <a href="/free_course/python/" class="track python">
-        <div class="track-bg"></div>
-        <div class="track-icon"><i class="fab fa-python"></i></div>
-        <h3>Learn Python</h3>
-        <p class="track-desc">From variables and loops to functions, files, and real projects. The friendliest programming language for beginners.</p>
-        <div class="track-meta">
-          <span class="track-status"><span class="dot"></span> Coming soon</span>
-          <span class="track-arrow">Explore <i class="fas fa-arrow-right"></i></span>
-        </div>
-      </a>
-
-      <a href="/free_course/html-css/" class="track htmlcss">
-        <div class="track-bg"></div>
-        <div class="track-icon"><i class="fas fa-code"></i></div>
-        <h3>Learn HTML &amp; CSS</h3>
-        <p class="track-desc">Build real websites from scratch — semantic HTML, modern CSS, flexbox, grid, dark/light themes, and responsive design.</p>
-        <div class="track-meta">
-          <span class="track-status"><span class="dot"></span> Coming soon</span>
-          <span class="track-arrow">Explore <i class="fas fa-arrow-right"></i></span>
-        </div>
-      </a>
-
-      <a href="/free_course/english/" class="track english">
-        <div class="track-bg"></div>
-        <div class="track-icon"><i class="fas fa-language"></i></div>
-        <h3>Learn English</h3>
-        <p class="track-desc">Grammar, vocabulary, pronunciation, and real conversations. Build confidence speaking and writing English.</p>
-        <div class="track-meta">
-          <span class="track-status"><span class="dot"></span> Coming soon</span>
-          <span class="track-arrow">Explore <i class="fas fa-arrow-right"></i></span>
-        </div>
-      </a>
-
-      <a href="/free_course/kiswahili/" class="track kiswahili">
-        <div class="track-bg"></div>
-        <div class="track-icon"><i class="fas fa-book"></i></div>
-        <h3>Learn Kiswahili</h3>
-        <p class="track-desc">Master Tanzania's national language — greetings, grammar, everyday phrases, and cultural context.</p>
-        <div class="track-meta">
-          <span class="track-status"><span class="dot"></span> Coming soon</span>
-          <span class="track-arrow">Explore <i class="fas fa-arrow-right"></i></span>
-        </div>
-      </a>
-
-    </div>
-
-    <div class="notice">
-      <i class="fas fa-circle-info"></i>
-      <div class="notice-text">
-        <strong>2 tracks live — 4 coming soon</strong>
-        GitHub and Free Web Hosting are fully available now. The other 4 tracks are being built — tap any card to see its progress.
-      </div>
-    </div>
-
-  </div>
-
-  <footer>
-    <div class="footer-inner">
-      <p>© 2026 Student Hub · All rights reserved.</p>
-      <div class="footer-socials">
-        <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
-        <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
-        <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
-      </div>
-    </div>
-  </footer>
-
 </div>
+
+<!-- NAV -->
+<nav class="mainnav">
+    <div class="mainnav-inner">
+        <a href="/" class="logo">
+            <img src="/logo.png" alt="Student Hub" class="logo-full-img">
+        </a>
+        <div class="menu">
+            <a href="/">Home</a>
+            <a href="/browse/">Browse</a>
+            <a href="/upload/">Upload</a>
+            <a href="/quiz/" class="hack-link"><i class="fas fa-fire"></i>Daily Quiz 🔥</a>
+            <a href="/leaderboard/"><i class="fas fa-trophy" style="color:#eab308;margin-right:4px"></i>Leaderboard</a>
+            <a href="/community/" class="community-link"><i class="fas fa-users"></i>Community</a>
+            <a href="/autoquiz/" class="hack-link"><i class="fas fa-brain"></i>AutoQuiz AI</a>
+            <a href="/calculator/">Calculator</a>
+            <a href="/free_course/" class="course-link"><i class="fas fa-book-open"></i>Free Courses</a>
+            <a href="/about/">About</a>
+        </div>
+        <div class="nav-right">
+            {% if is_authenticated %}
+                <a href="/quiz/" class="streak-pill" title="Daily Streak">
+                    <span>🔥</span> {{ current_student.streak|default:0 }}
+                </a>
+                <a href="/profile/{{ current_student.username }}/" class="user-profile-pill" title="{{ current_student.username }}">
+                    {% if current_student.avatar_url %}
+                        <img src="{{ current_student.avatar_url }}" class="user-avatar" alt="">
+                    {% else %}
+                        <span class="user-avatar-fallback">{{ current_student.initial|default:"S" }}</span>
+                    {% endif %}
+                    <span class="user-name">{{ current_student.username|default:"Me" }}</span>
+                </a>
+            {% else %}
+                <a href="/login/?next={{ request.path }}" class="btn-nav-login">
+                    <i class="fas fa-sign-in-alt"></i> Log In
+                </a>
+                <a href="/signup/" class="btn-nav-join">
+                    <i class="fas fa-sparkles"></i> Join Free
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<div class="wrap">
+
+<!-- HERO — pic.png inside the card -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+        <div class="avatar">
+            {% if profile.avatar_url %}
+                <img src="{{ profile.avatar_url }}" alt="{{ profile.full_name }}">
+            {% else %}
+                {{ profile.full_name|default:profile.username|slice:":1"|upper }}
+            {% endif %}
+        </div>
+        <div class="hero-info">
+            <h1>{{ profile.full_name|default:profile.username|default:"Anonymous" }}</h1>
+            {% if profile.username %}
+                <div class="username">@{{ profile.username }}</div>
+            {% endif %}
+            {% if profile.bio %}
+                <p class="bio">{{ profile.bio }}</p>
+            {% endif %}
+            <div class="univ"><i class="fas fa-university"></i> {{ profile.university|default:"Not specified" }}</div>
+        </div>
+        <div class="hero-actions">
+            {% if is_me %}
+                <a href="/dashboard/" class="btn-hero outline"><i class="fas fa-cog"></i> Dashboard</a>
+            {% elif is_authenticated %}
+                <button class="btn-hero {% if is_following %}following{% endif %}"
+                        id="followBtn"
+                        data-user-id="{{ profile.id }}">
+                    {% if is_following %}
+                        <i class="fas fa-check"></i> <span id="followText">Following</span>
+                    {% else %}
+                        <i class="fas fa-plus"></i> <span id="followText">Follow</span>
+                    {% endif %}
+                </button>
+                {% if is_friend %}
+                    <div style="color:#fdba8c;font-size:.8rem;font-weight:700;text-align:center;text-shadow:0 1px 6px rgba(0,0,0,.7)">
+                        <i class="fas fa-user-friends"></i> Friends
+                    </div>
+                {% endif %}
+            {% else %}
+                <a href="/login/?next={{ request.path }}" class="btn-hero">
+                    <i class="fas fa-plus"></i> Follow
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-icon">⭐</span>
+        <div class="stat-num">{{ profile.points|default:0 }}</div>
+        <div class="stat-label">Points</div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">🔥</span>
+        <div class="stat-num">{{ profile.current_streak|default:0 }}</div>
+        <div class="stat-label">Day Streak</div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">📤</span>
+        <div class="stat-num">{{ profile.uploads_count|default:0 }}</div>
+        <div class="stat-label">Uploads</div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">❤️</span>
+        <div class="stat-num">{{ profile.likes_received|default:0 }}</div>
+        <div class="stat-label">Likes</div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">👥</span>
+        <div class="stat-num" id="followersCount">{{ followers_count|default:0 }}</div>
+        <div class="stat-label">Followers</div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">➡️</span>
+        <div class="stat-num">{{ following_count|default:0 }}</div>
+        <div class="stat-label">Following</div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">🧠</span>
+        <div class="stat-num">{{ profile.quizzes_correct|default:0 }}</div>
+        <div class="stat-label">Quiz Wins</div>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon">🏆</span>
+        <div class="stat-num">{{ profile.longest_streak|default:0 }}</div>
+        <div class="stat-label">Best Streak</div>
+    </div>
+</div>
+
+<!-- UPLOADS -->
+<section class="section">
+    <div class="section-card">
+        <div class="section-head">
+            <h2><i class="fas fa-file-upload"></i> Uploads</h2>
+            <span class="count">{{ uploads|length }} file{{ uploads|length|pluralize }}</span>
+        </div>
+        {% if uploads %}
+            {% for note in uploads %}
+            <div class="upload-item">
+                <div class="upload-info">
+                    <div class="upload-name">{{ note.module|default:"Untitled" }}</div>
+                    <div class="upload-meta">
+                        <span><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
+                        <span><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
+                        <span><i class="fas fa-{% if note.file_type == 'pastpaper' %}file-alt{% else %}sticky-note{% endif %}"></i> {{ note.file_type|default:"notes"|title }}</span>
+                    </div>
+                </div>
+                <div class="upload-actions">
+                    <a href="/view/{{ note.id }}/" class="btn-sm view"><i class="fas fa-eye"></i> View</a>
+                    <a href="/download/{{ note.id }}/" class="btn-sm download"><i class="fas fa-download"></i> Download</a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-folder-open"></i>
+                <h3>No uploads yet</h3>
+                <p>This user hasn't shared any notes yet.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- ACTIVITY -->
+{% if activity %}
+<section class="section">
+    <div class="section-card">
+        <div class="section-head">
+            <h2><i class="fas fa-bolt"></i> Recent Activity</h2>
+            <span class="count">{{ activity|length }} event{{ activity|length|pluralize }}</span>
+        </div>
+        {% for a in activity %}
+        <div class="activity-item">
+            <div class="activity-icon">
+                {% if a.action == 'upload' %}<i class="fas fa-upload"></i>
+                {% elif a.action == 'like_received' %}<i class="fas fa-heart"></i>
+                {% elif a.action == 'new_follower' %}<i class="fas fa-user-plus"></i>
+                {% elif a.action == 'quiz_correct' %}<i class="fas fa-brain"></i>
+                {% elif a.action == 'streak_day' %}<i class="fas fa-fire"></i>
+                {% elif a.action == 'like_given' %}<i class="fas fa-thumbs-up"></i>
+                {% else %}<i class="fas fa-star"></i>{% endif %}
+            </div>
+            <div class="activity-text">
+                <strong>{{ a.action|default:"Activity"|cut:"_" }}</strong>
+                <div class="activity-time">{{ a.created_at|slice:":10" }}</div>
+            </div>
+            {% if a.points %}
+            <div class="activity-points">+{{ a.points }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+</div><!-- /.wrap -->
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-inner">
+        <p>© 2026 Student Hub · Profile</p>
+        <div class="footer-socials">
+            <a href="https://www.instagram.com/twarvis_" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+            <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+        </div>
+    </div>
+</footer>
+
+</div><!-- /.page -->
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+    <i class="fas fa-check-circle"></i>
+    <span id="toastMsg">Done</span>
+</div>
+
+<script>
+(function(){
+    const followBtn = document.getElementById('followBtn');
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMsg');
+    const followersCountEl = document.getElementById('followersCount');
+
+    let toastTimer;
+    function showToast(msg, type) {
+        toastMsg.textContent = msg;
+        const icon = toast.querySelector('i');
+        if (type === 'error') {
+            icon.className = 'fas fa-exclamation-circle';
+            icon.style.color = '#fca5a5';
+        } else {
+            icon.className = 'fas fa-check-circle';
+            icon.style.color = '#fdba8c';
+        }
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    if (followBtn) {
+        followBtn.addEventListener('click', async function() {
+            const userId = String(followBtn.dataset.userId || '').trim();
+            if (!userId) { showToast('Invalid user', 'error'); return; }
+
+            followBtn.disabled = true;
+            const originalHTML = followBtn.innerHTML;
+
+            try {
+                const r = await fetch(`/api/follow/${encodeURIComponent(userId)}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                    },
+                    credentials: 'same-origin',
+                });
+
+                if (r.status === 401) {
+                    window.location.href = '/login/?next=' + encodeURIComponent(window.location.pathname);
+                    return;
+                }
+
+                const data = await r.json();
+
+                if (data.error) {
+                    showToast(data.error, 'error');
+                    followBtn.innerHTML = originalHTML;
+                    followBtn.disabled = false;
+                    return;
+                }
+
+                if (data.following) {
+                    followBtn.classList.add('following');
+                    followBtn.innerHTML = '<i class="fas fa-check"></i> <span id="followText">Following</span>';
+                    if (followersCountEl) {
+                        const cur = parseInt(followersCountEl.textContent) || 0;
+                        followersCountEl.textContent = cur + 1;
+                    }
+                    showToast('Now following! 🎉');
+                } else {
+                    followBtn.classList.remove('following');
+                    followBtn.innerHTML = '<i class="fas fa-plus"></i> <span id="followText">Follow</span>';
+                    if (followersCountEl) {
+                        const cur = parseInt(followersCountEl.textContent) || 0;
+                        followersCountEl.textContent = Math.max(0, cur - 1);
+                    }
+                    showToast('Unfollowed');
+                }
+            } catch (err) {
+                console.error('[follow]', err);
+                showToast('Something went wrong', 'error');
+                followBtn.innerHTML = originalHTML;
+            }
+
+            followBtn.disabled = false;
+        });
+    }
+})();
+</script>
 
 </body>
 </html>
