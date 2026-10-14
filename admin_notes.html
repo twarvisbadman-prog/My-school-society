@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Notes &amp; Owners · Admin | Student Hub</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+    --accent:#c2410c;--accent-bright:#ea580c;--accent-pink:#db2777;
+    --grad-cta:linear-gradient(120deg,#c2410c,#be185d);
+    --gold:#fbbf24;--green:#22c55e;--danger:#dc2626;--blue:#2563eb;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Inter',sans-serif;background:#0a0a14;color:#f5f5f4;padding:24px;min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+
+.wrap{max-width:1320px;margin:0 auto}
+
+/* HEADER */
+.header{margin-bottom:22px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.header h1{font-size:1.5rem;font-weight:900;display:flex;align-items:center;gap:12px;letter-spacing:-.02em}
+.header h1 .ico{width:44px;height:44px;border-radius:12px;background:var(--grad-cta);display:inline-flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:0 8px 22px -8px rgba(219,39,119,.6)}
+.header .meta{color:#a8a29e;font-size:.82rem;font-weight:600}
+
+/* TABS */
+.tabs{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+.tabs a{padding:10px 20px;border-radius:999px;font-weight:800;font-size:.82rem;background:rgba(255,255,255,.06);color:#d6d3d1;text-decoration:none;border:1px solid rgba(255,255,255,.12);transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.tabs a i{font-size:.85rem}
+.tabs a:hover{background:rgba(255,255,255,.12);color:#fff}
+.tabs a.active{background:var(--grad-cta);color:#fff;border-color:transparent;box-shadow:0 8px 22px -8px rgba(219,39,119,.5)}
+
+/* SEARCH */
+.search-bar{margin-bottom:18px;position:relative;max-width:420px}
+.search-bar input{width:100%;padding:12px 16px 12px 44px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;color:#fff;font-size:.88rem;font-family:'Inter',sans-serif;font-weight:600;outline:none;transition:all .2s}
+.search-bar input:focus{border-color:var(--accent);background:rgba(255,255,255,.1);box-shadow:0 0 0 3px rgba(194,65,12,.2)}
+.search-bar input::placeholder{color:#78716c}
+.search-bar i{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:#a8a29e;font-size:.9rem;pointer-events:none}
+
+/* STATS STRIP */
+.stats-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.stat-mini{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px}
+.stat-mini .lbl{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#a8a29e;margin-bottom:4px}
+.stat-mini .val{font-size:1.4rem;font-weight:900;font-family:'JetBrains Mono',monospace;background:linear-gradient(120deg,#fb923c,#db2777);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* TABLE */
+.table-wrap{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:20px;overflow:hidden;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:960px}
+th,td{padding:14px 16px;text-align:left;font-size:.82rem;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:middle}
+th{background:rgba(255,255,255,.06);font-weight:800;text-transform:uppercase;font-size:.66rem;letter-spacing:.08em;color:#d6d3d1;white-space:nowrap}
+tbody tr{transition:background .2s}
+tbody tr:hover{background:rgba(255,255,255,.04)}
+tbody tr:last-child td{border-bottom:none}
+
+/* DOC CELL */
+.doc-cell{display:flex;align-items:flex-start;gap:10px;max-width:340px}
+.doc-icon{width:36px;height:36px;border-radius:10px;background:rgba(37,99,235,.15);color:#93c5fd;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9rem;border:1px solid rgba(37,99,235,.35)}
+.doc-meta{min-width:0;flex:1}
+.doc-name{font-weight:800;font-size:.85rem;color:#fff;word-break:break-word;line-height:1.3}
+.doc-sub{font-size:.7rem;color:#a8a29e;margin-top:3px;font-family:'JetBrains Mono',monospace;word-break:break-all}
+
+/* OWNER CELL */
+.owner-cell{display:flex;align-items:center;gap:10px;min-width:0}
+.owner-avatar{width:34px;height:34px;border-radius:50%;flex-shrink:0;overflow:hidden;background:var(--grad-cta);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.78rem;border:2px solid rgba(255,255,255,.25)}
+.owner-avatar img{width:100%;height:100%;object-fit:cover}
+.owner-meta{min-width:0}
+.owner-name{font-weight:800;font-size:.82rem;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;line-height:1.2}
+.owner-handle{font-size:.68rem;font-family:'JetBrains Mono',monospace;color:#fdba8c;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
+.owner-email{font-size:.66rem;color:#78716c;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+
+/* NO OWNER BADGE */
+.no-owner{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-size:.68rem;font-weight:800;background:rgba(220,38,38,.15);color:#fca5a5;border:1px solid rgba(220,38,38,.4);white-space:nowrap}
+
+/* TAGS */
+.tag{display:inline-block;padding:4px 10px;border-radius:999px;font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+.tag.public{background:rgba(34,197,94,.15);color:#86efac;border:1px solid rgba(34,197,94,.35)}
+.tag.private{background:rgba(220,38,38,.15);color:#fca5a5;border:1px solid rgba(220,38,38,.35)}
+.tag.notes{background:rgba(37,99,235,.15);color:#93c5fd;border:1px solid rgba(37,99,235,.35)}
+.tag.pastpaper{background:rgba(234,88,12,.15);color:#fdba8c;border:1px solid rgba(234,88,12,.35)}
+
+td.module, td.univ{font-size:.75rem;color:#d6d3d1;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* EMPTY */
+.empty{padding:70px 24px;text-align:center;color:#a8a29e}
+.empty i{font-size:3rem;color:rgba(255,255,255,.15);display:block;margin-bottom:14px}
+.empty h3{color:#fff;font-size:1.1rem;font-weight:800;margin-bottom:6px}
+.empty p{font-size:.85rem}
+
+@media(max-width:640px){
+    body{padding:14px}
+    .header h1{font-size:1.2rem}
+    .header h1 .ico{width:38px;height:38px;font-size:.95rem}
+    .tabs a{padding:8px 14px;font-size:.75rem}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+    <div class="header">
+        <h1>
+            <span class="ico"><i class="fas fa-file-shield"></i></span>
+            Notes &amp; Owners
+        </h1>
+        <div class="meta">
+            <i class="fas fa-shield-halved" style="color:#fbbf24;margin-right:6px"></i>
+            Admin Panel
+        </div>
+    </div>
+
+    <div class="tabs">
+        <a href="/{{ secret_admin_path }}/"><i class="fas fa-gauge-high"></i> Dashboard</a>
+        <a href="/{{ secret_admin_path }}/users/"><i class="fas fa-users-cog"></i> Users</a>
+        <a href="/{{ secret_admin_path }}/notes/" class="active"><i class="fas fa-file-shield"></i> Notes &amp; Owners</a>
+        <a href="/{{ secret_admin_path }}/settings/"><i class="fas fa-cog"></i> Settings</a>
+    </div>
+
+    {% if notes %}
+    <div class="stats-strip">
+        <div class="stat-mini">
+            <div class="lbl">Total documents</div>
+            <div class="val">{{ notes|length }}</div>
+        </div>
+        <div class="stat-mini">
+            <div class="lbl">Public</div>
+            <div class="val" id="sum-public">—</div>
+        </div>
+        <div class="stat-mini">
+            <div class="lbl">Private</div>
+            <div class="val" id="sum-private">—</div>
+        </div>
+        <div class="stat-mini">
+            <div class="lbl">Orphaned</div>
+            <div class="val" id="sum-orphan">—</div>
+        </div>
+    </div>
+
+    <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search by filename, module, owner…" autocomplete="off">
+    </div>
+
+    <div class="table-wrap">
+        <table id="notesTable">
+            <thead>
+                <tr>
+                    <th>Document</th>
+                    <th>Module</th>
+                    <th>University</th>
+                    <th>Owner</th>
+                    <th>Type</th>
+                    <th>Privacy</th>
+                    <th>Uploaded</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for n in notes %}
+                <tr class="note-row"
+                    data-public="{{ 'yes' if n.privacy != 'private' else 'no' }}"
+                    data-orphan="{{ 'no' if n.owner else 'yes' }}"
+                    data-search="{{ n.original_filename|default:n.filename|lower }} {{ n.module|default:''|lower }} {{ n.university|default:''|lower }} {% if n.owner %}{{ n.owner.username|lower }} {{ n.owner.full_name|lower }} {{ n.owner.email|lower }}{% endif %}">
+                    <td>
+                        <div class="doc-cell">
+                            <div class="doc-icon"><i class="fas fa-file-lines"></i></div>
+                            <div class="doc-meta">
+                                <div class="doc-name">{{ n.original_filename|default:n.filename|truncatechars:48 }}</div>
+                                <div class="doc-sub">ID #{{ n.id }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="module">{{ n.module|default:"—" }}</td>
+                    <td class="univ">{{ n.university|default:"—"|truncatechars:26 }}</td>
+                    <td>
+                        {% if n.owner %}
+                            <div class="owner-cell">
+                                <div class="owner-avatar">
+                                    {% if n.owner.avatar_url %}
+                                        <img src="{{ n.owner.avatar_url }}" alt="">
+                                    {% else %}
+                                        {{ n.owner.full_name|default:n.owner.username|default:"?"|slice:":1"|upper }}
+                                    {% endif %}
+                                </div>
+                                <div class="owner-meta">
+                                    <div class="owner-name">{{ n.owner.full_name|default:n.owner.username|default:"Unknown" }}</div>
+                                    <div class="owner-handle">@{{ n.owner.username|default:"unknown" }}</div>
+                                    <div class="owner-email">{{ n.owner.email|default:"" }}</div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <span class="no-owner"><i class="fas fa-exclamation-triangle"></i> No owner</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="tag {{ n.file_type|default:'notes' }}">{{ n.file_type|default:"notes" }}</span>
+                    </td>
+                    <td>
+                        <span class="tag {{ n.privacy }}">{{ n.privacy }}</span>
+                    </td>
+                    <td style="font-size:.72rem;color:#d6d3d1;font-family:'JetBrains Mono',monospace;white-space:nowrap">
+                        {{ n.uploaded_at|slice:":16" }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty">
+        <i class="fas fa-file-circle-question"></i>
+        <h3>No documents yet</h3>
+        <p>Once users start uploading, they'll appear here with their owners.</p>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+(function(){
+    /* ═══ COMPUTE SUMS ═══ */
+    const rows = document.querySelectorAll('.note-row');
+    let pub = 0, priv = 0, orph = 0;
+    rows.forEach(r => {
+        if (r.dataset.public === 'yes') pub++; else priv++;
+        if (r.dataset.orphan === 'yes') orph++;
+    });
+    const elPub = document.getElementById('sum-public');
+    const elPriv = document.getElementById('sum-private');
+    const elOrph = document.getElementById('sum-orphan');
+    if (elPub) elPub.textContent = pub.toLocaleString();
+    if (elPriv) elPriv.textContent = priv.toLocaleString();
+    if (elOrph) elOrph.textContent = orph.toLocaleString();
+
+    /* ═══ LIVE SEARCH ═══ */
+    const input = document.getElementById('searchInput');
+    if (input) {
+        input.addEventListener('input', () => {
+            const q = input.value.trim().toLowerCase();
+            rows.forEach(r => {
+                r.style.display = (!q || r.dataset.search.includes(q)) ? '' : 'none';
+            });
+        });
+    }
+})();
+</script>
+
+</body>
+</html>
