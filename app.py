@@ -1,4 +1,4 @@
-# app.py - FINAL VERSION with R2 + Supabase Auth + Gamification + Community + Leaderboard
+# app.py - FINAL VERSION with R2 + Supabase Auth + Gamification + Community + Leaderboard + Notifications + Quiz Engine
 import os
 import uuid
 import json
@@ -17,6 +17,9 @@ from supabase import create_client, Client
 import boto3
 from botocore.config import Config
 from botocore.exceptions import ClientError
+
+# ── Quiz engine (separate module) ──
+import quiz as quiz_engine
 
 # ============================================================
 # LOAD .env FOR LOCAL DEVELOPMENT
@@ -72,7 +75,7 @@ CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf.split(",") if o.strip()]
 # SANITY CHECK
 # ============================================================
 print("=" * 60)
-print("🚀 TWARVIS SCHOOL — Final Build (R2 + Auth + Gamification + Community + Leaderboard)")
+print("🚀 TWARVIS SCHOOL — Final Build (R2 + Auth + Gamification + Community + Leaderboard + Notifications + Quiz Engine)")
 print("=" * 60)
 print(f"📡 Supabase URL:  {SUPABASE_URL[:50]}")
 print(f"🔑 Supabase Key:  {'✅ VALID JWT' if SUPABASE_KEY.startswith('eyJ') else '❌ INVALID'}")
@@ -80,6 +83,7 @@ print(f"☁️  R2 Bucket:    {R2_BUCKET_NAME}")
 print(f"☁️  R2 Endpoint:  {R2_ENDPOINT_URL[:50]}")
 print(f"☁️  R2 Public:    {R2_PUBLIC_URL[:50]}")
 print(f"🔐 Admin URL:     /{SECRET_ADMIN_PATH}/")
+print(f"🧠 Quiz bank:     {quiz_engine.total_questions()} questions loaded")
 print(f"🐛 Debug:         {DEBUG}")
 print("=" * 60)
 
@@ -1093,7 +1097,6 @@ def leaderboard_view(request):
     """
     Leaderboard with all stats: rank, points, likes_received,
     uploads_count, current_streak, followers_count.
-    Uses the leaderboard SQL view; falls back gracefully.
     """
     leaders = []
     try:
@@ -1820,7 +1823,7 @@ def api_like_note(request, note_id):
 
 @csrf_exempt
 def api_follow_user(request, user_id):
-    """Toggle follow/unfollow a user. UUIDs cast to str for JSON safety."""
+    """Toggle follow/unfollow. UUID-safe. Creates a notification on follow."""
     me = get_current_user(request)
     if not me:
         return JsonResponse({"error": "login_required", "login_required": True}, status=401)
@@ -1836,11 +1839,23 @@ def api_follow_user(request, user_id):
             .eq("follower_id", my_id).eq("following_id", target_user_id).execute()
 
         if existing.data:
+            # ── UNFOLLOW ──
             supabase.table("follows").delete() \
                 .eq("follower_id", my_id).eq("following_id", target_user_id).execute()
             following = False
             print(f"[follow] {my_id} unfollowed {target_user_id}")
+
+            try:
+                supabase.table("notifications").delete() \
+                    .eq("user_id", target_user_id) \
+                    .eq("actor_id", my_id) \
+                    .eq("type", "follow") \
+                    .execute()
+            except Exception:
+                pass
+
         else:
+            # ── FOLLOW ──
             supabase.table("follows").insert({
                 "follower_id": my_id,
                 "following_id": target_user_id,
@@ -1852,6 +1867,24 @@ def api_follow_user(request, user_id):
                 award_points(target_user_id, "new_follower", 2, my_id)
             except Exception as ae:
                 print(f"[follow] award_points failed: {ae}")
+
+            # 🔔 CREATE NOTIFICATION
+            try:
+                follower_name = me.get("profile", {}).get("full_name") or \
+                                me.get("profile", {}).get("username") or \
+                                me.get("email", "Someone")
+
+                supabase.table("notifications").insert({
+                    "user_id": target_user_id,
+                    "actor_id": my_id,
+                    "type": "follow",
+                    "reference_id": my_id,
+                    "message": f"{follower_name} started following you",
+                    "is_read": False,
+                }).execute()
+                print(f"[notify] 📬 Notification sent to {target_user_id} from {my_id}")
+            except Exception as ne:
+                print(f"[follow] notification insert failed: {ne}")
 
         try:
             update_streak(my_id)
@@ -1865,43 +1898,32 @@ def api_follow_user(request, user_id):
         return JsonResponse({"error": str(e)}, status=500)
 
 
-QUIZ_BANK = [
-    {"q": "What does HTTP stand for?", "a": "HyperText Transfer Protocol",
-     "options": ["HyperText Transfer Protocol", "High Transfer Text Protocol", "HyperText Transmission Protocol", "Host Transfer Protocol"]},
-    {"q": "Which Git command creates a new branch?", "a": "git checkout -b",
-     "options": ["git new-branch", "git branch create", "git checkout -b", "git make branch"]},
-    {"q": "What is 2^10?", "a": "1024", "options": ["512", "1024", "2048", "1000"]},
-    {"q": "Which planet has the most moons?", "a": "Saturn", "options": ["Jupiter", "Saturn", "Uranus", "Neptune"]},
-    {"q": "Who created Python?", "a": "Guido van Rossum", "options": ["Linus Torvalds", "Guido van Rossum", "Dennis Ritchie", "James Gosling"]},
-    {"q": "What does CSS stand for?", "a": "Cascading Style Sheets",
-     "options": ["Cascading Style Sheets", "Creative Style System", "Computer Style Sheets", "Colorful Style Sheets"]},
-    {"q": "In HTML, which tag creates a hyperlink?", "a": "<a>", "options": ["<link>", "<a>", "<href>", "<url>"]},
-    {"q": "What does CPU stand for?", "a": "Central Processing Unit",
-     "options": ["Central Processing Unit", "Computer Personal Unit", "Central Program Utility", "Core Processing Unit"]},
-    {"q": "Which language runs in a web browser?", "a": "JavaScript", "options": ["Java", "C++", "Python", "JavaScript"]},
-    {"q": "What year was JavaScript created?", "a": "1995", "options": ["1993", "1995", "1997", "2000"]},
-]
-
-
+# ============================================================
+# DAILY QUIZ API — uses quiz_engine
+# ============================================================
 @csrf_exempt
 def api_daily_quiz(request):
+    """Daily quiz — question + options rotate per day from quiz.py."""
     user = get_current_user(request)
     today = date.today()
-    idx = today.toordinal() % len(QUIZ_BANK)
-    today_q = QUIZ_BANK[idx]
+
+    today_q = quiz_engine.get_daily_question(today=today, shuffle_options=True)
 
     if request.method == "GET":
         already = None
         if user:
             try:
                 r = supabase.table("quiz_attempts").select("*") \
-                    .eq("user_id", str(user["id"])).eq("quiz_date", today.isoformat()).execute()
+                    .eq("user_id", str(user["id"])) \
+                    .eq("quiz_date", today.isoformat()).execute()
                 already = r.data[0] if r.data else None
             except Exception:
                 already = None
+
         payload = {
             "question": today_q["q"],
             "options": today_q["options"],
+            "subject": today_q["subject"],
             "already_answered": bool(already),
             "login_required": user is None,
         }
@@ -1928,7 +1950,7 @@ def api_daily_quiz(request):
         if existing.data:
             return JsonResponse({"error": "already_answered_today"}, status=400)
 
-        is_correct = (answer == today_q["a"])
+        is_correct = quiz_engine.is_correct_answer(today_q, answer)
         points = 10 if is_correct else 0
 
         supabase.table("quiz_attempts").insert({
@@ -1959,10 +1981,163 @@ def api_daily_quiz(request):
             "correct_answer": today_q["a"],
             "your_answer": answer,
             "points_earned": points,
+            "subject": today_q["subject"],
         })
     except Exception as e:
         print(f"[api_daily_quiz] {e}")
         return JsonResponse({"error": str(e)}, status=500)
+
+
+# ============================================================
+# NOTIFICATIONS + FOLLOW LISTS API
+# ============================================================
+@csrf_exempt
+def api_notifications(request):
+    """Return current user's notifications, newest first."""
+    me = get_current_user(request)
+    if not me:
+        return JsonResponse({"error": "login_required"}, status=401)
+
+    my_id = str(me["id"])
+
+    try:
+        r = supabase.table("notifications").select("*") \
+            .eq("user_id", my_id) \
+            .order("created_at", desc=True) \
+            .limit(30).execute()
+        rows = r.data or []
+    except Exception as e:
+        print(f"[api_notifications] {e}")
+        return JsonResponse({"notifications": [], "unread_count": 0})
+
+    notifications = []
+    for n in rows:
+        actor_id = n.get("actor_id")
+        actor = None
+        try:
+            if actor_id:
+                a = supabase.table("users").select(
+                    "id, username, full_name, avatar_url"
+                ).eq("id", str(actor_id)).execute()
+                actor = a.data[0] if a.data else None
+        except Exception:
+            pass
+
+        notifications.append({
+            "id": n.get("id"),
+            "type": n.get("type"),
+            "message": n.get("message"),
+            "is_read": bool(n.get("is_read")),
+            "created_at": n.get("created_at"),
+            "actor": {
+                "id": str(actor.get("id")) if actor else "",
+                "username": actor.get("username", "") if actor else "",
+                "full_name": actor.get("full_name", "") if actor else "",
+                "avatar_url": actor.get("avatar_url", "") if actor else "",
+            } if actor else None,
+            "reference_id": str(n.get("reference_id")) if n.get("reference_id") else "",
+        })
+
+    unread = sum(1 for n in notifications if not n["is_read"])
+    return JsonResponse({"notifications": notifications, "unread_count": unread})
+
+
+@csrf_exempt
+def api_mark_notifications_read(request):
+    """Mark all current user's notifications as read."""
+    me = get_current_user(request)
+    if not me:
+        return JsonResponse({"error": "login_required"}, status=401)
+
+    my_id = str(me["id"])
+    try:
+        supabase.table("notifications").update({"is_read": True}) \
+            .eq("user_id", my_id).execute()
+        return JsonResponse({"success": True})
+    except Exception as e:
+        print(f"[api_mark_notifications_read] {e}")
+        return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+
+@csrf_exempt
+def api_list_followers(request, username):
+    """List users who follow this username."""
+    return _api_follow_list(request, username, mode="followers")
+
+
+@csrf_exempt
+def api_list_following(request, username):
+    """List users this username is following."""
+    return _api_follow_list(request, username, mode="following")
+
+
+def _api_follow_list(request, username, mode="followers"):
+    """Shared helper for followers/following lists."""
+    try:
+        row = supabase.table("users").select("id, username, full_name, avatar_url") \
+            .eq("username", username).execute()
+        if not row.data:
+            return JsonResponse({"users": []})
+        target = row.data[0]
+        target_id = str(target["id"])
+    except Exception as e:
+        print(f"[follow_list] user lookup failed: {e}")
+        return JsonResponse({"users": []})
+
+    try:
+        if mode == "followers":
+            r = supabase.table("follows").select("follower_id") \
+                .eq("following_id", target_id).execute()
+            user_ids = [str(x["follower_id"]) for x in (r.data or [])]
+        else:
+            r = supabase.table("follows").select("following_id") \
+                .eq("follower_id", target_id).execute()
+            user_ids = [str(x["following_id"]) for x in (r.data or [])]
+    except Exception as e:
+        print(f"[follow_list] follows fetch failed: {e}")
+        return JsonResponse({"users": []})
+
+    if not user_ids:
+        return JsonResponse({"users": []})
+
+    try:
+        rows = supabase.table("users").select(
+            "id, username, full_name, avatar_url, university, points, current_streak"
+        ).in_("id", user_ids).execute()
+        users = rows.data or []
+    except Exception as e:
+        print(f"[follow_list] profiles fetch failed: {e}")
+        return JsonResponse({"users": []})
+
+    me = get_current_user(request)
+    my_following_ids = set()
+    if me:
+        try:
+            fr = supabase.table("follows").select("following_id") \
+                .eq("follower_id", str(me["id"])).execute()
+            my_following_ids = {str(x["following_id"]) for x in (fr.data or [])}
+        except Exception:
+            pass
+
+    my_id = str(me["id"]) if me else ""
+
+    users_out = []
+    for u in users:
+        uid = str(u["id"])
+        users_out.append({
+            "id": uid,
+            "username": u.get("username", ""),
+            "full_name": u.get("full_name", ""),
+            "avatar_url": u.get("avatar_url", ""),
+            "university": u.get("university", ""),
+            "points": u.get("points", 0) or 0,
+            "current_streak": u.get("current_streak", 0) or 0,
+            "is_following": uid in my_following_ids,
+            "is_me": uid == my_id,
+        })
+
+    return JsonResponse({"users": users_out})
+
 
 # ============================================================
 # URLS
@@ -1995,6 +2170,12 @@ urlpatterns = [
     path("api/quiz/daily/", api_daily_quiz, name="api_daily_quiz"),
     path("api/like/<int:note_id>/", api_like_note, name="api_like_note"),
     path("api/follow/<str:user_id>/", api_follow_user, name="api_follow_user"),
+
+    # NOTIFICATIONS + FOLLOW LISTS
+    path("api/notifications/", api_notifications, name="api_notifications"),
+    path("api/notifications/read/", api_mark_notifications_read, name="api_mark_notifications_read"),
+    path("api/followers/<str:username>/", api_list_followers, name="api_list_followers"),
+    path("api/following/<str:username>/", api_list_following, name="api_list_following"),
 
     # ADMIN
     path(f"{SECRET_ADMIN_PATH}/", admin_dashboard, name="admin_dashboard"),
