@@ -62,19 +62,52 @@ img{max-width:100%;height:auto;display:block}
 .admin-container{max-width:1280px;margin:0 auto;padding:32px 20px 80px}
 
 /* ADMIN TOP BAR */
-.admin-topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:24px}
+.admin-topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px}
 .admin-topbar-left{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .admin-topbar-right{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 
 .back-link{display:inline-flex;align-items:center;gap:10px;background:var(--surface);color:var(--ink);text-decoration:none;padding:11px 22px;border-radius:999px;transition:all .25s;font-weight:700;font-size:.85rem;border:1px solid var(--border);box-shadow:var(--shadow-sm)}
 .back-link:hover{background:var(--alt);transform:translateX(-3px);border-color:var(--border-strong)}
 .back-link i{color:var(--accent)}
-
 .settings-link{display:inline-flex;align-items:center;gap:10px;background:var(--blue-dim);color:var(--blue);text-decoration:none;padding:11px 22px;border-radius:999px;transition:all .25s;font-weight:700;font-size:.85rem;border:1px solid #bfdbfe}
 .settings-link:hover{background:var(--blue);color:#fff;border-color:var(--blue);transform:translateY(-2px);box-shadow:0 8px 20px -6px rgba(37,99,235,.4)}
-.settings-link i{color:currentColor}
-
 .admin-badge{background:var(--gold-dim);border:1px solid var(--gold-border);padding:9px 22px;border-radius:999px;color:var(--gold);font-weight:800;font-size:.85rem;display:inline-flex;align-items:center;gap:8px;letter-spacing:.02em}
+
+/* ═══ ADMIN TABS ═══ */
+.admin-tabs{
+    display:flex;
+    gap:8px;
+    margin-bottom:24px;
+    flex-wrap:wrap;
+}
+.admin-tabs a{
+    padding:11px 22px;
+    border-radius:999px;
+    font-weight:800;
+    font-size:.84rem;
+    background:var(--surface);
+    color:var(--text-2);
+    border:1px solid var(--border);
+    box-shadow:var(--shadow-sm);
+    transition:all .25s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    text-decoration:none;
+}
+.admin-tabs a i{font-size:.85rem}
+.admin-tabs a:hover{
+    background:var(--alt);
+    color:var(--ink);
+    border-color:var(--border-strong);
+    transform:translateY(-1px);
+}
+.admin-tabs a.active{
+    background:var(--grad-cta);
+    color:#fff;
+    border-color:transparent;
+    box-shadow:var(--shadow-cta);
+}
 
 /* SECURITY HEADER */
 .security-header{background:var(--success-dim);border:1px solid #86efac;border-radius:var(--radius-md);padding:14px 22px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
@@ -107,6 +140,13 @@ img{max-width:100%;height:auto;display:block}
 .file-list-header h2 i{color:var(--accent)}
 .file-count{background:var(--alt);padding:5px 14px;border-radius:30px;color:var(--text-2);font-size:.78rem;font-weight:700;border:1px solid var(--border)}
 
+/* SEARCH BAR */
+.admin-search{margin-bottom:18px;position:relative;max-width:440px}
+.admin-search input{width:100%;padding:12px 16px 12px 44px;background:var(--surface);border:1px solid var(--border);border-radius:14px;color:var(--ink);font-size:.9rem;font-family:'Inter',sans-serif;font-weight:600;outline:none;transition:all .2s;box-shadow:var(--shadow-sm)}
+.admin-search input:focus{border-color:var(--accent-bright);box-shadow:0 0 0 3px rgba(234,88,12,.12)}
+.admin-search input::placeholder{color:var(--text-3);font-weight:500}
+.admin-search i{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--text-3);font-size:.9rem;pointer-events:none}
+
 .file-item{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px;transition:background .2s;border-radius:var(--radius-md)}
 .file-item:last-child{border-bottom:none}
 .file-item:hover{background:var(--alt)}
@@ -116,6 +156,11 @@ img{max-width:100%;height:auto;display:block}
 .file-name i{color:var(--accent)}
 .privacy-badge{font-size:.62rem;padding:3px 10px;border-radius:30px;font-weight:800;background:var(--success-dim);color:var(--success);border:1px solid #86efac;letter-spacing:.04em;text-transform:uppercase;display:inline-flex;align-items:center;gap:4px}
 .privacy-badge.private{background:var(--gold-dim);color:var(--gold);border-color:var(--gold-border)}
+
+/* OWNER BADGE */
+.owner-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-dim);border:1px solid #fed7c3;color:var(--accent);padding:3px 10px;border-radius:30px;font-size:.68rem;font-weight:800;white-space:nowrap}
+.owner-badge.none{background:var(--danger-dim);border-color:#fca5a5;color:var(--danger)}
+.owner-badge i{font-size:.62rem}
 
 .file-meta{color:var(--text-3);font-size:.72rem;margin-top:6px;display:flex;flex-wrap:wrap;gap:12px;font-weight:600}
 .file-meta span{display:inline-flex;align-items:center;gap:4px}
@@ -140,16 +185,12 @@ img{max-width:100%;height:auto;display:block}
 /* ADMIN BUTTONS */
 .admin-btn{padding:7px 14px;border:none;border-radius:30px;color:#fff;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .25s;font-size:.72rem;font-weight:700;white-space:nowrap}
 .admin-btn i{font-size:.72rem}
-
 .admin-btn.danger{background:var(--danger-dim);color:var(--danger);border:1px solid #fca5a5}
 .admin-btn.danger:hover{background:var(--danger);color:#fff;border-color:var(--danger);transform:scale(1.04);box-shadow:0 6px 18px rgba(220,38,38,.3)}
-
 .admin-btn.view-btn{background:var(--blue-dim);color:var(--blue);border:1px solid #bfdbfe}
 .admin-btn.view-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue);transform:scale(1.04);box-shadow:0 6px 18px rgba(37,99,235,.3)}
-
 .admin-btn.download-btn{background:var(--success-dim);color:var(--success);border:1px solid #86efac}
 .admin-btn.download-btn:hover{background:var(--success);color:#fff;border-color:var(--success);transform:scale(1.04);box-shadow:0 6px 18px rgba(21,128,61,.3)}
-
 .admin-btn.edit-btn{background:var(--accent-dim);color:var(--accent);border:1px solid #fed7c3}
 .admin-btn.edit-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);transform:scale(1.04);box-shadow:0 6px 18px rgba(194,65,12,.3)}
 
@@ -194,6 +235,9 @@ footer{background:var(--ink);padding:26px 20px;border-top:1px solid var(--border
     .admin-topbar{flex-direction:column;align-items:stretch;text-align:center}
     .admin-topbar-left,.admin-topbar-right{justify-content:center;width:100%}
     .back-link,.settings-link{justify-content:center;width:100%}
+    .admin-tabs{justify-content:center}
+    .admin-tabs a{padding:9px 16px;font-size:.78rem}
+    .admin-search{max-width:100%}
     .passcode-section{flex-wrap:wrap;justify-content:center}
     .passcode-input{width:60px}
 }
@@ -264,13 +308,29 @@ footer{background:var(--ink);padding:26px 20px;border-top:1px solid var(--border
     <div class="admin-topbar">
         <div class="admin-topbar-left">
             <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
-            <a href="/admin-portal-twarvis-9x7k2m4p8q3z5w6v/settings/" class="settings-link">
+            <a href="/{{ secret_admin_path }}/settings/" class="settings-link">
                 <i class="fas fa-cog"></i> Settings
             </a>
         </div>
         <div class="admin-topbar-right">
             <span class="admin-badge"><i class="fas fa-crown"></i> Admin Access</span>
         </div>
+    </div>
+
+    <!-- ═══ ADMIN NAV TABS ═══ -->
+    <div class="admin-tabs">
+        <a href="/{{ secret_admin_path }}/" class="active">
+            <i class="fas fa-gauge-high"></i> Files
+        </a>
+        <a href="/{{ secret_admin_path }}/users/">
+            <i class="fas fa-users-cog"></i> Users
+        </a>
+        <a href="/{{ secret_admin_path }}/notes/">
+            <i class="fas fa-file-shield"></i> Notes &amp; Owners
+        </a>
+        <a href="/{{ secret_admin_path }}/settings/">
+            <i class="fas fa-cog"></i> Settings
+        </a>
     </div>
 
     <!-- Security Header -->
@@ -325,19 +385,45 @@ footer{background:var(--ink);padding:26px 20px;border-top:1px solid var(--border
             <span class="file-count">{{ notes|length }} files</span>
         </div>
 
+        <!-- Live search -->
+        <div class="admin-search">
+            <i class="fas fa-search"></i>
+            <input type="text" id="adminSearch"
+                   placeholder="Search by filename, module, course, university, owner…"
+                   autocomplete="off">
+        </div>
+
         {% if notes %}
             {% for note in notes %}
-            <div class="file-item">
+            <div class="file-item"
+                 data-search="{{ note.module|default:''|lower }} {{ note.original_filename|default:note.filename|lower }} {{ note.course|default:''|lower }} {{ note.university|default:''|lower }} {{ note.uploader|default:''|lower }} {% if note.owner %}{{ note.owner.username|lower }} {{ note.owner.full_name|lower }}{% endif %}">
+
                 <div class="file-info">
                     <div class="file-name">
                         <i class="fas fa-file"></i>
                         <span>{{ note.module|default:"Untitled" }}</span>
+
                         {% if note.privacy == 'private' %}
                             <span class="privacy-badge private"><i class="fas fa-lock"></i> Private</span>
                         {% else %}
                             <span class="privacy-badge"><i class="fas fa-globe"></i> Public</span>
                         {% endif %}
+
+                        {% if note.owner %}
+                            <span class="owner-badge" title="Uploaded by {{ note.owner.full_name|default:note.owner.username }}">
+                                <i class="fas fa-user"></i> @{{ note.owner.username|default:"unknown"|truncatechars:22 }}
+                            </span>
+                        {% elif note.uploader_id %}
+                            <span class="owner-badge" title="Uploaded by {{ note.uploader }}">
+                                <i class="fas fa-user"></i> {{ note.uploader|default:"unknown"|truncatechars:22 }}
+                            </span>
+                        {% else %}
+                            <span class="owner-badge none" title="No owner linked">
+                                <i class="fas fa-exclamation-triangle"></i> No owner
+                            </span>
+                        {% endif %}
                     </div>
+
                     <div class="file-meta">
                         <span><i class="fas fa-file-signature"></i> {{ note.original_filename|default:note.filename }}</span>
                         <span><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
@@ -345,6 +431,7 @@ footer{background:var(--ink);padding:26px 20px;border-top:1px solid var(--border
                         <span><i class="fas fa-university"></i> {{ note.university|default:"Not specified" }}</span>
                     </div>
                 </div>
+
                 <div class="file-actions">
                     <!-- Passcode Section -->
                     <div class="passcode-section" data-file-id="{{ note.id }}">
@@ -371,18 +458,18 @@ footer{background:var(--ink);padding:26px 20px;border-top:1px solid var(--border
                         {% endif %}
                     </div>
 
-                    <!-- EDIT (to admin_edit page) -->
+                    <!-- EDIT -->
                     <a href="/admin_edit/{{ note.id }}/" class="admin-btn edit-btn">
                         <i class="fas fa-pen"></i> Edit
                     </a>
-
                     <a href="/view/{{ note.id }}/" class="admin-btn view-btn" target="_blank">
                         <i class="fas fa-eye"></i> View
                     </a>
                     <a href="/download/{{ note.id }}/" class="admin-btn download-btn">
                         <i class="fas fa-download"></i> Download
                     </a>
-                    <a href="/delete/{{ note.id }}/" class="admin-btn danger" onclick="return confirm('⚠️ Delete this file permanently? This cannot be undone!')">
+                    <a href="/delete/{{ note.id }}/" class="admin-btn danger"
+                       onclick="return confirm('⚠️ Delete this file permanently? This cannot be undone!')">
                         <i class="fas fa-trash-alt"></i> Delete
                     </a>
                 </div>
@@ -418,7 +505,7 @@ footer{background:var(--ink);padding:26px 20px;border-top:1px solid var(--border
 
 <script>
 // ============================================================
-// PASSCODE FUNCTIONS (bado zipo — kwa private files)
+// PASSCODE FUNCTIONS
 // ============================================================
 var passcodeVisible = {};
 
@@ -487,6 +574,32 @@ function showToast(msg, type) {
 }
 
 // ============================================================
+// LIVE SEARCH over file items
+// ============================================================
+(function(){
+    var searchInput = document.getElementById('adminSearch');
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', function(){
+        var q = this.value.trim().toLowerCase();
+        var items = document.querySelectorAll('.file-item');
+        var visible = 0;
+        items.forEach(function(item){
+            var haystack = item.dataset.search || item.textContent.toLowerCase();
+            var match = !q || haystack.indexOf(q) !== -1;
+            item.style.display = match ? '' : 'none';
+            if (match) visible++;
+        });
+        var counter = document.querySelector('.file-count');
+        if (counter && q) {
+            counter.textContent = visible + ' match' + (visible === 1 ? '' : 'es');
+        } else if (counter) {
+            counter.textContent = items.length + ' files';
+        }
+    });
+})();
+
+// ============================================================
 // INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
@@ -503,7 +616,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-console.log('Student Hub — Admin Portal (with Edit + Settings links)');
+console.log('Student Hub — Admin Portal (integrated with Users + Notes)');
 </script>
 
 </body>
