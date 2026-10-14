@@ -393,7 +393,11 @@ def get_current_user(request):
 def build_view_context(request):
     me = get_current_user(request)
     if not me or not me.get("profile"):
-        return {"is_authenticated": False, "current_student": None}
+        return {
+            "is_authenticated": False,
+            "current_student": None,
+            "profile": None,
+        }
 
     p = me["profile"]
     streak = p.get("current_streak", 0) or 0
@@ -428,7 +432,12 @@ def build_view_context(request):
         "likes_received": p.get("likes_received", 0) or 0,
         "token_details": token,
     }
-    return {"is_authenticated": True, "current_student": current_student}
+
+    return {
+        "is_authenticated": True,
+        "current_student": current_student,
+        "profile": current_student,
+    }
 
 
 def auto_username_from_email(email, user_id):
@@ -1103,7 +1112,12 @@ def leaderboard_view(request):
         rows = supabase.table("leaderboard").select("*").limit(100).execute()
         leaders = rows.data or []
 
-        if leaders and "followers_count" not in leaders[0]:
+        # ── Assign rank (1-based) ──
+        for i, l in enumerate(leaders, start=1):
+            l["rank"] = i
+
+        # ── Fill followers_count if the view doesn't include it ──
+        if leaders and ("followers_count" not in leaders[0] or leaders[0].get("followers_count") is None):
             try:
                 followers_resp = supabase.table("follows").select("following_id").execute()
                 counts = {}
@@ -2234,8 +2248,3 @@ urlpatterns = [
 
 application = get_wsgi_application()
 app = application
-
-if __name__ == "__main__":
-    from django.core.management import execute_from_command_line
-    port = os.environ.get("PORT", 8000)
-    execute_from_command_line([__name__, "runserver", f"0.0.0.0:{port}"])
