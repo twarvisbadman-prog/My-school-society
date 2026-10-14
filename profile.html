@@ -23,6 +23,7 @@
     --green:#15803d;--green-dim:#dcfce7;
     --cyan:#06b6d4;--cyan-dim:#cffafe;
     --blue:#2563eb;--blue-dim:#dbeafe;
+    --danger:#dc2626;--danger-dim:#fee2e2;
     --radius-sm:10px;--radius-md:14px;--radius-lg:20px;--radius-xl:28px;
     --shadow-sm:0 1px 2px rgba(28,25,23,.06);
     --shadow-md:0 10px 28px -12px rgba(28,25,23,.18);
@@ -76,6 +77,39 @@ img{max-width:100%;display:block}
 .user-avatar-fallback{width:32px;height:32px;border-radius:50%;background:var(--grad-cta);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0;border:2px solid #fff}
 .user-name{font-weight:800;font-size:.82rem;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100px}
 
+/* NOTIFICATIONS BELL */
+.notif-wrap{position:relative}
+.notif-bell{position:relative;width:42px;height:42px;border-radius:50%;background:var(--alt);border:1.5px solid var(--border);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;font-size:.95rem;cursor:pointer;transition:all .25s ease}
+.notif-bell:hover{border-color:var(--accent);background:#fff;transform:translateY(-1px);color:var(--accent)}
+.notif-bell .badge{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--grad-cta);color:#fff;font-size:.65rem;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 3px 8px rgba(219,39,119,.5)}
+.notif-bell .badge.hidden{display:none}
+.notif-panel{position:absolute;top:calc(100% + 12px);right:0;width:min(360px,calc(100vw - 32px));max-height:480px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:0 24px 60px -20px rgba(28,25,23,.35);overflow:hidden;display:none;flex-direction:column;z-index:200}
+.notif-panel.open{display:flex;animation:notifIn .2s ease}
+@keyframes notifIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.notif-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--alt)}
+.notif-head h4{font-size:.9rem;font-weight:900;display:flex;align-items:center;gap:8px}
+.notif-head h4 i{color:var(--accent)}
+.notif-head .mark-read{background:transparent;border:none;color:var(--accent);font-size:.72rem;font-weight:800;cursor:pointer;padding:4px 8px;border-radius:6px;transition:all .2s;font-family:inherit}
+.notif-head .mark-read:hover{background:var(--accent-dim)}
+.notif-list{flex:1;overflow-y:auto;max-height:380px}
+.notif-list::-webkit-scrollbar{width:6px}
+.notif-list::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:3px}
+.notif-item{display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);transition:background .2s;text-decoration:none;color:inherit}
+.notif-item:hover{background:var(--alt)}
+.notif-item:last-child{border-bottom:none}
+.notif-item.unread{background:linear-gradient(90deg,#fff7ed 0%,#fff 100%)}
+.notif-item.unread::before{content:'';width:4px;background:var(--accent);border-radius:2px;position:absolute;left:0;top:12px;bottom:12px}
+.notif-item{position:relative}
+.notif-avatar{width:38px;height:38px;border-radius:50%;flex-shrink:0;overflow:hidden;background:var(--grad-cta);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.85rem;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+.notif-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.notif-body{flex:1;min-width:0}
+.notif-body .msg{font-size:.82rem;color:var(--ink);font-weight:600;line-height:1.4;word-wrap:break-word}
+.notif-body .msg strong{font-weight:800;color:var(--accent)}
+.notif-body .time{font-size:.68rem;color:var(--text-3);font-weight:600;margin-top:3px;font-family:'JetBrains Mono',monospace}
+.notif-empty{padding:40px 20px;text-align:center;color:var(--text-3)}
+.notif-empty i{font-size:2.5rem;color:var(--border-strong);display:block;margin-bottom:10px}
+.notif-empty p{font-size:.82rem;font-weight:600}
+
 /* MAIN */
 .wrap{flex:1;max-width:1100px;margin:0 auto;padding:40px 20px 60px;width:100%;position:relative;z-index:2}
 
@@ -87,11 +121,38 @@ img{max-width:100%;display:block}
 .avatar{width:110px;height:110px;border-radius:50%;background:var(--grad-cta);display:flex;align-items:center;justify-content:center;font-size:2.6rem;font-weight:900;flex-shrink:0;border:4px solid rgba(255,255,255,.35);box-shadow:0 12px 32px rgba(0,0,0,.5);overflow:hidden}
 .avatar img{width:100%;height:100%;object-fit:cover}
 .hero-info h1{font-size:clamp(1.5rem,3vw,2rem);font-weight:900;letter-spacing:-.03em;margin-bottom:6px;line-height:1.2;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.9)}
-.hero-info .username{color:#fdba8c;font-weight:700;font-size:.95rem;font-family:'JetBrains Mono',monospace;margin-bottom:10px;text-shadow:0 1px 6px rgba(0,0,0,.7)}
+.hero-info .username{color:#fdba8c;font-weight:700;font-size:.95rem;font-family:'JetBrains Mono',monospace;margin-bottom:10px;text-shadow:0 1px 6px rgba(0,0,0,.7);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .hero-info .bio{color:#f5f5f4;font-size:.9rem;line-height:1.6;margin-bottom:14px;max-width:520px;text-shadow:0 1px 6px rgba(0,0,0,.8)}
 .hero-info .univ{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.16);backdrop-filter:blur(10px);padding:6px 14px;border-radius:50px;font-size:.78rem;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,.3);text-shadow:0 1px 4px rgba(0,0,0,.6)}
 .hero-info .univ i{color:#fdba8c}
 .hero-actions{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+
+.btn-edit{background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;border:1.5px solid rgba(255,255,255,.35);padding:6px 12px;border-radius:999px;font-size:.68rem;font-weight:800;display:inline-flex;align-items:center;gap:5px;cursor:pointer;transition:all .25s ease;font-family:inherit;letter-spacing:.02em;text-transform:uppercase}
+.btn-edit:hover{background:rgba(255,255,255,.25);border-color:#fff;transform:translateY(-1px)}
+.btn-edit i{font-size:.65rem}
+
+/* EDIT FORM (inline, appears in hero) */
+.edit-form{display:none;background:rgba(15,15,25,.55);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.25);border-radius:var(--radius-md);padding:14px;margin-top:12px;max-width:520px}
+.edit-form.open{display:block;animation:notifIn .25s ease}
+.edit-form label{display:block;color:#d6d3d1;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.edit-form .field{margin-bottom:12px}
+.edit-form .field:last-of-type{margin-bottom:0}
+.edit-form input{width:100%;padding:10px 14px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3);border-radius:10px;color:#fff;font-size:.88rem;font-family:'Inter',sans-serif;font-weight:600;outline:none;transition:all .2s}
+.edit-form input:focus{border-color:#fdba8c;background:rgba(255,255,255,.18);box-shadow:0 0 0 3px rgba(253,186,140,.15)}
+.edit-form input::placeholder{color:rgba(255,255,255,.4)}
+.edit-form .hint{color:#a8a29e;font-size:.68rem;margin-top:4px;font-weight:600}
+.edit-form .hint.error{color:#fca5a5}
+.edit-form .hint.success{color:#86efac}
+.edit-form .input-prefix{position:relative}
+.edit-form .input-prefix::before{content:'@';position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#fdba8c;font-weight:900;font-family:'JetBrains Mono',monospace;pointer-events:none}
+.edit-form .input-prefix input{padding-left:32px}
+.edit-form .actions{display:flex;gap:8px;margin-top:14px}
+.edit-form .actions button{flex:1;padding:10px 16px;border-radius:999px;font-weight:800;font-size:.8rem;cursor:pointer;border:none;font-family:inherit;transition:all .25s ease}
+.edit-form .save{background:var(--grad-cta);color:#fff;box-shadow:var(--shadow-cta)}
+.edit-form .save:hover:not(:disabled){transform:translateY(-1px)}
+.edit-form .save:disabled{opacity:.6;cursor:wait}
+.edit-form .cancel{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.3)}
+.edit-form .cancel:hover{background:rgba(255,255,255,.25)}
 
 .btn-hero{background:var(--grad-cta);color:#fff;padding:12px 22px;border-radius:999px;font-weight:800;font-size:.85rem;display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:var(--shadow-cta);transition:all .25s ease;border:none;cursor:pointer;font-family:inherit;white-space:nowrap}
 .btn-hero:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
@@ -176,8 +237,10 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
     .avatar{margin:0 auto}
     .hero-actions{align-items:stretch;width:100%}
     .btn-hero{justify-content:center;width:100%}
+    .edit-form{margin-left:auto;margin-right:auto}
     .stats-grid{grid-template-columns:repeat(2,1fr)}
     .section-card{padding:22px 18px}
+    .notif-panel{position:fixed;left:16px;right:16px;top:76px;width:auto}
 }
 @media (max-width:480px){
     .topbar-inner{gap:12px;font-size:.72rem;padding:0 14px}
@@ -230,6 +293,25 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
         </div>
         <div class="nav-right">
             {% if is_authenticated %}
+                <div class="notif-wrap">
+                    <button class="notif-bell" id="notifBell" aria-label="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge hidden" id="notifBadge">0</span>
+                    </button>
+                    <div class="notif-panel" id="notifPanel">
+                        <div class="notif-head">
+                            <h4><i class="fas fa-bell"></i> Notifications</h4>
+                            <button class="mark-read" id="markAllRead">Mark all read</button>
+                        </div>
+                        <div class="notif-list" id="notifList">
+                            <div class="notif-empty">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Loading…</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <a href="/quiz/" class="streak-pill" title="Daily Streak">
                     <span>🔥</span> {{ current_student.streak|default:0 }}
                 </a>
@@ -261,20 +343,55 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
     <div class="hero-content">
         <div class="avatar">
             {% if profile.avatar_url %}
-                <img src="{{ profile.avatar_url }}" alt="{{ profile.full_name }}">
+                <img src="{{ profile.avatar_url }}" alt="{{ profile.full_name }}" id="heroAvatar">
             {% else %}
-                {{ profile.full_name|default:profile.username|slice:":1"|upper }}
+                <span id="heroAvatarFallback">{{ profile.full_name|default:profile.username|slice:":1"|upper }}</span>
             {% endif %}
         </div>
         <div class="hero-info">
-            <h1>{{ profile.full_name|default:profile.username|default:"Anonymous" }}</h1>
+            <h1 id="heroFullName">{{ profile.full_name|default:profile.username|default:"Anonymous" }}</h1>
             {% if profile.username %}
-                <div class="username">@{{ profile.username }}</div>
+                <div class="username">
+                    <span>@<span id="heroUsername">{{ profile.username }}</span></span>
+                    {% if is_me %}
+                        <button class="btn-edit" id="editToggle" title="Edit your profile">
+                            <i class="fas fa-pen"></i> Edit
+                        </button>
+                    {% endif %}
+                </div>
             {% endif %}
+
             {% if profile.bio %}
                 <p class="bio">{{ profile.bio }}</p>
             {% endif %}
             <div class="univ"><i class="fas fa-university"></i> {{ profile.university|default:"Not specified" }}</div>
+
+            {% if is_me %}
+            <!-- INLINE EDIT FORM -->
+            <form class="edit-form" id="editForm" autocomplete="off">
+                <div class="field">
+                    <label for="editFullName">Display name</label>
+                    <input type="text" id="editFullName" name="full_name"
+                           maxlength="80" placeholder="Your display name"
+                           value="{{ profile.full_name|default:'' }}">
+                </div>
+                <div class="field">
+                    <label for="editUsername">Username / handle</label>
+                    <div class="input-prefix">
+                        <input type="text" id="editUsername" name="username"
+                               maxlength="20" placeholder="yourhandle"
+                               value="{{ profile.username|default:'' }}">
+                    </div>
+                    <div class="hint" id="usernameHint">3–20 chars · letters, numbers, underscore</div>
+                </div>
+                <div class="actions">
+                    <button type="button" class="cancel" id="cancelEdit">Cancel</button>
+                    <button type="submit" class="save" id="saveEdit">
+                        <i class="fas fa-check"></i> Save changes
+                    </button>
+                </div>
+            </form>
+            {% endif %}
         </div>
         <div class="hero-actions">
             {% if is_me %}
@@ -437,11 +554,9 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
 
 <script>
 (function(){
-    const followBtn = document.getElementById('followBtn');
+    /* ───── TOAST ───── */
     const toast = document.getElementById('toast');
     const toastMsg = document.getElementById('toastMsg');
-    const followersCountEl = document.getElementById('followersCount');
-
     let toastTimer;
     function showToast(msg, type) {
         toastMsg.textContent = msg;
@@ -449,14 +564,140 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
         if (type === 'error') {
             icon.className = 'fas fa-exclamation-circle';
             icon.style.color = '#fca5a5';
+        } else if (type === 'success') {
+            icon.className = 'fas fa-check-circle';
+            icon.style.color = '#86efac';
         } else {
             icon.className = 'fas fa-check-circle';
             icon.style.color = '#fdba8c';
         }
         toast.classList.add('show');
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
     }
+
+    /* ───── NOTIFICATIONS ───── */
+    const notifBell = document.getElementById('notifBell');
+    const notifPanel = document.getElementById('notifPanel');
+    const notifList = document.getElementById('notifList');
+    const notifBadge = document.getElementById('notifBadge');
+    const markAllRead = document.getElementById('markAllRead');
+
+    function timeAgo(iso) {
+        if (!iso) return '';
+        try {
+            const t = new Date(iso).getTime();
+            const diff = Math.floor((Date.now() - t) / 1000);
+            if (diff < 60) return 'just now';
+            if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+            if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+            if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
+            return new Date(iso).toLocaleDateString();
+        } catch { return ''; }
+    }
+
+    function escapeHtml(s) {
+        return String(s || '').replace(/[&<>"']/g, c => ({
+            '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+        }[c]));
+    }
+
+    function renderNotifs(list) {
+        if (!list || list.length === 0) {
+            notifList.innerHTML = `
+                <div class="notif-empty">
+                    <i class="fas fa-bell-slash"></i>
+                    <p>No notifications yet</p>
+                </div>`;
+            return;
+        }
+        notifList.innerHTML = list.map(n => {
+            const actor = n.actor || {};
+            const initials = (actor.full_name || actor.username || '?')[0].toUpperCase();
+            const avatarHtml = actor.avatar_url
+                ? `<img src="${escapeHtml(actor.avatar_url)}" alt="">`
+                : initials;
+            const actorName = actor.full_name || actor.username || 'Someone';
+            const msg = escapeHtml(n.message || `${actorName} interacted with you`);
+            const profileUrl = actor.username ? `/profile/${encodeURIComponent(actor.username)}/` : '#';
+            return `
+                <a class="notif-item ${n.is_read ? '' : 'unread'}" href="${profileUrl}">
+                    <div class="notif-avatar">${avatarHtml}</div>
+                    <div class="notif-body">
+                        <div class="msg">${msg}</div>
+                        <div class="time">${timeAgo(n.created_at)}</div>
+                    </div>
+                </a>`;
+        }).join('');
+    }
+
+    async function loadNotifs() {
+        try {
+            const r = await fetch('/api/notifications/', {
+                headers: {'X-Requested-With': 'XMLHttpRequest'},
+                credentials: 'same-origin',
+            });
+            if (!r.ok) return;
+            const data = await r.json();
+            renderNotifs(data.notifications || []);
+            if (data.unread_count > 0) {
+                notifBadge.textContent = data.unread_count > 99 ? '99+' : data.unread_count;
+                notifBadge.classList.remove('hidden');
+            } else {
+                notifBadge.classList.add('hidden');
+            }
+        } catch (e) {
+            console.error('[notif]', e);
+        }
+    }
+
+    if (notifBell) {
+        notifBell.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const opening = !notifPanel.classList.contains('open');
+            notifPanel.classList.toggle('open');
+            if (opening) loadNotifs();
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!notifPanel.contains(e.target) && !notifBell.contains(e.target)) {
+                notifPanel.classList.remove('open');
+            }
+        });
+
+        // Poll every 60s
+        loadNotifs();
+        setInterval(loadNotifs, 60000);
+    }
+
+    if (markAllRead) {
+        markAllRead.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            try {
+                await fetch('/api/notifications/read/', {
+                    method: 'POST',
+                    headers: {'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': getCsrf()},
+                    credentials: 'same-origin',
+                });
+                notifBadge.classList.add('hidden');
+                // Update UI: remove unread class
+                notifList.querySelectorAll('.notif-item.unread').forEach(el => {
+                    el.classList.remove('unread');
+                });
+            } catch (err) {
+                console.error('[mark-read]', err);
+            }
+        });
+    }
+
+    function getCsrf() {
+        const m = document.cookie.match(/csrftoken=([^;]+)/);
+        return m ? m[1] : '';
+    }
+
+    /* ───── FOLLOW ───── */
+    const followBtn = document.getElementById('followBtn');
+    const followersCountEl = document.getElementById('followersCount');
 
     if (followBtn) {
         followBtn.addEventListener('click', async function() {
@@ -472,6 +713,7 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest',
                         'Accept': 'application/json',
+                        'X-CSRFToken': getCsrf(),
                     },
                     credentials: 'same-origin',
                 });
@@ -482,7 +724,6 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
                 }
 
                 const data = await r.json();
-
                 if (data.error) {
                     showToast(data.error, 'error');
                     followBtn.innerHTML = originalHTML;
@@ -497,7 +738,7 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
                         const cur = parseInt(followersCountEl.textContent) || 0;
                         followersCountEl.textContent = cur + 1;
                     }
-                    showToast('Now following! 🎉');
+                    showToast('Now following! 🎉', 'success');
                 } else {
                     followBtn.classList.remove('following');
                     followBtn.innerHTML = '<i class="fas fa-plus"></i> <span id="followText">Follow</span>';
@@ -514,6 +755,137 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
             }
 
             followBtn.disabled = false;
+        });
+    }
+
+    /* ───── EDIT PROFILE (username + full name) ───── */
+    const editToggle = document.getElementById('editToggle');
+    const editForm = document.getElementById('editForm');
+    const cancelEdit = document.getElementById('cancelEdit');
+    const saveEdit = document.getElementById('saveEdit');
+    const editUsername = document.getElementById('editUsername');
+    const editFullName = document.getElementById('editFullName');
+    const usernameHint = document.getElementById('usernameHint');
+
+    const USERNAME_RE = /^[a-z0-9_]{3,20}$/;
+
+    function resetHint() {
+        usernameHint.textContent = '3–20 chars · letters, numbers, underscore';
+        usernameHint.className = 'hint';
+    }
+
+    if (editToggle && editForm) {
+        editToggle.addEventListener('click', () => {
+            const opening = !editForm.classList.contains('open');
+            editForm.classList.toggle('open');
+            if (opening) {
+                editFullName.focus();
+                resetHint();
+            }
+        });
+    }
+
+    if (cancelEdit) {
+        cancelEdit.addEventListener('click', () => {
+            editForm.classList.remove('open');
+            editFullName.value = document.getElementById('heroFullName').textContent.trim();
+            editUsername.value = document.getElementById('heroUsername').textContent.trim();
+            resetHint();
+        });
+    }
+
+    if (editUsername) {
+        editUsername.addEventListener('input', () => {
+            const v = editUsername.value.trim().toLowerCase();
+            editUsername.value = v;
+            if (!v) { resetHint(); return; }
+            if (!USERNAME_RE.test(v)) {
+                usernameHint.textContent = 'Invalid — 3–20 chars, lowercase letters/numbers/underscore only';
+                usernameHint.className = 'hint error';
+            } else {
+                usernameHint.textContent = `Looks good · @${v}`;
+                usernameHint.className = 'hint success';
+            }
+        });
+    }
+
+    if (editForm) {
+        editForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const newUsername = editUsername.value.trim().toLowerCase();
+            const newFullName = editFullName.value.trim();
+
+            if (newUsername && !USERNAME_RE.test(newUsername)) {
+                usernameHint.textContent = 'Invalid username format';
+                usernameHint.className = 'hint error';
+                return;
+            }
+
+            const payload = {};
+            if (newUsername) payload.username = newUsername;
+            if (newFullName) payload.full_name = newFullName;
+
+            if (Object.keys(payload).length === 0) {
+                showToast('Nothing to update', 'error');
+                return;
+            }
+
+            saveEdit.disabled = true;
+            const originalSave = saveEdit.innerHTML;
+            saveEdit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+
+            try {
+                const r = await fetch('/api/profile/update/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': getCsrf(),
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify(payload),
+                });
+
+                const data = await r.json();
+
+                if (!r.ok || data.error) {
+                    const msg = data.message || data.error || 'Update failed';
+                    showToast(msg, 'error');
+                    usernameHint.textContent = msg;
+                    usernameHint.className = 'hint error';
+                    saveEdit.disabled = false;
+                    saveEdit.innerHTML = originalSave;
+                    return;
+                }
+
+                // Success — update DOM
+                if (data.updated.full_name) {
+                    document.getElementById('heroFullName').textContent = data.updated.full_name;
+                    const heroFb = document.getElementById('heroAvatarFallback');
+                    if (heroFb) heroFb.textContent = data.updated.full_name[0].toUpperCase();
+                }
+                if (data.updated.username) {
+                    document.getElementById('heroUsername').textContent = data.updated.username;
+                    // Update URL without reload
+                    history.replaceState({}, '', '/profile/' + encodeURIComponent(data.updated.username) + '/');
+                    // Update nav pill
+                    const navName = document.querySelector('.user-name');
+                    if (navName) navName.textContent = data.updated.username;
+                    const navPill = document.querySelector('.user-profile-pill');
+                    if (navPill) navPill.href = '/profile/' + encodeURIComponent(data.updated.username) + '/';
+                }
+
+                showToast('Profile updated ✅', 'success');
+                editForm.classList.remove('open');
+                resetHint();
+            } catch (err) {
+                console.error('[save-profile]', err);
+                showToast('Something went wrong', 'error');
+            }
+
+            saveEdit.disabled = false;
+            saveEdit.innerHTML = originalSave;
         });
     }
 })();
