@@ -6,8 +6,8 @@
 <title>{{ profile.full_name|default:profile.username }} | Student Hub</title>
 <link rel="icon" type="image/png" href="/logo.png" />
 <link rel="apple-touch-icon" href="/logo.png">
-<link rel="preload" as="image" href="/pic.png" />
 <link rel="preload" as="image" href="/pic2.png" />
+<link rel="preload" as="image" href="/pic4.jpg" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -71,21 +71,22 @@ img{max-width:100%;display:block}
 .btn-nav-join:hover{background:var(--grad-cta-hover);transform:translateY(-2px)}
 .streak-pill{display:inline-flex;align-items:center;gap:6px;background:#fff7ed;color:#ea580c;border:1.5px solid #fed7aa;padding:8px 14px;border-radius:999px;font-weight:800;font-size:.78rem;text-decoration:none;transition:all .25s ease}
 .streak-pill:hover{background:#ffedd5;transform:translateY(-1px)}
-.user-profile-pill{display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 5px;background:var(--alt);border:1.5px solid var(--border);border-radius:999px;text-decoration:none;transition:all .25s ease;max-width:180px}
+.user-profile-pill{display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 5px;background:var(--alt);border:1.5px solid var(--border);border-radius:999px;text-decoration:none;transition:all .25s ease;max-width:180px;cursor:pointer;font-family:inherit}
 .user-profile-pill:hover{border-color:var(--accent);background:#fff;transform:translateY(-1px)}
 .user-avatar{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #fff}
 .user-avatar-fallback{width:32px;height:32px;border-radius:50%;background:var(--grad-cta);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0;border:2px solid #fff}
 .user-name{font-weight:800;font-size:.82rem;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100px}
+.user-pill-chevron{color:var(--text-3);font-size:.65rem;margin-left:-2px}
 
 /* NOTIFICATIONS BELL */
 .notif-wrap{position:relative}
-.notif-bell{position:relative;width:42px;height:42px;border-radius:50%;background:var(--alt);border:1.5px solid var(--border);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;font-size:.95rem;cursor:pointer;transition:all .25s ease}
+.notif-bell{position:relative;width:42px;height:42px;border-radius:50%;background:var(--alt);border:1.5px solid var(--border);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;font-size:.95rem;cursor:pointer;transition:all .25s ease;font-family:inherit}
 .notif-bell:hover{border-color:var(--accent);background:#fff;transform:translateY(-1px);color:var(--accent)}
 .notif-bell .badge{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--grad-cta);color:#fff;font-size:.65rem;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 3px 8px rgba(219,39,119,.5)}
 .notif-bell .badge.hidden{display:none}
 .notif-panel{position:absolute;top:calc(100% + 12px);right:0;width:min(360px,calc(100vw - 32px));max-height:480px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:0 24px 60px -20px rgba(28,25,23,.35);overflow:hidden;display:none;flex-direction:column;z-index:200}
-.notif-panel.open{display:flex;animation:notifIn .2s ease}
-@keyframes notifIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.notif-panel.open{display:flex;animation:popIn .2s ease}
+@keyframes popIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 .notif-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--alt)}
 .notif-head h4{font-size:.9rem;font-weight:900;display:flex;align-items:center;gap:8px}
 .notif-head h4 i{color:var(--accent)}
@@ -94,12 +95,11 @@ img{max-width:100%;display:block}
 .notif-list{flex:1;overflow-y:auto;max-height:380px}
 .notif-list::-webkit-scrollbar{width:6px}
 .notif-list::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:3px}
-.notif-item{display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);transition:background .2s;text-decoration:none;color:inherit}
+.notif-item{display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);transition:background .2s;text-decoration:none;color:inherit;position:relative}
 .notif-item:hover{background:var(--alt)}
 .notif-item:last-child{border-bottom:none}
 .notif-item.unread{background:linear-gradient(90deg,#fff7ed 0%,#fff 100%)}
 .notif-item.unread::before{content:'';width:4px;background:var(--accent);border-radius:2px;position:absolute;left:0;top:12px;bottom:12px}
-.notif-item{position:relative}
 .notif-avatar{width:38px;height:38px;border-radius:50%;flex-shrink:0;overflow:hidden;background:var(--grad-cta);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.85rem;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.1)}
 .notif-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .notif-body{flex:1;min-width:0}
@@ -110,56 +110,67 @@ img{max-width:100%;display:block}
 .notif-empty i{font-size:2.5rem;color:var(--border-strong);display:block;margin-bottom:10px}
 .notif-empty p{font-size:.82rem;font-weight:600}
 
+/* PROFILE EDIT POPOVER */
+.profile-edit-wrap{position:relative}
+.profile-edit-panel{position:absolute;top:calc(100% + 12px);right:0;width:min(340px,calc(100vw - 32px));background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:0 24px 60px -20px rgba(28,25,23,.35);overflow:hidden;display:none;flex-direction:column;z-index:200}
+.profile-edit-panel.open{display:flex;animation:popIn .2s ease}
+.profile-edit-head{padding:14px 16px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,#fff1e8 0%,#fce7f3 100%);display:flex;align-items:center;gap:10px}
+.profile-edit-head .ico{width:34px;height:34px;border-radius:10px;background:var(--grad-cta);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.profile-edit-head h4{font-size:.9rem;font-weight:900;line-height:1.2}
+.profile-edit-head p{font-size:.7rem;color:var(--text-3);font-weight:600;margin-top:2px}
+.profile-edit-body{padding:16px}
+.profile-edit-body .field{margin-bottom:14px}
+.profile-edit-body .field:last-of-type{margin-bottom:0}
+.profile-edit-body label{display:block;color:var(--text-3);font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.profile-edit-body input{width:100%;padding:10px 14px;background:#fafaf9;border:1px solid var(--border);border-radius:10px;color:var(--ink);font-size:.88rem;font-family:'Inter',sans-serif;font-weight:600;outline:none;transition:all .2s}
+.profile-edit-body input:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(194,65,12,.1)}
+.profile-edit-body input::placeholder{color:#a8a29e}
+.profile-edit-body .hint{color:var(--text-3);font-size:.68rem;margin-top:4px;font-weight:600}
+.profile-edit-body .hint.error{color:var(--danger)}
+.profile-edit-body .hint.success{color:var(--green)}
+.profile-edit-body .input-prefix{position:relative}
+.profile-edit-body .input-prefix::before{content:'@';position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--accent);font-weight:900;font-family:'JetBrains Mono',monospace;pointer-events:none}
+.profile-edit-body .input-prefix input{padding-left:32px}
+.profile-edit-body .actions{display:flex;gap:8px;margin-top:16px}
+.profile-edit-body .actions button{flex:1;padding:10px 16px;border-radius:999px;font-weight:800;font-size:.8rem;cursor:pointer;border:none;font-family:inherit;transition:all .25s ease}
+.profile-edit-body .save{background:var(--grad-cta);color:#fff;box-shadow:var(--shadow-cta)}
+.profile-edit-body .save:hover:not(:disabled){transform:translateY(-1px)}
+.profile-edit-body .save:disabled{opacity:.6;cursor:wait}
+.profile-edit-body .cancel{background:var(--alt);color:var(--text-2);border:1px solid var(--border)}
+.profile-edit-body .cancel:hover{background:var(--border)}
+.profile-edit-link{display:block;padding:12px 16px;border-top:1px solid var(--border);color:var(--accent);font-size:.78rem;font-weight:800;text-align:center;transition:all .2s;text-decoration:none}
+.profile-edit-link:hover{background:var(--accent-dim)}
+
 /* MAIN */
 .wrap{flex:1;max-width:1100px;margin:0 auto;padding:40px 20px 60px;width:100%;position:relative;z-index:2}
 
-/* HERO — pic.png inside the card */
-.hero{margin-bottom:26px;position:relative;border-radius:var(--radius-xl);overflow:hidden;min-height:300px;display:flex;align-items:center;box-shadow:0 24px 60px -20px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.18);background:#1c1917}
-.hero-bg{position:absolute;inset:0;background-image:url('/pic.png');background-size:cover;background-position:center 30%;background-repeat:no-repeat;z-index:0}
-.hero::before{content:'';position:absolute;inset:0;background:rgba(15,15,25,.55);z-index:1;backdrop-filter:blur(2px)}
+/* ═══════════════════════════════════════════════════════════
+   HERO — pic4.jpg visible and CLEAR (light overlay, no blur)
+   ═══════════════════════════════════════════════════════════ */
+.hero{margin-bottom:26px;position:relative;border-radius:var(--radius-xl);overflow:hidden;min-height:320px;display:flex;align-items:center;box-shadow:0 24px 60px -20px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.2);background:#1c1917}
+.hero-bg{position:absolute;inset:0;background-image:url('/pic4.jpg');background-size:cover;background-position:center 25%;background-repeat:no-repeat;z-index:0}
+/* LIGHT overlay only — image stays clear and vivid */
+.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,15,25,.28) 0%,rgba(15,15,25,.55) 100%);z-index:1;pointer-events:none}
 .hero-content{position:relative;z-index:2;display:grid;grid-template-columns:auto 1fr auto;gap:26px;align-items:center;padding:34px 36px;width:100%;color:#fff}
-.avatar{width:110px;height:110px;border-radius:50%;background:var(--grad-cta);display:flex;align-items:center;justify-content:center;font-size:2.6rem;font-weight:900;flex-shrink:0;border:4px solid rgba(255,255,255,.35);box-shadow:0 12px 32px rgba(0,0,0,.5);overflow:hidden}
+.avatar{width:110px;height:110px;border-radius:50%;background:var(--grad-cta);display:flex;align-items:center;justify-content:center;font-size:2.6rem;font-weight:900;flex-shrink:0;border:4px solid rgba(255,255,255,.6);box-shadow:0 12px 32px rgba(0,0,0,.6);overflow:hidden}
 .avatar img{width:100%;height:100%;object-fit:cover}
-.hero-info h1{font-size:clamp(1.5rem,3vw,2rem);font-weight:900;letter-spacing:-.03em;margin-bottom:6px;line-height:1.2;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.9)}
-.hero-info .username{color:#fdba8c;font-weight:700;font-size:.95rem;font-family:'JetBrains Mono',monospace;margin-bottom:10px;text-shadow:0 1px 6px rgba(0,0,0,.7);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.hero-info .bio{color:#f5f5f4;font-size:.9rem;line-height:1.6;margin-bottom:14px;max-width:520px;text-shadow:0 1px 6px rgba(0,0,0,.8)}
-.hero-info .univ{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.16);backdrop-filter:blur(10px);padding:6px 14px;border-radius:50px;font-size:.78rem;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,.3);text-shadow:0 1px 4px rgba(0,0,0,.6)}
-.hero-info .univ i{color:#fdba8c}
+.hero-info h1{font-size:clamp(1.5rem,3vw,2rem);font-weight:900;letter-spacing:-.03em;margin-bottom:6px;line-height:1.2;color:#fff;text-shadow:0 3px 16px rgba(0,0,0,.95),0 1px 4px rgba(0,0,0,.85)}
+.hero-info .username{color:#ffd7b5;font-weight:700;font-size:.95rem;font-family:'JetBrains Mono',monospace;margin-bottom:10px;text-shadow:0 2px 10px rgba(0,0,0,.9);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hero-info .bio{color:#f5f5f4;font-size:.9rem;line-height:1.6;margin-bottom:14px;max-width:520px;text-shadow:0 2px 10px rgba(0,0,0,.9)}
+.hero-info .univ{display:inline-flex;align-items:center;gap:8px;background:rgba(0,0,0,.42);backdrop-filter:blur(6px);padding:6px 14px;border-radius:50px;font-size:.78rem;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,.35);text-shadow:0 2px 8px rgba(0,0,0,.85)}
+.hero-info .univ i{color:#ffd7b5}
 .hero-actions{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
 
-.btn-edit{background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;border:1.5px solid rgba(255,255,255,.35);padding:6px 12px;border-radius:999px;font-size:.68rem;font-weight:800;display:inline-flex;align-items:center;gap:5px;cursor:pointer;transition:all .25s ease;font-family:inherit;letter-spacing:.02em;text-transform:uppercase}
-.btn-edit:hover{background:rgba(255,255,255,.25);border-color:#fff;transform:translateY(-1px)}
+.btn-edit{background:rgba(0,0,0,.5);backdrop-filter:blur(6px);color:#fff;border:1.5px solid rgba(255,255,255,.5);padding:6px 12px;border-radius:999px;font-size:.68rem;font-weight:800;display:inline-flex;align-items:center;gap:5px;cursor:pointer;transition:all .25s ease;font-family:inherit;letter-spacing:.02em;text-transform:uppercase;text-shadow:0 1px 6px rgba(0,0,0,.8)}
+.btn-edit:hover{background:rgba(0,0,0,.7);border-color:#fff;transform:translateY(-1px)}
 .btn-edit i{font-size:.65rem}
-
-/* EDIT FORM (inline, appears in hero) */
-.edit-form{display:none;background:rgba(15,15,25,.55);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.25);border-radius:var(--radius-md);padding:14px;margin-top:12px;max-width:520px}
-.edit-form.open{display:block;animation:notifIn .25s ease}
-.edit-form label{display:block;color:#d6d3d1;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
-.edit-form .field{margin-bottom:12px}
-.edit-form .field:last-of-type{margin-bottom:0}
-.edit-form input{width:100%;padding:10px 14px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3);border-radius:10px;color:#fff;font-size:.88rem;font-family:'Inter',sans-serif;font-weight:600;outline:none;transition:all .2s}
-.edit-form input:focus{border-color:#fdba8c;background:rgba(255,255,255,.18);box-shadow:0 0 0 3px rgba(253,186,140,.15)}
-.edit-form input::placeholder{color:rgba(255,255,255,.4)}
-.edit-form .hint{color:#a8a29e;font-size:.68rem;margin-top:4px;font-weight:600}
-.edit-form .hint.error{color:#fca5a5}
-.edit-form .hint.success{color:#86efac}
-.edit-form .input-prefix{position:relative}
-.edit-form .input-prefix::before{content:'@';position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#fdba8c;font-weight:900;font-family:'JetBrains Mono',monospace;pointer-events:none}
-.edit-form .input-prefix input{padding-left:32px}
-.edit-form .actions{display:flex;gap:8px;margin-top:14px}
-.edit-form .actions button{flex:1;padding:10px 16px;border-radius:999px;font-weight:800;font-size:.8rem;cursor:pointer;border:none;font-family:inherit;transition:all .25s ease}
-.edit-form .save{background:var(--grad-cta);color:#fff;box-shadow:var(--shadow-cta)}
-.edit-form .save:hover:not(:disabled){transform:translateY(-1px)}
-.edit-form .save:disabled{opacity:.6;cursor:wait}
-.edit-form .cancel{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.3)}
-.edit-form .cancel:hover{background:rgba(255,255,255,.25)}
 
 .btn-hero{background:var(--grad-cta);color:#fff;padding:12px 22px;border-radius:999px;font-weight:800;font-size:.85rem;display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:var(--shadow-cta);transition:all .25s ease;border:none;cursor:pointer;font-family:inherit;white-space:nowrap}
 .btn-hero:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
-.btn-hero.outline{background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;border:1.5px solid rgba(255,255,255,.35);box-shadow:none}
-.btn-hero.outline:hover{background:rgba(255,255,255,.25);border-color:#fff}
-.btn-hero.following{background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#e7e5e4;border:1.5px solid rgba(255,255,255,.3);box-shadow:none}
-.btn-hero.following:hover{background:rgba(220,38,38,.25);color:#fca5a5;border-color:rgba(220,38,38,.6)}
+.btn-hero.outline{background:rgba(0,0,0,.45);backdrop-filter:blur(6px);color:#fff;border:1.5px solid rgba(255,255,255,.5);box-shadow:none}
+.btn-hero.outline:hover{background:rgba(0,0,0,.65);border-color:#fff}
+.btn-hero.following{background:rgba(0,0,0,.45);backdrop-filter:blur(6px);color:#f5f5f4;border:1.5px solid rgba(255,255,255,.4);box-shadow:none}
+.btn-hero.following:hover{background:rgba(220,38,38,.4);color:#fca5a5;border-color:rgba(220,38,38,.7)}
 
 /* STATS */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
@@ -203,7 +214,6 @@ img{max-width:100%;display:block}
 .activity-points{background:var(--green-dim);color:var(--green);padding:3px 10px;border-radius:30px;font-size:.7rem;font-weight:800;font-family:'JetBrains Mono',monospace;flex-shrink:0}
 .activity-time{color:var(--text-3);font-size:.72rem;font-weight:600;margin-top:2px}
 
-/* EMPTY */
 .empty-state{text-align:center;padding:50px 20px;color:var(--text-3)}
 .empty-state i{font-size:3rem;color:var(--border-strong);display:block;margin-bottom:14px}
 .empty-state h3{color:var(--ink);font-size:1.05rem;font-weight:800;margin-bottom:6px}
@@ -237,10 +247,10 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
     .avatar{margin:0 auto}
     .hero-actions{align-items:stretch;width:100%}
     .btn-hero{justify-content:center;width:100%}
-    .edit-form{margin-left:auto;margin-right:auto}
     .stats-grid{grid-template-columns:repeat(2,1fr)}
     .section-card{padding:22px 18px}
     .notif-panel{position:fixed;left:16px;right:16px;top:76px;width:auto}
+    .profile-edit-panel{position:fixed;left:16px;right:16px;top:76px;width:auto}
 }
 @media (max-width:480px){
     .topbar-inner{gap:12px;font-size:.72rem;padding:0 14px}
@@ -256,7 +266,6 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
 </head>
 <body>
 
-<!-- ═══ PAGE BACKGROUND (pic2.png) ═══ -->
 <div class="page-bg"></div>
 <div class="page-bg-overlay"></div>
 
@@ -304,10 +313,7 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
                             <button class="mark-read" id="markAllRead">Mark all read</button>
                         </div>
                         <div class="notif-list" id="notifList">
-                            <div class="notif-empty">
-                                <i class="fas fa-spinner fa-spin"></i>
-                                <p>Loading…</p>
-                            </div>
+                            <div class="notif-empty"><i class="fas fa-spinner fa-spin"></i><p>Loading…</p></div>
                         </div>
                     </div>
                 </div>
@@ -315,21 +321,63 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
                 <a href="/quiz/" class="streak-pill" title="Daily Streak">
                     <span>🔥</span> {{ current_student.streak|default:0 }}
                 </a>
-                <a href="/profile/{{ current_student.username }}/" class="user-profile-pill" title="{{ current_student.username }}">
-                    {% if current_student.avatar_url %}
-                        <img src="{{ current_student.avatar_url }}" class="user-avatar" alt="">
-                    {% else %}
-                        <span class="user-avatar-fallback">{{ current_student.initial|default:"S" }}</span>
-                    {% endif %}
-                    <span class="user-name">{{ current_student.username|default:"Me" }}</span>
-                </a>
+
+                <div class="profile-edit-wrap">
+                    <button type="button" class="user-profile-pill" id="userPillBtn">
+                        {% if current_student.avatar_url %}
+                            <img src="{{ current_student.avatar_url }}" class="user-avatar" alt="">
+                        {% else %}
+                            <span class="user-avatar-fallback">{{ current_student.initial|default:"S" }}</span>
+                        {% endif %}
+                        <span class="user-name">{{ current_student.username|default:"Me" }}</span>
+                        <i class="fas fa-chevron-down user-pill-chevron"></i>
+                    </button>
+
+                    <div class="profile-edit-panel" id="profileEditPanel">
+                        <div class="profile-edit-head">
+                            <div class="ico"><i class="fas fa-user-pen"></i></div>
+                            <div>
+                                <h4>Edit your profile</h4>
+                                <p>Change name, handle & university</p>
+                            </div>
+                        </div>
+                        <form class="profile-edit-body" id="profileEditForm" autocomplete="off">
+                            <div class="field">
+                                <label for="editFullName">Display name</label>
+                                <input type="text" id="editFullName" name="full_name"
+                                       maxlength="80" placeholder="Your display name"
+                                       value="{{ current_student.full_name|default:'' }}">
+                            </div>
+                            <div class="field">
+                                <label for="editUsername">Username / handle</label>
+                                <div class="input-prefix">
+                                    <input type="text" id="editUsername" name="username"
+                                           maxlength="20" placeholder="yourhandle"
+                                           value="{{ current_student.username|default:'' }}">
+                                </div>
+                                <div class="hint" id="usernameHint">3–20 chars · lowercase letters, numbers, underscore</div>
+                            </div>
+                            <div class="field">
+                                <label for="editUniversity">University</label>
+                                <input type="text" id="editUniversity" name="university"
+                                       maxlength="200" placeholder="e.g., University of Dar es Salaam"
+                                       value="{{ current_student.university|default:'' }}">
+                            </div>
+                            <div class="actions">
+                                <button type="button" class="cancel" id="cancelEdit">Cancel</button>
+                                <button type="submit" class="save" id="saveEdit">
+                                    <i class="fas fa-check"></i> Save
+                                </button>
+                            </div>
+                        </form>
+                        <a href="/profile/{{ current_student.username }}/" class="profile-edit-link">
+                            <i class="fas fa-user"></i> View full profile
+                        </a>
+                    </div>
+                </div>
             {% else %}
-                <a href="/login/?next={{ request.path }}" class="btn-nav-login">
-                    <i class="fas fa-sign-in-alt"></i> Log In
-                </a>
-                <a href="/signup/" class="btn-nav-join">
-                    <i class="fas fa-sparkles"></i> Join Free
-                </a>
+                <a href="/login/?next={{ request.path }}" class="btn-nav-login"><i class="fas fa-sign-in-alt"></i> Log In</a>
+                <a href="/signup/" class="btn-nav-join"><i class="fas fa-sparkles"></i> Join Free</a>
             {% endif %}
         </div>
     </div>
@@ -337,15 +385,15 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
 
 <div class="wrap">
 
-<!-- HERO — pic.png inside the card -->
+<!-- HERO — pic4.jpg, crystal clear -->
 <section class="hero">
     <div class="hero-bg"></div>
     <div class="hero-content">
         <div class="avatar">
             {% if profile.avatar_url %}
-                <img src="{{ profile.avatar_url }}" alt="{{ profile.full_name }}" id="heroAvatar">
+                <img src="{{ profile.avatar_url }}" alt="{{ profile.full_name }}">
             {% else %}
-                <span id="heroAvatarFallback">{{ profile.full_name|default:profile.username|slice:":1"|upper }}</span>
+                {{ profile.full_name|default:profile.username|slice:":1"|upper }}
             {% endif %}
         </div>
         <div class="hero-info">
@@ -360,46 +408,15 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
                     {% endif %}
                 </div>
             {% endif %}
-
-            {% if profile.bio %}
-                <p class="bio">{{ profile.bio }}</p>
-            {% endif %}
-            <div class="univ"><i class="fas fa-university"></i> {{ profile.university|default:"Not specified" }}</div>
-
-            {% if is_me %}
-            <!-- INLINE EDIT FORM -->
-            <form class="edit-form" id="editForm" autocomplete="off">
-                <div class="field">
-                    <label for="editFullName">Display name</label>
-                    <input type="text" id="editFullName" name="full_name"
-                           maxlength="80" placeholder="Your display name"
-                           value="{{ profile.full_name|default:'' }}">
-                </div>
-                <div class="field">
-                    <label for="editUsername">Username / handle</label>
-                    <div class="input-prefix">
-                        <input type="text" id="editUsername" name="username"
-                               maxlength="20" placeholder="yourhandle"
-                               value="{{ profile.username|default:'' }}">
-                    </div>
-                    <div class="hint" id="usernameHint">3–20 chars · letters, numbers, underscore</div>
-                </div>
-                <div class="actions">
-                    <button type="button" class="cancel" id="cancelEdit">Cancel</button>
-                    <button type="submit" class="save" id="saveEdit">
-                        <i class="fas fa-check"></i> Save changes
-                    </button>
-                </div>
-            </form>
-            {% endif %}
+            {% if profile.bio %}<p class="bio">{{ profile.bio }}</p>{% endif %}
+            <div class="univ" id="heroUniversity"><i class="fas fa-university"></i> {{ profile.university|default:"Not specified" }}</div>
         </div>
         <div class="hero-actions">
             {% if is_me %}
                 <a href="/dashboard/" class="btn-hero outline"><i class="fas fa-cog"></i> Dashboard</a>
             {% elif is_authenticated %}
                 <button class="btn-hero {% if is_following %}following{% endif %}"
-                        id="followBtn"
-                        data-user-id="{{ profile.id }}">
+                        id="followBtn" data-user-id="{{ profile.id }}">
                     {% if is_following %}
                         <i class="fas fa-check"></i> <span id="followText">Following</span>
                     {% else %}
@@ -407,7 +424,7 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
                     {% endif %}
                 </button>
                 {% if is_friend %}
-                    <div style="color:#fdba8c;font-size:.8rem;font-weight:700;text-align:center;text-shadow:0 1px 6px rgba(0,0,0,.7)">
+                    <div style="color:#ffd7b5;font-size:.8rem;font-weight:700;text-align:center;text-shadow:0 2px 8px rgba(0,0,0,.9)">
                         <i class="fas fa-user-friends"></i> Friends
                     </div>
                 {% endif %}
@@ -422,46 +439,14 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
 
 <!-- STATS -->
 <div class="stats-grid">
-    <div class="stat-card">
-        <span class="stat-icon">⭐</span>
-        <div class="stat-num">{{ profile.points|default:0 }}</div>
-        <div class="stat-label">Points</div>
-    </div>
-    <div class="stat-card">
-        <span class="stat-icon">🔥</span>
-        <div class="stat-num">{{ profile.current_streak|default:0 }}</div>
-        <div class="stat-label">Day Streak</div>
-    </div>
-    <div class="stat-card">
-        <span class="stat-icon">📤</span>
-        <div class="stat-num">{{ profile.uploads_count|default:0 }}</div>
-        <div class="stat-label">Uploads</div>
-    </div>
-    <div class="stat-card">
-        <span class="stat-icon">❤️</span>
-        <div class="stat-num">{{ profile.likes_received|default:0 }}</div>
-        <div class="stat-label">Likes</div>
-    </div>
-    <div class="stat-card">
-        <span class="stat-icon">👥</span>
-        <div class="stat-num" id="followersCount">{{ followers_count|default:0 }}</div>
-        <div class="stat-label">Followers</div>
-    </div>
-    <div class="stat-card">
-        <span class="stat-icon">➡️</span>
-        <div class="stat-num">{{ following_count|default:0 }}</div>
-        <div class="stat-label">Following</div>
-    </div>
-    <div class="stat-card">
-        <span class="stat-icon">🧠</span>
-        <div class="stat-num">{{ profile.quizzes_correct|default:0 }}</div>
-        <div class="stat-label">Quiz Wins</div>
-    </div>
-    <div class="stat-card">
-        <span class="stat-icon">🏆</span>
-        <div class="stat-num">{{ profile.longest_streak|default:0 }}</div>
-        <div class="stat-label">Best Streak</div>
-    </div>
+    <div class="stat-card"><span class="stat-icon">⭐</span><div class="stat-num">{{ profile.points|default:0 }}</div><div class="stat-label">Points</div></div>
+    <div class="stat-card"><span class="stat-icon">🔥</span><div class="stat-num">{{ profile.current_streak|default:0 }}</div><div class="stat-label">Day Streak</div></div>
+    <div class="stat-card"><span class="stat-icon">📤</span><div class="stat-num">{{ profile.uploads_count|default:0 }}</div><div class="stat-label">Uploads</div></div>
+    <div class="stat-card"><span class="stat-icon">❤️</span><div class="stat-num">{{ profile.likes_received|default:0 }}</div><div class="stat-label">Likes</div></div>
+    <div class="stat-card"><span class="stat-icon">👥</span><div class="stat-num" id="followersCount">{{ followers_count|default:0 }}</div><div class="stat-label">Followers</div></div>
+    <div class="stat-card"><span class="stat-icon">➡️</span><div class="stat-num">{{ following_count|default:0 }}</div><div class="stat-label">Following</div></div>
+    <div class="stat-card"><span class="stat-icon">🧠</span><div class="stat-num">{{ profile.quizzes_correct|default:0 }}</div><div class="stat-label">Quiz Wins</div></div>
+    <div class="stat-card"><span class="stat-icon">🏆</span><div class="stat-num">{{ profile.longest_streak|default:0 }}</div><div class="stat-label">Best Streak</div></div>
 </div>
 
 <!-- UPLOADS -->
@@ -521,18 +506,15 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
                 <strong>{{ a.action|default:"Activity"|cut:"_" }}</strong>
                 <div class="activity-time">{{ a.created_at|slice:":10" }}</div>
             </div>
-            {% if a.points %}
-            <div class="activity-points">+{{ a.points }}</div>
-            {% endif %}
+            {% if a.points %}<div class="activity-points">+{{ a.points }}</div>{% endif %}
         </div>
         {% endfor %}
     </div>
 </section>
 {% endif %}
 
-</div><!-- /.wrap -->
+</div>
 
-<!-- FOOTER -->
 <footer>
     <div class="footer-inner">
         <p>© 2026 Student Hub · Profile</p>
@@ -544,348 +526,302 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
     </div>
 </footer>
 
-</div><!-- /.page -->
-
-<!-- TOAST -->
-<div class="toast" id="toast">
-    <i class="fas fa-check-circle"></i>
-    <span id="toastMsg">Done</span>
 </div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Done</span></div>
 
 <script>
 (function(){
-    /* ───── TOAST ───── */
+    function getCsrf(){const m=document.cookie.match(/csrftoken=([^;]+)/);return m?m[1]:'';}
     const toast = document.getElementById('toast');
     const toastMsg = document.getElementById('toastMsg');
     let toastTimer;
-    function showToast(msg, type) {
+    function showToast(msg, type){
         toastMsg.textContent = msg;
         const icon = toast.querySelector('i');
-        if (type === 'error') {
-            icon.className = 'fas fa-exclamation-circle';
-            icon.style.color = '#fca5a5';
-        } else if (type === 'success') {
-            icon.className = 'fas fa-check-circle';
-            icon.style.color = '#86efac';
-        } else {
-            icon.className = 'fas fa-check-circle';
-            icon.style.color = '#fdba8c';
-        }
+        if(type==='error'){icon.className='fas fa-exclamation-circle';icon.style.color='#fca5a5';}
+        else if(type==='success'){icon.className='fas fa-check-circle';icon.style.color='#86efac';}
+        else {icon.className='fas fa-check-circle';icon.style.color='#fdba8c';}
         toast.classList.add('show');
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+        toastTimer = setTimeout(()=>toast.classList.remove('show'),2800);
     }
 
-    /* ───── NOTIFICATIONS ───── */
+    /* NOTIFICATIONS with localStorage */
+    const NOTIF_CACHE_KEY = 'sh_notifications_v1';
     const notifBell = document.getElementById('notifBell');
     const notifPanel = document.getElementById('notifPanel');
     const notifList = document.getElementById('notifList');
     const notifBadge = document.getElementById('notifBadge');
     const markAllRead = document.getElementById('markAllRead');
 
-    function timeAgo(iso) {
-        if (!iso) return '';
-        try {
-            const t = new Date(iso).getTime();
-            const diff = Math.floor((Date.now() - t) / 1000);
-            if (diff < 60) return 'just now';
-            if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
-            if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
-            if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
+    function timeAgo(iso){
+        if(!iso) return '';
+        try{
+            const diff = Math.floor((Date.now()-new Date(iso).getTime())/1000);
+            if(diff<60) return 'just now';
+            if(diff<3600) return Math.floor(diff/60)+'m ago';
+            if(diff<86400) return Math.floor(diff/3600)+'h ago';
+            if(diff<604800) return Math.floor(diff/86400)+'d ago';
             return new Date(iso).toLocaleDateString();
-        } catch { return ''; }
+        }catch{return '';}
     }
-
-    function escapeHtml(s) {
-        return String(s || '').replace(/[&<>"']/g, c => ({
-            '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-        }[c]));
-    }
-
-    function renderNotifs(list) {
-        if (!list || list.length === 0) {
-            notifList.innerHTML = `
-                <div class="notif-empty">
-                    <i class="fas fa-bell-slash"></i>
-                    <p>No notifications yet</p>
-                </div>`;
+    function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+    function renderNotifs(list){
+        if(!list||list.length===0){
+            notifList.innerHTML = `<div class="notif-empty"><i class="fas fa-bell-slash"></i><p>No notifications yet</p></div>`;
             return;
         }
-        notifList.innerHTML = list.map(n => {
-            const actor = n.actor || {};
-            const initials = (actor.full_name || actor.username || '?')[0].toUpperCase();
-            const avatarHtml = actor.avatar_url
-                ? `<img src="${escapeHtml(actor.avatar_url)}" alt="">`
-                : initials;
-            const actorName = actor.full_name || actor.username || 'Someone';
-            const msg = escapeHtml(n.message || `${actorName} interacted with you`);
-            const profileUrl = actor.username ? `/profile/${encodeURIComponent(actor.username)}/` : '#';
-            return `
-                <a class="notif-item ${n.is_read ? '' : 'unread'}" href="${profileUrl}">
-                    <div class="notif-avatar">${avatarHtml}</div>
-                    <div class="notif-body">
-                        <div class="msg">${msg}</div>
-                        <div class="time">${timeAgo(n.created_at)}</div>
-                    </div>
-                </a>`;
+        notifList.innerHTML = list.map(n=>{
+            const a = n.actor||{};
+            const initials = (a.full_name||a.username||'?')[0].toUpperCase();
+            const av = a.avatar_url ? `<img src="${esc(a.avatar_url)}" alt="">` : initials;
+            const url = a.username ? `/profile/${encodeURIComponent(a.username)}/` : '#';
+            return `<a class="notif-item ${n.is_read?'':'unread'}" href="${url}">
+                <div class="notif-avatar">${av}</div>
+                <div class="notif-body">
+                    <div class="msg">${esc(n.message||'Interaction')}</div>
+                    <div class="time">${timeAgo(n.created_at)}</div>
+                </div>
+            </a>`;
         }).join('');
     }
+    function saveNotifsCache(list, unread){
+        try{localStorage.setItem(NOTIF_CACHE_KEY, JSON.stringify({list, unread, saved_at: Date.now()}));}catch(e){}
+    }
+    function loadNotifsCache(){
+        try{
+            const raw = localStorage.getItem(NOTIF_CACHE_KEY);
+            if(!raw) return null;
+            const d = JSON.parse(raw);
+            if(d&&Array.isArray(d.list)) return d;
+        }catch(e){}
+        return null;
+    }
+    function clearNotifsCache(){try{localStorage.removeItem(NOTIF_CACHE_KEY);}catch(e){}}
 
-    async function loadNotifs() {
-        try {
+    async function loadNotifs(useCache){
+        if(useCache){
+            const c = loadNotifsCache();
+            if(c){
+                renderNotifs(c.list);
+                if(c.unread>0){
+                    notifBadge.textContent = c.unread>99?'99+':c.unread;
+                    notifBadge.classList.remove('hidden');
+                }
+            }
+        }
+        try{
             const r = await fetch('/api/notifications/', {
-                headers: {'X-Requested-With': 'XMLHttpRequest'},
-                credentials: 'same-origin',
+                headers:{'X-Requested-With':'XMLHttpRequest'},
+                credentials:'same-origin'
             });
-            if (!r.ok) return;
+            if(!r.ok) return;
             const data = await r.json();
-            renderNotifs(data.notifications || []);
-            if (data.unread_count > 0) {
-                notifBadge.textContent = data.unread_count > 99 ? '99+' : data.unread_count;
+            const list = data.notifications||[];
+            const unread = data.unread_count||0;
+            renderNotifs(list);
+            saveNotifsCache(list, unread);
+            if(unread>0){
+                notifBadge.textContent = unread>99?'99+':unread;
                 notifBadge.classList.remove('hidden');
             } else {
                 notifBadge.classList.add('hidden');
             }
-        } catch (e) {
-            console.error('[notif]', e);
-        }
+        }catch(e){console.error('[notif]',e);}
     }
 
-    if (notifBell) {
-        notifBell.addEventListener('click', (e) => {
+    if(notifBell){
+        notifBell.addEventListener('click', (e)=>{
             e.stopPropagation();
             const opening = !notifPanel.classList.contains('open');
             notifPanel.classList.toggle('open');
-            if (opening) loadNotifs();
+            const ep = document.getElementById('profileEditPanel');
+            if(ep) ep.classList.remove('open');
+            if(opening) loadNotifs(true);
         });
-
-        document.addEventListener('click', (e) => {
-            if (!notifPanel.contains(e.target) && !notifBell.contains(e.target)) {
-                notifPanel.classList.remove('open');
-            }
+        document.addEventListener('click', (e)=>{
+            if(!notifPanel.contains(e.target)&&!notifBell.contains(e.target)) notifPanel.classList.remove('open');
         });
-
-        // Poll every 60s
-        loadNotifs();
-        setInterval(loadNotifs, 60000);
+        loadNotifs(true);
+        setInterval(()=>loadNotifs(false), 60000);
     }
 
-    if (markAllRead) {
-        markAllRead.addEventListener('click', async (e) => {
+    if(markAllRead){
+        markAllRead.addEventListener('click', async (e)=>{
             e.stopPropagation();
-            try {
+            try{
                 await fetch('/api/notifications/read/', {
-                    method: 'POST',
-                    headers: {'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': getCsrf()},
-                    credentials: 'same-origin',
+                    method:'POST',
+                    headers:{'X-Requested-With':'XMLHttpRequest','X-CSRFToken':getCsrf()},
+                    credentials:'same-origin'
                 });
                 notifBadge.classList.add('hidden');
-                // Update UI: remove unread class
-                notifList.querySelectorAll('.notif-item.unread').forEach(el => {
-                    el.classList.remove('unread');
-                });
-            } catch (err) {
-                console.error('[mark-read]', err);
-            }
+                notifList.querySelectorAll('.notif-item.unread').forEach(el=>el.classList.remove('unread'));
+                clearNotifsCache();
+                saveNotifsCache([], 0);
+            }catch(err){console.error('[mark-read]',err);}
         });
     }
 
-    function getCsrf() {
-        const m = document.cookie.match(/csrftoken=([^;]+)/);
-        return m ? m[1] : '';
-    }
-
-    /* ───── FOLLOW ───── */
+    /* FOLLOW */
     const followBtn = document.getElementById('followBtn');
     const followersCountEl = document.getElementById('followersCount');
-
-    if (followBtn) {
-        followBtn.addEventListener('click', async function() {
-            const userId = String(followBtn.dataset.userId || '').trim();
-            if (!userId) { showToast('Invalid user', 'error'); return; }
-
+    if(followBtn){
+        followBtn.addEventListener('click', async function(){
+            const uid = String(followBtn.dataset.userId||'').trim();
+            if(!uid){showToast('Invalid user','error');return;}
             followBtn.disabled = true;
-            const originalHTML = followBtn.innerHTML;
-
-            try {
-                const r = await fetch(`/api/follow/${encodeURIComponent(userId)}/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json',
-                        'X-CSRFToken': getCsrf(),
-                    },
-                    credentials: 'same-origin',
+            const orig = followBtn.innerHTML;
+            try{
+                const r = await fetch(`/api/follow/${encodeURIComponent(uid)}/`, {
+                    method:'POST',
+                    headers:{'X-Requested-With':'XMLHttpRequest','Accept':'application/json','X-CSRFToken':getCsrf()},
+                    credentials:'same-origin'
                 });
-
-                if (r.status === 401) {
-                    window.location.href = '/login/?next=' + encodeURIComponent(window.location.pathname);
-                    return;
-                }
-
+                if(r.status===401){window.location.href='/login/?next='+encodeURIComponent(window.location.pathname);return;}
                 const data = await r.json();
-                if (data.error) {
-                    showToast(data.error, 'error');
-                    followBtn.innerHTML = originalHTML;
-                    followBtn.disabled = false;
-                    return;
-                }
-
-                if (data.following) {
+                if(data.error){showToast(data.error,'error');followBtn.innerHTML=orig;followBtn.disabled=false;return;}
+                if(data.following){
                     followBtn.classList.add('following');
                     followBtn.innerHTML = '<i class="fas fa-check"></i> <span id="followText">Following</span>';
-                    if (followersCountEl) {
-                        const cur = parseInt(followersCountEl.textContent) || 0;
-                        followersCountEl.textContent = cur + 1;
-                    }
-                    showToast('Now following! 🎉', 'success');
+                    if(followersCountEl){const c=parseInt(followersCountEl.textContent)||0;followersCountEl.textContent=c+1;}
+                    showToast('Now following! 🎉','success');
                 } else {
                     followBtn.classList.remove('following');
                     followBtn.innerHTML = '<i class="fas fa-plus"></i> <span id="followText">Follow</span>';
-                    if (followersCountEl) {
-                        const cur = parseInt(followersCountEl.textContent) || 0;
-                        followersCountEl.textContent = Math.max(0, cur - 1);
-                    }
+                    if(followersCountEl){const c=parseInt(followersCountEl.textContent)||0;followersCountEl.textContent=Math.max(0,c-1);}
                     showToast('Unfollowed');
                 }
-            } catch (err) {
-                console.error('[follow]', err);
-                showToast('Something went wrong', 'error');
-                followBtn.innerHTML = originalHTML;
-            }
-
+            }catch(err){console.error('[follow]',err);showToast('Something went wrong','error');followBtn.innerHTML=orig;}
             followBtn.disabled = false;
         });
     }
 
-    /* ───── EDIT PROFILE (username + full name) ───── */
-    const editToggle = document.getElementById('editToggle');
-    const editForm = document.getElementById('editForm');
-    const cancelEdit = document.getElementById('cancelEdit');
-    const saveEdit = document.getElementById('saveEdit');
+    /* EDIT POPOVER */
+    const userPillBtn = document.getElementById('userPillBtn');
+    const profileEditPanel = document.getElementById('profileEditPanel');
+    const profileEditForm = document.getElementById('profileEditForm');
     const editUsername = document.getElementById('editUsername');
     const editFullName = document.getElementById('editFullName');
+    const editUniversity = document.getElementById('editUniversity');
     const usernameHint = document.getElementById('usernameHint');
+    const saveEdit = document.getElementById('saveEdit');
+    const cancelEdit = document.getElementById('cancelEdit');
 
     const USERNAME_RE = /^[a-z0-9_]{3,20}$/;
+    const ORIG_U = editUsername ? editUsername.value.trim() : '';
+    const ORIG_F = editFullName ? editFullName.value.trim() : '';
+    const ORIG_UNI = editUniversity ? editUniversity.value.trim() : '';
 
-    function resetHint() {
-        usernameHint.textContent = '3–20 chars · letters, numbers, underscore';
-        usernameHint.className = 'hint';
-    }
+    function resetHint(){usernameHint.textContent='3–20 chars · lowercase letters, numbers, underscore';usernameHint.className='hint';}
 
-    if (editToggle && editForm) {
-        editToggle.addEventListener('click', () => {
-            const opening = !editForm.classList.contains('open');
-            editForm.classList.toggle('open');
-            if (opening) {
-                editFullName.focus();
-                resetHint();
-            }
+    if(userPillBtn && profileEditPanel){
+        userPillBtn.addEventListener('click', (e)=>{
+            e.stopPropagation();
+            const opening = !profileEditPanel.classList.contains('open');
+            profileEditPanel.classList.toggle('open');
+            if(notifPanel) notifPanel.classList.remove('open');
+            if(opening){editFullName.focus();resetHint();}
+        });
+        document.addEventListener('click', (e)=>{
+            if(!profileEditPanel.contains(e.target)&&!userPillBtn.contains(e.target)) profileEditPanel.classList.remove('open');
         });
     }
-
-    if (cancelEdit) {
-        cancelEdit.addEventListener('click', () => {
-            editForm.classList.remove('open');
-            editFullName.value = document.getElementById('heroFullName').textContent.trim();
-            editUsername.value = document.getElementById('heroUsername').textContent.trim();
+    const editToggle = document.getElementById('editToggle');
+    if(editToggle && profileEditPanel){
+        editToggle.addEventListener('click', (e)=>{
+            e.stopPropagation();
+            profileEditPanel.classList.add('open');
+            editFullName.focus();
             resetHint();
         });
     }
-
-    if (editUsername) {
-        editUsername.addEventListener('input', () => {
-            const v = editUsername.value.trim().toLowerCase();
-            editUsername.value = v;
-            if (!v) { resetHint(); return; }
-            if (!USERNAME_RE.test(v)) {
-                usernameHint.textContent = 'Invalid — 3–20 chars, lowercase letters/numbers/underscore only';
-                usernameHint.className = 'hint error';
-            } else {
-                usernameHint.textContent = `Looks good · @${v}`;
-                usernameHint.className = 'hint success';
-            }
+    if(cancelEdit){
+        cancelEdit.addEventListener('click', ()=>{
+            profileEditPanel.classList.remove('open');
+            editFullName.value = ORIG_F;
+            editUsername.value = ORIG_U;
+            editUniversity.value = ORIG_UNI;
+            resetHint();
         });
     }
-
-    if (editForm) {
-        editForm.addEventListener('submit', async (e) => {
+    if(editUsername){
+        editUsername.addEventListener('input', ()=>{
+            const v = editUsername.value.trim().toLowerCase();
+            editUsername.value = v;
+            if(!v){resetHint();return;}
+            if(!USERNAME_RE.test(v)){usernameHint.textContent='Invalid — 3–20 chars, lowercase letters/numbers/underscore';usernameHint.className='hint error';}
+            else{usernameHint.textContent=`Looks good · @${v}`;usernameHint.className='hint success';}
+        });
+    }
+    if(profileEditForm){
+        profileEditForm.addEventListener('submit', async (e)=>{
             e.preventDefault();
+            const newU = editUsername.value.trim().toLowerCase();
+            const newF = editFullName.value.trim();
+            const newUni = editUniversity.value.trim();
 
-            const newUsername = editUsername.value.trim().toLowerCase();
-            const newFullName = editFullName.value.trim();
-
-            if (newUsername && !USERNAME_RE.test(newUsername)) {
-                usernameHint.textContent = 'Invalid username format';
-                usernameHint.className = 'hint error';
+            if(newU && !USERNAME_RE.test(newU)){
+                usernameHint.textContent='Invalid username format';
+                usernameHint.className='hint error';
                 return;
             }
-
             const payload = {};
-            if (newUsername) payload.username = newUsername;
-            if (newFullName) payload.full_name = newFullName;
+            if(newU && newU !== ORIG_U) payload.username = newU;
+            if(newF && newF !== ORIG_F) payload.full_name = newF;
+            if(newUni && newUni !== ORIG_UNI) payload.university = newUni;
 
-            if (Object.keys(payload).length === 0) {
-                showToast('Nothing to update', 'error');
-                return;
-            }
+            if(Object.keys(payload).length === 0){showToast('Nothing to update','error');return;}
 
             saveEdit.disabled = true;
-            const originalSave = saveEdit.innerHTML;
+            const origSave = saveEdit.innerHTML;
             saveEdit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
 
-            try {
+            try{
                 const r = await fetch('/api/profile/update/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRFToken': getCsrf(),
-                    },
-                    credentials: 'same-origin',
-                    body: JSON.stringify(payload),
+                    method:'POST',
+                    headers:{'Content-Type':'application/json','X-Requested-With':'XMLHttpRequest','X-CSRFToken':getCsrf()},
+                    credentials:'same-origin',
+                    body: JSON.stringify(payload)
                 });
-
                 const data = await r.json();
-
-                if (!r.ok || data.error) {
+                if(!r.ok || data.error){
                     const msg = data.message || data.error || 'Update failed';
-                    showToast(msg, 'error');
+                    showToast(msg,'error');
                     usernameHint.textContent = msg;
                     usernameHint.className = 'hint error';
                     saveEdit.disabled = false;
-                    saveEdit.innerHTML = originalSave;
+                    saveEdit.innerHTML = origSave;
                     return;
                 }
-
-                // Success — update DOM
-                if (data.updated.full_name) {
-                    document.getElementById('heroFullName').textContent = data.updated.full_name;
-                    const heroFb = document.getElementById('heroAvatarFallback');
-                    if (heroFb) heroFb.textContent = data.updated.full_name[0].toUpperCase();
-                }
-                if (data.updated.username) {
+                if(data.updated.username){
                     document.getElementById('heroUsername').textContent = data.updated.username;
-                    // Update URL without reload
-                    history.replaceState({}, '', '/profile/' + encodeURIComponent(data.updated.username) + '/');
-                    // Update nav pill
                     const navName = document.querySelector('.user-name');
-                    if (navName) navName.textContent = data.updated.username;
-                    const navPill = document.querySelector('.user-profile-pill');
-                    if (navPill) navPill.href = '/profile/' + encodeURIComponent(data.updated.username) + '/';
+                    if(navName) navName.textContent = data.updated.username;
+                    const pl = document.querySelector('.profile-edit-link');
+                    if(pl) pl.href = '/profile/'+encodeURIComponent(data.updated.username)+'/';
+                    editUsername.value = data.updated.username;
+                    history.replaceState({}, '', '/profile/'+encodeURIComponent(data.updated.username)+'/');
                 }
-
-                showToast('Profile updated ✅', 'success');
-                editForm.classList.remove('open');
+                if(data.updated.full_name){
+                    document.getElementById('heroFullName').textContent = data.updated.full_name;
+                    editFullName.value = data.updated.full_name;
+                }
+                if(data.updated.university){
+                    const hUni = document.getElementById('heroUniversity');
+                    if(hUni) hUni.innerHTML = '<i class="fas fa-university"></i> ' + data.updated.university;
+                    editUniversity.value = data.updated.university;
+                }
+                showToast('Profile updated ✅','success');
+                profileEditPanel.classList.remove('open');
                 resetHint();
-            } catch (err) {
-                console.error('[save-profile]', err);
-                showToast('Something went wrong', 'error');
+            }catch(err){
+                console.error('[save-profile]',err);
+                showToast('Something went wrong','error');
             }
-
             saveEdit.disabled = false;
-            saveEdit.innerHTML = originalSave;
+            saveEdit.innerHTML = origSave;
         });
     }
 })();
