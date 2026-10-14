@@ -16,27 +16,13 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 :root{
-  --surface:#ffffff;
-  --alt:#f5f5f4;
-  --border:#e7e5e4;
-  --border-strong:#d6d3d1;
-  --ink:#1c1917;
-  --text-2:#44403c;
-  --text-3:#57534e;
-  --accent:#c2410c;
-  --accent-bright:#ea580c;
-  --accent-pink:#db2777;
-  --accent-dim:#fff1e8;
-  --success:#15803d;
-  --success-dim:#dcfce7;
-  --gold:#b45309;
-  --gold-dim:#fef3c7;
-  --gold-border:#fde68a;
+  --surface:#ffffff;--alt:#f5f5f4;--border:#e7e5e4;--border-strong:#d6d3d1;
+  --ink:#1c1917;--text-2:#44403c;--text-3:#57534e;
+  --accent:#c2410c;--accent-bright:#ea580c;--accent-pink:#db2777;--accent-dim:#fff1e8;
+  --success:#15803d;--success-dim:#dcfce7;
+  --gold:#b45309;--gold-dim:#fef3c7;--gold-border:#fde68a;
   --danger:#dc2626;
-  --radius-sm:10px;
-  --radius-md:14px;
-  --radius-lg:20px;
-  --radius-xl:28px;
+  --radius-sm:10px;--radius-md:14px;--radius-lg:20px;--radius-xl:28px;
   --shadow-sm:0 1px 2px rgba(28,25,23,.06);
   --shadow-md:0 10px 28px -12px rgba(28,25,23,.18);
   --shadow-lg:0 28px 64px -20px rgba(28,25,23,.22);
@@ -49,11 +35,10 @@ a{color:inherit;text-decoration:none}
 img{max-width:100%;height:auto;display:block}
 .page{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh}
 
-/* BG — pic2.png wallpaper */
 .page-bg{position:fixed;inset:0;z-index:-2;background-image:url('/pic2.png');background-size:cover;background-position:center;background-repeat:no-repeat;background-color:#0a0a14}
 .page-bg-overlay{position:fixed;inset:0;z-index:-1;background:rgba(10,10,20,0.45);pointer-events:none}
 
-/* TOP BAR */
+/* TOPBAR */
 .topbar{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);color:#f5f5f4;font-size:.82rem;padding:9px 0;position:relative;z-index:5}
 .topbar-inner{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;text-align:center}
 .topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:#a8a29e;white-space:nowrap}
@@ -78,8 +63,6 @@ img{max-width:100%;height:auto;display:block}
 .nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .btn-quote{background:var(--accent);color:#fff;padding:9px 18px;border-radius:999px;font-weight:700;font-size:.78rem;display:inline-flex;align-items:center;gap:6px;transition:all .25s ease;white-space:nowrap;box-shadow:var(--shadow-cta);border:none;cursor:pointer;flex-shrink:0}
 .btn-quote:hover{background:#9a3412;transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(194,65,12,.5)}
-
-/* AUTH PILLS */
 .btn-nav-login{background:transparent;color:var(--ink);padding:9px 16px;border-radius:999px;font-weight:700;font-size:.8rem;display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--border-strong);transition:all .25s ease;white-space:nowrap;text-decoration:none}
 .btn-nav-login:hover{background:var(--alt);color:var(--accent);border-color:var(--accent);transform:translateY(-1px)}
 .btn-nav-join{background:linear-gradient(120deg,#c2410c,#be185d);color:#fff;padding:10px 18px;border-radius:999px;font-weight:800;font-size:.8rem;display:inline-flex;align-items:center;gap:6px;box-shadow:var(--shadow-cta);transition:all .25s ease;white-space:nowrap;text-decoration:none}
@@ -93,15 +76,15 @@ img{max-width:100%;height:auto;display:block}
 .user-name{font-weight:800;font-size:.82rem;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100px}
 .user-pill-chevron{color:var(--text-3);font-size:.65rem;margin-left:-2px}
 
-/* NOTIFICATIONS BELL */
+/* NOTIFICATIONS */
 .notif-wrap{position:relative}
 .notif-bell{position:relative;width:42px;height:42px;border-radius:50%;background:var(--alt);border:1.5px solid var(--border);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;font-size:.95rem;cursor:pointer;transition:all .25s ease;font-family:inherit}
 .notif-bell:hover{border-color:var(--accent);background:#fff;transform:translateY(-1px);color:var(--accent)}
 .notif-bell .badge{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:linear-gradient(120deg,#c2410c,#be185d);color:#fff;font-size:.65rem;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 3px 8px rgba(219,39,119,.5)}
 .notif-bell .badge.hidden{display:none}
 .notif-panel{position:absolute;top:calc(100% + 12px);right:0;width:min(360px,calc(100vw - 32px));max-height:480px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:0 24px 60px -20px rgba(28,25,23,.35);overflow:hidden;display:none;flex-direction:column;z-index:200}
-.notif-panel.open{display:flex;animation:notifIn .2s ease}
-@keyframes notifIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.notif-panel.open{display:flex;animation:popIn .2s ease}
+@keyframes popIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 .notif-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--alt)}
 .notif-head h4{font-size:.9rem;font-weight:900;display:flex;align-items:center;gap:8px}
 .notif-head h4 i{color:var(--accent)}
@@ -115,20 +98,19 @@ img{max-width:100%;height:auto;display:block}
 .notif-item:last-child{border-bottom:none}
 .notif-item.unread{background:linear-gradient(90deg,#fff7ed 0%,#fff 100%)}
 .notif-item.unread::before{content:'';width:4px;background:var(--accent);border-radius:2px;position:absolute;left:0;top:12px;bottom:12px}
-.notif-avatar{width:38px;height:38px;border-radius:50%;flex-shrink:0;overflow:hidden;background:linear-gradient(120deg,#c2410c,#be185d);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.85rem;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+.notif-avatar{width:38px;height:38px;border-radius:50%;flex-shrink:0;overflow:hidden;background:linear-gradient(120deg,#c2410c,#be185d);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.85rem;border:2px solid #fff}
 .notif-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .notif-body{flex:1;min-width:0}
 .notif-body .msg{font-size:.82rem;color:var(--ink);font-weight:600;line-height:1.4;word-wrap:break-word}
-.notif-body .msg strong{font-weight:800;color:var(--accent)}
 .notif-body .time{font-size:.68rem;color:var(--text-3);font-weight:600;margin-top:3px;font-family:'JetBrains Mono',monospace}
 .notif-empty{padding:40px 20px;text-align:center;color:var(--text-3)}
 .notif-empty i{font-size:2.5rem;color:var(--border-strong);display:block;margin-bottom:10px}
 .notif-empty p{font-size:.82rem;font-weight:600}
 
-/* USER EDIT POPOVER */
+/* EDIT POPOVER */
 .profile-edit-wrap{position:relative}
 .profile-edit-panel{position:absolute;top:calc(100% + 12px);right:0;width:min(340px,calc(100vw - 32px));background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:0 24px 60px -20px rgba(28,25,23,.35);overflow:hidden;display:none;flex-direction:column;z-index:200}
-.profile-edit-panel.open{display:flex;animation:notifIn .2s ease}
+.profile-edit-panel.open{display:flex;animation:popIn .2s ease}
 .profile-edit-head{padding:14px 16px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,#fff1e8 0%,#fce7f3 100%);display:flex;align-items:center;gap:10px}
 .profile-edit-head .ico{width:34px;height:34px;border-radius:10px;background:linear-gradient(120deg,#c2410c,#be185d);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
 .profile-edit-head h4{font-size:.9rem;font-weight:900;line-height:1.2}
@@ -139,7 +121,6 @@ img{max-width:100%;height:auto;display:block}
 .profile-edit-body label{display:block;color:var(--text-3);font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
 .profile-edit-body input{width:100%;padding:10px 14px;background:#fafaf9;border:1px solid var(--border);border-radius:10px;color:var(--ink);font-size:.88rem;font-family:'Inter',sans-serif;font-weight:600;outline:none;transition:all .2s}
 .profile-edit-body input:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(194,65,12,.1)}
-.profile-edit-body input::placeholder{color:#a8a29e}
 .profile-edit-body .hint{color:var(--text-3);font-size:.68rem;margin-top:4px;font-weight:600}
 .profile-edit-body .hint.error{color:var(--danger)}
 .profile-edit-body .hint.success{color:var(--success)}
@@ -159,27 +140,24 @@ img{max-width:100%;height:auto;display:block}
 /* MAIN */
 .wrap{flex:1;max-width:1280px;margin:0 auto;padding:40px 20px 70px;width:100%;position:relative;z-index:2}
 
-/* HERO — pic4.jpg background inside the card */
-.hero{position:relative;margin-bottom:32px;padding:60px 30px;border-radius:var(--radius-xl);overflow:hidden;min-height:340px;display:flex;align-items:center;justify-content:center;background:#1c1917;box-shadow:0 24px 60px -20px rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.18)}
-.hero-bg{position:absolute;inset:0;background-image:url('/pic4.jpg');background-size:cover;background-position:center 30%;background-repeat:no-repeat;z-index:0}
-.hero::before{content:'';position:absolute;inset:0;background:rgba(15,15,25,.42);z-index:1;backdrop-filter:blur(2px)}
+/* HERO — pic4.jpg CRYSTAL CLEAR */
+.hero{position:relative;margin-bottom:32px;padding:60px 30px;border-radius:var(--radius-xl);overflow:hidden;min-height:340px;display:flex;align-items:center;justify-content:center;background:#1c1917;box-shadow:0 24px 60px -20px rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.2)}
+.hero-bg{position:absolute;inset:0;background-image:url('/pic4.jpg');background-size:cover;background-position:center 35%;background-repeat:no-repeat;z-index:0}
+.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,15,25,.28) 0%,rgba(15,15,25,.55) 100%);z-index:1;pointer-events:none}
 .hero-inner{position:relative;z-index:2;max-width:760px;margin:0 auto;text-align:center}
-.hero .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(254,243,199,.75);backdrop-filter:blur(8px);border:1px solid rgba(253,230,138,.9);color:var(--gold);font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:8px 18px;border-radius:50px;margin-bottom:20px}
+.hero .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(254,243,199,.92);backdrop-filter:blur(8px);border:1px solid rgba(253,230,138,.9);color:var(--gold);font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:8px 18px;border-radius:50px;margin-bottom:20px;box-shadow:0 4px 16px rgba(0,0,0,.4)}
 .hero .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--gold)}
-.hero h1{font-size:clamp(1.75rem,4.5vw,2.6rem);font-weight:900;letter-spacing:-.025em;margin-bottom:16px;line-height:1.2;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.9)}
-.hero h1 .accent{color:#fdba8c;text-decoration:underline;text-decoration-color:#fdba8c;text-underline-offset:6px;text-decoration-thickness:4px}
-.hero p{color:#f5f5f4;font-size:1rem;line-height:1.7;max-width:640px;margin:0 auto;text-shadow:0 2px 8px rgba(0,0,0,.85)}
+.hero h1{font-size:clamp(1.75rem,4.5vw,2.6rem);font-weight:900;letter-spacing:-.025em;margin-bottom:16px;line-height:1.2;color:#fff;text-shadow:0 3px 16px rgba(0,0,0,.95),0 1px 4px rgba(0,0,0,.85)}
+.hero h1 .accent{color:#ffd7b5;text-decoration:underline;text-decoration-color:#ffd7b5;text-underline-offset:6px;text-decoration-thickness:4px}
+.hero p{color:#f5f5f4;font-size:1rem;line-height:1.7;max-width:640px;margin:0 auto;text-shadow:0 2px 12px rgba(0,0,0,.9)}
 .hero p strong{color:#fff;font-weight:800}
-
 .hero-stats{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:28px}
-.hero-stat{display:inline-flex;align-items:center;gap:7px;font-size:.82rem;color:#fff;font-weight:600;white-space:nowrap;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(10px);padding:8px 16px;border-radius:999px;text-shadow:0 1px 4px rgba(0,0,0,.6)}
-.hero-stat i{color:#fdba8c;font-size:.8rem}
+.hero-stat{display:inline-flex;align-items:center;gap:7px;font-size:.82rem;color:#fff;font-weight:600;white-space:nowrap;background:rgba(0,0,0,.42);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(6px);padding:8px 16px;border-radius:999px;text-shadow:0 2px 8px rgba(0,0,0,.85)}
+.hero-stat i{color:#ffd7b5;font-size:.8rem}
 .hero-stat strong{color:#fff;font-weight:900;font-family:'JetBrains Mono',monospace;font-size:.92rem}
 
-/* TRACKS GRID */
+/* TRACKS GRID — pic3.jpg */
 .tracks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
-
-/* TRACK CARDS — pic3.jpg background */
 .track{position:relative;border-radius:var(--radius-xl);padding:28px 26px 24px;display:flex;flex-direction:column;transition:all .3s cubic-bezier(.4,0,.2,1);overflow:hidden;cursor:pointer;min-height:330px;box-shadow:0 16px 44px -18px rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.25);color:#fff;background:#1c1917}
 .track-bg{position:absolute;inset:0;background-image:url('/pic3.jpg');background-size:cover;background-repeat:no-repeat;z-index:0;transition:transform .6s ease}
 .track:hover .track-bg{transform:scale(1.06)}
@@ -189,30 +167,25 @@ img{max-width:100%;height:auto;display:block}
 .track.htmlcss .track-bg{background-position:80% 60%}
 .track.english .track-bg{background-position:50% 15%}
 .track.kiswahili .track-bg{background-position:50% 85%}
-.track::after{content:'';position:absolute;inset:0;background:rgba(15,15,25,.45);backdrop-filter:blur(3px);z-index:1;border-radius:var(--radius-xl);pointer-events:none}
+.track::after{content:'';position:absolute;inset:0;background:rgba(15,15,25,.5);z-index:1;border-radius:var(--radius-xl);pointer-events:none}
 .track::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--accent-color);opacity:0;transition:opacity .3s;z-index:3;border-radius:var(--radius-xl) var(--radius-xl) 0 0}
 .track:hover{transform:translateY(-6px);box-shadow:0 28px 64px -18px rgba(0,0,0,.7);border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.05)}
 .track:hover::before{opacity:1}
 .track > *{position:relative;z-index:2}
-
 .track .new-badge{position:absolute;top:14px;right:14px;background:var(--accent);color:#fff;font-size:.6rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;padding:5px 10px;border-radius:999px;box-shadow:0 6px 18px -6px rgba(194,65,12,.8);z-index:4;display:inline-flex;align-items:center;gap:5px}
 .track .new-badge i{font-size:.55rem}
 .track.featured{border:1.5px solid var(--accent-color)}
 .track.featured .track-status{background:rgba(21,128,61,.85);border-color:rgba(74,222,128,.7);color:#fff;backdrop-filter:blur(6px)}
 .track.featured .track-status .dot{background:#fff}
-
 .track-icon{width:58px;height:58px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:1.55rem;margin-bottom:16px;flex-shrink:0;background:rgba(255,255,255,.18);color:#fff;backdrop-filter:blur(10px);box-shadow:0 6px 20px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.3);transition:transform .3s}
 .track:hover .track-icon{transform:scale(1.08)}
-
 .track h3{font-size:1.2rem;font-weight:800;letter-spacing:-.01em;margin-bottom:8px;color:#fff;line-height:1.25;text-shadow:0 2px 10px rgba(0,0,0,.9)}
 .track .track-desc{color:#f5f5f4;font-size:.88rem;line-height:1.6;margin-bottom:16px;flex:1;text-shadow:0 1px 6px rgba(0,0,0,.85)}
-
 .track-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:14px;border-top:1px solid rgba(255,255,255,.25)}
 .track-status{display:inline-flex;align-items:center;gap:6px;font-size:.65rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fcd34d;background:rgba(180,83,9,.55);border:1px solid rgba(253,230,138,.5);backdrop-filter:blur(6px);padding:4px 10px;border-radius:50px;white-space:nowrap}
 .track-status .dot{width:5px;height:5px;border-radius:50%;background:#fcd34d}
-.track-arrow{color:#fdba8c;font-size:.82rem;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:gap .25s;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.8)}
+.track-arrow{color:#ffd7b5;font-size:.82rem;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:gap .25s;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.8)}
 .track:hover .track-arrow{gap:12px}
-
 .track.github{--accent-color:#7c3aed}
 .track.htmlcss{--accent-color:#c2410c}
 .track.python{--accent-color:#15803d}
@@ -220,40 +193,10 @@ img{max-width:100%;height:auto;display:block}
 .track.kiswahili{--accent-color:#0891b2}
 .track.hosting{--accent-color:#0ea5e9}
 
-/* NOTICE — pic3.jpg background */
-.notice{
-  position:relative;
-  margin-top:32px;
-  border:1px solid rgba(255,255,255,.25);
-  border-left:4px solid var(--gold);
-  border-radius:var(--radius-md);
-  padding:18px 22px;
-  display:flex;
-  align-items:flex-start;
-  gap:14px;
-  box-shadow:0 12px 32px -14px rgba(0,0,0,.55);
-  overflow:hidden;
-  background:#1c1917;
-  color:#fff;
-}
-.notice::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  background-image:url('/pic3.jpg');
-  background-size:cover;
-  background-position:center;
-  z-index:0;
-}
-.notice::after{
-  content:'';
-  position:absolute;
-  inset:0;
-  background:rgba(15,15,25,.65);
-  backdrop-filter:blur(3px);
-  z-index:1;
-  pointer-events:none;
-}
+/* NOTICE — pic3.jpg */
+.notice{position:relative;margin-top:32px;border:1px solid rgba(255,255,255,.25);border-left:4px solid var(--gold);border-radius:var(--radius-md);padding:18px 22px;display:flex;align-items:flex-start;gap:14px;box-shadow:0 12px 32px -14px rgba(0,0,0,.55);overflow:hidden;background:#1c1917;color:#fff}
+.notice::before{content:'';position:absolute;inset:0;background-image:url('/pic3.jpg');background-size:cover;background-position:center;z-index:0}
+.notice::after{content:'';position:absolute;inset:0;background:rgba(15,15,25,.65);z-index:1;pointer-events:none}
 .notice > *{position:relative;z-index:2}
 .notice i{color:#fcd34d;font-size:1.15rem;margin-top:2px;flex-shrink:0}
 .notice-text{color:#f5f5f4;font-size:.88rem;line-height:1.7;text-shadow:0 1px 6px rgba(0,0,0,.8)}
@@ -272,7 +215,6 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
 .toast.show{transform:translateX(-50%) translateY(0);pointer-events:auto}
 .toast i{color:#fdba8c}
 
-/* RESPONSIVE */
 @media(max-width:720px){
   .mainnav-inner{flex-wrap:wrap;padding:12px 16px;gap:12px}
   .logo-full-img{height:46px}
@@ -286,8 +228,7 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
   .track{padding:22px 20px 20px;min-height:auto}
   .user-name{display:none}
   .user-profile-pill{padding:5px}
-  .notif-panel{position:fixed;left:16px;right:16px;top:76px;width:auto}
-  .profile-edit-panel{position:fixed;left:16px;right:16px;top:76px;width:auto}
+  .notif-panel,.profile-edit-panel{position:fixed;left:16px;right:16px;top:76px;width:auto}
 }
 @media(max-width:480px){
   .topbar-inner{gap:12px;font-size:.7rem;padding:0 14px}
@@ -310,9 +251,7 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
 
   <div class="topbar">
     <div class="topbar-inner">
-      <a href="https://wa.me/255740706007" target="_blank" rel="noopener" class="whatsapp-link">
-        <i class="fab fa-whatsapp"></i> WhatsApp
-      </a>
+      <a href="https://wa.me/255740706007" target="_blank" rel="noopener" class="whatsapp-link"><i class="fab fa-whatsapp"></i> WhatsApp</a>
       <span><i class="fas fa-envelope"></i> Twarvisteh@gmail.com</span>
       <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
     </div>
@@ -320,9 +259,7 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
 
   <nav class="mainnav">
     <div class="mainnav-inner">
-      <a href="/" class="logo">
-        <img src="/logo.png" alt="Student Hub" class="logo-full-img">
-      </a>
+      <a href="/" class="logo"><img src="/logo.png" alt="Student Hub" class="logo-full-img"></a>
       <div class="menu">
         <a href="/">Home</a>
         <a href="/browse/">Browse</a>
@@ -346,17 +283,12 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
                 <button class="mark-read" id="markAllRead">Mark all read</button>
               </div>
               <div class="notif-list" id="notifList">
-                <div class="notif-empty">
-                  <i class="fas fa-spinner fa-spin"></i>
-                  <p>Loading…</p>
-                </div>
+                <div class="notif-empty"><i class="fas fa-spinner fa-spin"></i><p>Loading…</p></div>
               </div>
             </div>
           </div>
 
-          <a href="/quiz/" class="streak-pill" title="Daily Streak">
-            <span>🔥</span> {{ current_student.streak|default:0 }}
-          </a>
+          <a href="/quiz/" class="streak-pill" title="Daily Streak"><span>🔥</span> {{ current_student.streak|default:0 }}</a>
 
           <div class="profile-edit-wrap">
             <button type="button" class="user-profile-pill" id="userPillBtn">
@@ -374,35 +306,31 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
                 <div class="ico"><i class="fas fa-user-pen"></i></div>
                 <div>
                   <h4>Edit your profile</h4>
-                  <p>Change your display name & handle</p>
+                  <p>Change name, handle & university</p>
                 </div>
               </div>
               <form class="profile-edit-body" id="profileEditForm" autocomplete="off">
                 <div class="field">
                   <label for="editFullName">Display name</label>
-                  <input type="text" id="editFullName" name="full_name"
-                         maxlength="80" placeholder="Your display name"
-                         value="{{ current_student.full_name|default:'' }}">
+                  <input type="text" id="editFullName" name="full_name" maxlength="80" placeholder="Your display name" value="{{ current_student.full_name|default:'' }}">
                 </div>
                 <div class="field">
                   <label for="editUsername">Username / handle</label>
                   <div class="input-prefix">
-                    <input type="text" id="editUsername" name="username"
-                           maxlength="20" placeholder="yourhandle"
-                           value="{{ current_student.username|default:'' }}">
+                    <input type="text" id="editUsername" name="username" maxlength="20" placeholder="yourhandle" value="{{ current_student.username|default:'' }}">
                   </div>
-                  <div class="hint" id="usernameHint">3–20 chars · letters, numbers, underscore</div>
+                  <div class="hint" id="usernameHint">3–20 chars · lowercase letters, numbers, underscore</div>
+                </div>
+                <div class="field">
+                  <label for="editUniversity">University</label>
+                  <input type="text" id="editUniversity" name="university" maxlength="200" placeholder="e.g., University of Dar es Salaam" value="{{ current_student.university|default:'' }}">
                 </div>
                 <div class="actions">
                   <button type="button" class="cancel" id="cancelEdit">Cancel</button>
-                  <button type="submit" class="save" id="saveEdit">
-                    <i class="fas fa-check"></i> Save
-                  </button>
+                  <button type="submit" class="save" id="saveEdit"><i class="fas fa-check"></i> Save</button>
                 </div>
               </form>
-              <a href="/profile/{{ current_student.username }}/" class="profile-edit-link">
-                <i class="fas fa-user"></i> View full profile
-              </a>
+              <a href="/profile/{{ current_student.username }}/" class="profile-edit-link"><i class="fas fa-user"></i> View full profile</a>
             </div>
           </div>
         {% else %}
@@ -415,7 +343,7 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
 
   <div class="wrap">
 
-    <!-- HERO — pic4.jpg inside the card -->
+    <!-- HERO — pic4.jpg, crystal clear -->
     <div class="hero">
       <div class="hero-bg"></div>
       <div class="hero-inner">
@@ -431,9 +359,8 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
       </div>
     </div>
 
-    <!-- TRACK CARDS — pic3.jpg inside each -->
+    <!-- TRACKS — pic3.jpg inside each -->
     <div class="tracks-grid">
-
       <a href="/free_course/github/" class="track github featured">
         <div class="track-bg"></div>
         <div class="track-icon"><i class="fab fa-github"></i></div>
@@ -444,7 +371,6 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
           <span class="track-arrow">Start <i class="fas fa-arrow-right"></i></span>
         </div>
       </a>
-
       <a href="/free_course/web-hosting/" class="track hosting featured">
         <span class="new-badge"><i class="fas fa-star"></i> New</span>
         <div class="track-bg"></div>
@@ -456,7 +382,6 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
           <span class="track-arrow">Start <i class="fas fa-arrow-right"></i></span>
         </div>
       </a>
-
       <a href="/free_course/python/" class="track python">
         <div class="track-bg"></div>
         <div class="track-icon"><i class="fab fa-python"></i></div>
@@ -467,7 +392,6 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
           <span class="track-arrow">Explore <i class="fas fa-arrow-right"></i></span>
         </div>
       </a>
-
       <a href="/free_course/html-css/" class="track htmlcss">
         <div class="track-bg"></div>
         <div class="track-icon"><i class="fas fa-code"></i></div>
@@ -478,7 +402,6 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
           <span class="track-arrow">Explore <i class="fas fa-arrow-right"></i></span>
         </div>
       </a>
-
       <a href="/free_course/english/" class="track english">
         <div class="track-bg"></div>
         <div class="track-icon"><i class="fas fa-language"></i></div>
@@ -489,7 +412,6 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
           <span class="track-arrow">Explore <i class="fas fa-arrow-right"></i></span>
         </div>
       </a>
-
       <a href="/free_course/kiswahili/" class="track kiswahili">
         <div class="track-bg"></div>
         <div class="track-icon"><i class="fas fa-book"></i></div>
@@ -500,7 +422,6 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
           <span class="track-arrow">Explore <i class="fas fa-arrow-right"></i></span>
         </div>
       </a>
-
     </div>
 
     <!-- NOTICE — pic3.jpg inside -->
@@ -527,288 +448,228 @@ footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20p
 
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast">
-  <i class="fas fa-check-circle"></i>
-  <span id="toastMsg">Done</span>
-</div>
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Done</span></div>
 
 <script>
 (function(){
-  function getCsrf() {
-    const m = document.cookie.match(/csrftoken=([^;]+)/);
-    return m ? m[1] : '';
-  }
-
-  /* ───── TOAST ───── */
+  function getCsrf(){const m=document.cookie.match(/csrftoken=([^;]+)/);return m?m[1]:'';}
   const toast = document.getElementById('toast');
   const toastMsg = document.getElementById('toastMsg');
   let toastTimer;
-  function showToast(msg, type) {
+  function showToast(msg,type){
     toastMsg.textContent = msg;
     const icon = toast.querySelector('i');
-    if (type === 'error') {
-      icon.className = 'fas fa-exclamation-circle';
-      icon.style.color = '#fca5a5';
-    } else if (type === 'success') {
-      icon.className = 'fas fa-check-circle';
-      icon.style.color = '#86efac';
-    } else {
-      icon.className = 'fas fa-check-circle';
-      icon.style.color = '#fdba8c';
-    }
+    if(type==='error'){icon.className='fas fa-exclamation-circle';icon.style.color='#fca5a5';}
+    else if(type==='success'){icon.className='fas fa-check-circle';icon.style.color='#86efac';}
+    else{icon.className='fas fa-check-circle';icon.style.color='#fdba8c';}
     toast.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+    toastTimer = setTimeout(()=>toast.classList.remove('show'),2800);
   }
 
-  /* ───── NOTIFICATIONS ───── */
+  /* NOTIFICATIONS with localStorage */
+  const NOTIF_CACHE_KEY = 'sh_notifications_v1';
   const notifBell = document.getElementById('notifBell');
   const notifPanel = document.getElementById('notifPanel');
   const notifList = document.getElementById('notifList');
   const notifBadge = document.getElementById('notifBadge');
   const markAllRead = document.getElementById('markAllRead');
 
-  function timeAgo(iso) {
-    if (!iso) return '';
-    try {
-      const t = new Date(iso).getTime();
-      const diff = Math.floor((Date.now() - t) / 1000);
-      if (diff < 60) return 'just now';
-      if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
-      if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
-      if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
+  function timeAgo(iso){
+    if(!iso) return '';
+    try{
+      const diff = Math.floor((Date.now()-new Date(iso).getTime())/1000);
+      if(diff<60) return 'just now';
+      if(diff<3600) return Math.floor(diff/60)+'m ago';
+      if(diff<86400) return Math.floor(diff/3600)+'h ago';
+      if(diff<604800) return Math.floor(diff/86400)+'d ago';
       return new Date(iso).toLocaleDateString();
-    } catch { return ''; }
+    }catch{return '';}
   }
-
-  function escapeHtml(s) {
-    return String(s || '').replace(/[&<>"']/g, c => ({
-      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-    }[c]));
-  }
-
-  function renderNotifs(list) {
-    if (!list || list.length === 0) {
-      notifList.innerHTML = `
-        <div class="notif-empty">
-          <i class="fas fa-bell-slash"></i>
-          <p>No notifications yet</p>
-        </div>`;
+  function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function renderNotifs(list){
+    if(!list||list.length===0){
+      notifList.innerHTML = `<div class="notif-empty"><i class="fas fa-bell-slash"></i><p>No notifications yet</p></div>`;
       return;
     }
-    notifList.innerHTML = list.map(n => {
-      const actor = n.actor || {};
-      const initials = (actor.full_name || actor.username || '?')[0].toUpperCase();
-      const avatarHtml = actor.avatar_url
-        ? `<img src="${escapeHtml(actor.avatar_url)}" alt="">`
-        : initials;
-      const actorName = actor.full_name || actor.username || 'Someone';
-      const msg = escapeHtml(n.message || `${actorName} interacted with you`);
-      const profileUrl = actor.username ? `/profile/${encodeURIComponent(actor.username)}/` : '#';
-      return `
-        <a class="notif-item ${n.is_read ? '' : 'unread'}" href="${profileUrl}">
-          <div class="notif-avatar">${avatarHtml}</div>
-          <div class="notif-body">
-            <div class="msg">${msg}</div>
-            <div class="time">${timeAgo(n.created_at)}</div>
-          </div>
-        </a>`;
+    notifList.innerHTML = list.map(n=>{
+      const a = n.actor||{};
+      const initials = (a.full_name||a.username||'?')[0].toUpperCase();
+      const av = a.avatar_url ? `<img src="${esc(a.avatar_url)}" alt="">` : initials;
+      const url = a.username ? `/profile/${encodeURIComponent(a.username)}/` : '#';
+      return `<a class="notif-item ${n.is_read?'':'unread'}" href="${url}">
+        <div class="notif-avatar">${av}</div>
+        <div class="notif-body">
+          <div class="msg">${esc(n.message||'Interaction')}</div>
+          <div class="time">${timeAgo(n.created_at)}</div>
+        </div>
+      </a>`;
     }).join('');
   }
+  function saveNotifsCache(list,unread){try{localStorage.setItem(NOTIF_CACHE_KEY,JSON.stringify({list,unread,saved_at:Date.now()}));}catch(e){}}
+  function loadNotifsCache(){try{const r=localStorage.getItem(NOTIF_CACHE_KEY);if(!r)return null;const d=JSON.parse(r);if(d&&Array.isArray(d.list))return d;}catch(e){}return null;}
+  function clearNotifsCache(){try{localStorage.removeItem(NOTIF_CACHE_KEY);}catch(e){}}
 
-  async function loadNotifs() {
-    try {
-      const r = await fetch('/api/notifications/', {
-        headers: {'X-Requested-With': 'XMLHttpRequest'},
-        credentials: 'same-origin',
-      });
-      if (!r.ok) return;
-      const data = await r.json();
-      renderNotifs(data.notifications || []);
-      if (data.unread_count > 0) {
-        notifBadge.textContent = data.unread_count > 99 ? '99+' : data.unread_count;
-        notifBadge.classList.remove('hidden');
-      } else {
-        notifBadge.classList.add('hidden');
+  async function loadNotifs(useCache){
+    if(useCache){
+      const c = loadNotifsCache();
+      if(c){
+        renderNotifs(c.list);
+        if(c.unread>0){notifBadge.textContent = c.unread>99?'99+':c.unread;notifBadge.classList.remove('hidden');}
       }
-    } catch (e) {
-      console.error('[notif]', e);
     }
+    try{
+      const r = await fetch('/api/notifications/',{headers:{'X-Requested-With':'XMLHttpRequest'},credentials:'same-origin'});
+      if(!r.ok) return;
+      const data = await r.json();
+      const list = data.notifications||[];
+      const unread = data.unread_count||0;
+      renderNotifs(list);
+      saveNotifsCache(list,unread);
+      if(unread>0){notifBadge.textContent = unread>99?'99+':unread;notifBadge.classList.remove('hidden');}
+      else{notifBadge.classList.add('hidden');}
+    }catch(e){console.error('[notif]',e);}
   }
 
-  if (notifBell) {
-    notifBell.addEventListener('click', (e) => {
+  if(notifBell){
+    notifBell.addEventListener('click',(e)=>{
       e.stopPropagation();
       const opening = !notifPanel.classList.contains('open');
       notifPanel.classList.toggle('open');
-      const editPanel = document.getElementById('profileEditPanel');
-      if (editPanel) editPanel.classList.remove('open');
-      if (opening) loadNotifs();
+      const ep = document.getElementById('profileEditPanel');
+      if(ep) ep.classList.remove('open');
+      if(opening) loadNotifs(true);
     });
-
-    document.addEventListener('click', (e) => {
-      if (!notifPanel.contains(e.target) && !notifBell.contains(e.target)) {
-        notifPanel.classList.remove('open');
-      }
+    document.addEventListener('click',(e)=>{
+      if(!notifPanel.contains(e.target)&&!notifBell.contains(e.target)) notifPanel.classList.remove('open');
     });
-
-    loadNotifs();
-    setInterval(loadNotifs, 60000);
+    loadNotifs(true);
+    setInterval(()=>loadNotifs(false),60000);
   }
 
-  if (markAllRead) {
-    markAllRead.addEventListener('click', async (e) => {
+  if(markAllRead){
+    markAllRead.addEventListener('click', async (e)=>{
       e.stopPropagation();
-      try {
-        await fetch('/api/notifications/read/', {
-          method: 'POST',
-          headers: {'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': getCsrf()},
-          credentials: 'same-origin',
-        });
+      try{
+        await fetch('/api/notifications/read/',{method:'POST',headers:{'X-Requested-With':'XMLHttpRequest','X-CSRFToken':getCsrf()},credentials:'same-origin'});
         notifBadge.classList.add('hidden');
-        notifList.querySelectorAll('.notif-item.unread').forEach(el => {
-          el.classList.remove('unread');
-        });
-      } catch (err) {
-        console.error('[mark-read]', err);
-      }
+        notifList.querySelectorAll('.notif-item.unread').forEach(el=>el.classList.remove('unread'));
+        clearNotifsCache();
+        saveNotifsCache([],0);
+      }catch(err){console.error('[mark-read]',err);}
     });
   }
 
-  /* ───── PROFILE EDIT POPOVER ───── */
+  /* EDIT POPOVER */
   const userPillBtn = document.getElementById('userPillBtn');
   const profileEditPanel = document.getElementById('profileEditPanel');
   const profileEditForm = document.getElementById('profileEditForm');
   const editUsername = document.getElementById('editUsername');
   const editFullName = document.getElementById('editFullName');
+  const editUniversity = document.getElementById('editUniversity');
   const usernameHint = document.getElementById('usernameHint');
   const saveEdit = document.getElementById('saveEdit');
   const cancelEdit = document.getElementById('cancelEdit');
 
   const USERNAME_RE = /^[a-z0-9_]{3,20}$/;
-  const ORIGINAL_USERNAME = editUsername ? editUsername.value.trim() : '';
-  const ORIGINAL_FULLNAME = editFullName ? editFullName.value.trim() : '';
+  const ORIG_U = editUsername ? editUsername.value.trim() : '';
+  const ORIG_F = editFullName ? editFullName.value.trim() : '';
+  const ORIG_UNI = editUniversity ? editUniversity.value.trim() : '';
 
-  function resetHint() {
-    usernameHint.textContent = '3–20 chars · letters, numbers, underscore';
-    usernameHint.className = 'hint';
-  }
+  function resetHint(){usernameHint.textContent='3–20 chars · lowercase letters, numbers, underscore';usernameHint.className='hint';}
 
-  if (userPillBtn && profileEditPanel) {
-    userPillBtn.addEventListener('click', (e) => {
+  if(userPillBtn && profileEditPanel){
+    userPillBtn.addEventListener('click',(e)=>{
       e.stopPropagation();
       const opening = !profileEditPanel.classList.contains('open');
       profileEditPanel.classList.toggle('open');
-      if (notifPanel) notifPanel.classList.remove('open');
-      if (opening) {
-        editFullName.focus();
-        resetHint();
-      }
+      if(notifPanel) notifPanel.classList.remove('open');
+      if(opening){editFullName.focus();resetHint();}
     });
-
-    document.addEventListener('click', (e) => {
-      if (!profileEditPanel.contains(e.target) && !userPillBtn.contains(e.target)) {
-        profileEditPanel.classList.remove('open');
-      }
+    document.addEventListener('click',(e)=>{
+      if(!profileEditPanel.contains(e.target)&&!userPillBtn.contains(e.target)) profileEditPanel.classList.remove('open');
     });
   }
-
-  if (cancelEdit) {
-    cancelEdit.addEventListener('click', () => {
+  if(cancelEdit){
+    cancelEdit.addEventListener('click',()=>{
       profileEditPanel.classList.remove('open');
-      editFullName.value = ORIGINAL_FULLNAME;
-      editUsername.value = ORIGINAL_USERNAME;
+      editFullName.value = ORIG_F;
+      editUsername.value = ORIG_U;
+      editUniversity.value = ORIG_UNI;
       resetHint();
     });
   }
-
-  if (editUsername) {
-    editUsername.addEventListener('input', () => {
+  if(editUsername){
+    editUsername.addEventListener('input',()=>{
       const v = editUsername.value.trim().toLowerCase();
       editUsername.value = v;
-      if (!v) { resetHint(); return; }
-      if (!USERNAME_RE.test(v)) {
-        usernameHint.textContent = 'Invalid — 3–20 chars, lowercase letters/numbers/underscore only';
-        usernameHint.className = 'hint error';
-      } else {
-        usernameHint.textContent = `Looks good · @${v}`;
-        usernameHint.className = 'hint success';
-      }
+      if(!v){resetHint();return;}
+      if(!USERNAME_RE.test(v)){usernameHint.textContent='Invalid — 3–20 chars, lowercase letters/numbers/underscore';usernameHint.className='hint error';}
+      else{usernameHint.textContent=`Looks good · @${v}`;usernameHint.className='hint success';}
     });
   }
-
-  if (profileEditForm) {
-    profileEditForm.addEventListener('submit', async (e) => {
+  if(profileEditForm){
+    profileEditForm.addEventListener('submit', async (e)=>{
       e.preventDefault();
+      const newU = editUsername.value.trim().toLowerCase();
+      const newF = editFullName.value.trim();
+      const newUni = editUniversity.value.trim();
 
-      const newUsername = editUsername.value.trim().toLowerCase();
-      const newFullName = editFullName.value.trim();
-
-      if (newUsername && !USERNAME_RE.test(newUsername)) {
-        usernameHint.textContent = 'Invalid username format';
-        usernameHint.className = 'hint error';
+      if(newU && !USERNAME_RE.test(newU)){
+        usernameHint.textContent='Invalid username format';
+        usernameHint.className='hint error';
         return;
       }
-
       const payload = {};
-      if (newUsername && newUsername !== ORIGINAL_USERNAME) payload.username = newUsername;
-      if (newFullName && newFullName !== ORIGINAL_FULLNAME) payload.full_name = newFullName;
+      if(newU && newU !== ORIG_U) payload.username = newU;
+      if(newF && newF !== ORIG_F) payload.full_name = newF;
+      if(newUni && newUni !== ORIG_UNI) payload.university = newUni;
 
-      if (Object.keys(payload).length === 0) {
-        showToast('Nothing to update', 'error');
-        return;
-      }
+      if(Object.keys(payload).length === 0){showToast('Nothing to update','error');return;}
 
       saveEdit.disabled = true;
-      const originalSave = saveEdit.innerHTML;
+      const origSave = saveEdit.innerHTML;
       saveEdit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
 
-      try {
+      try{
         const r = await fetch('/api/profile/update/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRFToken': getCsrf(),
-          },
-          credentials: 'same-origin',
-          body: JSON.stringify(payload),
+          method:'POST',
+          headers:{'Content-Type':'application/json','X-Requested-With':'XMLHttpRequest','X-CSRFToken':getCsrf()},
+          credentials:'same-origin',
+          body: JSON.stringify(payload)
         });
-
         const data = await r.json();
-
-        if (!r.ok || data.error) {
+        if(!r.ok || data.error){
           const msg = data.message || data.error || 'Update failed';
-          showToast(msg, 'error');
+          showToast(msg,'error');
           usernameHint.textContent = msg;
           usernameHint.className = 'hint error';
           saveEdit.disabled = false;
-          saveEdit.innerHTML = originalSave;
+          saveEdit.innerHTML = origSave;
           return;
         }
-
-        if (data.updated.username) {
+        if(data.updated.username){
           const navName = document.querySelector('.user-name');
-          if (navName) navName.textContent = data.updated.username;
-          const profileLink = document.querySelector('.profile-edit-link');
-          if (profileLink) profileLink.href = '/profile/' + encodeURIComponent(data.updated.username) + '/';
+          if(navName) navName.textContent = data.updated.username;
+          const pl = document.querySelector('.profile-edit-link');
+          if(pl) pl.href = '/profile/'+encodeURIComponent(data.updated.username)+'/';
           editUsername.value = data.updated.username;
         }
-        if (data.updated.full_name && editFullName) {
+        if(data.updated.full_name && editFullName){
           editFullName.value = data.updated.full_name;
         }
-
-        showToast('Profile updated ✅', 'success');
+        if(data.updated.university && editUniversity){
+          editUniversity.value = data.updated.university;
+        }
+        showToast('Profile updated ✅','success');
         profileEditPanel.classList.remove('open');
         resetHint();
-      } catch (err) {
-        console.error('[save-profile]', err);
-        showToast('Something went wrong', 'error');
+      }catch(err){
+        console.error('[save-profile]',err);
+        showToast('Something went wrong','error');
       }
-
       saveEdit.disabled = false;
-      saveEdit.innerHTML = originalSave;
+      saveEdit.innerHTML = origSave;
     });
   }
 })();
