@@ -6,18 +6,20 @@
 <title>{{ profile.full_name|default:profile.username }} | Student Hub</title>
 <link rel="icon" type="image/png" href="/logo.png" />
 <link rel="apple-touch-icon" href="/logo.png">
+<link rel="preload" as="image" href="/pic.png" />
+<link rel="preload" as="image" href="/pic2.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 :root{
-    --bg:#fafaf9;--surface:#fff;--alt:#f5f5f4;--border:#e7e5e4;--border-strong:#d6d3d1;
+    --surface:#fff;--alt:#f5f5f4;--border:#e7e5e4;--border-strong:#d6d3d1;
     --ink:#1c1917;--text-2:#44403c;--text-3:#57534e;
     --accent:#c2410c;--accent-bright:#ea580c;--accent-pink:#db2777;--accent-dim:#fff1e8;
     --grad:linear-gradient(120deg,#ea580c,#db2777);
     --grad-cta:linear-gradient(120deg,#c2410c,#be185d);
     --grad-cta-hover:linear-gradient(120deg,#9a3412,#9d174d);
-    --gold:#b45309;--gold-dim:#fef3c7;
+    --gold:#b45309;--gold-dim:#fef3c7;--gold-border:#fde68a;
     --green:#15803d;--green-dim:#dcfce7;
     --cyan:#06b6d4;--cyan-dim:#cffafe;
     --blue:#2563eb;--blue-dim:#dbeafe;
@@ -29,26 +31,31 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;line-height:1.5;overflow-x:hidden;width:100%;-webkit-font-smoothing:antialiased}
+body{font-family:'Inter',sans-serif;background:#0a0a14;color:var(--ink);min-height:100vh;line-height:1.5;overflow-x:hidden;width:100%;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
+.page{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh}
+
+/* PAGE BACKGROUND — pic2.png wallpaper */
+.page-bg{position:fixed;inset:0;z-index:-2;background-image:url('/pic2.png');background-size:cover;background-position:center;background-repeat:no-repeat;background-color:#0a0a14}
+.page-bg-overlay{position:fixed;inset:0;z-index:-1;background:rgba(10,10,20,0.45);pointer-events:none}
 
 /* TOPBAR */
-.topbar{background:var(--ink);color:#f5f5f4;font-size:.82rem;padding:9px 0}
-.topbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap;text-align:center}
+.topbar{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);color:#f5f5f4;font-size:.82rem;padding:9px 0;position:relative;z-index:5}
+.topbar-inner{max-width:1280px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap;text-align:center}
 .topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:#a8a29e;white-space:nowrap}
 .topbar-inner span i{color:var(--accent-bright);font-size:.78rem}
 .topbar-inner a.whatsapp-link{display:inline-flex;align-items:center;gap:6px;color:#25D366;font-weight:600;transition:all .2s}
 .topbar-inner a.whatsapp-link:hover{color:#128C7E;transform:scale(1.05)}
 
 /* NAV */
-.mainnav{background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;width:100%}
-.mainnav-inner{max-width:100%;margin:0 auto;padding:14px 30px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.mainnav{background:rgba(255,255,255,.85);backdrop-filter:blur(18px);border-bottom:1px solid rgba(231,229,228,.7);position:sticky;top:0;z-index:100;width:100%}
+.mainnav-inner{max-width:100%;margin:0 auto;padding:14px 30px;display:flex;justify-content:space-between;align-items:center;gap:16px}
 .logo{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
 .logo-full-img{height:56px;width:auto;display:block;max-width:260px;object-fit:contain}
 .menu{display:flex;align-items:center;gap:0;flex-wrap:nowrap;justify-content:center;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
 .menu::-webkit-scrollbar{display:none}
-.menu a{padding:6px 8px;font-size:.75rem;font-weight:600;color:var(--text-2);border-radius:6px;white-space:nowrap;transition:all .25s ease}
+.menu a{padding:6px 9px;font-size:.76rem;font-weight:600;color:var(--text-2);border-radius:6px;white-space:nowrap;transition:all .25s ease}
 .menu a:hover{color:var(--ink);background:var(--alt)}
 .menu a.active{color:var(--accent);background:var(--accent-dim);font-weight:700}
 .menu a.course-link{color:var(--accent)}
@@ -61,7 +68,6 @@ img{max-width:100%;display:block}
 .btn-nav-login:hover{background:var(--alt);color:var(--accent);border-color:var(--accent);transform:translateY(-1px)}
 .btn-nav-join{background:var(--grad-cta);color:#fff;padding:10px 18px;border-radius:999px;font-weight:800;font-size:.8rem;display:inline-flex;align-items:center;gap:6px;box-shadow:var(--shadow-cta);transition:all .25s ease;white-space:nowrap;text-decoration:none}
 .btn-nav-join:hover{background:var(--grad-cta-hover);transform:translateY(-2px)}
-
 .streak-pill{display:inline-flex;align-items:center;gap:6px;background:#fff7ed;color:#ea580c;border:1.5px solid #fed7aa;padding:8px 14px;border-radius:999px;font-weight:800;font-size:.78rem;text-decoration:none;transition:all .25s ease}
 .streak-pill:hover{background:#ffedd5;transform:translateY(-1px)}
 .user-profile-pill{display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 5px;background:var(--alt);border:1.5px solid var(--border);border-radius:999px;text-decoration:none;transition:all .25s ease;max-width:180px}
@@ -70,39 +76,41 @@ img{max-width:100%;display:block}
 .user-avatar-fallback{width:32px;height:32px;border-radius:50%;background:var(--grad-cta);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0;border:2px solid #fff}
 .user-name{font-weight:800;font-size:.82rem;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100px}
 
-/* PROFILE HERO */
-.hero{padding:48px 20px 32px}
-.hero-inner{max-width:1000px;margin:0 auto}
-.hero-card{background:linear-gradient(135deg,#1c1917 0%,#3f1d0d 100%);border-radius:var(--radius-xl);padding:40px 36px;position:relative;overflow:hidden;box-shadow:var(--shadow-lg);color:#fff}
-.hero-card::before{content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(219,39,119,.18),transparent 60%);pointer-events:none}
-.hero-content{position:relative;z-index:1;display:grid;grid-template-columns:auto 1fr auto;gap:28px;align-items:center}
-.avatar{width:110px;height:110px;border-radius:50%;background:var(--grad-cta);display:flex;align-items:center;justify-content:center;font-size:2.6rem;font-weight:900;flex-shrink:0;border:4px solid rgba(255,255,255,.2);box-shadow:0 12px 32px rgba(219,39,119,.4);overflow:hidden}
+/* MAIN */
+.wrap{flex:1;max-width:1100px;margin:0 auto;padding:40px 20px 60px;width:100%;position:relative;z-index:2}
+
+/* HERO — pic.png inside the card */
+.hero{margin-bottom:26px;position:relative;border-radius:var(--radius-xl);overflow:hidden;min-height:300px;display:flex;align-items:center;box-shadow:0 24px 60px -20px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.18);background:#1c1917}
+.hero-bg{position:absolute;inset:0;background-image:url('/pic.png');background-size:cover;background-position:center 30%;background-repeat:no-repeat;z-index:0}
+.hero::before{content:'';position:absolute;inset:0;background:rgba(15,15,25,.55);z-index:1;backdrop-filter:blur(2px)}
+.hero-content{position:relative;z-index:2;display:grid;grid-template-columns:auto 1fr auto;gap:26px;align-items:center;padding:34px 36px;width:100%;color:#fff}
+.avatar{width:110px;height:110px;border-radius:50%;background:var(--grad-cta);display:flex;align-items:center;justify-content:center;font-size:2.6rem;font-weight:900;flex-shrink:0;border:4px solid rgba(255,255,255,.35);box-shadow:0 12px 32px rgba(0,0,0,.5);overflow:hidden}
 .avatar img{width:100%;height:100%;object-fit:cover}
-.hero-info h1{font-size:clamp(1.5rem,3vw,2rem);font-weight:900;letter-spacing:-.03em;margin-bottom:6px;line-height:1.2}
-.hero-info .username{color:#fdba8c;font-weight:700;font-size:.95rem;font-family:'JetBrains Mono',monospace;margin-bottom:10px}
-.hero-info .bio{color:#d6d3d1;font-size:.9rem;line-height:1.6;margin-bottom:14px;max-width:520px}
-.hero-info .univ{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);padding:6px 14px;border-radius:50px;font-size:.78rem;font-weight:700;color:#e7e5e4;border:1px solid rgba(255,255,255,.15)}
+.hero-info h1{font-size:clamp(1.5rem,3vw,2rem);font-weight:900;letter-spacing:-.03em;margin-bottom:6px;line-height:1.2;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.9)}
+.hero-info .username{color:#fdba8c;font-weight:700;font-size:.95rem;font-family:'JetBrains Mono',monospace;margin-bottom:10px;text-shadow:0 1px 6px rgba(0,0,0,.7)}
+.hero-info .bio{color:#f5f5f4;font-size:.9rem;line-height:1.6;margin-bottom:14px;max-width:520px;text-shadow:0 1px 6px rgba(0,0,0,.8)}
+.hero-info .univ{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.16);backdrop-filter:blur(10px);padding:6px 14px;border-radius:50px;font-size:.78rem;font-weight:700;color:#fff;border:1px solid rgba(255,255,255,.3);text-shadow:0 1px 4px rgba(0,0,0,.6)}
 .hero-info .univ i{color:#fdba8c}
 .hero-actions{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
 
 .btn-hero{background:var(--grad-cta);color:#fff;padding:12px 22px;border-radius:999px;font-weight:800;font-size:.85rem;display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:var(--shadow-cta);transition:all .25s ease;border:none;cursor:pointer;font-family:inherit;white-space:nowrap}
 .btn-hero:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
-.btn-hero.outline{background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.3);box-shadow:none}
-.btn-hero.outline:hover{background:rgba(255,255,255,.2);border-color:#fff}
-.btn-hero.following{background:rgba(255,255,255,.1);color:#e7e5e4;border:1.5px solid rgba(255,255,255,.25);box-shadow:none}
-.btn-hero.following:hover{background:rgba(220,38,38,.2);color:#fca5a5;border-color:rgba(220,38,38,.5)}
+.btn-hero.outline{background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#fff;border:1.5px solid rgba(255,255,255,.35);box-shadow:none}
+.btn-hero.outline:hover{background:rgba(255,255,255,.25);border-color:#fff}
+.btn-hero.following{background:rgba(255,255,255,.14);backdrop-filter:blur(10px);color:#e7e5e4;border:1.5px solid rgba(255,255,255,.3);box-shadow:none}
+.btn-hero.following:hover{background:rgba(220,38,38,.25);color:#fca5a5;border-color:rgba(220,38,38,.6)}
 
 /* STATS */
-.stats-grid{max-width:1000px;margin:0 auto 30px;padding:0 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 18px;text-align:center;transition:all .25s ease;box-shadow:var(--shadow-sm)}
-.stat-card:hover{transform:translateY(-3px);border-color:#fed7c3;box-shadow:var(--shadow-md)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
+.stat-card{background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.6);border-radius:var(--radius-lg);padding:20px 18px;text-align:center;transition:all .25s ease;box-shadow:0 12px 30px -14px rgba(0,0,0,.45)}
+.stat-card:hover{transform:translateY(-3px);border-color:#fed7c3;box-shadow:0 20px 44px -16px rgba(0,0,0,.55)}
 .stat-icon{font-size:1.6rem;display:block;margin-bottom:6px}
 .stat-num{font-size:1.6rem;font-weight:900;letter-spacing:-.03em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1;font-family:'JetBrains Mono',monospace}
 .stat-label{color:var(--text-3);font-size:.72rem;margin-top:4px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
 
 /* SECTION */
-.section{max-width:1000px;margin:0 auto 30px;padding:0 20px}
-.section-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;box-shadow:var(--shadow-sm)}
+.section{margin-bottom:26px}
+.section-card{background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.6);border-radius:var(--radius-xl);padding:28px;box-shadow:0 12px 30px -14px rgba(0,0,0,.45)}
 .section-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
 .section-head h2{font-size:1.15rem;font-weight:900;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
 .section-head h2 i{color:var(--accent)}
@@ -141,13 +149,12 @@ img{max-width:100%;display:block}
 .empty-state p{font-size:.88rem;color:var(--text-2)}
 
 /* FOOTER */
-footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;margin-top:60px}
-.footer-inner{max-width:1200px;margin:0 auto}
-.footer-bottom{border-top:1px solid #292524;padding-top:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-.footer-bottom p{color:#78716c;font-size:.83rem}
+footer{background:rgba(28,25,23,.85);backdrop-filter:blur(10px);padding:24px 20px;border-top:1px solid rgba(255,255,255,.08);position:relative;z-index:1;margin-top:auto}
+.footer-inner{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.footer-inner p{color:#a8a29e;font-size:.8rem}
 .footer-socials{display:flex;gap:8px}
-.footer-socials a{width:38px;height:38px;border:1px solid #292524;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#a8a29e;font-size:.9rem;transition:all .25s ease;background:#1c1917}
-.footer-socials a:hover{background:var(--grad-cta);color:#fff;border-color:transparent;transform:translateY(-2px)}
+.footer-socials a{width:38px;height:38px;border:1px solid rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#d6d3d1;font-size:.9rem;transition:all .25s ease;background:rgba(255,255,255,.08);backdrop-filter:blur(6px)}
+.footer-socials a:hover{background:var(--accent);color:#fff;border-color:transparent;transform:translateY(-2px)}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120%);background:var(--ink);color:#fff;padding:14px 22px;border-radius:14px;font-weight:700;font-size:.88rem;box-shadow:var(--shadow-lg);z-index:2000;display:flex;align-items:center;gap:10px;transition:transform .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none;max-width:90vw}
@@ -155,19 +162,17 @@ footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;margin-top:60p
 .toast i{color:#fdba8c}
 
 /* RESPONSIVE */
-@media (max-width:900px){
-    .stats-grid{grid-template-columns:repeat(3,1fr)}
-}
+@media (max-width:900px){.stats-grid{grid-template-columns:repeat(3,1fr)}}
 @media (max-width:720px){
     .mainnav-inner{flex-wrap:wrap;padding:12px 16px;gap:12px}
     .logo-full-img{height:46px}
     .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0;margin:0 -16px;padding-left:16px;padding-right:16px}
     .menu::-webkit-scrollbar{display:none}
-    .menu a{padding:6px 10px;font-size:.75rem;flex-shrink:0}
+    .menu a{padding:8px 12px;font-size:.78rem;flex-shrink:0}
     .user-name{display:none}
     .user-profile-pill{padding:5px}
-    .hero-card{padding:28px 22px}
-    .hero-content{grid-template-columns:1fr;text-align:center;gap:20px}
+    .wrap{padding:28px 14px 50px}
+    .hero-content{grid-template-columns:1fr;text-align:center;gap:20px;padding:28px 22px}
     .avatar{margin:0 auto}
     .hero-actions{align-items:stretch;width:100%}
     .btn-hero{justify-content:center;width:100%}
@@ -179,15 +184,20 @@ footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;margin-top:60p
     .topbar-inner span:nth-child(3){display:none}
     .stat-num{font-size:1.3rem}
     .avatar{width:88px;height:88px;font-size:2rem}
-    .btn-nav-join span,.btn-nav-login span{display:none}
-    .footer-bottom{flex-direction:column;text-align:center}
+    .footer-inner{flex-direction:column;text-align:center}
 }
 @media (prefers-reduced-motion:reduce){
     *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
 }
 </style>
 </head>
-<body class="{% if is_authenticated %}logged-in{% endif %}">
+<body>
+
+<!-- ═══ PAGE BACKGROUND (pic2.png) ═══ -->
+<div class="page-bg"></div>
+<div class="page-bg-overlay"></div>
+
+<div class="page">
 
 <!-- TOPBAR -->
 <div class="topbar">
@@ -233,63 +243,62 @@ footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;margin-top:60p
                 </a>
             {% else %}
                 <a href="/login/?next={{ request.path }}" class="btn-nav-login">
-                    <i class="fas fa-sign-in-alt"></i> <span>Log In</span>
+                    <i class="fas fa-sign-in-alt"></i> Log In
                 </a>
                 <a href="/signup/" class="btn-nav-join">
-                    <i class="fas fa-sparkles"></i> <span>Join Free</span>
+                    <i class="fas fa-sparkles"></i> Join Free
                 </a>
             {% endif %}
         </div>
     </div>
 </nav>
 
-<!-- PROFILE HERO -->
+<div class="wrap">
+
+<!-- HERO — pic.png inside the card -->
 <section class="hero">
-    <div class="hero-inner">
-        <div class="hero-card">
-            <div class="hero-content">
-                <div class="avatar">
-                    {% if profile.avatar_url %}
-                        <img src="{{ profile.avatar_url }}" alt="{{ profile.full_name }}">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+        <div class="avatar">
+            {% if profile.avatar_url %}
+                <img src="{{ profile.avatar_url }}" alt="{{ profile.full_name }}">
+            {% else %}
+                {{ profile.full_name|default:profile.username|slice:":1"|upper }}
+            {% endif %}
+        </div>
+        <div class="hero-info">
+            <h1>{{ profile.full_name|default:profile.username|default:"Anonymous" }}</h1>
+            {% if profile.username %}
+                <div class="username">@{{ profile.username }}</div>
+            {% endif %}
+            {% if profile.bio %}
+                <p class="bio">{{ profile.bio }}</p>
+            {% endif %}
+            <div class="univ"><i class="fas fa-university"></i> {{ profile.university|default:"Not specified" }}</div>
+        </div>
+        <div class="hero-actions">
+            {% if is_me %}
+                <a href="/dashboard/" class="btn-hero outline"><i class="fas fa-cog"></i> Dashboard</a>
+            {% elif is_authenticated %}
+                <button class="btn-hero {% if is_following %}following{% endif %}"
+                        id="followBtn"
+                        data-user-id="{{ profile.id }}">
+                    {% if is_following %}
+                        <i class="fas fa-check"></i> <span id="followText">Following</span>
                     {% else %}
-                        {{ profile.full_name|default:profile.username|slice:":1"|upper }}
+                        <i class="fas fa-plus"></i> <span id="followText">Follow</span>
                     {% endif %}
-                </div>
-                <div class="hero-info">
-                    <h1>{{ profile.full_name|default:profile.username|default:"Anonymous" }}</h1>
-                    {% if profile.username %}
-                        <div class="username">@{{ profile.username }}</div>
-                    {% endif %}
-                    {% if profile.bio %}
-                        <p class="bio">{{ profile.bio }}</p>
-                    {% endif %}
-                    <div class="univ"><i class="fas fa-university"></i> {{ profile.university|default:"Not specified" }}</div>
-                </div>
-                <div class="hero-actions">
-                    {% if is_me %}
-                        <a href="/dashboard/" class="btn-hero outline"><i class="fas fa-cog"></i> Dashboard</a>
-                    {% elif is_authenticated %}
-                        <button class="btn-hero {% if is_following %}following{% endif %}"
-                                id="followBtn"
-                                data-user-id="{{ profile.id }}">
-                            {% if is_following %}
-                                <i class="fas fa-check"></i> <span id="followText">Following</span>
-                            {% else %}
-                                <i class="fas fa-plus"></i> <span id="followText">Follow</span>
-                            {% endif %}
-                        </button>
-                        {% if is_friend %}
-                            <div style="color:#fdba8c;font-size:.8rem;font-weight:700;text-align:center;">
-                                <i class="fas fa-user-friends"></i> Friends
-                            </div>
-                        {% endif %}
-                    {% else %}
-                        <a href="/login/?next={{ request.path }}" class="btn-hero">
-                            <i class="fas fa-plus"></i> <span>Follow</span>
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
+                </button>
+                {% if is_friend %}
+                    <div style="color:#fdba8c;font-size:.8rem;font-weight:700;text-align:center;text-shadow:0 1px 6px rgba(0,0,0,.7)">
+                        <i class="fas fa-user-friends"></i> Friends
+                    </div>
+                {% endif %}
+            {% else %}
+                <a href="/login/?next={{ request.path }}" class="btn-hero">
+                    <i class="fas fa-plus"></i> Follow
+                </a>
+            {% endif %}
         </div>
     </div>
 </section>
@@ -404,19 +413,21 @@ footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;margin-top:60p
 </section>
 {% endif %}
 
+</div><!-- /.wrap -->
+
 <!-- FOOTER -->
 <footer>
     <div class="footer-inner">
-        <div class="footer-bottom">
-            <p>© 2026 Student Hub · Profile</p>
-            <div class="footer-socials">
-                <a href="https://www.instagram.com/twarvis_" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
-                <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
-                <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
-            </div>
+        <p>© 2026 Student Hub · Profile</p>
+        <div class="footer-socials">
+            <a href="https://www.instagram.com/twarvis_" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+            <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
         </div>
     </div>
 </footer>
+
+</div><!-- /.page -->
 
 <!-- TOAST -->
 <div class="toast" id="toast">
@@ -449,12 +460,8 @@ footer{background:var(--ink);padding:50px 20px 24px;color:#a8a29e;margin-top:60p
 
     if (followBtn) {
         followBtn.addEventListener('click', async function() {
-            // CRITICAL: UUID-safe — cast to String() before using
             const userId = String(followBtn.dataset.userId || '').trim();
-            if (!userId) {
-                showToast('Invalid user', 'error');
-                return;
-            }
+            if (!userId) { showToast('Invalid user', 'error'); return; }
 
             followBtn.disabled = true;
             const originalHTML = followBtn.innerHTML;
