@@ -1,4 +1,5 @@
-# app.py - FINAL VERSION with R2 + Supabase Auth + Gamification + Community + Leaderboard + Notifications + Quiz Engine
+# app.py — Student Hub · Full build
+# R2 + Supabase Auth + Gamification + Community + Leaderboard + Notifications + Quiz Engine
 import os
 import uuid
 import json
@@ -11,7 +12,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django import forms
 from django.urls import path
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.utils.deprecation import MiddlewareMixin
 from supabase import create_client, Client
 import boto3
@@ -47,10 +48,7 @@ def env(key, default=""):
 SECRET_KEY = env("SECRET_KEY", "django-insecure-twarvis-school-key-2024")
 DEBUG = env("DEBUG", "False").lower() == "true"
 
-SUPABASE_URL = env(
-    "SUPABASE_URL",
-    "https://hnszltswipxiqurkwydm.supabase.co"
-)
+SUPABASE_URL = env("SUPABASE_URL", "https://hnszltswipxiqurkwydm.supabase.co")
 SUPABASE_KEY = env(
     "SUPABASE_KEY",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhuc3psdHN3aXB4aXF1cmt3eWRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTEyODcsImV4cCI6MjA5MzEyNzI4N30.JsSgMXE9JMqJAAZd-riwrr-D-5MURL6WCfuNTrAtoWU"
@@ -75,7 +73,7 @@ CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf.split(",") if o.strip()]
 # SANITY CHECK
 # ============================================================
 print("=" * 60)
-print("🚀 TWARVIS SCHOOL — Final Build (R2 + Auth + Gamification + Community + Leaderboard + Notifications + Quiz Engine)")
+print("🚀 STUDENT HUB — Full Build")
 print("=" * 60)
 print(f"📡 Supabase URL:  {SUPABASE_URL[:50]}")
 print(f"🔑 Supabase Key:  {'✅ VALID JWT' if SUPABASE_KEY.startswith('eyJ') else '❌ INVALID'}")
@@ -91,7 +89,7 @@ if not SUPABASE_KEY.startswith("eyJ"):
     print("❌ FATAL: SUPABASE_KEY is invalid!")
     raise SystemExit(1)
 
-print("✅ Supabase key format is valid (starts with 'eyJ')")
+print("✅ Supabase key format is valid")
 
 # ============================================================
 # DJANGO SETTINGS
@@ -130,9 +128,9 @@ if not settings.configured:
         TIME_ZONE="Africa/Dar_es_Salaam",
         SESSION_COOKIE_SAMESITE="Lax",
         SESSION_COOKIE_HTTPONLY=True,
+        CSRF_COOKIE_SAMESITE="Lax",
+        CSRF_COOKIE_HTTPONLY=False,  # JS needs to read it for X-CSRFToken header
     )
-
-from django import forms
 
 # ============================================================
 # SUPABASE CLIENT
@@ -391,6 +389,8 @@ def get_current_user(request):
 
 
 def build_view_context(request):
+    """Build the template context. Includes BOTH `profile` and `current_student`
+    (aliases) so legacy templates using either name work."""
     me = get_current_user(request)
     if not me or not me.get("profile"):
         return {
@@ -436,7 +436,7 @@ def build_view_context(request):
     return {
         "is_authenticated": True,
         "current_student": current_student,
-        "profile": current_student,
+        "profile": current_student,   # alias
     }
 
 
@@ -1037,6 +1037,7 @@ def dashboard_view(request):
     return render(request, "dashboard.html", ctx)
 
 
+@ensure_csrf_cookie
 def profile_view(request, username):
     try:
         row = supabase.table("users").select("*").eq("username", username).execute()
@@ -1103,20 +1104,17 @@ def profile_view(request, username):
 
 
 def leaderboard_view(request):
-    """
-    Leaderboard with all stats: rank, points, likes_received,
-    uploads_count, current_streak, followers_count.
-    """
+    """Leaderboard with rank, points, likes, uploads, streak, followers."""
     leaders = []
     try:
         rows = supabase.table("leaderboard").select("*").limit(100).execute()
         leaders = rows.data or []
 
-        # ── Assign rank (1-based) ──
+        # Assign rank
         for i, l in enumerate(leaders, start=1):
             l["rank"] = i
 
-        # ── Fill followers_count if the view doesn't include it ──
+        # followers_count fallback
         if leaders and ("followers_count" not in leaders[0] or leaders[0].get("followers_count") is None):
             try:
                 followers_resp = supabase.table("follows").select("following_id").execute()
@@ -1139,7 +1137,7 @@ def leaderboard_view(request):
             l.setdefault("points", 0)
 
     except Exception as e:
-        print(f"[leaderboard] {e}")
+        print(f"[leaderboard] view failed, using fallback: {e}")
         try:
             rows = supabase.table("users").select(
                 "id, username, full_name, avatar_url, university, points, current_streak, longest_streak, uploads_count, likes_received"
@@ -1221,7 +1219,7 @@ def upload_view(request):
                 ext = os.path.splitext(file.name)[1].lower()
 
                 if ext not in ALLOWED_EXTENSIONS:
-                    error = f"File type not allowed."
+                    error = "File type not allowed."
                 else:
                     file_type = form.cleaned_data.get("file_type", "notes")
                     module = form.cleaned_data.get("module", "")
@@ -1274,7 +1272,7 @@ def upload_view(request):
                         if uploader_id:
                             insert_payload["uploader_id"] = uploader_id
                             insert_payload["uploader"] = current_user["email"]
-                            print(f"[upload] 🔗 Note will be linked to {current_user['email']} ({uploader_id})")
+                            print(f"[upload] 🔗 Note linked to {current_user['email']} ({uploader_id})")
                         else:
                             print(f"[upload] ⚠️ No logged-in user — note will have no owner")
 
@@ -1703,12 +1701,10 @@ def api_like_note(request, note_id):
     if not user:
         return JsonResponse({"error": "login_required", "login_required": True}, status=401)
 
-    # UUID-safe: cast everything to string upfront
     my_id = str(user["id"])
     note_id_str = str(note_id)
 
     try:
-        # ── 1. Fetch note to find owner ────────────────────
         owner_id = None
         try:
             note_resp = supabase.table("notes").select("uploader_id, uploader, filename") \
@@ -1717,7 +1713,6 @@ def api_like_note(request, note_id):
                 note = note_resp.data[0]
                 owner_id = note.get("uploader_id")
 
-                # Fallback: if uploader_id NULL, try email → user lookup
                 if not owner_id:
                     uploader_email = note.get("uploader")
                     if uploader_email and "@" in uploader_email:
@@ -1738,17 +1733,14 @@ def api_like_note(request, note_id):
 
                 if owner_id:
                     owner_id = str(owner_id)
-
                 print(f"[like] Note {note_id_str} owner_id={owner_id}")
         except Exception as e:
             print(f"[like] note fetch failed: {e}")
 
-        # ── 2. Toggle ─────────────────────────────────────
         existing = supabase.table("note_likes").select("id") \
             .eq("user_id", my_id).eq("note_id", note_id_str).execute()
 
         if existing.data:
-            # ── UNLIKE ────────────────────────────────────
             supabase.table("note_likes").delete() \
                 .eq("user_id", my_id).eq("note_id", note_id_str).execute()
             liked = False
@@ -1762,19 +1754,15 @@ def api_like_note(request, note_id):
                         supabase.table("users").update({
                             "likes_received": new_val
                         }).eq("id", owner_id).execute()
-                        print(f"[like] ↓ Owner {owner_id} likes_received: {cur} → {new_val}")
                 except Exception as e:
                     print(f"[like] decrement failed: {e}")
-
         else:
-            # ── LIKE ──────────────────────────────────────
             supabase.table("note_likes").insert({
                 "user_id": my_id,
                 "note_id": note_id_str,
             }).execute()
             liked = True
 
-            # Owner gets +1 point AND +1 likes_received
             if owner_id and owner_id != my_id:
                 try:
                     o = supabase.table("users").select("likes_received, points").eq("id", owner_id).execute()
@@ -1798,20 +1786,11 @@ def api_like_note(request, note_id):
                             }).execute()
                         except Exception as ae:
                             print(f"[like] activity log failed: {ae}")
-
-                        print(f"[like] ⭐ Owner {owner_id} | likes_received: {cur_likes} → {new_likes} | points: {cur_points} → {new_points}")
-                    else:
-                        print(f"[like] ⚠️ Owner {owner_id} not found in users table")
                 except Exception as e:
                     print(f"[like] owner credit failed: {e}")
-            elif owner_id and owner_id == my_id:
-                print(f"[like] Self-like detected — skipping owner credit")
 
-            # Liker gets +1 point
             award_points(my_id, "like_given", 1, note_id_str)
-            print(f"[like] ✓ Liker {my_id} credited +1 point (like_given)")
 
-        # ── 3. Recount ────────────────────────────────────
         try:
             count_resp = supabase.table("note_likes").select("*", count="exact") \
                 .eq("note_id", note_id_str).execute()
@@ -1853,7 +1832,6 @@ def api_follow_user(request, user_id):
             .eq("follower_id", my_id).eq("following_id", target_user_id).execute()
 
         if existing.data:
-            # ── UNFOLLOW ──
             supabase.table("follows").delete() \
                 .eq("follower_id", my_id).eq("following_id", target_user_id).execute()
             following = False
@@ -1867,9 +1845,7 @@ def api_follow_user(request, user_id):
                     .execute()
             except Exception:
                 pass
-
         else:
-            # ── FOLLOW ──
             supabase.table("follows").insert({
                 "follower_id": my_id,
                 "following_id": target_user_id,
@@ -1882,7 +1858,7 @@ def api_follow_user(request, user_id):
             except Exception as ae:
                 print(f"[follow] award_points failed: {ae}")
 
-            # 🔔 CREATE NOTIFICATION
+            # Notification
             try:
                 follower_name = me.get("profile", {}).get("full_name") or \
                                 me.get("profile", {}).get("username") or \
@@ -1913,7 +1889,77 @@ def api_follow_user(request, user_id):
 
 
 # ============================================================
-# DAILY QUIZ API — uses quiz_engine
+# UPDATE PROFILE (username / full_name) — NEW ✨
+# ============================================================
+@csrf_exempt
+def api_update_profile(request):
+    """Update the logged-in user's username and/or full_name."""
+    me = get_current_user(request)
+    if not me:
+        return JsonResponse({"error": "login_required", "message": "Please log in first."}, status=401)
+
+    if request.method != "POST":
+        return JsonResponse({"error": "method_not_allowed", "message": "Use POST."}, status=405)
+
+    try:
+        body = json.loads(request.body or "{}")
+    except Exception:
+        return JsonResponse({"error": "invalid_json", "message": "Malformed request body."}, status=400)
+
+    my_id = str(me["id"])
+    updates = {}
+
+    # Username
+    new_username = (body.get("username") or "").strip().lower()
+    if new_username:
+        if not re.match(r"^[a-z0-9_]{3,20}$", new_username):
+            return JsonResponse({
+                "error": "invalid_username",
+                "message": "Username must be 3–20 chars: lowercase letters, numbers, underscore only."
+            }, status=400)
+
+        try:
+            exists = supabase.table("users").select("id").eq("username", new_username).execute()
+            if exists.data and str(exists.data[0]["id"]) != my_id:
+                return JsonResponse({
+                    "error": "username_taken",
+                    "message": f"@{new_username} is already taken. Try another."
+                }, status=400)
+        except Exception as e:
+            print(f"[api_update_profile] uniqueness check failed: {e}")
+
+        updates["username"] = new_username
+
+    # Full name
+    new_full_name = (body.get("full_name") or "").strip()
+    if new_full_name:
+        if len(new_full_name) > 80:
+            return JsonResponse({
+                "error": "invalid_full_name",
+                "message": "Display name must be 80 characters or fewer."
+            }, status=400)
+        updates["full_name"] = new_full_name
+
+    if not updates:
+        return JsonResponse({
+            "error": "nothing_to_update",
+            "message": "No changes were provided."
+        }, status=400)
+
+    try:
+        supabase.table("users").update(updates).eq("id", my_id).execute()
+        print(f"[api_update_profile] ✅ Updated {my_id}: {updates}")
+        return JsonResponse({"success": True, "updated": updates})
+    except Exception as e:
+        print(f"[api_update_profile] update failed: {e}")
+        return JsonResponse({
+            "error": "update_failed",
+            "message": f"Database error: {str(e)}"
+        }, status=500)
+
+
+# ============================================================
+# DAILY QUIZ API
 # ============================================================
 @csrf_exempt
 def api_daily_quiz(request):
@@ -2184,6 +2230,7 @@ urlpatterns = [
     path("api/quiz/daily/", api_daily_quiz, name="api_daily_quiz"),
     path("api/like/<int:note_id>/", api_like_note, name="api_like_note"),
     path("api/follow/<str:user_id>/", api_follow_user, name="api_follow_user"),
+    path("api/profile/update/", api_update_profile, name="api_update_profile"),  # ✨ NEW
 
     # NOTIFICATIONS + FOLLOW LISTS
     path("api/notifications/", api_notifications, name="api_notifications"),
