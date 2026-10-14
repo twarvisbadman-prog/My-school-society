@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Users · Admin | Student Hub</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{
+    --accent:#c2410c;--accent-bright:#ea580c;--accent-pink:#db2777;
+    --grad-cta:linear-gradient(120deg,#c2410c,#be185d);
+    --gold:#fbbf24;--green:#22c55e;--danger:#dc2626;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Inter',sans-serif;background:#0a0a14;color:#f5f5f4;padding:24px;min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+
+.wrap{max-width:1320px;margin:0 auto}
+
+/* HEADER */
+.header{margin-bottom:22px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.header h1{font-size:1.5rem;font-weight:900;display:flex;align-items:center;gap:12px;letter-spacing:-.02em}
+.header h1 .ico{width:44px;height:44px;border-radius:12px;background:var(--grad-cta);display:inline-flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:0 8px 22px -8px rgba(219,39,119,.6)}
+.header .meta{color:#a8a29e;font-size:.82rem;font-weight:600}
+
+/* TABS */
+.tabs{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+.tabs a{padding:10px 20px;border-radius:999px;font-weight:800;font-size:.82rem;background:rgba(255,255,255,.06);color:#d6d3d1;text-decoration:none;border:1px solid rgba(255,255,255,.12);transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.tabs a i{font-size:.85rem}
+.tabs a:hover{background:rgba(255,255,255,.12);color:#fff}
+.tabs a.active{background:var(--grad-cta);color:#fff;border-color:transparent;box-shadow:0 8px 22px -8px rgba(219,39,119,.5)}
+
+/* STATS STRIP */
+.stats-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.stat-mini{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px}
+.stat-mini .lbl{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#a8a29e;margin-bottom:4px}
+.stat-mini .val{font-size:1.4rem;font-weight:900;font-family:'JetBrains Mono',monospace;background:linear-gradient(120deg,#fb923c,#db2777);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* TABLE */
+.table-wrap{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:20px;overflow:hidden;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:900px}
+th,td{padding:14px 16px;text-align:left;font-size:.82rem;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:middle}
+th{background:rgba(255,255,255,.06);font-weight:800;text-transform:uppercase;font-size:.66rem;letter-spacing:.08em;color:#d6d3d1;white-space:nowrap}
+tbody tr{transition:background .2s}
+tbody tr:hover{background:rgba(255,255,255,.04)}
+tbody tr:last-child td{border-bottom:none}
+td.mono{font-family:'JetBrains Mono',monospace;font-weight:700;color:#fdba8c;white-space:nowrap}
+td.email{font-size:.75rem;color:#d6d3d1;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+td.univ{font-size:.75rem;color:#a8a29e;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* USER CELL */
+.user-cell{display:flex;align-items:center;gap:12px;min-width:0}
+.avatar{width:40px;height:40px;border-radius:50%;flex-shrink:0;overflow:hidden;background:var(--grad-cta);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.9rem;border:2px solid rgba(255,255,255,.25);box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.user-meta{min-width:0}
+.user-name{font-weight:800;font-size:.88rem;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;line-height:1.2}
+.user-handle{font-size:.7rem;font-family:'JetBrains Mono',monospace;color:#fdba8c;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+
+/* BADGES */
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:.68rem;font-weight:800;white-space:nowrap}
+.pill.points{background:rgba(251,191,36,.15);color:#fcd34d;border:1px solid rgba(251,191,36,.35)}
+.pill.likes{background:rgba(220,38,38,.15);color:#fca5a5;border:1px solid rgba(220,38,38,.35)}
+.pill.notes{background:rgba(37,99,235,.15);color:#93c5fd;border:1px solid rgba(37,99,235,.35)}
+.pill.streak{background:rgba(234,88,12,.15);color:#fdba8c;border:1px solid rgba(234,88,12,.35)}
+
+/* DELETE BTN */
+.btn-del{background:rgba(220,38,38,.15);color:#fca5a5;border:1px solid rgba(220,38,38,.4);padding:7px 14px;border-radius:999px;font-weight:800;font-size:.7rem;cursor:pointer;transition:all .2s;font-family:inherit;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.btn-del:hover{background:var(--danger);color:#fff;border-color:transparent;transform:translateY(-1px);box-shadow:0 8px 20px -8px rgba(220,38,38,.7)}
+.btn-del:disabled{opacity:.5;cursor:wait;transform:none}
+
+/* EMPTY */
+.empty{padding:70px 24px;text-align:center;color:#a8a29e}
+.empty i{font-size:3rem;color:rgba(255,255,255,.15);display:block;margin-bottom:14px}
+.empty h3{color:#fff;font-size:1.1rem;font-weight:800;margin-bottom:6px}
+.empty p{font-size:.85rem}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(140%);background:#1c1917;color:#fff;padding:14px 22px;border-radius:14px;font-weight:700;font-size:.88rem;box-shadow:0 24px 60px -20px rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;gap:10px;transition:transform .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none;max-width:90vw;border:1px solid rgba(255,255,255,.1)}
+.toast.show{transform:translateX(-50%) translateY(0);pointer-events:auto}
+.toast.success i{color:#86efac}
+.toast.error i{color:#fca5a5}
+
+@media(max-width:640px){
+    body{padding:14px}
+    .header h1{font-size:1.2rem}
+    .header h1 .ico{width:38px;height:38px;font-size:.95rem}
+    .tabs a{padding:8px 14px;font-size:.75rem}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+    <div class="header">
+        <h1>
+            <span class="ico"><i class="fas fa-users-cog"></i></span>
+            User Management
+        </h1>
+        <div class="meta">
+            <i class="fas fa-shield-halved" style="color:#fbbf24;margin-right:6px"></i>
+            Admin Panel
+        </div>
+    </div>
+
+    <div class="tabs">
+        <a href="/{{ secret_admin_path }}/"><i class="fas fa-gauge-high"></i> Dashboard</a>
+        <a href="/{{ secret_admin_path }}/users/" class="active"><i class="fas fa-users-cog"></i> Users</a>
+        <a href="/{{ secret_admin_path }}/notes/"><i class="fas fa-file-shield"></i> Notes &amp; Owners</a>
+        <a href="/{{ secret_admin_path }}/settings/"><i class="fas fa-cog"></i> Settings</a>
+    </div>
+
+    {% if users %}
+    <div class="stats-strip">
+        <div class="stat-mini">
+            <div class="lbl">Total users</div>
+            <div class="val">{{ users|length }}</div>
+        </div>
+        <div class="stat-mini">
+            <div class="lbl">Total notes</div>
+            <div class="val" id="sum-notes">—</div>
+        </div>
+        <div class="stat-mini">
+            <div class="lbl">Total points</div>
+            <div class="val" id="sum-points">—</div>
+        </div>
+        <div class="stat-mini">
+            <div class="lbl">Total likes</div>
+            <div class="val" id="sum-likes">—</div>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>University</th>
+                    <th>Points</th>
+                    <th>Notes</th>
+                    <th>Likes</th>
+                    <th>Streak</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr id="row-{{ u.id }}"
+                    data-points="{{ u.points|default:0 }}"
+                    data-notes="{{ u.note_count|default:0 }}"
+                    data-likes="{{ u.likes_received|default:0 }}">
+                    <td>
+                        <div class="user-cell">
+                            <div class="avatar">
+                                {% if u.avatar_url %}
+                                    <img src="{{ u.avatar_url }}" alt="">
+                                {% else %}
+                                    {{ u.full_name|default:u.username|default:"?"|slice:":1"|upper }}
+                                {% endif %}
+                            </div>
+                            <div class="user-meta">
+                                <div class="user-name">{{ u.full_name|default:u.username|default:"Anonymous" }}</div>
+                                <div class="user-handle">@{{ u.username|default:"unknown" }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="email">{{ u.email|default:"—" }}</td>
+                    <td class="univ">{{ u.university|default:"—" }}</td>
+                    <td><span class="pill points"><i class="fas fa-star"></i> {{ u.points|default:0 }}</span></td>
+                    <td><span class="pill notes"><i class="fas fa-file-upload"></i> {{ u.note_count|default:0 }}</span></td>
+                    <td><span class="pill likes"><i class="fas fa-heart"></i> {{ u.likes_received|default:0 }}</span></td>
+                    <td><span class="pill streak"><i class="fas fa-fire"></i> {{ u.current_streak|default:0 }}d</span></td>
+                    <td>
+                        <button class="btn-del"
+                                data-uid="{{ u.id }}"
+                                data-username="{{ u.username|default:'unknown' }}"
+                                onclick="deleteUser(this)">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty">
+        <i class="fas fa-users"></i>
+        <h3>No users yet</h3>
+        <p>Once people sign up, they'll appear here.</p>
+    </div>
+    {% endif %}
+
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">Done</span></div>
+
+<script>
+(function(){
+    /* ═══ COMPUTE SUMS ═══ */
+    const rows = document.querySelectorAll('tbody tr[id^="row-"]');
+    let sumPts = 0, sumNotes = 0, sumLikes = 0;
+    rows.forEach(r => {
+        sumPts   += parseInt(r.dataset.points || 0) || 0;
+        sumNotes += parseInt(r.dataset.notes  || 0) || 0;
+        sumLikes += parseInt(r.dataset.likes  || 0) || 0;
+    });
+    const elN = document.getElementById('sum-notes');
+    const elP = document.getElementById('sum-points');
+    const elL = document.getElementById('sum-likes');
+    if (elN) elN.textContent = sumNotes.toLocaleString();
+    if (elP) elP.textContent = sumPts.toLocaleString();
+    if (elL) elL.textContent = sumLikes.toLocaleString();
+
+    /* ═══ TOAST ═══ */
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMsg');
+    let toastTimer;
+    function showToast(msg, type) {
+        toastMsg.textContent = msg;
+        const icon = toast.querySelector('i');
+        icon.className = type === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+        toast.className = 'toast ' + (type || 'success');
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+    }
+
+    function getCsrf() {
+        const m = document.cookie.match(/csrftoken=([^;]+)/);
+        return m ? m[1] : '';
+    }
+
+    /* ═══ DELETE ═══ */
+    window.deleteUser = async function(btn) {
+        const uid = btn.dataset.uid;
+        const username = btn.dataset.username;
+
+        if (!confirm(`⚠️ Delete @${username} and ALL their notes?\n\nThis cannot be undone.`)) return;
+
+        btn.disabled = true;
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting…';
+
+        try {
+            const r = await fetch(`/{{ secret_admin_path }}/users/delete/${encodeURIComponent(uid)}/`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCsrf(),
+                },
+                credentials: 'same-origin',
+            });
+            const data = await r.json();
+
+            if (data.success) {
+                const row = document.getElementById('row-' + uid);
+                if (row) {
+                    row.style.transition = 'opacity .3s, transform .3s';
+                    row.style.opacity = '0';
+                    row.style.transform = 'translateX(-30px)';
+                    setTimeout(() => {
+                        row.remove();
+                        // recompute sums
+                        let p=0,n=0,l=0;
+                        document.querySelectorAll('tbody tr[id^="row-"]').forEach(rr=>{
+                            p += parseInt(rr.dataset.points||0)||0;
+                            n += parseInt(rr.dataset.notes||0)||0;
+                            l += parseInt(rr.dataset.likes||0)||0;
+                        });
+                        if (elP) elP.textContent = p.toLocaleString();
+                        if (elN) elN.textContent = n.toLocaleString();
+                        if (elL) elL.textContent = l.toLocaleString();
+                    }, 320);
+                }
+                showToast(`✅ @${username} deleted`, 'success');
+            } else {
+                showToast('Failed: ' + (data.error || 'unknown error'), 'error');
+                btn.disabled = false;
+                btn.innerHTML = orig;
+            }
+        } catch (err) {
+            console.error('[delete-user]', err);
+            showToast('Network error — check console', 'error');
+            btn.disabled = false;
+            btn.innerHTML = orig;
+        }
+    };
+})();
+</script>
+
+</body>
+</html>
