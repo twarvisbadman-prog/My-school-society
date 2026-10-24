@@ -722,11 +722,25 @@ def serve_root_file(request, filename):
     if not os.path.exists(file_path):
         return HttpResponse("Not found", status=404)
     ext = os.path.splitext(safe_name)[1].lower()
-    content_types = {".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
-                     ".gif": "image/gif", ".svg": "image/svg+xml", ".webp": "image/webp",
-                     ".ico": "image/x-icon", ".css": "text/css", ".js": "application/javascript",
-                     ".json": "application/json", ".txt": "text/plain", ".xml": "application/xml",
-                     ".pdf": "application/pdf", ".woff": "font/woff", ".woff2": "font/woff2"}
+    content_types = {
+        ".png": "image/png", 
+        ".jpg": "image/jpeg", 
+        ".jpeg": "image/jpeg",
+        ".gif": "image/gif", 
+        ".svg": "image/svg+xml", 
+        ".webp": "image/webp",
+        ".ico": "image/x-icon", 
+        ".css": "text/css", 
+        ".js": "application/javascript",
+        ".json": "application/json", 
+        ".txt": "text/plain", 
+        ".xml": "application/xml",
+        ".pdf": "application/pdf", 
+        ".woff": "font/woff", 
+        ".woff2": "font/woff2",
+        # Explicitly add pic5.png to pic9.png if they are requested dynamically
+        ".mp4": "video/mp4"
+    }
     content_type = content_types.get(ext, "application/octet-stream")
     try:
         with open(file_path, "rb") as f:
