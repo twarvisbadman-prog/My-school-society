@@ -3,503 +3,376 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#fafaf9" id="themeColorMeta" />
+  <meta name="theme-color" content="#f8f9fa" id="themeColorMeta" />
   <title>Student Hub | Share Notes, Find Notes</title>
   <link rel="icon" type="image/png" href="/logo.png" />
 
-  <!-- preloads -->
+  <!-- Preloads -->
   <link rel="preload" as="image" href="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&q=60" />
   <link rel="preload" as="image" href="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&q=60" />
-  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1200&q=60" />
-  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=1200&q=60" />
-  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&q=60" />
-  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=60" />
-  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1504148455328-c376907d081c?w=1200&q=60" />
-  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1524578271613-d550eacf6090?w=1200&q=60" />
 
+  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="/static/hub-theme.css">
 
   <style>
     /* ----- THEME VARIABLES ----- */
     :root {
-      --bg: #fafaf9;
+      --bg: #f8f9fa; 
       --surface: #ffffff;
-      --alt: #f5f5f4;
-      --border: #e7e5e4;
-      --border-strong: #d6d3d1;
-      --ink: #1c1917;
-      --text-2: #44403c;
-      --text-3: #57534e;
-      --accent: #c2410c;
-      --accent-bright: #ea580c;
-      --accent-dim: #fff1e8;
-      --grad: linear-gradient(120deg, #ea580c, #db2777);
-      --grad-cta: linear-gradient(120deg, #c2410c, #be185d);
-      --grad-cta-hover: linear-gradient(120deg, #9a3412, #9d174d);
-      --radius-sm: 10px;
-      --radius-md: 14px;
-      --radius-lg: 20px;
-      --radius-xl: 28px;
-      --shadow-sm: 0 1px 2px rgba(28,25,23,.06);
-      --shadow-md: 0 10px 28px -12px rgba(28,25,23,.18);
-      --shadow-lg: 0 28px 64px -20px rgba(28,25,23,.22);
-      --shadow-cta: 0 8px 22px -8px rgba(219,39,119,.5);
+      --ink: #111827;
+      --text-muted: #6b7280;
+      --accent: #2e8b57; 
+      --accent-light: #e8f5e9;
+      --accent-dark: #236b42;
+      --border: rgba(0,0,0,0.05);
       
       /* Sidebar Theme */
-      --sidebar-bg: #ffffff;
-      --sidebar-text: #1c1917;
-      --sidebar-text-muted: #57534e;
-      --sidebar-hover: #f5f5f4;
-      --sidebar-border: #e7e5e4;
-      --sidebar-icon: #c2410c;
-      --nav-bg: rgba(255, 255, 255, 0.95);
+      --sidebar-bg: rgba(255, 255, 255, 0.98);
+      --sidebar-icon-border: rgba(0,0,0,0.08);
+      --sidebar-icon-hover: rgba(0,0,0,0.03);
       
       /* Logo Container */
       --logo-container-bg: transparent;
       --logo-container-shadow: none;
       --logo-container-padding: 0;
+      
+      /* Animations */
+      --smooth-slide: cubic-bezier(0.16, 1, 0.3, 1);
+      --bounce-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
+      
+      /* Shadows */
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --shadow-md: 0 10px 30px rgba(0,0,0,0.06);
+      --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
+      --shadow-cta: 0 4px 12px rgba(46, 139, 87, 0.3);
     }
 
     [data-theme="dark"] {
-      --bg: #120b08;
+      --bg: #120b08; 
       --surface: #1f1613;
-      --alt: #2a1e1a;
-      --border: #3a2b25;
-      --border-strong: #4a3832;
       --ink: #fafaf9;
-      --text-2: #d6d3d1;
-      --text-3: #a8a29e;
-      --accent: #fb923c;
-      --accent-bright: #f97316;
-      --accent-dim: #2c1a0e;
-      --grad: linear-gradient(120deg, #f97316, #f472b6);
-      --grad-cta: linear-gradient(120deg, #ea580c, #db2777);
-      --grad-cta-hover: linear-gradient(120deg, #f97316, #ec4899);
-      --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
-      --shadow-md: 0 10px 28px -12px rgba(0,0,0,.5);
-      --shadow-lg: 0 28px 64px -20px rgba(0,0,0,.75);
-      --shadow-cta: 0 8px 22px -8px rgba(219,39,119,.6);
+      --text-muted: #a8a29e;
+      --accent: #4ade80; 
+      --accent-light: #052e16;
+      --accent-dark: #22c55e;
+      --border: rgba(255,255,255,0.08);
       
       /* Sidebar Theme */
-      --sidebar-bg: #1a110e;
-      --sidebar-text: #f5f5f4;
-      --sidebar-text-muted: #a8a29e;
-      --sidebar-hover: #2a1e1a;
-      --sidebar-border: #2a1e1a;
-      --sidebar-icon: #fb923c;
-      --nav-bg: rgba(18, 11, 8, 0.95);
-
+      --sidebar-bg: rgba(31, 22, 19, 0.98);
+      --sidebar-icon-border: rgba(255,255,255,0.1);
+      --sidebar-icon-hover: rgba(255,255,255,0.05);
+      
       /* Logo Container */
       --logo-container-bg: rgba(255, 255, 255, 0.95);
       --logo-container-shadow: 0 4px 16px rgba(0,0,0,0.4);
       --logo-container-padding: 6px 16px;
+      
+      /* Shadows */
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
+      --shadow-md: 0 10px 30px rgba(0,0,0,0.5);
+      --shadow-lg: 0 20px 40px rgba(0,0,0,0.6);
+      --shadow-cta: 0 4px 12px rgba(74, 222, 128, 0.2);
     }
 
-    /* ----- RESET ----- */
+    /* ----- RESET & BASE ----- */
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { overflow-x: hidden; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; transition: background-color .35s ease; }
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; overflow-x: hidden; width: 100%; -webkit-font-smoothing: antialiased; min-height: 100vh; transition: background-color .35s ease, color .35s ease; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; transition: background-color 0.35s ease; }
+    body { 
+      font-family: 'Inter', sans-serif; 
+      background: var(--bg); 
+      color: var(--ink); 
+      line-height: 1.6; 
+      overflow-x: hidden; 
+      -webkit-font-smoothing: antialiased; 
+      transition: background-color 0.35s ease, color 0.35s ease;
+    }
     a { color: inherit; text-decoration: none; }
     ul { list-style: none; }
-    button { font-family: inherit; }
     img { max-width: 100%; height: auto; display: block; }
 
-    /* ----- THEME TOGGLE & HAMBURGER ----- */
+    /* ----- THEME TOGGLE ----- */
     .theme-toggle {
-      position: fixed; top: 56px; right: 20px; z-index: 1100;
+      position: fixed; top: 76px; right: 20px; z-index: 1100;
       width: 44px; height: 44px; border-radius: 50%;
-      border: 1px solid var(--border); background: var(--surface); color: var(--text-2);
+      border: 1px solid var(--border); background: var(--surface); color: var(--ink);
       cursor: pointer; display: flex; align-items: center; justify-content: center;
-      font-size: 1.05rem; box-shadow: 0 4px 14px -4px rgba(0,0,0,.2);
-      transition: all .3s cubic-bezier(.34,1.56,.64,1);
+      font-size: 1.1rem; box-shadow: var(--shadow-md);
+      transition: all .3s var(--smooth-slide);
     }
-    .theme-toggle:hover { color: var(--accent); border-color: var(--accent-bright); transform: scale(1.1) rotate(12deg); box-shadow: 0 6px 20px -4px rgba(234,88,12,.35); }
+    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); transform: scale(1.1) rotate(12deg); }
+    @media (max-width: 800px) {
+      .theme-toggle { top: 20px; right: 20px; }
+    }
+
+    /* ----- TOPBAR & NAV ----- */
+    .topbar { background: var(--ink); color: var(--surface); font-size: 0.8rem; padding: 10px 0; text-align: center; transition: background-color 0.35s ease; }
+    .topbar a { color: #4ade80; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+    .topbar a:hover { text-decoration: underline; }
     
-    .menu-toggle {
-      display: none; position: fixed; top: 14px; right: 16px; z-index: 1100;
-      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-      width: 44px; height: 44px; align-items: center; justify-content: center;
-      font-size: 1.3rem; color: var(--ink); box-shadow: var(--shadow-md);
-      cursor: pointer; transition: all 0.2s;
+    .mainnav { 
+      background: var(--surface); 
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100; 
+      transition: background-color 0.35s ease, border-color 0.35s ease;
     }
-    .menu-toggle:hover { background: var(--alt); }
+    .mainnav-inner { max-width: 1200px; margin: 0 auto; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+    
+    .logo-full-img { 
+      height: 48px; width: auto; object-fit: contain; 
+      background: var(--logo-container-bg); padding: var(--logo-container-padding);
+      border-radius: 12px; box-shadow: var(--logo-container-shadow);
+      transition: all 0.35s ease;
+    }
+    
+    .nav-right { display: flex; gap: 12px; align-items: center; }
+    
+    /* New Logged-in Nav Styles */
+    .user-nav-group {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .streak-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #fff7ed; color: #ea580c; border: 1.5px solid #fed7aa;
+      padding: 8px 14px; border-radius: 999px; font-weight: 800; font-size: 0.85rem;
+      text-decoration: none; transition: all 0.25s var(--smooth-slide);
+    }
+    [data-theme="dark"] .streak-pill { background: #2c1a0e; color: #fb923c; border-color: #ea580c; }
+    .streak-pill:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(234,88,12,0.4); }
+    
+    .profile-pill {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--bg); border: 1.5px solid var(--border);
+      padding: 6px 16px 6px 6px; border-radius: 999px;
+      font-weight: 700; font-size: 0.9rem; color: var(--ink);
+      transition: all 0.25s var(--smooth-slide);
+    }
+    .profile-pill:hover { border-color: var(--accent); background: var(--surface); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+    .avatar-circle {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.9rem; overflow: hidden;
+    }
+    .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+
+    .btn-nav { padding: 10px 20px; border-radius: 999px; font-weight: 600; font-size: 0.9rem; transition: all 0.3s var(--smooth-slide); }
+    .btn-nav.login { border: 1px solid var(--border); color: var(--ink); }
+    .btn-nav.login:hover { background: var(--bg); }
+    .btn-nav.join { background: var(--accent); color: var(--surface); box-shadow: var(--shadow-cta); }
+    .btn-nav.join:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(46, 139, 87, 0.4); }
+
+    /* Mobile Menu Button */
+    .menu-toggle { 
+      display: none; background: var(--surface); border: 1px solid var(--border); 
+      border-radius: 50%; width: 44px; height: 44px; align-items: center; justify-content: center; 
+      font-size: 1.2rem; color: var(--ink); cursor: pointer; box-shadow: var(--shadow-sm);
+      transition: all 0.3s; position: fixed; top: 20px; left: 20px; z-index: 1100;
+    }
+    .menu-toggle:hover { background: var(--bg); transform: scale(1.05); }
 
     @media (max-width: 800px) {
       .menu-toggle { display: flex; }
-      .theme-toggle { top: 14px; right: 72px; }
+      .nav-right { display: none; } /* Hide desktop nav on mobile */
+      .mainnav-inner { justify-content: center; padding-top: 70px; }
     }
 
-    /* ----- SIDEBAR ----- */
+    /* ----- POLISHED SIDEBAR ----- */
+    .sidebar-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.5s var(--smooth-slide);
+    }
+    .sidebar-overlay.active { opacity: 1; visibility: visible; }
+
     .sidebar {
-      position: fixed; top: 0; right: 0; width: 280px; height: 100vh; height: 100dvh;
-      background: var(--sidebar-bg); display: flex; flex-direction: column;
-      padding: max(24px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
-      z-index: 1000; box-shadow: -4px 0 30px rgba(0,0,0,0.15);
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.35s ease;
-      border-left: 1px solid var(--sidebar-border);
-      transform: translateX(100%);
+      position: fixed; top: 0; left: 0; width: 85%; max-width: 380px; height: 100vh;
+      background: var(--sidebar-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      z-index: 1001; display: flex; flex-direction: column; padding: 24px 0;
+      box-shadow: 10px 0 40px rgba(0,0,0,0.08), inset -1px 0 0 rgba(255,255,255,0.8);
+      transform: translateX(-100%); transition: transform 0.65s var(--smooth-slide), background 0.35s ease;
     }
     .sidebar.open { transform: translateX(0); }
 
-    @media (min-width: 801px) { .sidebar { transform: translateX(0); } }
+    .sidebar-header { display: flex; justify-content: flex-end; padding: 0 24px 30px; gap: 12px; }
+    .icon-btn {
+      background: transparent; border: 1px solid var(--sidebar-icon-border); border-radius: 50%;
+      width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--ink); transition: all 0.3s;
+    }
+    .icon-btn:hover { background: var(--sidebar-icon-hover); transform: scale(1.05); }
+    .icon-btn svg { width: 20px; height: 20px; stroke-width: 1.5; }
 
-    .sidebar-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 32px; padding-left: 8px; }
-    .sidebar-header .logo-icon { width: 42px; height: 42px; background: linear-gradient(135deg, #c2410c, #db2777); border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.4rem; box-shadow: 0 8px 18px -6px rgba(194,65,12,0.4); }
-    .sidebar-header .logo-text { font-weight: 900; font-size: 1.4rem; letter-spacing: -0.03em; color: var(--sidebar-text); transition: color 0.35s ease; }
-    .sidebar-header .logo-text span { color: var(--accent); }
-    
-    .sidebar-close { display: flex; background: none; border: none; font-size: 1.4rem; color: var(--sidebar-text-muted); cursor: pointer; padding: 8px; border-radius: 50%; transition: all 0.2s; }
-    .sidebar-close:hover { background: var(--sidebar-hover); color: var(--accent); }
-    @media (min-width: 801px) { .sidebar-close { display: none; } }
+    /* Mobile Logged-in Profile (Inside Sidebar) */
+    .mobile-user-card {
+      display: none; /* Hidden by default, shown via JS if logged in */
+      align-items: center; gap: 16px;
+      margin: 0 24px 20px; padding: 16px;
+      background: var(--bg); border-radius: 16px; border: 1px solid var(--border);
+    }
+    .mobile-user-card .avatar-circle { width: 44px; height: 44px; font-size: 1.1rem; }
+    .mobile-user-info { flex: 1; }
+    .mobile-user-info strong { display: block; font-size: 1rem; color: var(--ink); }
+    .mobile-user-info span { font-size: 0.8rem; color: #ea580c; font-weight: 700; }
+    [data-theme="dark"] .mobile-user-info span { color: #fb923c; }
 
-    .sidebar-nav { flex: 1; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; padding-right: 4px; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
-    .sidebar-nav::-webkit-scrollbar { width: 4px; }
-    .sidebar-nav::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 8px; }
-
+    .sidebar-nav { display: flex; flex-direction: column; padding: 0 24px; overflow-y: auto; flex: 1; }
     .sidebar-nav a {
-      display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-radius: 16px;
-      font-weight: 600; font-size: 0.95rem; color: var(--sidebar-text); transition: all 0.25s ease;
-      position: relative; background: transparent; border: none; width: 100%; text-align: left;
+      display: flex; align-items: center; justify-content: space-between;
+      color: var(--ink); font-size: 18px; font-weight: 500; padding: 16px 0;
+      border-bottom: 2px solid transparent; transition: all 0.3s var(--smooth-slide);
+      opacity: 0; transform: translateX(-20px);
     }
-    .sidebar-nav a i { width: 26px; font-size: 1.2rem; color: var(--sidebar-icon); transition: transform 0.2s ease, color 0.25s ease; flex-shrink: 0; }
-    .sidebar-nav a:hover { background: var(--sidebar-hover); color: var(--accent); transform: translateX(-4px); }
-    .sidebar-nav a:hover i { transform: scale(1.1); }
-    .sidebar-nav a.active { background: var(--sidebar-hover); color: var(--accent); font-weight: 800; }
-    .sidebar-nav a.active i { color: var(--accent); }
-
-    .sidebar-email { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--sidebar-border); display: flex; align-items: center; justify-content: center; transition: border-color 0.35s ease; }
-    .email-icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 50%; background: var(--sidebar-hover); border: 1.5px solid var(--sidebar-border); color: var(--sidebar-text); font-size: 1.4rem; transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .email-icon-btn:hover { background: var(--accent); border-color: var(--accent); transform: scale(1.08) translateY(-2px); box-shadow: 0 8px 20px -4px rgba(194,65,12,0.5); color: #fff; }
-
-    .sidebar-overlay {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(2px); z-index: 999; opacity: 0; transition: opacity 0.3s ease;
-    }
-    .sidebar-overlay.active { display: block; opacity: 1; }
-
-    /* ----- MAIN CONTENT ----- */
-    .main-content { margin-right: 280px; min-height: 100vh; width: calc(100% - 280px); transition: margin-right 0.3s ease, width 0.3s ease; }
-    @media (max-width: 800px) { .main-content { margin-right: 0; width: 100%; } }
-
-    /* Topbar & Nav */
-    .topbar { background: var(--ink); color: var(--surface); font-size: .82rem; padding: 9px 0; transition: background-color .35s ease, color .35s ease; }
-    .topbar-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; text-align: center; }
-    .topbar-inner span { display: inline-flex; align-items: center; gap: 8px; color: var(--border-strong); white-space: nowrap; transition: color .35s ease; }
-    .topbar-inner span i { color: var(--accent-bright); font-size: .78rem; transition: color .35s ease; }
-    .topbar-inner a.whatsapp-link { display: inline-flex; align-items: center; gap: 8px; color: #25D366; font-weight: 700; transition: all .2s ease; background: rgba(37,211,102,0.15); padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(37,211,102,0.35); }
-    .topbar-inner a.whatsapp-link:hover { color: #fff; background: #25D366; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(37,211,102,.4); }
-    .topbar-inner a.whatsapp-link i { font-size: 1.05rem; }
-
-    .mainnav { background: var(--nav-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; width: 100%; transition: background-color .35s ease, border-color .35s ease; }
-    .mainnav-inner { max-width: 100%; margin: 0 auto; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
-    .logo { display: flex; align-items: center; flex-shrink: 0; text-decoration: none; }
+    .sidebar.open .sidebar-nav a { opacity: 1; transform: translateX(0); }
     
-    .logo-full-img {
-      height: 72px; width: auto; display: block; max-width: 320px; object-fit: contain;
-      background: var(--logo-container-bg); padding: var(--logo-container-padding);
-      border-radius: 12px; box-shadow: var(--logo-container-shadow);
-      transition: background-color .35s ease, padding .35s ease, box-shadow .35s ease;
+    .sidebar.open .sidebar-nav a:nth-child(1) { transition-delay: 0.1s; }
+    .sidebar.open .sidebar-nav a:nth-child(2) { transition-delay: 0.15s; }
+    .sidebar.open .sidebar-nav a:nth-child(3) { transition-delay: 0.2s; }
+    .sidebar.open .sidebar-nav a:nth-child(4) { transition-delay: 0.25s; }
+    .sidebar.open .sidebar-nav a:nth-child(5) { transition-delay: 0.3s; }
+    .sidebar.open .sidebar-nav a:nth-child(6) { transition-delay: 0.35s; }
+    .sidebar.open .sidebar-nav a:nth-child(7) { transition-delay: 0.4s; }
+    .sidebar.open .sidebar-nav a:nth-child(8) { transition-delay: 0.45s; }
+    .sidebar.open .sidebar-nav a:nth-child(9) { transition-delay: 0.5s; }
+
+    .sidebar-nav a:hover, .sidebar-nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .sidebar-nav a i { font-size: 1.1rem; color: var(--text-muted); transition: color 0.3s; }
+    .sidebar-nav a:hover i, .sidebar-nav a.active i { color: var(--accent); }
+
+    /* ----- HERO SECTION ----- */
+    .hero {
+      position: relative; padding: 120px 20px 100px; text-align: center;
+      display: flex; align-items: center; justify-content: center; min-height: 80vh;
     }
-
-    .nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; margin-left: auto; }
-
-    .btn-nav-login { background: transparent; color: var(--ink); padding: 9px 16px; border-radius: 999px; font-weight: 700; font-size: .8rem; display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--border-strong); transition: all .25s ease; white-space: nowrap; text-decoration: none; }
-    .btn-nav-login:hover { background: var(--alt); color: var(--accent); border-color: var(--accent); transform: translateY(-1px); }
-    .btn-nav-join { background: var(--grad-cta); color: #fff; padding: 10px 18px; border-radius: 999px; font-weight: 800; font-size: .8rem; display: inline-flex; align-items: center; gap: 6px; box-shadow: var(--shadow-cta); transition: all .25s ease; white-space: nowrap; text-decoration: none; position: relative; overflow: hidden; }
-    .btn-nav-join:hover { background: var(--grad-cta-hover); transform: translateY(-2px); box-shadow: 0 12px 28px -8px rgba(219,39,119,.65); }
-
-    .streak-pill { display: inline-flex; align-items: center; gap: 6px; background: #fff7ed; color: #ea580c; border: 1.5px solid #fed7aa; padding: 8px 14px; border-radius: 999px; font-weight: 800; font-size: .78rem; text-decoration: none; transition: all .25s ease; }
-    [data-theme="dark"] .streak-pill { background: #2c1a0e; color: #fb923c; border-color: #ea580c; }
-    .streak-pill:hover { transform: translateY(-1px); box-shadow: 0 8px 20px -8px rgba(234,88,12,.5); }
-
-    .user-profile-pill { display: inline-flex; align-items: center; gap: 8px; padding: 5px 14px 5px 5px; background: var(--alt); border: 1.5px solid var(--border); border-radius: 999px; text-decoration: none; transition: all .25s ease; max-width: 180px; }
-    .user-profile-pill:hover { border-color: var(--accent); background: var(--surface); transform: translateY(-1px); box-shadow: 0 8px 20px -8px rgba(194,65,12,.35); }
-    .user-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid var(--surface); box-shadow: 0 2px 6px rgba(0,0,0,.1); }
-    .user-avatar-fallback { width: 32px; height: 32px; border-radius: 50%; background: var(--grad-cta); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: .85rem; flex-shrink: 0; border: 2px solid var(--surface); box-shadow: 0 2px 6px rgba(0,0,0,.1); }
-    .user-name { font-weight: 800; font-size: .82rem; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100px; }
-
-    /* Mobile Fixes */
-    @media (max-width: 800px) {
-      .topbar { padding-top: 60px; }
-      .mainnav-inner { padding-left: 16px; padding-right: 16px; justify-content: center; }
-      .logo { margin: 0 auto; }
-      .nav-right { display: none; }
-    }
-
-    /* ----- HERO ----- */
-    .hero-top { position: relative; padding: 100px 20px 80px; text-align: center; overflow: hidden; min-height: 80vh; display: flex; align-items: center; justify-content: center; }
-    .hero-top video { position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; transform: translate(-50%,-50%); object-fit: cover; z-index: 0; }
-    .hero-top::before { content: ''; position: absolute; inset: 0; background: rgba(28,25,23,0.75); z-index: 1; }
-    .hero-top-inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 2; color: #fff; }
-    .hero-top-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 18px; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.2); border-radius: 999px; font-size: 13.5px; font-weight: 500; color: #e7e5e4; margin-bottom: 28px; backdrop-filter: blur(10px); }
-    .hero-top-pill .dot { width: 8px; height: 8px; background: var(--accent-bright); border-radius: 50%; }
-    .hero-top h1 { font-size: clamp(2.4rem,6.5vw,5rem); font-weight: 900; line-height: 1.02; letter-spacing: -.04em; margin-bottom: 24px; color: #fff; min-height: 2.1em; }
-    .hero-top h1 .accent { color: #fdba8c; }
-    .hero-top p { color: #d6d3d1; font-size: clamp(1rem,1.7vw,1.15rem); max-width: 600px; margin: 0 auto 36px; line-height: 1.65; }
-    .hero-top-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
-    .btn-hero { display: inline-flex; align-items: center; gap: 10px; height: 56px; padding: 0 32px; border-radius: 999px; font-size: 16px; font-weight: 700; transition: all .22s ease; white-space: nowrap; cursor: pointer; border: none; text-decoration: none; }
-    .btn-hero.primary { background: #c2410c; color: #fff; box-shadow: var(--shadow-cta); }
-    .btn-hero.primary:hover { background: #9a3412; transform: translateY(-2px); box-shadow: 0 14px 32px -8px rgba(219,39,119,.6); }
-    .btn-hero.secondary { background: rgba(255,255,255,.1); color: #fff; border: 1px solid rgba(255,255,255,.3); backdrop-filter: blur(5px); }
-    .btn-hero.secondary:hover { background: rgba(255,255,255,.2); border-color: #fff; transform: translateY(-2px); }
-    .hero-top-search { max-width: 620px; margin: 0 auto 48px; }
-    .hero-top-search form { display: flex; align-items: center; background: rgba(255,255,255,.95); border: 1px solid rgba(255,255,255,.3); border-radius: 999px; padding: 8px 8px 8px 24px; box-shadow: var(--shadow-lg); transition: border-color .2s; }
-    .hero-top-search form:focus-within { border-color: var(--accent-bright); }
-    .hero-top-search i { color: #57534e; font-size: 16px; flex-shrink: 0; }
-    .hero-top-search input { flex: 1; border: none; outline: none; padding: 14px 12px; font-family: inherit; font-size: 15.5px; color: #1c1917; background: transparent; min-width: 0; }
-    .hero-top-search input::placeholder { color: #57534e; }
-    .hero-top-search button { padding: 14px 28px; background: #c2410c; color: #fff; border: none; border-radius: 999px; font-size: 14.5px; font-weight: 700; cursor: pointer; transition: all .18s; white-space: nowrap; flex-shrink: 0; box-shadow: var(--shadow-cta); }
-    .hero-top-stats { display: flex; justify-content: center; gap: clamp(28px,5vw,60px); flex-wrap: wrap; }
-    .hero-top-stat { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-    .hero-top-stat-num { font-size: clamp(24px,2.8vw,32px); font-weight: 900; letter-spacing: -.04em; color: #fdba8c; line-height: 1; }
-    .hero-top-stat-label { font-size: 13px; color: #a8a29e; font-weight: 600; letter-spacing: .02em; }
-
-    /* ----- WHAT WE DO SLIDER (Restored) ----- */
-    .hero-slider-section { position: relative; padding: 60px 20px; overflow: hidden; background: #0a0a0a; }
-    .hero-section-bg-container { position: absolute; inset: 0; z-index: 0; }
-    .hero-section-bg-img { position: absolute; inset: 0; background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0; transition: opacity 2s ease-in-out; }
-    .hero-section-bg-img.active { opacity: 1; }
-    .hero-slider-section::before { content: ''; position: absolute; inset: 0; background: rgba(28,25,23,.55); z-index: 1; }
-    .hero-slider-section-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; }
-    .hero-slider-head { text-align: center; margin-bottom: 36px; }
-    .hero-slider-label { color: #fdba8c; font-size: .75rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 12px; display: block; text-shadow: 0 2px 6px rgba(0,0,0,.9); }
-    .hero-slider-head h2 { font-size: clamp(1.6rem,3vw,2.2rem); font-weight: 900; color: #fff; letter-spacing: -.025em; line-height: 1.2; text-shadow: 0 2px 10px rgba(0,0,0,.9); }
-    .hero-slider-head h2 em { font-style: normal; color: #fdba8c; }
+    .hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+    .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(248,249,250,0.7), var(--bg)); transition: background 0.35s ease; }
+    [data-theme="dark"] .hero-bg::after { background: linear-gradient(to bottom, rgba(18,11,8,0.8), var(--bg)); }
     
-    .hero-stack { position: relative; height: 560px; overflow: hidden; cursor: grab; user-select: none; -webkit-user-select: none; touch-action: pan-y; perspective: 1600px; perspective-origin: center center; }
-    .hero-stack:active { cursor: grabbing; }
-    .slide { position: absolute; inset: 20px; border-radius: 24px; overflow: hidden; transform-origin: center center; transition: transform 1.2s cubic-bezier(.7,0,.3,1), opacity 1s ease, filter .8s ease; will-change: transform, opacity, filter; pointer-events: none; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-    .slide.active { opacity: 1; transform: translateY(0) translateZ(0) rotateX(0deg) scale(1); pointer-events: auto; z-index: 5; filter: blur(0); }
-    .slide.passed { opacity: 0; transform: translateY(-100px) translateZ(-250px) rotateX(18deg) scale(.86); z-index: 1; filter: blur(6px); }
-    .slide.upcoming { opacity: .75; transform: translateY(50px) translateZ(-100px) rotateX(-6deg) scale(.94); z-index: 0; filter: blur(1px); }
-    .slide.upcoming.far { opacity: .3; transform: translateY(90px) translateZ(-220px) rotateX(-14deg) scale(.86); z-index: -1; filter: blur(4px); }
-    .slide-bg { position: absolute; inset: 0; background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0; transition: opacity 1.6s ease-in-out; }
-    .slide-bg.active { opacity: 1; }
-    .slide-overlay { position: absolute; inset: 0; background: rgba(28,25,23,.45); z-index: 1; }
-    .slide-btn { display: block; width: 100%; height: 100%; cursor: pointer; color: inherit; text-decoration: none; position: relative; z-index: 2; }
-    .slide-inner { max-width: 1100px; margin: 0 auto; padding: 0 40px; position: relative; z-index: 3; height: 100%; display: flex; flex-direction: column; justify-content: center; width: 100%; }
-    .slide h1 { color: #f5f5f4; font-size: clamp(1.8rem,4.5vw,3.4rem); font-weight: 900; line-height: 1.05; letter-spacing: -.03em; margin-bottom: 18px; max-width: 700px; text-shadow: 0 2px 10px rgba(0,0,0,.8); }
-    .slide h1 .accent { color: #fdba8c; text-decoration: underline; text-decoration-color: #fdba8c; text-underline-offset: 6px; text-decoration-thickness: 4px; }
-    .slide p { color: #e7e5e4; font-size: clamp(.9rem,1.4vw,1.05rem); line-height: 1.7; max-width: 520px; margin-bottom: 24px; text-shadow: 0 2px 6px rgba(0,0,0,.7); }
-    .slide-cta { background: #fff; color: var(--ink); padding: 13px 26px; border-radius: 999px; font-weight: 700; font-size: .9rem; display: inline-flex; align-items: center; gap: 10px; transition: all .25s ease; align-self: flex-start; white-space: nowrap; box-shadow: 0 12px 32px -10px rgba(0,0,0,.5); }
-    .slide-btn:hover .slide-cta { transform: translateX(4px); box-shadow: 0 16px 40px -10px rgba(0,0,0,.6); }
-    .hero-stack-dots { position: absolute; bottom: 34px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 10; }
-    .hero-stack-dots button { width: 10px; height: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,.5); background: transparent; cursor: pointer; padding: 0; transition: all .4s cubic-bezier(.4,0,.2,1); }
-    .hero-stack-dots button.active { background: #fdba8c; border-color: #fdba8c; width: 30px; border-radius: 6px; }
-    .stack-hint { position: absolute; bottom: 70px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,.6); font-size: .7rem; letter-spacing: .15em; text-transform: uppercase; font-weight: 700; z-index: 10; pointer-events: none; opacity: .7; transition: opacity .5s ease; }
-    .stack-hint.hidden { opacity: 0; }
+    .hero-inner { position: relative; z-index: 1; max-width: 800px; }
+    .hero h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; line-height: 1.1; letter-spacing: -0.04em; margin-bottom: 20px; color: var(--ink); }
+    .hero h1 span { color: var(--accent); }
+    .hero p { font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 40px; }
 
-    /* ----- STACKED CARDS ----- */
-    .stack-section { position: relative; padding: 80px 20px 40px; border-top: 1px solid var(--border); overflow: hidden; background: #0a0a0a; }
-    .stack-bg-container { position: absolute; inset: 0; z-index: 0; }
-    .stack-bg-img { position: absolute; inset: 0; background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0; transition: opacity 2s ease-in-out; }
-    .stack-bg-img.active { opacity: 1; }
-    .stack-section::before { content: ''; position: absolute; inset: 0; background: rgba(28,25,23,.35); z-index: 1; }
-    .stack-inner { max-width: 1100px; margin: 0 auto; position: relative; z-index: 2; }
-    .stack-head { text-align: center; margin-bottom: 40px; }
-    .stack-label { color: #fdba8c; font-size: .75rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 12px; display: block; text-shadow: 0 2px 6px rgba(0,0,0,.9); }
-    .stack-head h2 { font-size: clamp(1.6rem,3vw,2.4rem); font-weight: 900; color: #fff; letter-spacing: -.025em; line-height: 1.2; text-shadow: 0 2px 10px rgba(0,0,0,.9); }
-    .stack-head h2 em { font-style: normal; color: #fdba8c; }
-    .stack-item { position: relative; height: 82vh; display: flex; align-items: flex-start; justify-content: center; padding-top: 10px; }
-    .stack-card { position: sticky; top: 90px; width: 100%; max-width: 900px; height: 460px; border-radius: var(--radius-xl); overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.5); display: grid; grid-template-columns: 1fr 1fr; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.3); transform-origin: center top; will-change: transform; color: #fff; }
-    .stack-item:nth-child(2) .stack-card { z-index: 1; }
-    .stack-item:nth-child(3) .stack-card { z-index: 2; }
-    .stack-item:nth-child(4) .stack-card { z-index: 3; }
-    .stack-item:nth-child(5) .stack-card { z-index: 4; }
-    .stack-img { position: relative; overflow: hidden; background: var(--alt); }
-    .stack-img-bg { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s ease-in-out; }
-    .stack-img-bg.active { opacity: 1; }
-    .stack-img::after { content: ''; position: absolute; inset: 0; background: rgba(28,25,23,.2); z-index: 1; pointer-events: none; }
-    .stack-img-number { position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,.95); color: var(--accent); font-size: .75rem; font-weight: 800; padding: 6px 14px; border-radius: 18px; letter-spacing: .06em; z-index: 3; box-shadow: var(--shadow-sm); }
-    .stack-content { padding: 40px 40px; display: flex; flex-direction: column; justify-content: center; color: #fff; }
-    .stack-icon { width: 56px; height: 56px; background: rgba(194,65,12,.85); border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.4rem; margin-bottom: 18px; box-shadow: 0 8px 20px rgba(0,0,0,.4); }
-    .stack-content h3 { font-size: clamp(1.25rem,2.2vw,1.6rem); font-weight: 900; color: #fff; margin-bottom: 12px; letter-spacing: -.02em; line-height: 1.2; text-shadow: 0 2px 8px rgba(0,0,0,.9); }
-    .stack-content p { color: #f5f5f4; font-size: .9rem; font-weight: 600; line-height: 1.65; margin-bottom: 20px; text-shadow: 0 2px 6px rgba(0,0,0,.8); }
-    .stack-content .stack-link { display: inline-flex; align-items: center; gap: 8px; color: #fdba8c; font-weight: 800; font-size: .88rem; align-self: flex-start; transition: gap .25s ease; text-shadow: 0 2px 6px rgba(0,0,0,.8); }
-    .stack-content .stack-link:hover { gap: 14px; }
+    /* Search Bar */
+    .hero-search { display: flex; background: var(--surface); border-radius: 999px; padding: 8px; max-width: 600px; margin: 0 auto; box-shadow: var(--shadow-lg); border: 1px solid var(--border); }
+    .hero-search input { flex: 1; border: none; outline: none; padding: 12px 20px; font-family: inherit; font-size: 1rem; background: transparent; color: var(--ink); }
+    .hero-search button { background: var(--accent); color: #fff; border: none; padding: 0 30px; border-radius: 999px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+    .hero-search button:hover { background: var(--accent-dark); }
 
-    /* ----- EXPLORE ----- */
-    .explore { position: relative; padding: 100px 20px; background: #0a0a0a; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); overflow: hidden; min-height: 70vh; display: flex; align-items: center; justify-content: center; }
-    .explore-bg-container { position: absolute; inset: 0; z-index: 0; }
-    .explore-bg-img { position: absolute; inset: 0; background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0; transition: opacity 1.8s ease-in-out; }
-    .explore-bg-img.active { opacity: 1; }
-    .explore::before { content: ''; position: absolute; inset: 0; background: rgba(28,25,23,.5); z-index: 1; }
-    .explore-inner { max-width: 1100px; margin: 0 auto; position: relative; z-index: 2; color: #fff; width: 100%; }
-    .explore-head { text-align: center; margin-bottom: 44px; }
-    .explore-label { color: #fdba8c; font-size: .75rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; display: block; margin-bottom: 12px; text-shadow: 0 2px 6px rgba(0,0,0,.9); }
-    .explore-head h2 { font-size: clamp(1.6rem,3.5vw,2.4rem); font-weight: 900; color: #fff; letter-spacing: -.025em; margin-bottom: 12px; text-shadow: 0 2px 10px rgba(0,0,0,.9); }
-    .explore-head h2 em { font-style: normal; color: #fdba8c; }
-    .explore-head p { color: #e7e5e4; font-size: .95rem; max-width: 520px; margin: 0 auto; text-shadow: 0 2px 6px rgba(0,0,0,.8); }
-    .explore-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 22px; }
-    .explore-card { display: flex; flex-direction: column; gap: 18px; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); border-radius: var(--radius-xl); padding: 32px 28px; transition: all .3s ease; position: relative; overflow: hidden; box-shadow: 0 8px 28px rgba(0,0,0,.4); color: #fff; }
-    .explore-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: #c2410c; opacity: 0; transition: opacity .3s; }
-    .explore-card:hover { border-color: rgba(255,255,255,.6); transform: translateY(-6px); box-shadow: 0 20px 40px -10px rgba(0,0,0,.6); background: rgba(255,255,255,.22); }
-    .explore-card:hover::before { opacity: 1; }
-    .explore-card:last-child::before { background: #db2777; }
-    .explore-icon { width: 64px; height: 64px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0; }
-    .explore-icon.free { background: rgba(234,88,12,.9); color: #fff; box-shadow: 0 8px 20px rgba(0,0,0,.4); }
-    .explore-icon.hack { background: rgba(219,39,119,.9); color: #fff; box-shadow: 0 8px 20px rgba(0,0,0,.4); }
-    .explore-icon.quiz { background: rgba(234,88,12,.9); color: #fff; box-shadow: 0 8px 20px rgba(0,0,0,.4); }
-    .explore-body { display: flex; flex-direction: column; gap: 10px; flex: 1; }
-    .explore-tag { font-size: .7rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; align-self: flex-start; padding: 5px 12px; border-radius: 50px; }
-    .explore-tag.free { color: #fff; background: rgba(234,88,12,.9); border: 1px solid rgba(253,186,140,.6); }
-    .explore-tag.hack { color: #fff; background: rgba(219,39,119,.9); border: 1px solid rgba(249,168,212,.6); }
-    .explore-tag.quiz { color: #fff; background: rgba(234,88,12,.9); border: 1px solid rgba(253,186,140,.6); }
-    .explore-card h3 { font-size: 1.35rem; font-weight: 900; color: #fff; letter-spacing: -.02em; line-height: 1.2; text-shadow: 0 2px 8px rgba(0,0,0,.9); }
-    .explore-card p { color: #f5f5f4; font-size: .9rem; font-weight: 600; line-height: 1.65; flex: 1; text-shadow: 0 2px 6px rgba(0,0,0,.8); }
-    .explore-cta { display: inline-flex; align-items: center; gap: 8px; font-weight: 800; font-size: .88rem; color: #fdba8c; margin-top: 4px; transition: gap .25s ease; text-shadow: 0 2px 6px rgba(0,0,0,.8); }
-    .explore-card:last-child .explore-cta { color: #f9a8d4; }
-    .explore-card:hover .explore-cta { gap: 14px; }
+    /* Floating Animation for Hero */
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+    .hero-inner { animation: float 6s ease-in-out infinite; }
 
-    /* ----- TOOLS ----- */
-    .tools { position: relative; padding: 90px 20px; background: var(--surface); overflow: hidden; transition: background-color .35s ease; }
-    .tools-bg-container { position: absolute; inset: 0; z-index: 0; }
-    .tools-bg-img { position: absolute; inset: 0; background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0; transition: opacity 1.8s ease-in-out; }
-    .tools-bg-img.active { opacity: 1; }
-    .tools::before { content: ''; position: absolute; inset: 0; background: rgba(28,25,23,.45); z-index: 1; }
-    .tools-inner { max-width: 1100px; margin: 0 auto; position: relative; z-index: 2; }
-    .section-head { text-align: center; margin-bottom: 40px; }
-    .section-label { color: #fdba8c; font-size: .75rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 10px; display: block; text-shadow: 0 2px 6px rgba(0,0,0,.9); }
-    .section-head h2 { font-size: clamp(1.6rem,3vw,2.2rem); font-weight: 900; color: #fff; letter-spacing: -.025em; line-height: 1.2; text-shadow: 0 2px 10px rgba(0,0,0,.9); }
-    .tools-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
-    .tool { display: flex; align-items: center; gap: 14px; padding: 20px; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.3); border-radius: var(--radius-md); transition: all .25s ease; color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,.35); }
-    .tool:hover { border-color: rgba(255,255,255,.6); transform: translateY(-3px); background: rgba(255,255,255,.28); box-shadow: 0 12px 32px rgba(0,0,0,.5); }
-    .tool i { color: #fdba8c; font-size: 1.4rem; width: 28px; text-align: center; flex-shrink: 0; }
-    .tool strong { display: block; color: #fff; font-size: .92rem; font-weight: 800; margin-bottom: 2px; letter-spacing: -.01em; text-shadow: 0 2px 6px rgba(0,0,0,.8); }
-    .tool small { color: #e7e5e4; font-size: .78rem; font-weight: 600; text-shadow: 0 1px 4px rgba(0,0,0,.8); }
+    /* ----- MODERN SECTIONS & CARDS ----- */
+    .section-container { max-width: 1200px; margin: 0 auto; padding: 80px 20px; }
+    .section-head { text-align: center; margin-bottom: 50px; }
+    .section-head h2 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 10px; color: var(--ink); }
+    .section-head p { color: var(--text-muted); font-size: 1.1rem; }
 
-    /* ----- CTA ----- */
-    .cta-section { padding: 40px 20px 80px; background: var(--bg); transition: background-color .35s ease; }
-    .cta { max-width: 1000px; margin: 0 auto; border-radius: 36px; padding: 80px 40px; text-align: center; color: #fff; position: relative; overflow: hidden; background: #1c1917; min-height: 420px; }
-    .cta-bg-container { position: absolute; inset: 0; z-index: 0; }
-    .cta-bg-img { position: absolute; inset: 0; background-size: cover; background-position: center; background-repeat: no-repeat; opacity: 0; transition: opacity 1.8s ease-in-out; }
-    .cta-bg-img.active { opacity: 1; }
-    .cta::before { content: ''; position: absolute; inset: 0; background: rgba(28,25,23,.55); z-index: 1; pointer-events: none; }
-    .cta-inner { position: relative; z-index: 2; max-width: 600px; margin: 0 auto; }
-    .cta-kicker { font-size: 1rem; font-weight: 600; color: #fdba8c; margin-bottom: 16px; display: inline-block; text-shadow: 0 2px 6px rgba(0,0,0,.9); }
-    .cta h3 { font-size: clamp(1.6rem,4vw,2.8rem); font-weight: 900; letter-spacing: -.035em; line-height: 1.05; margin-bottom: 18px; text-shadow: 0 2px 10px rgba(0,0,0,.9); }
-    .cta h3 em { font-style: normal; color: #fdba8c; }
-    .cta p { color: #f5f5f4; font-size: 1.05rem; line-height: 1.5; margin-bottom: 32px; font-weight: 600; text-shadow: 0 2px 6px rgba(0,0,0,.9); }
-    .cta .btn-quote { background: #fff; color: var(--ink); height: 56px; padding: 0 32px; font-size: 1rem; box-shadow: 0 12px 32px -10px rgba(0,0,0,.5); display: inline-flex; align-items: center; justify-content: center; gap: 10px; border-radius: 999px; font-weight: 800; text-decoration: none; }
-    .cta .btn-quote:hover { background: var(--alt); transform: translateY(-2px); }
+    /* Grids */
+    .clean-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+    .compact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    
+    .clean-card {
+      background: var(--surface); border-radius: 24px; overflow: hidden;
+      box-shadow: var(--shadow-md); transition: all 0.4s var(--smooth-slide);
+      display: flex; flex-direction: column; border: 1px solid var(--border);
+    }
+    .clean-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); }
+    
+    .card-img-wrapper { height: 200px; overflow: hidden; position: relative; }
+    .card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--smooth-slide); }
+    .clean-card:hover .card-img-wrapper img { transform: scale(1.05); }
+
+    .card-content { padding: 24px; display: flex; flex-direction: column; flex: 1; }
+    .card-tag { display: inline-block; padding: 6px 12px; background: var(--accent-light); color: var(--accent); border-radius: 999px; font-size: 0.75rem; font-weight: 700; margin-bottom: 16px; align-self: flex-start; text-transform: uppercase; letter-spacing: 0.05em; }
+    .card-content h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; line-height: 1.3; color: var(--ink); }
+    .card-content p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px; flex: 1; }
+    .card-link { font-weight: 700; color: var(--accent); display: inline-flex; align-items: center; gap: 8px; transition: gap 0.3s; }
+    .clean-card:hover .card-link { gap: 12px; }
+
+    /* Compact Cards */
+    .compact-card {
+      background: var(--surface); border-radius: 20px; padding: 24px;
+      box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+      transition: all 0.35s var(--bounce-soft); display: flex; flex-direction: column; align-items: flex-start;
+    }
+    .compact-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: var(--shadow-lg); border-color: var(--accent-light); }
+    .compact-icon { width: 50px; height: 50px; border-radius: 14px; background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 16px; transition: transform 0.3s var(--bounce-soft); }
+    .compact-card:hover .compact-icon { transform: scale(1.1) rotate(5deg); }
+    .compact-card h4 { font-size: 1.15rem; font-weight: 700; margin-bottom: 8px; color: var(--ink); }
+    .compact-card p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; flex: 1; }
+    .compact-link { font-size: 0.85rem; font-weight: 700; color: var(--accent); display: inline-flex; align-items: center; gap: 6px; transition: gap 0.3s; }
+    .compact-card:hover .compact-link { gap: 10px; }
+
+    /* ----- ABOUT & CREATOR SECTIONS ----- */
+    .about-card {
+      background: var(--surface); border-radius: 32px; padding: 60px 40px;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      box-shadow: var(--shadow-md); border: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .about-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+      background: linear-gradient(90deg, var(--accent), #3b82f6, #8b5cf6);
+    }
+    .about-card h2 { font-size: 2rem; font-weight: 800; margin-bottom: 16px; color: var(--ink); }
+    .about-card p { font-size: 1.1rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 30px; line-height: 1.8; }
+    
+    .creator-card {
+      background: var(--surface); border-radius: 32px; padding: 60px 40px;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      box-shadow: var(--shadow-md); border: 1px solid var(--border);
+    }
+    .creator-avatar {
+      width: 120px; height: 120px; border-radius: 50%; object-fit: cover;
+      border: 4px solid var(--surface); box-shadow: var(--shadow-lg); margin-bottom: 24px;
+      background: var(--accent-light); display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; color: var(--accent);
+    }
+
+    /* ----- TOOLS SECTION ----- */
+    .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .tool-item { 
+      display: flex; align-items: center; gap: 16px; padding: 20px; 
+      background: var(--surface); border-radius: 16px; box-shadow: var(--shadow-sm);
+      transition: all 0.3s var(--smooth-slide); border: 1px solid var(--border);
+    }
+    .tool-item:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--accent-light); }
+    .tool-icon { width: 48px; height: 48px; background: var(--accent-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 1.2rem; }
+    .tool-text strong { display: block; font-size: 1rem; color: var(--ink); }
+    .tool-text small { color: var(--text-muted); font-size: 0.85rem; }
 
     /* ----- FOOTER ----- */
-    footer { background: var(--ink); padding: 60px 20px 24px; color: #a8a29e; transition: background-color .35s ease, color .35s ease; }
-    .footer-inner { max-width: 1200px; margin: 0 auto; }
-    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; margin-bottom: 40px; }
-    .footer-brand .logo { color: #fff; margin-bottom: 14px; display: inline-block; }
-    .footer-brand p { color: #a8a29e; font-size: .88rem; max-width: 320px; line-height: 1.7; }
-    .footer-col h4 { font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #fff; margin-bottom: 14px; }
-    .footer-col ul li { margin-bottom: 10px; }
-    .footer-col ul li a { color: #a8a29e; font-size: .88rem; transition: color .25s ease; }
-    .footer-col ul li a:hover { color: #fdba8c; }
-    .footer-bottom { border-top: 1px solid #292524; padding-top: 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
-    .footer-bottom p { color: #78716c; font-size: .83rem; }
-    .footer-socials { display: flex; gap: 10px; }
-    .footer-socials a { width: 38px; height: 38px; border: 1px solid #292524; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #a8a29e; font-size: .9rem; transition: all .25s ease; background: #1c1917; }
-    .footer-socials a:hover { background: var(--grad-cta); color: #fff; border-color: transparent; transform: translateY(-2px); box-shadow: 0 8px 20px -6px rgba(219,39,119,.5); }
+    footer { background: var(--surface); border-top: 1px solid var(--border); padding: 60px 20px 30px; margin-top: 40px; transition: background-color 0.35s ease; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px; }
+    .footer-inner p { color: var(--text-muted); font-size: 0.9rem; }
+    
+    /* Floating CTA */
+    .floating-cta { position: fixed; bottom: 24px; right: 24px; z-index: 900; display: flex; flex-direction: column; gap: 12px; align-items: flex-end; }
+    .fab-main { display: inline-flex; align-items: center; gap: 10px; padding: 14px 24px; background: var(--accent); color: #fff; border-radius: 999px; font-weight: 800; font-size: .9rem; box-shadow: var(--shadow-cta); transition: all .3s; text-decoration: none; white-space: nowrap; border: none; cursor: pointer; }
+    .fab-main:hover { transform: translateY(-3px) scale(1.03); background: var(--accent-dark); box-shadow: 0 8px 24px rgba(46,139,87,0.5); }
 
-    /* ----- FLOATING CTA ----- */
-    .floating-cta { position: fixed; bottom: 24px; right: 24px; z-index: 900; display: flex; flex-direction: column; gap: 12px; align-items: flex-end; pointer-events: none; }
-    .floating-cta > * { pointer-events: auto; }
-    .fab-main { display: inline-flex; align-items: center; gap: 10px; padding: 14px 24px; background: var(--grad-cta); color: #fff; border-radius: 999px; font-weight: 800; font-size: .9rem; box-shadow: 0 20px 44px -10px rgba(194,65,12,.6); transition: all .3s; text-decoration: none; white-space: nowrap; border: none; cursor: pointer; }
-    .fab-main:hover { transform: translateY(-3px) scale(1.03); background: var(--grad-cta-hover); box-shadow: 0 24px 52px -8px rgba(194,65,12,.75); }
-    .fab-main i { font-size: 1rem; }
-    .fab-secondary { display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px; background: var(--surface); backdrop-filter: blur(14px); border: 1px solid var(--border); color: var(--ink); border-radius: 50%; box-shadow: 0 14px 32px -10px rgba(28,25,23,.35); transition: all .25s ease; text-decoration: none; font-size: 1.05rem; position: relative; }
-    .fab-secondary:hover { transform: translateY(-3px) scale(1.08); background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 20px 40px -10px rgba(194,65,12,.6); }
-    .fab-close { position: absolute; top: -8px; right: -8px; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: var(--surface); display: flex; align-items: center; justify-content: center; font-size: .6rem; cursor: pointer; border: 2px solid var(--surface); box-shadow: 0 4px 10px rgba(0,0,0,.25); transition: all .2s; }
-    .fab-close:hover { background: #dc2626; transform: scale(1.15); }
-    .fab-wrap { position: relative; display: inline-flex; }
-
-    /* ----- RESPONSIVE ----- */
-    @media (max-width: 1000px) {
-      .tools-grid { grid-template-columns: repeat(2,1fr); }
-      .footer-top { grid-template-columns: 1fr 1fr; }
-      .explore-grid { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 900px) { .explore-grid { grid-template-columns: 1fr; } }
-    @media (max-width: 800px) {
-      .stack-item { height: auto; min-height: auto; padding: 8px 0; }
-      .stack-card { grid-template-columns: 1fr; height: auto; min-height: 460px; position: relative; top: 0; }
-      .stack-img { height: 220px; position: relative; }
-      .stack-content { padding: 26px 24px; }
-    }
-    @media (max-width: 720px) {
-      .hero-top { padding: 80px 18px 60px; min-height: 70vh; }
-      .hero-top h1 { font-size: clamp(2rem,8vw,3rem); margin-bottom: 20px; }
-      .hero-top p { font-size: .95rem; margin-bottom: 28px; }
-      .hero-top-btns { gap: 10px; }
-      .btn-hero { height: 50px; padding: 0 24px; font-size: 14.5px; }
-      .hero-top-search form { padding: 6px 6px 6px 18px; }
-      .hero-top-search input { padding: 12px 10px; font-size: 14px; }
-      .hero-top-search button { padding: 12px 20px; font-size: 13.5px; }
-      .hero-top-stats { gap: 24px; }
-      
-      .hero-slider-section { padding: 40px 12px; }
-      .hero-stack { height: 500px; perspective: 1000px; }
-      .slide { inset: 8px; border-radius: 18px; }
-      .slide.passed { transform: translateY(-60px) translateZ(-150px) rotateX(14deg) scale(.88); }
-      .slide.upcoming { transform: translateY(30px) translateZ(-80px) rotateX(-5deg) scale(.94); }
-      .slide.upcoming.far { transform: translateY(70px) translateZ(-180px) rotateX(-12deg) scale(.88); }
-      .slide-inner { padding: 0 24px; }
-      .slide h1 { font-size: clamp(1.5rem,6.5vw,2.2rem); }
-      .slide p { font-size: .88rem; }
-      .slide-cta { padding: 11px 22px; font-size: .82rem; }
-      
-      .explore { padding: 80px 18px; min-height: 60vh; }
-      .explore-head h2 { font-size: 1.8rem; }
-      .cta { border-radius: 28px; padding: 60px 24px; min-height: 360px; }
-      .floating-cta { bottom: 16px; right: 14px; gap: 10px; }
-      .fab-main { padding: 12px 20px; font-size: .85rem; }
-      .fab-secondary { width: 46px; height: 46px; font-size: .95rem; }
-    }
     @media (max-width: 560px) {
-      .topbar { padding: 7px 0; }
-      .topbar-inner { gap: 12px; font-size: .72rem; padding: 0 14px; }
-      .topbar-inner span:nth-child(3) { display: none; }
-      .tools-grid { grid-template-columns: 1fr; }
-      .footer-top { grid-template-columns: 1fr; gap: 24px; }
-      .tools { padding: 50px 16px; }
-      .explore { padding: 60px 16px; }
-      .hero-top { padding: 60px 16px 40px; }
-      .hero-top h1 { font-size: 2rem; }
-      .hero-top p { font-size: .9rem; }
-      .hero-top-btns { flex-direction: column; width: 100%; }
-      .btn-hero { width: 100%; justify-content: center; }
-      .hero-top-stats { gap: 20px; }
-      .hero-top-stat-num { font-size: 22px; }
-      .hero-top-stat-label { font-size: 11.5px; }
-      .hero-stack { height: 460px; }
-      .slide { inset: 6px; border-radius: 16px; }
-      .slide-inner { padding: 0 20px; }
-      .slide h1 { font-size: 1.5rem; margin-bottom: 14px; }
-      .slide p { font-size: .82rem; margin-bottom: 18px; }
-      .slide-cta { padding: 10px 18px; font-size: .78rem; }
-      .stack-card { border-radius: 20px; min-height: 400px; }
-      .stack-img { height: 180px; }
-      .stack-content { padding: 22px 20px; }
-      .stack-icon { width: 46px; height: 46px; font-size: 1.15rem; margin-bottom: 14px; }
-      .stack-content h3 { font-size: 1.08rem; }
-      .stack-content p { font-size: .84rem; margin-bottom: 14px; }
-      .cta { padding: 50px 22px; border-radius: 24px; min-height: 320px; }
-      .cta h3 { font-size: 1.5rem; }
-      .cta p { font-size: .9rem; margin-bottom: 24px; }
-      .cta .btn-quote { height: 50px; padding: 0 26px; font-size: .9rem; }
-      .footer-socials a { width: 36px; height: 36px; }
-    }
-    @media (prefers-reduced-motion:reduce) {
-      * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+      .fab-main span.long { display: none; }
+      .fab-main { padding: 14px; border-radius: 50%; }
+      .about-card, .creator-card { padding: 40px 20px; }
+      .compact-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
-<body class="{% if is_authenticated %}logged-in{% endif %}">
+<body>
 
   <!-- THEME TOGGLE -->
-  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
     <i class="fas fa-moon" id="themeIcon"></i>
   </button>
 
@@ -511,37 +384,51 @@
   <!-- SIDEBAR OVERLAY -->
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  <!-- SIDEBAR -->
+  <!-- POLISHED SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <div style="display:flex; align-items:center; gap:12px;">
-        <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
-        <div class="logo-text">Student<span>Hub</span></div>
-      </div>
-      <button class="sidebar-close" id="closeSidebar" aria-label="Close menu">
-        <i class="fas fa-times"></i>
+      <button class="icon-btn" aria-label="Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </button>
+      <button class="icon-btn" id="closeSidebar" aria-label="Close menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
     </div>
 
+    <!-- Mobile Profile View (Only visible if logged in) -->
+    {% if user.is_authenticated %}
+    <a href="/profile.html" class="mobile-user-card" style="display: flex;">
+      <div class="avatar-circle">
+        {% if user.profile.avatar %}
+          <img src="{{ user.profile.avatar.url }}" alt="Avatar">
+        {% else %}
+          {{ user.username|make_list|first|upper }}
+        {% endif %}
+      </div>
+      <div class="mobile-user-info">
+        <strong>{{ user.username }}</strong>
+        <span><i class="fas fa-fire"></i> {{ user.profile.streak|default:"0" }} Day Streak</span>
+      </div>
+      <i class="fas fa-chevron-right" style="color: var(--text-muted);"></i>
+    </a>
+    {% endif %}
+
     <nav class="sidebar-nav">
-      <a href="/" class="active"><i class="fas fa-home"></i> Home</a>
-      <a href="/browse/"><i class="fas fa-search"></i> Browse Notes</a>
-      <a href="/upload/"><i class="fas fa-cloud-upload-alt"></i> Upload</a>
-      <a href="/quiz/"><i class="fas fa-fire"></i> Daily Quiz</a>
-      <a href="/leaderboard/"><i class="fas fa-trophy"></i> Leaderboard</a>
-      <a href="/community/"><i class="fas fa-users"></i> Community</a>
-      <a href="/free_course/"><i class="fas fa-book-open"></i> Free Courses</a>
-      <a href="/about/"><i class="fas fa-info-circle"></i> About</a>
-      {% if is_authenticated %}
-      <a href="/dashboard/"><i class="fas fa-columns"></i> Dashboard</a>
+      <a href="/" class="active">Home</a>
+      <a href="/browse/">Browse Notes</a>
+      <a href="/upload/">Upload</a>
+      <a href="/quiz/">Daily Quiz</a>
+      <a href="/leaderboard/">Leaderboard</a>
+      <a href="/community/">Community</a>
+      <a href="/free_course/">Free Courses</a>
+      <a href="/about/">About</a>
+      
+      <!-- Mobile Login/Join Links (Only visible if NOT logged in) -->
+      {% if not user.is_authenticated %}
+      <a href="/login/" style="color: var(--accent); margin-top: 20px;">Log In</a>
+      <a href="/signup/" style="color: var(--accent);">Join Free</a>
       {% endif %}
     </nav>
-
-    <div class="sidebar-email">
-      <a href="mailto:Twarvistech@gmail.com" class="email-icon-btn" aria-label="Email us">
-        <i class="fas fa-envelope"></i>
-      </a>
-    </div>
   </aside>
 
   <!-- MAIN CONTENT -->
@@ -549,26 +436,10 @@
 
     <!-- TOP BAR -->
     <div class="topbar">
-      <div class="topbar-inner">
-        <a href="https://wa.me/255740706007" target="_blank" rel="noopener" class="whatsapp-link" aria-label="Chat on WhatsApp">
-          <i class="fab fa-whatsapp"></i> Chat on WhatsApp
-        </a>
-        <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
-      </div>
+      <a href="https://wa.me/255740706007" target="_blank" rel="noopener">
+        <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+      </a>
     </div>
-
-    <!-- LOGIN SUGGESTION BANNER -->
-    {% if not is_authenticated %}
-    <div class="login-suggestion-banner" style="background:var(--alt); border-bottom:1px solid var(--border); padding:10px 20px; text-align:center; font-size:0.85rem;">
-      <div style="max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-        <span>Join 5,000+ university scholars! Sign in to keep daily streaks alive and follow classmates!</span>
-        <div style="display:flex; gap:8px;">
-          <a href="/login/" class="btn-nav-login"><i class="fas fa-sign-in-alt"></i> Sign In</a>
-          <a href="/signup/" class="btn-nav-join">Create Account</a>
-        </div>
-      </div>
-    </div>
-    {% endif %}
 
     <!-- NAV -->
     <nav class="mainnav">
@@ -576,449 +447,268 @@
         <a href="/" class="logo">
           <img src="/logo.png" alt="Student Hub" class="logo-full-img">
         </a>
+        
+        <!-- Desktop Nav Right -->
         <div class="nav-right">
-          {% if is_authenticated %}
-            <a href="/quiz/" class="streak-pill" title="Daily Streak">
-              <i class="fas fa-fire"></i> {{ current_student.streak|default:0 }}
-            </a>
-            <a href="/profile/{{ current_student.username }}/" class="user-profile-pill" title="{{ current_student.username }}">
-              {% if current_student.avatar_url %}
-                <img src="{{ current_student.avatar_url }}" class="user-avatar" alt="">
-              {% else %}
-                <span class="user-avatar-fallback">{{ current_student.initial|default:"S" }}</span>
-              {% endif %}
-              <span class="user-name">{{ current_student.username|default:"Student" }}</span>
-            </a>
+          {% if user.is_authenticated %}
+            <!-- Logged In State -->
+            <div class="user-nav-group">
+              <a href="/quiz/" class="streak-pill" title="Your Streak">
+                <i class="fas fa-fire"></i> {{ user.profile.streak|default:"0" }}
+              </a>
+              <a href="/profile.html" class="profile-pill" title="Go to Profile">
+                <div class="avatar-circle">
+                  {% if user.profile.avatar %}
+                    <img src="{{ user.profile.avatar.url }}" alt="Avatar">
+                  {% else %}
+                    {{ user.username|make_list|first|upper }}
+                  {% endif %}
+                </div>
+                <span>{{ user.username }}</span>
+              </a>
+            </div>
           {% else %}
-            <a href="/login/" class="btn-nav-login">
-              <i class="fas fa-sign-in-alt"></i> Log In
-            </a>
-            <a href="/signup/" class="btn-nav-join">
-              <i class="fas fa-sparkles spark"></i> Join Free
-            </a>
+            <!-- Logged Out State -->
+            <a href="/login/" class="btn-nav login">Log In</a>
+            <a href="/signup/" class="btn-nav join">Join Free</a>
           {% endif %}
         </div>
       </div>
     </nav>
 
-    <!-- HERO TOP -->
-    <section class="hero-top">
-      <video autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&q=60">
-        <source src="https://cdn.coverr.co/videos/coverr-a-student-studying-in-a-library-1571/1080p.mp4" type="video/mp4">
-      </video>
-
-      <div class="hero-top-inner">
-        <span class="hero-top-pill"><span class="dot"></span> Built by students, for students</span>
-        <h1>Share notes.<br>Learn <span class="accent">together</span>.</h1>
+    <!-- HERO SECTION -->
+    <section class="hero">
+      <div class="hero-bg">
+        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&q=60" alt="Students studying">
+      </div>
+      <div class="hero-inner">
+        <h1>Share notes.<br>Learn <span>together</span>.</h1>
         <p>The free platform where students upload, discover, and organize study materials — past papers, notes, slides, and more. Built in Tanzania.</p>
-
-        <div class="hero-top-btns">
-          <a href="/browse/" class="btn-hero primary"><i class="fas fa-eye"></i> Browse Notes</a>
-          <a href="/upload/" class="btn-hero secondary"><i class="fas fa-cloud-upload-alt"></i> Upload a File</a>
-        </div>
-
-        <div class="hero-top-search">
-          <form action="/browse/" method="get">
-            <i class="fas fa-search"></i>
+        
+        <div class="hero-search">
+          <form action="/browse/" method="get" style="display:flex; width:100%;">
             <input type="text" name="q" placeholder="Search notes, courses, or module codes..." />
             <button type="submit">Search</button>
           </form>
         </div>
-
-        <div class="hero-top-stats">
-          <div class="hero-top-stat"><span class="hero-top-stat-num">10K+</span><span class="hero-top-stat-label">Notes shared</span></div>
-          <div class="hero-top-stat"><span class="hero-top-stat-num">5K+</span><span class="hero-top-stat-label">Active students</span></div>
-          <div class="hero-top-stat"><span class="hero-top-stat-num">50+</span><span class="hero-top-stat-label">Universities</span></div>
-          <div class="hero-top-stat"><span class="hero-top-stat-num">100%</span><span class="hero-top-stat-label">Free forever</span></div>
-        </div>
       </div>
     </section>
 
-    <!-- WHAT WE DO SLIDER -->
-    <section class="hero-slider-section">
-      <div class="hero-section-bg-container">
-        <div class="hero-section-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&q=60');"></div>
-        <div class="hero-section-bg-img" style="background-image: url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1200&q=60');"></div>
-        <div class="hero-section-bg-img" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&q=60');"></div>
-        <div class="hero-section-bg-img" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af4607?w=1200&q=60');"></div>
+    <!-- WHAT WE DO -->
+    <section class="section-container">
+      <div class="section-head">
+        <h2>Everything a student needs</h2>
+        <p>Clean, organized, and completely free.</p>
       </div>
 
-      <div class="hero-slider-section-inner">
-        <div class="hero-slider-head">
-          <span class="hero-slider-label">What we do</span>
-          <h2>Everything a student <em>needs</em></h2>
+      <div class="clean-grid">
+        <div class="clean-card">
+          <div class="card-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1200&q=60" alt="Notes">
+          </div>
+          <div class="card-content">
+            <span class="card-tag">Notes</span>
+            <h3>See Uploaded Notes</h3>
+            <p>Browse thousands of notes, past papers, and study materials shared by students like you.</p>
+            <a href="/browse/" class="card-link">Browse Notes <i class="fas fa-arrow-right"></i></a>
+          </div>
         </div>
 
-        <div class="hero-stack" id="heroSlider">
-          <div class="slide s1 active">
-            <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1200&q=60');"></div>
-            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=1200&q=60');"></div>
-            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1200&q=60');"></div>
-            <div class="slide-overlay"></div>
-            <a href="/browse/" class="slide-btn">
-              <div class="slide-inner">
-                <h1>See <span class="accent">Uploaded</span><br>Notes</h1>
-                <p>Browse thousands of notes, past papers, and study materials shared by students like you.</p>
-                <span class="slide-cta">Browse Notes <i class="fas fa-arrow-right"></i></span>
-              </div>
-            </a>
+        <div class="clean-card">
+          <div class="card-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=1200&q=60" alt="Upload">
           </div>
-          <div class="slide s2">
-            <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=1200&q=60');"></div>
-            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&q=60');"></div>
-            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&q=60');"></div>
-            <div class="slide-overlay"></div>
-            <a href="/upload/" class="slide-btn">
-              <div class="slide-inner">
-                <h1>Upload Your<br><span class="accent">Own</span> Notes</h1>
-                <p>Share what you know with the community. Upload notes in seconds — no sign-up required.</p>
-                <span class="slide-cta">Upload Now <i class="fas fa-arrow-right"></i></span>
-              </div>
-            </a>
+          <div class="card-content">
+            <span class="card-tag">Upload</span>
+            <h3>Upload Your Own</h3>
+            <p>Share what you know with the community. Upload notes in seconds — no sign-up required.</p>
+            <a href="/upload/" class="card-link">Upload Now <i class="fas fa-arrow-right"></i></a>
           </div>
-          <div class="slide s3">
-            <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1200&q=60');"></div>
-            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&q=60');"></div>
-            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1509228627152-72ae9ae6848d?w=1200&q=60');"></div>
-            <div class="slide-overlay"></div>
-            <a href="/calculator/" class="slide-btn">
-              <div class="slide-inner">
-                <h1>Smart <span class="accent">Calculator</span><br>For Students</h1>
-                <p>GPA, scientific, and basic calculators — everything you need in one place.</p>
-                <span class="slide-cta">Open Calculator <i class="fas fa-arrow-right"></i></span>
-              </div>
-            </a>
-          </div>
-          <div class="slide s4">
-            <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=1200&q=60');"></div>
-            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=1200&q=60');"></div>
-            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1568224275-4b4bf2d55f8f?w=1200&q=60');"></div>
-            <div class="slide-overlay"></div>
-            <a href="/scanner/" class="slide-btn">
-              <div class="slide-inner">
-                <h1>Turn Pages Into<br><span class="accent">Clean</span> PDFs</h1>
-                <p>Scan handwritten notes and turn them into clean, shareable PDF documents instantly.</p>
-                <span class="slide-cta">Open Scanner <i class="fas fa-arrow-right"></i></span>
-              </div>
-            </a>
-          </div>
-          <div class="slide s5">
-            <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1200&q=60');"></div>
-            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&q=60');"></div>
-            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1543269865-cbf427effbad?w=1200&q=60');"></div>
-            <div class="slide-overlay"></div>
-            <a href="/free_course/" class="slide-btn">
-              <div class="slide-inner">
-                <h1>Learn With<br><span class="accent">Free</span> Courses</h1>
-                <p>Project-based lessons, 50 modules, and 10 capstone labs — 100% free, forever.</p>
-                <span class="slide-cta">Start Learning <i class="fas fa-arrow-right"></i></span>
-              </div>
-            </a>
-          </div>
-          <div class="slide s6">
-            <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=60');"></div>
-            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&q=60');"></div>
-            <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&q=60');"></div>
-            <div class="slide-overlay"></div>
-            <a href="/quiz/" class="slide-btn">
-              <div class="slide-inner">
-                <h1>Test Yourself<br>With <span class="accent">Daily Quiz</span></h1>
-                <p>One question every day. Earn points, keep your streak alive, and climb the leaderboard.</p>
-                <span class="slide-cta">Open Daily Quiz <i class="fas fa-arrow-right"></i></span>
-              </div>
-            </a>
-          </div>
+        </div>
 
-          <div class="stack-hint" id="swipeHint"><i class="fas fa-arrows-left-right"></i> Swipe in any direction</div>
-          <div class="hero-stack-dots" id="heroDots">
-            <button class="active" data-slide="0" aria-label="Slide 1"></button>
-            <button data-slide="1" aria-label="Slide 2"></button>
-            <button data-slide="2" aria-label="Slide 3"></button>
-            <button data-slide="3" aria-label="Slide 4"></button>
-            <button data-slide="4" aria-label="Slide 5"></button>
-            <button data-slide="5" aria-label="Slide 6"></button>
+        <div class="clean-card">
+          <div class="card-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&q=60" alt="Scanner">
+          </div>
+          <div class="card-content">
+            <span class="card-tag">Tools</span>
+            <h3>Document Scanner</h3>
+            <p>Turn handwritten notes and pages into clean, shareable PDF documents instantly.</p>
+            <a href="/scanner/" class="card-link">Open Scanner <i class="fas fa-arrow-right"></i></a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- STACKED CARDS -->
-    <section class="stack-section">
-      <div class="stack-bg-container">
-        <div class="stack-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=1200&q=60');"></div>
-        <div class="stack-bg-img" style="background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&q=60');"></div>
-        <div class="stack-bg-img" style="background-image: url('https://images.unsplash.com/photo-1448375240586-882707db888b?w=1200&q=60');"></div>
-        <div class="stack-bg-img" style="background-image: url('https://images.unsplash.com/photo-1589553416260-f586c8f1514f?w=1200&q=60');"></div>
+    <!-- COMPACT CARDS (Challenge, AutoQuiz, Calculator, Leaderboard) -->
+    <section class="section-container" style="padding-top: 0;">
+      <div class="section-head" style="margin-bottom: 30px;">
+        <h2>Level up your studies</h2>
+        <p>Packed with tools to help you succeed.</p>
       </div>
 
-      <div class="stack-inner">
-        <div class="stack-head">
-          <span class="stack-label">What's inside</span>
-          <h2>Everything a student <em>needs</em></h2>
-        </div>
-        <div class="stack-item">
-          <div class="stack-card">
-            <div class="stack-img">
-              <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&q=60');"></div>
-              <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=600&q=60');"></div>
-              <span class="stack-img-number">01</span>
-            </div>
-            <div class="stack-content">
-              <div class="stack-icon"><i class="fas fa-file-alt"></i></div>
-              <h3>Real Notes from Real Students</h3>
-              <p>PDFs, slides, and handwritten scans from students in your course. Every note is verified by the community and ready to download in one click.</p>
-              <a href="/browse/" class="stack-link">Browse Notes <i class="fas fa-arrow-right"></i></a>
-            </div>
+      <div class="compact-grid">
+        <a href="/quiz.html" class="compact-card">
+          <div class="compact-icon"><i class="fas fa-bolt"></i></div>
+          <h4>Challenge Yourself</h4>
+          <p>Take the daily quiz to earn points, maintain your streak, and test your knowledge.</p>
+          <span class="compact-link">Start Quiz <i class="fas fa-arrow-right"></i></span>
+        </a>
+
+        <a href="/autoquiz.html" class="compact-card">
+          <div class="compact-icon"><i class="fas fa-robot"></i></div>
+          <h4>AutoQuiz AI</h4>
+          <p>Upload your notes and let our AI generate custom practice questions instantly.</p>
+          <span class="compact-link">Try AutoQuiz <i class="fas fa-arrow-right"></i></span>
+        </a>
+
+        <a href="/calculator.html" class="compact-card">
+          <div class="compact-icon"><i class="fas fa-calculator"></i></div>
+          <h4>Student Calculator</h4>
+          <p>A smart calculator designed for students. GPA, scientific, and basic math tools.</p>
+          <span class="compact-link">Open Calculator <i class="fas fa-arrow-right"></i></span>
+        </a>
+
+        <a href="/leaderboard.html" class="compact-card">
+          <div class="compact-icon"><i class="fas fa-trophy"></i></div>
+          <h4>Leaderboard</h4>
+          <p>See how you rank against other students. Climb to the top and showcase your streak!</p>
+          <span class="compact-link">View Rankings <i class="fas fa-arrow-right"></i></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- EXPLORE PROGRAMS -->
+    <section class="section-container" style="background: var(--surface); border-radius: 40px; margin: 0 20px; box-shadow: var(--shadow-md); max-width: 1200px; margin-left: auto; margin-right: auto; border: 1px solid var(--border);">
+      <div class="section-head">
+        <h2>Explore our programs</h2>
+        <p>Level up your skills and test your knowledge.</p>
+      </div>
+
+      <div class="clean-grid">
+        <div class="clean-card">
+          <div class="card-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=60" alt="AI">
+          </div>
+          <div class="card-content">
+            <span class="card-tag">AutoQuiz AI</span>
+            <h3>Quiz yourself with AI</h3>
+            <p>AutoQuiz AI generates practice questions from your uploaded notes. Test yourself and prepare better.</p>
+            <a href="/autoquiz.html" class="card-link">Try AutoQuiz <i class="fas fa-arrow-right"></i></a>
           </div>
         </div>
-        <div class="stack-item">
-          <div class="stack-card">
-            <div class="stack-img">
-              <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=600&q=60');"></div>
-              <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&q=60');"></div>
-              <span class="stack-img-number">02</span>
-            </div>
-            <div class="stack-content">
-              <div class="stack-icon"><i class="fas fa-search"></i></div>
-              <h3>Smart Search by Module</h3>
-              <p>Type a module code or course name and get instant results. No scrolling through endless folders — the search understands what you're looking for.</p>
-              <a href="/browse/" class="stack-link">Try Search <i class="fas fa-arrow-right"></i></a>
-            </div>
+
+        <div class="clean-card">
+          <div class="card-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1504148455328-c376907d081c?w=1200&q=60" alt="Hackathon">
+          </div>
+          <div class="card-content">
+            <span class="card-tag">Hackathon</span>
+            <h3>Build. Compete. Win.</h3>
+            <p>Join our coding challenges, team up with other students, and showcase your skills.</p>
+            <a href="/hackerthon/" class="card-link">Join Hackathon <i class="fas fa-arrow-right"></i></a>
           </div>
         </div>
-        <div class="stack-item">
-          <div class="stack-card">
-            <div class="stack-img">
-              <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&q=60');"></div>
-              <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=600&q=60');"></div>
-              <span class="stack-img-number">03</span>
-            </div>
-            <div class="stack-content">
-              <div class="stack-icon"><i class="fas fa-camera-retro"></i></div>
-              <h3>Built-in Document Scanner</h3>
-              <p>Turn your phone into a document scanner. Auto-crop, enhance, and save straight to PDF — everything runs in the browser, no apps to install.</p>
-              <a href="/scanner/" class="stack-link">Open Scanner <i class="fas fa-arrow-right"></i></a>
-            </div>
+
+        <div class="clean-card">
+          <div class="card-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1524578271613-d550eacf6090?w=1200&q=60" alt="Courses">
           </div>
-        </div>
-        <div class="stack-item">
-          <div class="stack-card">
-            <div class="stack-img">
-              <div class="stack-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&q=60');"></div>
-              <div class="stack-img-bg" style="background-image: url('https://images.unsplash.com/photo-1543269865-cbf427effbad?w=600&q=60');"></div>
-              <span class="stack-img-number">04</span>
-            </div>
-            <div class="stack-content">
-              <div class="stack-icon"><i class="fas fa-users"></i></div>
-              <h3>Built by the Student Community</h3>
-              <p>Every note, every paper, every scan — shared by students like you. Contribute your own notes and help the next student ace their exams.</p>
-              <a href="/upload/" class="stack-link">Upload Yours <i class="fas fa-arrow-right"></i></a>
-            </div>
+          <div class="card-content">
+            <span class="card-tag">Free Courses</span>
+            <h3>Learn HTML, CSS &amp; more</h3>
+            <p>Professional, project-based lessons with 50 modules and 10 real capstone labs.</p>
+            <a href="/free_course/" class="card-link">Start Learning <i class="fas fa-arrow-right"></i></a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- EXPLORE -->
-    <section class="explore">
-      <div class="explore-bg-container">
-        <div class="explore-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=60');"></div>
-        <div class="explore-bg-img" style="background-image: url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&q=60');"></div>
-        <div class="explore-bg-img" style="background-image: url('https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=1200&q=60');"></div>
+    <!-- MEET YOUR COMMUNITY -->
+    <section class="section-container">
+      <div class="section-head">
+        <h2>Connect with peers</h2>
+        <p>Join the largest student network in Tanzania.</p>
       </div>
 
-      <div class="explore-inner">
-        <div class="explore-head">
-          <span class="explore-label">More from Student Hub</span>
-          <h2 id="explore-typing-text">Explore our <em>programs</em></h2>
-          <p>Free courses to level up your skills, an AI quiz tool, and a hackathon to prove them.</p>
+      <a href="/community.html" class="clean-card" style="display: flex; flex-direction: row; align-items: center; gap: 30px; max-width: 900px; margin: 0 auto; padding: 20px;">
+        <div style="flex-shrink: 0; width: 150px; height: 150px; border-radius: 20px; overflow: hidden;">
+          <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=60" alt="Community" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
-        <div class="explore-grid">
-          <a href="/free_course/" class="explore-card">
-            <div class="explore-icon free"><i class="fas fa-graduation-cap"></i></div>
-            <div class="explore-body">
-              <span class="explore-tag free">Free courses</span>
-              <h3>Learn HTML, CSS &amp; more</h3>
-              <p>Professional, project-based lessons with 50 modules and 10 real capstone labs. Track your progress as you go — 100% free.</p>
-              <span class="explore-cta">Start learning <i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
-          <a href="/autoquiz/" class="explore-card">
-            <div class="explore-icon quiz"><i class="fas fa-brain"></i></div>
-            <div class="explore-body">
-              <span class="explore-tag quiz">AutoQuiz AI</span>
-              <h3>Quiz yourself with AI</h3>
-              <p>AutoQuiz AI generates practice questions from your uploaded notes. Test yourself, see your weak spots, and prepare better for exams.</p>
-              <span class="explore-cta">Try AutoQuiz <i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
-          <a href="/hackerthon/" class="explore-card">
-            <div class="explore-icon hack"><i class="fas fa-code"></i></div>
-            <div class="explore-body">
-              <span class="explore-tag hack">Hackathon</span>
-              <h3>Build. Compete. Win.</h3>
-              <p>Join our coding challenges, team up with other students, and showcase your skills. Prizes, certificates, and real experience.</p>
-              <span class="explore-cta">Join hackathon <i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
-          <a href="/quiz/" class="explore-card">
-            <div class="explore-icon quiz" style="background:#fff7ed; color:#ea580c;"><i class="fas fa-fire"></i></div>
-            <div class="explore-body">
-              <span class="explore-tag quiz" style="background:#fff7ed; color:#ea580c; border-color:#fed7aa;">Daily Streak Quiz</span>
-              <h3>Subject Quizzes &amp; Streak Flames</h3>
-              <p>Bite-sized daily questions tailored to your field of study. Maintain your active streak, earn XP, and unlock rare animal and player tokens!</p>
-              <span class="explore-cta">Take daily quiz <i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
-          <a href="/leaderboard/" class="explore-card">
-            <div class="explore-icon" style="background:#fefce8; color:#ca8a04;"><i class="fas fa-trophy"></i></div>
-            <div class="explore-body">
-              <span class="explore-tag" style="background:#fefce8; color:#ca8a04; border-color:#fde047;">Campus Rankings</span>
-              <h3>Leaderboard &amp; Student Ranks</h3>
-              <p>Compete with scholars across Tanzania's top universities. See the podium champions, compare study streaks, and claim the #1 rank!</p>
-              <span class="explore-cta">View rankings <i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
-          <a href="/dashboard/" class="explore-card">
-            <div class="explore-icon" style="background:#fdf2f8; color:#db2777;"><i class="fas fa-medal"></i></div>
-            <div class="explore-body">
-              <span class="explore-tag" style="background:#fdf2f8; color:#db2777; border-color:#fbcfe8;">Student Workspace</span>
-              <h3>Personal Account &amp; Token Vault</h3>
-              <p>Track your upload history, save favourite books and past papers, monitor daily study progress, and equip unlocked badges on your profile!</p>
-              <span class="explore-cta">Open dashboard <i class="fas fa-arrow-right"></i></span>
-            </div>
-          </a>
+        <div class="card-content" style="padding: 10px;">
+          <span class="card-tag">Community</span>
+          <h3>Meet Your Community</h3>
+          <p style="margin-bottom: 10px;">Follow classmates, share resources, and build your study network. See what others are learning and collaborate on projects.</p>
+          <span class="card-link">Join the Community <i class="fas fa-arrow-right"></i></span>
         </div>
+      </a>
+    </section>
+
+    <!-- ABOUT STUDENT HUB SECTION -->
+    <section class="section-container">
+      <div class="about-card">
+        <h2>About Student Hub</h2>
+        <p>Student Hub is a 100% free, student-built platform designed to make studying easier. We believe that knowledge should be shared freely. Our mission is to connect students across Tanzania, giving everyone access to high-quality notes, past papers, and interactive tools to help them succeed.</p>
+        <a href="/about.html" class="btn-nav join" style="display: inline-flex; padding: 14px 32px; font-size: 1rem;">Learn More About Us <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></a>
+      </div>
+    </section>
+
+    <!-- ABOUT CREATOR SECTION -->
+    <section class="section-container" style="padding-top: 0;">
+      <div class="creator-card">
+        <div class="creator-avatar">
+          <i class="fas fa-user-astronaut"></i>
+        </div>
+        <h2>Meet the Creator</h2>
+        <p style="font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin-bottom: 30px;">Hi, I'm the developer behind Student Hub. I built this platform to solve a real problem I faced as a student: accessing reliable study materials. My goal is to empower every student in Tanzania and beyond with the tools they need to excel.</p>
+        <a href="/aboutcreator.html" class="btn-nav login" style="display: inline-flex; padding: 14px 32px; font-size: 1rem; background: var(--surface);">Read My Story <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></a>
       </div>
     </section>
 
     <!-- TOOLS -->
-    <section class="tools">
-      <div class="tools-bg-container">
-        <div class="tools-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1504148455328-c376907d081c?w=1200&q=60');"></div>
-        <div class="tools-bg-img" style="background-image: url('https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=1200&q=60');"></div>
+    <section class="section-container">
+      <div class="section-head">
+        <h2>Free resources we recommend</h2>
       </div>
-      <div class="tools-inner">
-        <div class="section-head">
-          <span class="section-label">More tools</span>
-          <h2>Free resources we recommend</h2>
-        </div>
-        <div class="tools-grid">
-          <a href="https://twarvis-pdf-50le.onrender.com" target="_blank" rel="noopener" class="tool">
-            <i class="fas fa-file-pdf"></i>
-            <span><strong>PDF Maker</strong><small>create &amp; edit PDFs</small></span>
-          </a>
-          <a href="https://indext.oneapp.dev" target="_blank" rel="noopener" class="tool">
-            <i class="fas fa-code"></i>
-            <span><strong>Code Convert</strong><small>file extension tools</small></span>
-          </a>
-          <a href="https://soma.dit.ac.tz/auth/login" target="_blank" rel="noopener" class="tool">
-            <i class="fas fa-university"></i>
-            <span><strong>Soma Portal</strong><small>DIT student portal</small></span>
-          </a>
-          <a href="https://movieboxapp.in" target="_blank" rel="noopener" class="tool">
-            <i class="fas fa-film"></i>
-            <span><strong>MovieBox</strong><small>movies &amp; shows</small></span>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="cta-section">
-      <div class="cta">
-        <div class="cta-bg-container">
-          <div class="cta-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1524578271613-d550eacf6090?w=1200&q=60');"></div>
-          <div class="cta-bg-img" style="background-image: url('https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=1200&q=60');"></div>
-        </div>
-        <div class="cta-inner">
-          <span class="cta-kicker">Help the next student</span>
-          <h3>Have notes to <em>share</em>?</h3>
-          <p>Upload them in seconds — a single file could help hundreds of students succeed.</p>
-          <a href="/upload/" class="btn-quote">Upload Now <i class="fas fa-arrow-right"></i></a>
-        </div>
+      <div class="tools-grid">
+        <a href="https://twarvis-pdf-50le.onrender.com" target="_blank" rel="noopener" class="tool-item">
+          <div class="tool-icon"><i class="fas fa-file-pdf"></i></div>
+          <div class="tool-text"><strong>PDF Maker</strong><small>create &amp; edit PDFs</small></div>
+        </a>
+        <a href="https://indext.oneapp.dev" target="_blank" rel="noopener" class="tool-item">
+          <div class="tool-icon"><i class="fas fa-code"></i></div>
+          <div class="tool-text"><strong>Code Convert</strong><small>file extensions</small></div>
+        </a>
+        <a href="https://soma.dit.ac.tz/auth/login" target="_blank" rel="noopener" class="tool-item">
+          <div class="tool-icon"><i class="fas fa-university"></i></div>
+          <div class="tool-text"><strong>Soma Portal</strong><small>DIT portal</small></div>
+        </a>
+        <a href="https://movieboxapp.in" target="_blank" rel="noopener" class="tool-item">
+          <div class="tool-icon"><i class="fas fa-film"></i></div>
+          <div class="tool-text"><strong>MovieBox</strong><small>movies &amp; shows</small></div>
+        </a>
       </div>
     </section>
 
     <!-- FOOTER -->
     <footer>
       <div class="footer-inner">
-        <div class="footer-top">
-          <div class="footer-brand">
-            <a href="/" class="logo">
-              <img src="/logo.png" alt="Student Hub Logo" class="logo-full-img" style="height:60px;">
-            </a>
-            <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
-          </div>
-          <div class="footer-col">
-            <h4>Pages</h4>
-            <ul>
-              <li><a href="/">Home</a></li>
-              <li><a href="/browse/">Browse</a></li>
-              <li><a href="/upload/">Upload</a></li>
-              <li><a href="/quiz/">Daily Quiz</a></li>
-              <li><a href="/leaderboard/">Leaderboard</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <h4>Tools</h4>
-            <ul>
-              <li><a href="/calculator/">Calculator</a></li>
-              <li><a href="/scanner/">Scanner</a></li>
-              <li><a href="/upload/">PDF Maker</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="footer-bottom">
-          <p>&copy; 2026 Student Hub. All rights reserved.</p>
-          <div class="footer-socials">
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-tiktok"></i></a>
-            <a href="#"><i class="fab fa-whatsapp"></i></a>
-          </div>
-        </div>
+        <img src="/logo.png" alt="Student Hub" class="logo-full-img" style="height: 40px;">
+        <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
+        <p style="font-size: 0.8rem; margin-top: 20px; color: var(--text-muted);">&copy; 2026 Student Hub. All rights reserved.</p>
       </div>
     </footer>
 
-  </div> <!-- end main-content -->
-
-  <!-- FLOATING CTA -->
-  <div class="floating-cta" id="floatingCTA">
-    <div class="fab-wrap">
-      {% if is_authenticated %}
-        <a href="/dashboard/" class="fab-main"><i class="fas fa-user-circle"></i> <span class="long">My Dashboard</span></a>
-      {% else %}
-        <a href="/signup/" class="fab-main"><i class="fas fa-sparkles"></i> <span class="long">Join Free</span></a>
-      {% endif %}
-    </div>
-    <div class="fab-wrap">
-      <a href="/quiz/" class="fab-secondary" data-tooltip="Daily Quiz"><i class="fas fa-fire"></i></a>
-    </div>
-    <button class="fab-close" onclick="document.getElementById('floatingCTA').style.display='none'; localStorage.setItem('sh_fab_hidden','1')" aria-label="Hide">
-      <i class="fas fa-times"></i>
-    </button>
   </div>
 
-  <!-- TNC POPUP -->
-  <div class="tnc-overlay" id="tncOverlay" style="display:none; position:fixed; inset:0; z-index:5000; background:rgba(15,15,25,.85); backdrop-filter:blur(10px); justify-content:center; align-items:center; padding:20px;">
-    <div class="tnc-content" style="background:var(--surface); border-radius:24px; padding:40px 36px 32px; max-width:560px; width:100%; text-align:left; box-shadow:0 30px 80px rgba(0,0,0,.6); position:relative; border-top:5px solid var(--accent);">
-      <div class="tnc-icon" style="width:64px; height:64px; background:var(--accent-dim); border-radius:16px; display:flex; align-items:center; justify-content:center; color:var(--accent); font-size:1.8rem; margin:0 auto 16px;">
-        <i class="fas fa-shield-alt"></i>
-      </div>
-      <h2 style="font-size:1.5rem; font-weight:900; color:var(--ink); text-align:center; margin-bottom:8px;">Welcome to Student Hub</h2>
-      <p style="text-align:center; color:var(--text-2); font-size:.88rem; margin-bottom:24px;">Please read and accept our terms before continuing</p>
-      <div class="tnc-body" style="background:var(--alt); border-radius:14px; padding:20px 22px; margin-bottom:22px; border:1px solid var(--border);">
-        <ul style="list-style:none; padding:0;">
-          <li style="display:flex; align-items:flex-start; gap:10px; color:var(--text-2); font-size:.86rem; line-height:1.6; margin-bottom:12px;"><i class="fas fa-check-circle" style="color:var(--accent); margin-top:4px;"></i><span><strong>Free to use:</strong> Student Hub is 100% free for all students. No hidden fees.</span></li>
-          <li style="display:flex; align-items:flex-start; gap:10px; color:var(--text-2); font-size:.86rem; line-height:1.6;"><i class="fas fa-check-circle" style="color:var(--accent); margin-top:4px;"></i><span><strong>Respect copyright:</strong> Only upload materials you have the right to share.</span></li>
-        </ul>
-      </div>
-      <div class="tnc-actions" style="display:flex; gap:12px;">
-        <button class="tnc-btn decline" id="tncDecline" style="flex:1; padding:14px 20px; border-radius:12px; font-weight:800; background:var(--alt); color:var(--text-2); border:1px solid var(--border-strong); cursor:pointer;">Decline</button>
-        <button class="tnc-btn agree" id="tncAgree" style="flex:1; padding:14px 20px; border-radius:12px; font-weight:800; background:var(--grad-cta); color:#fff; border:none; cursor:pointer;">I Agree</button>
-      </div>
-    </div>
+  <!-- FLOATING CTA (Only show if not logged in) -->
+  {% if not user.is_authenticated %}
+  <div class="floating-cta">
+    <a href="/signup/" class="fab-main">
+      <i class="fas fa-sparkles"></i> <span class="long">Join Free</span>
+    </a>
   </div>
+  {% endif %}
 
   <!-- JAVASCRIPT -->
   <script>
@@ -1064,189 +754,37 @@
 
         function updateThemeMeta(theme) {
             const meta = document.getElementById('themeColorMeta');
-            if (meta) meta.content = theme === 'dark' ? '#120b08' : '#fafaf9';
+            if (meta) meta.content = theme === 'dark' ? '#120b08' : '#f8f9fa';
         }
     })();
 
-    // 2. SIDEBAR TOGGLE
-    (function(){
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        const toggle = document.getElementById('menuToggle');
-        const closeBtn = document.getElementById('closeSidebar');
+    // 2. SIDEBAR LOGIC
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const toggle = document.getElementById('menuToggle');
+    const closeBtn = document.getElementById('closeSidebar');
 
-        if (!sidebar || !toggle) return;
+    function openSidebar() {
+        sidebar.classList.add('open');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
 
-        function openSidebar() {
-            sidebar.classList.add('open');
-            if (overlay) overlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
+    function closeSidebar() {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    if(toggle) toggle.addEventListener('click', openSidebar);
+    if(closeBtn) closeBtn.addEventListener('click', closeSidebar);
+    if(overlay) overlay.addEventListener('click', closeSidebar);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+            closeSidebar();
         }
-
-        function closeSidebar() {
-            sidebar.classList.remove('open');
-            if (overlay) overlay.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        toggle.addEventListener('click', openSidebar);
-        if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
-        if (overlay) overlay.addEventListener('click', closeSidebar);
-
-        document.addEventListener('keydown', function(e){
-            if (e.key === 'Escape' && sidebar.classList.contains('open')) {
-                closeSidebar();
-            }
-        });
-    })();
-
-    // 3. HERO SLIDER
-    (function(){
-        const hero = document.getElementById('heroSlider');
-        const slides = document.querySelectorAll('.slide');
-        const dots = document.querySelectorAll('#heroDots button');
-        const swipeHint = document.getElementById('swipeHint');
-        const total = slides.length;
-        if (!hero || total === 0) return;
-        let current = 0, timer = null;
-        let startX=0, startY=0, isDragging=false, moved=false;
-        const SLIDE_INTERVAL = 5000;
-        const BG_INTERVAL = 3500;
-
-        function updateStack(){
-            slides.forEach((slide, i) => {
-                slide.classList.remove('active','passed','upcoming','far');
-                if (i === current) slide.classList.add('active');
-                else if (i < current) slide.classList.add('passed');
-                else {
-                    const distance = i - current;
-                    if (distance === 1) slide.classList.add('upcoming');
-                    else slide.classList.add('upcoming','far');
-                }
-            });
-            dots.forEach((d,i)=>d.classList.toggle('active', i===current));
-        }
-
-        function goTo(index){ current = (index + total) % total; updateStack(); }
-        function next(){ goTo(current + 1); }
-        function prev(){ goTo(current - 1); }
-        function start(){ stop(); timer = setInterval(next, SLIDE_INTERVAL); }
-        function stop(){ if (timer) clearInterval(timer); timer = null; }
-
-        dots.forEach((dot, i) => {
-            dot.addEventListener('click', (e) => { e.stopPropagation(); goTo(i); start(); });
-        });
-
-        hero.addEventListener('mouseenter', stop);
-        hero.addEventListener('mouseleave', () => { if (!isDragging) start(); });
-        document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
-
-        const slidesBgs = [];
-        slides.forEach(s => slidesBgs.push(s.querySelectorAll('.slide-bg')));
-        let bgIndex = 0;
-        setInterval(() => {
-            slidesBgs.forEach(bgs => {
-                if (!bgs.length) return;
-                bgs.forEach(b => b.classList.remove('active'));
-                bgIndex = bgIndex % bgs.length;
-                bgs[bgIndex].classList.add('active');
-            });
-            bgIndex++;
-        }, BG_INTERVAL);
-
-        const SWIPE_THRESHOLD = 50;
-        function onDragStart(x,y){ startX=x; startY=y; isDragging=true; moved=false; stop(); }
-        function onDragMove(x,y){ if(!isDragging) return; const dx=x-startX, dy=y-startY; if(Math.abs(dx) > 10 || Math.abs(dy) > 10) moved = true; }
-        function onDragEnd(x,y){
-            if(!isDragging) return;
-            const dx=x-startX, dy=y-startY;
-            isDragging=false;
-            const isHorizontal = Math.abs(dx) > Math.abs(dy);
-            const isVertical = Math.abs(dy) > Math.abs(dx);
-            if (isHorizontal && Math.abs(dx) > SWIPE_THRESHOLD) { if(dx < 0) next(); else prev(); hideHint(); }
-            else if (isVertical && Math.abs(dy) > SWIPE_THRESHOLD) { if(dy < 0) next(); else prev(); hideHint(); }
-            start();
-        }
-
-        hero.addEventListener('touchstart', e => { const t=e.touches[0]; onDragStart(t.clientX, t.clientY); }, { passive: true });
-        hero.addEventListener('touchmove', e => { const t=e.touches[0]; onDragMove(t.clientX, t.clientY); }, { passive: true });
-        hero.addEventListener('touchend', e => { const t=e.changedTouches[0]; onDragEnd(t.clientX, t.clientY); });
-        hero.addEventListener('mousedown', e => { if(e.target.closest('a')||e.target.closest('button')) return; onDragStart(e.clientX, e.clientY); });
-        window.addEventListener('mousemove', e => { if(isDragging) onDragMove(e.clientX, e.clientY); });
-        window.addEventListener('mouseup', e => { if(isDragging) onDragEnd(e.clientX, e.clientY); });
-
-        hero.querySelectorAll('.slide-btn').forEach(link => {
-            link.addEventListener('click', e => { if(moved){ e.preventDefault(); e.stopPropagation(); moved=false; } });
-        });
-
-        function hideHint(){ if(swipeHint) swipeHint.classList.add('hidden'); }
-        setTimeout(hideHint, 8000);
-
-        updateStack();
-        start();
-    })();
-
-    // 4. BACKGROUND ROTATIONS
-    [['.hero-section-bg-img',4500],['.stack-bg-img',5500],['.explore-bg-img',5000],['.tools-bg-img',5000],['.cta-bg-img',4500]].forEach(([sel, delay]) => {
-        const bgs = document.querySelectorAll(sel);
-        if(bgs.length === 0) return;
-        let idx = 0;
-        setInterval(() => {
-            bgs.forEach(b => b.classList.remove('active'));
-            idx = (idx + 1) % bgs.length;
-            bgs[idx].classList.add('active');
-        }, delay);
     });
-
-    // 5. STACKED CARDS IMAGE ROTATION
-    (function(){
-        const cards = document.querySelectorAll('.stack-card');
-        cards.forEach((card, cardIdx) => {
-            const bgs = card.querySelectorAll('.stack-img-bg');
-            if (bgs.length === 0) return;
-            let idx = 0;
-            const delay = 4000 + (cardIdx * 300);
-            setInterval(() => {
-                bgs.forEach(b => b.classList.remove('active'));
-                idx = (idx + 1) % bgs.length;
-                bgs[idx].classList.add('active');
-            }, delay);
-        });
-    })();
-
-    // 6. MISC (Hide FAB, logged in checks, TNC)
-    (function(){
-        if (localStorage.getItem('sh_fab_hidden') === '1') {
-            var f = document.getElementById('floatingCTA');
-            if (f) f.style.display = 'none';
-        }
-        if (document.body.classList.contains('logged-in')) {
-            document.querySelectorAll('.login-suggestion-banner, .btn-nav-login, .btn-nav-join').forEach(el => {
-                if(!el.closest('.nav-right')) el.style.display = 'none';
-            });
-        }
-        
-        const tncOverlay = document.getElementById('tncOverlay');
-        const tncAgree = document.getElementById('tncAgree');
-        if (tncOverlay && tncAgree) {
-            const accepted = localStorage.getItem('studenthub_tnc_accepted');
-            if (accepted !== 'true') {
-                setTimeout(() => {
-                    tncOverlay.style.display = 'flex';
-                    document.body.style.overflow = 'hidden';
-                }, 800);
-            }
-            tncAgree.addEventListener('click', () => {
-                localStorage.setItem('studenthub_tnc_accepted', 'true');
-                tncOverlay.style.display = 'none';
-                document.body.style.overflow = '';
-            });
-            document.getElementById('tncDecline').addEventListener('click', () => {
-                alert('You must accept the Terms & Conditions to use Student Hub.');
-            });
-        }
-    })();
   </script>
-  <script src="/static/hub.js"></script>
 </body>
 </html>
