@@ -1,1145 +1,1101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#f8f9fa" id="themeColorMeta" />
-<title>Browse Notes | Student Hub</title>
-<link rel="icon" type="image/png" href="/logo.png">
-<link rel="apple-touch-icon" href="/logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f9fa" id="themeColorMeta" />
+  <title>Browse Notes | Student Hub</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="apple-touch-icon" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    /* ----- THEME VARIABLES (DEFAULT IS LIGHT) ----- */
+    :root {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --ink: #111827;
+      --text-muted: #6b7280;
+      --accent: #2e8b57;
+      --accent-light: #e8f5e9;
+      --accent-dark: #236b42;
+      --border: rgba(0,0,0,0.05);
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<style>
-/* ----- THEME VARIABLES (DEFAULT IS LIGHT) ----- */
-:root {
-    --bg: #f8f9fa; 
-    --surface: #ffffff;
-    --ink: #111827;
-    --text-muted: #6b7280;
-    --accent: #2e8b57; 
-    --accent-light: #e8f5e9;
-    --accent-dark: #236b42;
-    --border: rgba(0,0,0,0.05);
-    
-    /* Sidebar Theme */
-    --sidebar-bg: rgba(255, 255, 255, 0.98);
-    --sidebar-icon-border: rgba(0,0,0,0.08);
-    --sidebar-icon-hover: rgba(0,0,0,0.03);
-    
-    /* Logo Container */
-    --logo-container-bg: transparent;
-    --logo-container-shadow: none;
-    
-    /* Animations */
-    --smooth-slide: cubic-bezier(0.16, 1, 0.3, 1);
-    --bounce-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
-    
-    /* Shadows */
-    --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
-    --shadow-md: 0 10px 30px rgba(0,0,0,0.06);
-    --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
-    --shadow-cta: 0 4px 12px rgba(46, 139, 87, 0.3);
-}
+      --sidebar-bg: rgba(255, 255, 255, 0.98);
+      --sidebar-icon-border: rgba(0,0,0,0.08);
+      --sidebar-icon-hover: rgba(0,0,0,0.03);
 
-/* DARK THEME OVERRIDES */
-[data-theme="dark"] {
-    --bg: #120b08; 
-    --surface: #1f1613;
-    --ink: #fafaf9;
-    --text-muted: #a8a29e;
-    --accent: #4ade80; 
-    --accent-light: #052e16;
-    --accent-dark: #22c55e;
-    --border: rgba(255,255,255,0.08);
-    
-    /* Sidebar Theme */
-    --sidebar-bg: rgba(31, 22, 19, 0.98);
-    --sidebar-icon-border: rgba(255,255,255,0.1);
-    --sidebar-icon-hover: rgba(255,255,255,0.05);
-    
-    /* Logo Container */
-    --logo-container-bg: rgba(255, 255, 255, 0.95);
-    --logo-container-shadow: 0 4px 16px rgba(0,0,0,0.4);
-    
-    /* Shadows */
-    --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
-    --shadow-md: 0 10px 30px rgba(0,0,0,0.5);
-    --shadow-lg: 0 20px 40px rgba(0,0,0,0.6);
-    --shadow-cta: 0 4px 12px rgba(74, 222, 128, 0.2);
-}
+      --logo-container-bg: transparent;
+      --logo-container-shadow: none;
 
-/* ----- RESET & BASE ----- */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; transition: background-color 0.35s ease; }
-body { 
-    font-family: 'Inter', sans-serif; 
-    background: var(--bg); 
-    color: var(--ink); 
-    line-height: 1.6; 
-    overflow-x: hidden; 
-    -webkit-font-smoothing: antialiased; 
-    transition: background-color 0.35s ease, color 0.35s ease;
-}
-a { color: inherit; text-decoration: none; }
-ul { list-style: none; }
-button { font-family: inherit; }
-img { max-width: 100%; height: auto; display: block; }
+      --smooth-slide: cubic-bezier(0.16, 1, 0.3, 1);
+      --bounce-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
 
-/* ----- NAVBAR ----- */
-.mainnav { 
-    background: var(--surface); 
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    position: sticky; top: 0; z-index: 100; 
-    transition: background-color 0.35s ease, border-color 0.35s ease;
-}
-.mainnav-inner { 
-    max-width: 1200px; margin: 0 auto; padding: 12px 20px; 
-    display: flex; justify-content: space-between; align-items: center; 
-    gap: 10px;
-}
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --shadow-md: 0 10px 30px rgba(0,0,0,0.06);
+      --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
+      --shadow-cta: 0 4px 12px rgba(46, 139, 87, 0.3);
+    }
 
-.nav-left { display: flex; align-items: center; gap: 12px; }
+    [data-theme="dark"] {
+      --bg: #120b08;
+      --surface: #1f1613;
+      --ink: #fafaf9;
+      --text-muted: #a8a29e;
+      --accent: #4ade80;
+      --accent-light: #052e16;
+      --accent-dark: #22c55e;
+      --border: rgba(255,255,255,0.08);
 
-.menu-toggle { 
-    display: flex; background: var(--bg); border: 1px solid var(--border); 
-    border-radius: 50%; width: 40px; height: 40px; align-items: center; justify-content: center; 
-    font-size: 1.1rem; color: var(--ink); cursor: pointer; box-shadow: var(--shadow-sm);
-    transition: all 0.3s; flex-shrink: 0;
-}
-.menu-toggle:hover { background: var(--surface); transform: scale(1.05); }
+      --sidebar-bg: rgba(31, 22, 19, 0.98);
+      --sidebar-icon-border: rgba(255,255,255,0.1);
+      --sidebar-icon-hover: rgba(255,255,255,0.05);
 
-.logo-full-img { 
-    height: 48px; width: auto; object-fit: contain; 
-    background: var(--logo-container-bg); padding: 4px 8px;
-    border-radius: 8px; box-shadow: var(--logo-container-shadow);
-    transition: all 0.35s ease;
-}
+      --logo-container-bg: rgba(255, 255, 255, 0.95);
+      --logo-container-shadow: 0 4px 16px rgba(0,0,0,0.4);
 
-.nav-right { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
+      --shadow-md: 0 10px 30px rgba(0,0,0,0.5);
+      --shadow-lg: 0 20px 40px rgba(0,0,0,0.6);
+      --shadow-cta: 0 4px 12px rgba(74, 222, 128, 0.2);
+    }
 
-.theme-toggle {
-    width: 40px; height: 40px; border-radius: 50%;
-    border: 1px solid var(--border); background: var(--bg); color: var(--ink);
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    font-size: 1rem; box-shadow: var(--shadow-sm);
-    transition: all .3s var(--smooth-slide);
-}
-.theme-toggle:hover { color: var(--accent); border-color: var(--accent); transform: scale(1.1) rotate(12deg); }
+    /* ----- RESET & BASE ----- */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; transition: background-color 0.35s ease; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.35s ease, color 0.35s ease;
+    }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    button { font-family: inherit; }
+    img { max-width: 100%; height: auto; display: block; }
 
-.streak-pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: #fff7ed; color: #ea580c; border: 1.5px solid #fed7aa;
-    padding: 6px 12px; border-radius: 999px; font-weight: 800; font-size: 0.8rem;
-    text-decoration: none; transition: all 0.25s var(--smooth-slide);
-    white-space: nowrap;
-}
-[data-theme="dark"] .streak-pill { background: #2c1a0e; color: #fb923c; border-color: #ea580c; }
-.streak-pill:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(234,88,12,0.4); }
+    /* ----- NAVBAR ----- */
+    .mainnav {
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      transition: background-color 0.35s ease, border-color 0.35s ease;
+    }
+    .mainnav-inner {
+      max-width: 1200px; margin: 0 auto; padding: 12px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 10px;
+    }
 
-.profile-pill {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: var(--bg); border: 1.5px solid var(--border);
-    padding: 4px 10px 4px 4px; border-radius: 999px;
-    font-weight: 700; font-size: 0.85rem; color: var(--ink);
-    transition: all 0.25s var(--smooth-slide);
-    white-space: nowrap;
-}
-.profile-pill:hover { border-color: var(--accent); background: var(--surface); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
-.avatar-circle {
-    width: 28px; height: 28px; border-radius: 50%;
-    background: var(--accent); color: #fff;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 800; font-size: 0.75rem; overflow: hidden;
-}
-.avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+    .nav-left { display: flex; align-items: center; gap: 12px; }
 
-.btn-nav { padding: 8px 14px; border-radius: 999px; font-weight: 600; font-size: 0.85rem; transition: all 0.3s var(--smooth-slide); white-space: nowrap; }
-.btn-nav.login { border: 1px solid var(--border); color: var(--ink); }
-.btn-nav.login:hover { background: var(--bg); }
-.btn-nav.join { background: var(--accent); color: #fff; box-shadow: var(--shadow-cta); }
-.btn-nav.join:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(46, 139, 87, 0.4); }
+    .menu-toggle {
+      display: flex; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 50%; width: 40px; height: 40px; align-items: center; justify-content: center;
+      font-size: 1.1rem; color: var(--ink); cursor: pointer; box-shadow: var(--shadow-sm);
+      transition: all 0.3s; flex-shrink: 0;
+    }
+    .menu-toggle:hover { background: var(--surface); transform: scale(1.05); }
 
-@media (max-width: 600px) {
-    .hide-mobile { display: none !important; }
-    .mainnav-inner { padding: 10px 15px; }
-    .logo-full-img { height: 40px; }
-    .streak-pill span { display: none; } 
-    .streak-pill { padding: 6px 8px; }
-    .profile-pill .username-text { display: none; } 
-    .profile-pill { padding: 4px; }
-}
+    .logo-full-img {
+      height: 48px; width: auto; object-fit: contain;
+      background: var(--logo-container-bg); padding: 4px 8px;
+      border-radius: 8px; box-shadow: var(--logo-container-shadow);
+      transition: all 0.35s ease;
+    }
 
-/* ----- POLISHED SIDEBAR ----- */
-.sidebar-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-    z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.5s var(--smooth-slide);
-}
-.sidebar-overlay.active { opacity: 1; visibility: visible; }
+    .nav-right { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
 
-.sidebar {
-    position: fixed; top: 0; left: 0; width: 85%; max-width: 320px; height: 100vh;
-    background: var(--sidebar-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    z-index: 1001; display: flex; flex-direction: column; padding: 24px 0;
-    box-shadow: 10px 0 40px rgba(0,0,0,0.08), inset -1px 0 0 rgba(255,255,255,0.8);
-    transform: translateX(-100%); transition: transform 0.65s var(--smooth-slide), background 0.35s ease;
-}
-.sidebar.open { transform: translateX(0); }
+    .theme-toggle {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid var(--border); background: var(--bg); color: var(--ink);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; box-shadow: var(--shadow-sm);
+      transition: all .3s var(--smooth-slide);
+    }
+    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); transform: scale(1.1) rotate(12deg); }
 
-.sidebar-header { display: flex; justify-content: flex-end; padding: 0 24px 20px; gap: 12px; }
-.icon-btn {
-    background: transparent; border: 1px solid var(--sidebar-icon-border); border-radius: 50%;
-    width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
-    cursor: pointer; color: var(--ink); transition: all 0.3s;
-}
-.icon-btn:hover { background: var(--sidebar-icon-hover); transform: scale(1.05); }
-.icon-btn svg { width: 18px; height: 18px; stroke-width: 1.5; }
+    .streak-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #fff7ed; color: #ea580c; border: 1.5px solid #fed7aa;
+      padding: 6px 12px; border-radius: 999px; font-weight: 800; font-size: 0.8rem;
+      text-decoration: none; transition: all 0.25s var(--smooth-slide);
+      white-space: nowrap;
+    }
+    [data-theme="dark"] .streak-pill { background: #2c1a0e; color: #fb923c; border-color: #ea580c; }
+    .streak-pill:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(234,88,12,0.4); }
 
-.mobile-user-card {
-    display: none; align-items: center; gap: 16px;
-    margin: 0 24px 20px; padding: 16px;
-    background: var(--bg); border-radius: 16px; border: 1px solid var(--border);
-}
-.mobile-user-card .avatar-circle { width: 44px; height: 44px; font-size: 1.1rem; }
-.mobile-user-info { flex: 1; }
-.mobile-user-info strong { display: block; font-size: 1rem; color: var(--ink); }
-.mobile-user-info span { font-size: 0.8rem; color: #ea580c; font-weight: 700; }
-[data-theme="dark"] .mobile-user-info span { color: #fb923c; }
+    .profile-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--bg); border: 1.5px solid var(--border);
+      padding: 4px 10px 4px 4px; border-radius: 999px;
+      font-weight: 700; font-size: 0.85rem; color: var(--ink);
+      transition: all 0.25s var(--smooth-slide);
+      white-space: nowrap;
+    }
+    .profile-pill:hover { border-color: var(--accent); background: var(--surface); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+    .avatar-circle {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.75rem; overflow: hidden;
+    }
+    .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
 
-.sidebar-nav { display: flex; flex-direction: column; padding: 0 24px; overflow-y: auto; flex: 1; }
-.sidebar-nav a {
-    display: flex; align-items: center; justify-content: space-between;
-    color: var(--ink); font-size: 16px; font-weight: 500; padding: 14px 0;
-    border-bottom: 2px solid transparent; transition: all 0.3s var(--smooth-slide);
-    opacity: 0; transform: translateX(-20px);
-}
-.sidebar.open .sidebar-nav a { opacity: 1; transform: translateX(0); }
+    .btn-nav { padding: 8px 14px; border-radius: 999px; font-weight: 600; font-size: 0.85rem; transition: all 0.3s var(--smooth-slide); white-space: nowrap; }
+    .btn-nav.login { border: 1px solid var(--border); color: var(--ink); }
+    .btn-nav.login:hover { background: var(--bg); }
+    .btn-nav.join { background: var(--accent); color: #fff; box-shadow: var(--shadow-cta); }
+    .btn-nav.join:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(46, 139, 87, 0.4); }
 
-.sidebar.open .sidebar-nav a:nth-child(1) { transition-delay: 0.1s; }
-.sidebar.open .sidebar-nav a:nth-child(2) { transition-delay: 0.15s; }
-.sidebar.open .sidebar-nav a:nth-child(3) { transition-delay: 0.2s; }
-.sidebar.open .sidebar-nav a:nth-child(4) { transition-delay: 0.25s; }
-.sidebar.open .sidebar-nav a:nth-child(5) { transition-delay: 0.3s; }
-.sidebar.open .sidebar-nav a:nth-child(6) { transition-delay: 0.35s; }
-.sidebar.open .sidebar-nav a:nth-child(7) { transition-delay: 0.4s; }
-.sidebar.open .sidebar-nav a:nth-child(8) { transition-delay: 0.45s; }
-.sidebar.open .sidebar-nav a:nth-child(9) { transition-delay: 0.5s; }
+    @media (max-width: 600px) {
+      .hide-mobile { display: none !important; }
+      .mainnav-inner { padding: 10px 15px; }
+      .logo-full-img { height: 40px; }
+      .streak-pill span { display: none; }
+      .streak-pill { padding: 6px 8px; }
+      .profile-pill .username-text { display: none; }
+      .profile-pill { padding: 4px; }
+    }
 
-.sidebar-nav a:hover, .sidebar-nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
-.sidebar-nav a i { font-size: 1.1rem; color: var(--text-muted); transition: color 0.3s; }
-.sidebar-nav a:hover i, .sidebar-nav a.active i { color: var(--accent); }
+    /* ----- POLISHED SIDEBAR ----- */
+    .sidebar-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.5s var(--smooth-slide);
+    }
+    .sidebar-overlay.active { opacity: 1; visibility: visible; }
 
-/* ----- HERO SECTION ----- */
-.browse-hero {
-    position: relative;
-    padding: 80px 20px 60px;
-    text-align: center;
-    overflow: hidden;
-    min-height: 40vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 1px solid var(--border);
-    /* NO BACKGROUND COLOR - Just the image */
-}
+    .sidebar {
+      position: fixed; top: 0; left: 0; width: 85%; max-width: 320px; height: 100vh;
+      background: var(--sidebar-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      z-index: 1001; display: flex; flex-direction: column; padding: 24px 0;
+      box-shadow: 10px 0 40px rgba(0,0,0,0.08), inset -1px 0 0 rgba(255,255,255,0.8);
+      transform: translateX(-100%); transition: transform 0.65s var(--smooth-slide), background 0.35s ease;
+    }
+    .sidebar.open { transform: translateX(0); }
 
-/* Image Tag used for background to ensure it loads perfectly */
-.browse-hero-img {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
-    object-fit: cover;
-    z-index: 0;
-}
+    .sidebar-header { display: flex; justify-content: flex-end; padding: 0 24px 20px; gap: 12px; }
+    .icon-btn {
+      background: transparent; border: 1px solid var(--sidebar-icon-border); border-radius: 50%;
+      width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--ink); transition: all 0.3s;
+    }
+    .icon-btn:hover { background: var(--sidebar-icon-hover); transform: scale(1.05); }
+    .icon-btn svg { width: 18px; height: 18px; stroke-width: 1.5; }
 
-/* NO OVERLAYS, NO DARK GRADIENTS */
+    .mobile-user-card {
+      display: none; align-items: center; gap: 16px;
+      margin: 0 24px 20px; padding: 16px;
+      background: var(--bg); border-radius: 16px; border: 1px solid var(--border);
+    }
+    .mobile-user-card .avatar-circle { width: 44px; height: 44px; font-size: 1.1rem; }
+    .mobile-user-info { flex: 1; }
+    .mobile-user-info strong { display: block; font-size: 1rem; color: var(--ink); }
+    .mobile-user-info span { font-size: 0.8rem; color: #ea580c; font-weight: 700; }
+    [data-theme="dark"] .mobile-user-info span { color: #fb923c; }
 
-.browse-hero-inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 2; }
+    .sidebar-nav { display: flex; flex-direction: column; padding: 0 24px; overflow-y: auto; flex: 1; }
+    .sidebar-nav a {
+      display: flex; align-items: center; justify-content: space-between;
+      color: var(--ink); font-size: 16px; font-weight: 500; padding: 14px 0;
+      border-bottom: 2px solid transparent; transition: all 0.3s var(--smooth-slide);
+      opacity: 0; transform: translateX(-20px);
+    }
+    .sidebar.open .sidebar-nav a { opacity: 1; transform: translateX(0); }
 
-/* Shaking Animation */
-@keyframes shakeText {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-2px) rotate(-1deg); }
-    50% { transform: translateX(2px) rotate(1deg); }
-    75% { transform: translateX(-1px) rotate(0); }
-}
-.shaking-label {
-    display: inline-block;
-    animation: shakeText 0.15s infinite;
-    color: #ffeb3b; /* Bright Gold */
-    font-size: .85rem;
-    font-weight: 800;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.5);
-}
+    .sidebar.open .sidebar-nav a:nth-child(1) { transition-delay: 0.1s; }
+    .sidebar.open .sidebar-nav a:nth-child(2) { transition-delay: 0.15s; }
+    .sidebar.open .sidebar-nav a:nth-child(3) { transition-delay: 0.2s; }
+    .sidebar.open .sidebar-nav a:nth-child(4) { transition-delay: 0.25s; }
+    .sidebar.open .sidebar-nav a:nth-child(5) { transition-delay: 0.3s; }
+    .sidebar.open .sidebar-nav a:nth-child(6) { transition-delay: 0.35s; }
+    .sidebar.open .sidebar-nav a:nth-child(7) { transition-delay: 0.4s; }
+    .sidebar.open .sidebar-nav a:nth-child(8) { transition-delay: 0.45s; }
+    .sidebar.open .sidebar-nav a:nth-child(9) { transition-delay: 0.5s; }
 
-/* Typing Text */
-.browse-hero h1 { 
-    font-size: clamp(1.8rem, 4vw, 3rem); 
-    font-weight: 900; 
-    line-height: 1.15; 
-    letter-spacing: -.025em; 
-    margin-bottom: 14px; 
-    color: #ffffff; 
-    min-height: 2.2em; 
-    text-shadow: 0 4px 15px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.6);
-}
-.typing-cursor { display: inline-block; width: 3px; height: .9em; background-color: #ffeb3b; margin-left: 4px; animation: blink .8s infinite; vertical-align: middle; }
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .sidebar-nav a:hover, .sidebar-nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .sidebar-nav a i { font-size: 1.1rem; color: var(--text-muted); transition: color 0.3s; }
+    .sidebar-nav a:hover i, .sidebar-nav a.active i { color: var(--accent); }
 
-.browse-hero p { 
-    color: #ffffff; 
-    font-size: clamp(.92rem, 1.4vw, 1.05rem); 
-    max-width: 560px; 
-    margin: 0 auto 28px; 
-    line-height: 1.7; 
-    text-shadow: 0 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.6); 
-}
+    /* ----- HERO SECTION (pic6.png as clear background) ----- */
+    .browse-hero {
+      position: relative;
+      padding: 80px 20px 60px;
+      text-align: center;
+      overflow: hidden;
+      min-height: 40vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border);
+      /* Background image directly on section – no filters, no overlays */
+      background-image: url('pic6.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
 
-.search-bar {
-    max-width: 560px; margin: 0 auto; display: flex; align-items: center;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 999px; overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); transition: all .25s;
-}
-.search-bar:focus-within { border-color: var(--accent); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6); }
-.search-bar i { padding: 0 4px 0 20px; color: var(--text-muted); font-size: .95rem; }
-.search-bar input { flex: 1; padding: 15px 14px; border: none; outline: none; font-size: .92rem; font-family: inherit; color: var(--ink); background: transparent; min-width: 0; }
-.search-bar input::placeholder { color: var(--text-muted); }
-.search-bar button { padding: 15px 26px; background: var(--accent); color: #fff; border: none; font-weight: 700; font-size: .85rem; cursor: pointer; transition: all .25s; white-space: nowrap; }
-.search-bar button:hover { background: var(--accent-dark); }
+    /* Remove any overlay/gradient – text readability via text-shadow only */
+    .browse-hero::before {
+      display: none;
+    }
 
-/* STATS BAR */
-.stats-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 20px; }
-.stats-inner { max-width: 1200px; margin: 0 auto; display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; font-size: .85rem; color: var(--text-muted); }
-.stats-inner span { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
-.stats-inner span i { color: var(--accent); font-size: .85rem; }
-.stats-inner strong { color: var(--ink); font-weight: 800; }
+    .browse-hero-inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 2; }
 
-/* BROWSE LIST */
-.browse-container {
-    position: relative;
-    padding: 30px 20px 60px;
-    min-height: 50vh;
-}
-.browse-content-wrapper { max-width: 1200px; margin: 0 auto; }
+    @keyframes shakeText {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-2px) rotate(-1deg); }
+      50% { transform: translateX(2px) rotate(1deg); }
+      75% { transform: translateX(-1px) rotate(0); }
+    }
+    .shaking-label {
+      display: inline-block;
+      animation: shakeText 0.15s infinite;
+      color: #ffeb3b;
+      font-size: .85rem;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.5);
+    }
 
-/* REDUCED CARD SIZE & GRID */
-.doc-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .browse-hero h1 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -.025em;
+      margin-bottom: 14px;
+      color: #ffffff;
+      min-height: 2.2em;
+      text-shadow: 0 4px 15px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.6);
+    }
+    .typing-cursor { display: inline-block; width: 3px; height: .9em; background-color: #ffeb3b; margin-left: 4px; animation: blink .8s infinite; vertical-align: middle; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-/* MODERN PROFESSIONAL DOC CARD */
-.doc-card {
-    display: flex;
-    flex-direction: column;
-    background: var(--surface);
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    overflow: hidden;
-    transition: all 0.3s var(--smooth-slide);
-    box-shadow: var(--shadow-sm);
-    position: relative;
-}
-.doc-card:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-4px);
-    border-color: var(--accent-light);
-}
+    .browse-hero p {
+      color: #ffffff;
+      font-size: clamp(.92rem, 1.4vw, 1.05rem);
+      max-width: 560px;
+      margin: 0 auto 28px;
+      line-height: 1.7;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.6);
+    }
 
-/* Image Area - Smaller */
-.doc-img-area {
-    height: 120px;
-    position: relative;
-    background: var(--bg);
-    overflow: hidden;
-}
-.doc-img-bg {
-    position: absolute; inset: 0;
-    background-size: cover;
-    background-position: center;
-    opacity: 0;
-    transition: opacity 1.2s ease-in-out;
-}
-.doc-img-bg.active { opacity: 1; }
+    .search-bar {
+      max-width: 560px; margin: 0 auto; display: flex; align-items: center;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 999px; overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); transition: all .25s;
+    }
+    .search-bar:focus-within { border-color: var(--accent); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6); }
+    .search-bar i { padding: 0 4px 0 20px; color: var(--text-muted); font-size: .95rem; }
+    .search-bar input { flex: 1; padding: 15px 14px; border: none; outline: none; font-size: .92rem; font-family: inherit; color: var(--ink); background: transparent; min-width: 0; }
+    .search-bar input::placeholder { color: var(--text-muted); }
+    .search-bar button { padding: 15px 26px; background: var(--accent); color: #fff; border: none; font-weight: 700; font-size: .85rem; cursor: pointer; transition: all .25s; white-space: nowrap; }
+    .search-bar button:hover { background: var(--accent-dark); }
 
-/* Badges over image */
-.doc-badge {
-    position: absolute; top: 8px; left: 8px; z-index: 2;
-    background: rgba(255,255,255,0.95); color: var(--ink);
-    font-size: 0.6rem; font-weight: 800; padding: 3px 8px; border-radius: 8px;
-    display: inline-flex; align-items: center; gap: 4px;
-    box-shadow: var(--shadow-sm);
-}
-.doc-badge i { color: var(--accent); }
+    /* STATS BAR */
+    .stats-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 20px; }
+    .stats-inner { max-width: 1200px; margin: 0 auto; display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; font-size: .85rem; color: var(--text-muted); }
+    .stats-inner span { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+    .stats-inner span i { color: var(--accent); font-size: .85rem; }
+    .stats-inner strong { color: var(--ink); font-weight: 800; }
 
-.doc-privacy {
-    position: absolute; top: 8px; right: 8px; z-index: 2;
-    font-size: 0.6rem; font-weight: 800; padding: 3px 8px; border-radius: 8px;
-    display: inline-flex; align-items: center; gap: 4px;
-    box-shadow: var(--shadow-sm);
-}
-.doc-privacy.public { background: #dcfce7; color: #14532d; }
-.doc-privacy.private { background: #fef3c7; color: #78350f; }
+    /* BROWSE LIST */
+    .browse-container {
+      position: relative;
+      padding: 30px 20px 60px;
+      min-height: 50vh;
+    }
+    .browse-content-wrapper { max-width: 1200px; margin: 0 auto; }
 
-.doc-img-dots {
-    position: absolute; bottom: 8px; left: 8px; z-index: 2;
-    display: flex; gap: 4px;
-}
-.doc-img-dots span {
-    width: 5px; height: 5px; border-radius: 50%;
-    background: rgba(255,255,255,0.5);
-    transition: all 0.3s;
-}
-.doc-img-dots span.active { background: #fff; width: 12px; border-radius: 3px; }
+    .doc-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
 
-/* Content Area - Compact */
-.doc-body {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-width: 0;
-}
+    .doc-card {
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: all 0.3s var(--smooth-slide);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+    .doc-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-4px);
+      border-color: var(--accent-light);
+    }
 
-.doc-module {
-    font-size: 1rem;
-    font-weight: 800;
-    color: var(--ink);
-    line-height: 1.3;
-    margin-bottom: 6px;
-}
-.doc-module .lock-icon { color: #f59e0b; font-size: 0.8rem; margin-right: 4px; }
+    .doc-img-area {
+      height: 120px;
+      position: relative;
+      background: var(--bg);
+      overflow: hidden;
+    }
+    .doc-img-bg {
+      position: absolute; inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1.2s ease-in-out;
+    }
+    .doc-img-bg.active { opacity: 1; }
 
-.doc-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    margin-bottom: 10px;
-}
-.doc-meta span { display: inline-flex; align-items: center; gap: 4px; }
-.doc-meta span i { color: var(--accent); font-size: 0.7rem; }
-.doc-meta .course { color: var(--ink); font-weight: 700; }
+    .doc-badge {
+      position: absolute; top: 8px; left: 8px; z-index: 2;
+      background: rgba(255,255,255,0.95); color: var(--ink);
+      font-size: 0.6rem; font-weight: 800; padding: 3px 8px; border-radius: 8px;
+      display: inline-flex; align-items: center; gap: 4px;
+      box-shadow: var(--shadow-sm);
+    }
+    .doc-badge i { color: var(--accent); }
 
-.doc-description {
-    color: var(--text-muted);
-    font-size: 0.8rem;
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    margin-bottom: 12px;
-    flex: 1;
-}
+    .doc-privacy {
+      position: absolute; top: 8px; right: 8px; z-index: 2;
+      font-size: 0.6rem; font-weight: 800; padding: 3px 8px; border-radius: 8px;
+      display: inline-flex; align-items: center; gap: 4px;
+      box-shadow: var(--shadow-sm);
+    }
+    .doc-privacy.public { background: #dcfce7; color: #14532d; }
+    .doc-privacy.private { background: #fef3c7; color: #78350f; }
 
-.doc-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: auto;
-    padding-top: 12px;
-    border-top: 1px solid var(--border);
-}
+    .doc-img-dots {
+      position: absolute; bottom: 8px; left: 8px; z-index: 2;
+      display: flex; gap: 4px;
+    }
+    .doc-img-dots span {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      transition: all 0.3s;
+    }
+    .doc-img-dots span.active { background: #fff; width: 12px; border-radius: 3px; }
 
-.doc-info {
-    display: flex;
-    gap: 8px;
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    font-weight: 600;
-    width: 100%;
-    margin-bottom: 8px;
-}
-.doc-info span { display: inline-flex; align-items: center; gap: 4px; }
-.doc-info i { font-size: 0.65rem; }
+    .doc-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0;
+    }
 
-.doc-actions { display: flex; gap: 6px; flex-wrap: wrap; width: 100%; }
+    .doc-module {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+    .doc-module .lock-icon { color: #f59e0b; font-size: 0.8rem; margin-right: 4px; }
 
-/* BUTTONS */
-.btn-like {
-    padding: 6px 10px;
-    background: var(--bg);
-    color: var(--ink);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    cursor: pointer;
-    transition: all .25s;
-    flex: 1;
-}
-.btn-like:hover { border-color: var(--accent); color: var(--accent); }
-.btn-like.liked { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
-[data-theme="dark"] .btn-like.liked { background: #450a0a; color: #f87171; border-color: #7f1d1d; }
-.btn-like.liked i { color: #dc2626; }
-[data-theme="dark"] .btn-like.liked i { color: #f87171; }
+    .doc-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .doc-meta span { display: inline-flex; align-items: center; gap: 4px; }
+    .doc-meta span i { color: var(--accent); font-size: 0.7rem; }
+    .doc-meta .course { color: var(--ink); font-weight: 700; }
 
-.btn-view {
-    padding: 6px 10px;
-    background: var(--surface);
-    color: var(--ink);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    cursor: pointer;
-    transition: all .25s;
-    text-decoration: none;
-    flex: 1;
-}
-.btn-view:hover { border-color: var(--ink); background: var(--bg); }
+    .doc-description {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 12px;
+      flex: 1;
+    }
 
-.btn-download {
-    padding: 6px 10px;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 999px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    cursor: pointer;
-    transition: all .25s;
-    box-shadow: var(--shadow-cta);
-    text-decoration: none;
-    flex: 1.5;
-}
-.btn-download:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(46,139,87,0.4); }
+    .doc-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
 
-/* EMPTY STATE */
-.empty-state {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 60px 20px;
-    background: var(--surface);
-    border-radius: 24px;
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-sm);
-}
-.empty-icon { font-size: 3rem; color: var(--accent-light); margin-bottom: 16px; }
-.empty-state h3 { font-size: 1.2rem; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
-.empty-state p { color: var(--text-muted); font-size: .95rem; margin-bottom: 24px; }
-.empty-btn {
-    display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px;
-    background: var(--accent); color: #fff; border-radius: 999px; font-weight: 700;
-    font-size: .9rem; transition: all .25s; box-shadow: var(--shadow-cta); text-decoration: none;
-}
-.empty-btn:hover { background: var(--accent-dark); transform: translateY(-2px); }
+    .doc-info {
+      display: flex;
+      gap: 8px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      width: 100%;
+      margin-bottom: 8px;
+    }
+    .doc-info span { display: inline-flex; align-items: center; gap: 4px; }
+    .doc-info i { font-size: 0.65rem; }
 
-/* CTA */
-.cta { background: var(--surface); border-top: 1px solid var(--border); padding: 50px 20px; }
-.cta-inner { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
-.cta h3 { color: var(--ink); font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; letter-spacing: -.02em; }
-.cta p { color: var(--text-muted); font-size: .95rem; }
+    .doc-actions { display: flex; gap: 6px; flex-wrap: wrap; width: 100%; }
 
-/* FOOTER */
-footer { background: var(--surface); border-top: 1px solid var(--border); padding: 50px 20px 30px; }
-.footer-inner { max-width: 1200px; margin: 0 auto; }
-.footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
-.footer-brand p { color: var(--text-muted); font-size: .9rem; margin-top: 16px; max-width: 320px; line-height: 1.7; }
-.footer-brand .logo { color: var(--ink); }
-.footer-col h4 { font-size: .85rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: var(--ink); margin-bottom: 16px; }
-.footer-col ul li { margin-bottom: 10px; }
-.footer-col ul li a { color: var(--text-muted); font-size: .9rem; transition: color .25s ease; }
-.footer-col ul li a:hover { color: var(--accent); }
-.footer-bottom { border-top: 1px solid var(--border); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
-.footer-bottom p { color: var(--text-muted); font-size: .85rem; }
-.footer-socials { display: flex; gap: 10px; }
-.footer-socials a { width: 38px; height: 38px; border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: .9rem; transition: all .25s; }
-.footer-socials a:hover { background: var(--accent); color: #fff; border-color: transparent; transform: translateY(-2px); }
+    .btn-like {
+      padding: 6px 10px;
+      background: var(--bg);
+      color: var(--ink);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all .25s;
+      flex: 1;
+    }
+    .btn-like:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-like.liked { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
+    [data-theme="dark"] .btn-like.liked { background: #450a0a; color: #f87171; border-color: #7f1d1d; }
+    .btn-like.liked i { color: #dc2626; }
+    [data-theme="dark"] .btn-like.liked i { color: #f87171; }
 
-/* TOAST */
-.sh-toast {
-    position: fixed; bottom: 24px; left: 50%;
-    transform: translateX(-50%) translateY(120%);
-    background: var(--ink); color: var(--surface);
-    padding: 14px 22px; border-radius: 14px;
-    font-weight: 700; font-size: .9rem;
-    box-shadow: var(--shadow-lg);
-    z-index: 2000; display: flex; align-items: center; gap: 10px;
-    transition: transform .4s var(--bounce-soft);
-    pointer-events: none; max-width: 90vw;
-}
-.sh-toast.show { transform: translateX(-50%) translateY(0); pointer-events: auto; }
-.sh-toast i { color: var(--accent); font-size: 1rem; }
-.sh-toast a { color: var(--accent); text-decoration: underline; font-weight: 800; }
+    .btn-view {
+      padding: 6px 10px;
+      background: var(--surface);
+      color: var(--ink);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all .25s;
+      text-decoration: none;
+      flex: 1;
+    }
+    .btn-view:hover { border-color: var(--ink); background: var(--bg); }
 
-/* RESPONSIVE */
-@media (max-width: 900px) {
-    .footer-top { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 720px) {
-    .doc-list { grid-template-columns: 1fr; }
-    .browse-hero { padding: 60px 18px 40px; min-height: 30vh; }
-    .browse-hero h1 { font-size: clamp(1.6rem, 6vw, 2.2rem); }
-    .footer-top { gap: 26px; }
-}
-@media (max-width: 560px) {
-    .browse-hero { padding: 50px 16px 30px; }
-    .browse-hero h1 { font-size: 1.5rem; }
-    .browse-container { padding: 24px 14px 50px; }
-    .doc-body { padding: 16px; }
-    .doc-module { font-size: 1rem; }
-    .search-bar input { padding: 13px 12px; font-size: .88rem; }
-    .search-bar button { padding: 13px 18px; font-size: .78rem; }
-    .footer-top { grid-template-columns: 1fr; gap: 24px; }
-    .cta-inner { flex-direction: column; text-align: center; }
-}
-@media (prefers-reduced-motion:reduce) {
-    * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-}
-</style>
+    .btn-download {
+      padding: 6px 10px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all .25s;
+      box-shadow: var(--shadow-cta);
+      text-decoration: none;
+      flex: 1.5;
+    }
+    .btn-download:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(46,139,87,0.4); }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      background: var(--surface);
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+    .empty-icon { font-size: 3rem; color: var(--accent-light); margin-bottom: 16px; }
+    .empty-state h3 { font-size: 1.2rem; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
+    .empty-state p { color: var(--text-muted); font-size: .95rem; margin-bottom: 24px; }
+    .empty-btn {
+      display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px;
+      background: var(--accent); color: #fff; border-radius: 999px; font-weight: 700;
+      font-size: .9rem; transition: all .25s; box-shadow: var(--shadow-cta); text-decoration: none;
+    }
+    .empty-btn:hover { background: var(--accent-dark); transform: translateY(-2px); }
+
+    .cta { background: var(--surface); border-top: 1px solid var(--border); padding: 50px 20px; }
+    .cta-inner { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+    .cta h3 { color: var(--ink); font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; letter-spacing: -.02em; }
+    .cta p { color: var(--text-muted); font-size: .95rem; }
+
+    footer { background: var(--surface); border-top: 1px solid var(--border); padding: 50px 20px 30px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+    .footer-brand p { color: var(--text-muted); font-size: .9rem; margin-top: 16px; max-width: 320px; line-height: 1.7; }
+    .footer-brand .logo { color: var(--ink); }
+    .footer-col h4 { font-size: .85rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: var(--ink); margin-bottom: 16px; }
+    .footer-col ul li { margin-bottom: 10px; }
+    .footer-col ul li a { color: var(--text-muted); font-size: .9rem; transition: color .25s ease; }
+    .footer-col ul li a:hover { color: var(--accent); }
+    .footer-bottom { border-top: 1px solid var(--border); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .footer-bottom p { color: var(--text-muted); font-size: .85rem; }
+    .footer-socials { display: flex; gap: 10px; }
+    .footer-socials a { width: 38px; height: 38px; border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: .9rem; transition: all .25s; }
+    .footer-socials a:hover { background: var(--accent); color: #fff; border-color: transparent; transform: translateY(-2px); }
+
+    .sh-toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(120%);
+      background: var(--ink); color: var(--surface);
+      padding: 14px 22px; border-radius: 14px;
+      font-weight: 700; font-size: .9rem;
+      box-shadow: var(--shadow-lg);
+      z-index: 2000; display: flex; align-items: center; gap: 10px;
+      transition: transform .4s var(--bounce-soft);
+      pointer-events: none; max-width: 90vw;
+    }
+    .sh-toast.show { transform: translateX(-50%) translateY(0); pointer-events: auto; }
+    .sh-toast i { color: var(--accent); font-size: 1rem; }
+    .sh-toast a { color: var(--accent); text-decoration: underline; font-weight: 800; }
+
+    @media (max-width: 900px) {
+      .footer-top { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 720px) {
+      .doc-list { grid-template-columns: 1fr; }
+      .browse-hero { padding: 60px 18px 40px; min-height: 30vh; }
+      .browse-hero h1 { font-size: clamp(1.6rem, 6vw, 2.2rem); }
+      .footer-top { gap: 26px; }
+    }
+    @media (max-width: 560px) {
+      .browse-hero { padding: 50px 16px 30px; }
+      .browse-hero h1 { font-size: 1.5rem; }
+      .browse-container { padding: 24px 14px 50px; }
+      .doc-body { padding: 16px; }
+      .doc-module { font-size: 1rem; }
+      .search-bar input { padding: 13px 12px; font-size: .88rem; }
+      .search-bar button { padding: 13px 18px; font-size: .78rem; }
+      .footer-top { grid-template-columns: 1fr; gap: 24px; }
+      .cta-inner { flex-direction: column; text-align: center; }
+    }
+    @media (prefers-reduced-motion:reduce) {
+      * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
 </head>
 <body class="{% if is_authenticated %}logged-in{% endif %}">
 
-<!-- SIDEBAR OVERLAY -->
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <!-- SIDEBAR OVERLAY -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-<!-- POLISHED SIDEBAR -->
-<aside class="sidebar" id="sidebar">
+  <!-- POLISHED SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-        <button class="icon-btn" aria-label="Search">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        </button>
-        <button class="icon-btn" id="closeSidebar" aria-label="Close menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
+      <button class="icon-btn" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </button>
+      <button class="icon-btn" id="closeSidebar" aria-label="Close menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
     </div>
 
     {% if is_authenticated %}
     <a href="/profile/{{ current_student.username }}/" class="mobile-user-card" style="display: flex;">
-        <div class="avatar-circle">
-            {% if current_student.avatar_url %}
-                <img src="{{ current_student.avatar_url }}" alt="Avatar">
-            {% else %}
-                {{ current_student.initial }}
-            {% endif %}
-        </div>
-        <div class="mobile-user-info">
-            <strong>{{ current_student.username }}</strong>
-            <span><i class="fas fa-fire"></i> {{ current_student.streak }} Day Streak</span>
-        </div>
-        <i class="fas fa-chevron-right" style="color: var(--text-muted);"></i>
+      <div class="avatar-circle">
+        {% if current_student.avatar_url %}
+          <img src="{{ current_student.avatar_url }}" alt="Avatar">
+        {% else %}
+          {{ current_student.initial }}
+        {% endif %}
+      </div>
+      <div class="mobile-user-info">
+        <strong>{{ current_student.username }}</strong>
+        <span><i class="fas fa-fire"></i> {{ current_student.streak }} Day Streak</span>
+      </div>
+      <i class="fas fa-chevron-right" style="color: var(--text-muted);"></i>
     </a>
     {% endif %}
 
     <nav class="sidebar-nav">
-        <a href="/">Home</a>
-        <a href="/browse/" class="active">Browse Notes</a>
-        <a href="/upload/">Upload</a>
-        <a href="/quiz/">Daily Quiz</a>
-        <a href="/leaderboard/">Leaderboard</a>
-        <a href="/community/">Community</a>
-        <a href="/free_course/">Free Courses</a>
-        <a href="/about/">About</a>
-        
-        {% if not is_authenticated %}
-        <a href="/login/" style="color: var(--accent); margin-top: 20px;">Log In</a>
-        <a href="/signup/" style="color: var(--accent);">Join Free</a>
-        {% endif %}
-    </nav>
-</aside>
+      <a href="/">Home</a>
+      <a href="/browse/" class="active">Browse Notes</a>
+      <a href="/upload/">Upload</a>
+      <a href="/quiz/">Daily Quiz</a>
+      <a href="/leaderboard/">Leaderboard</a>
+      <a href="/community/">Community</a>
+      <a href="/free_course/">Free Courses</a>
+      <a href="/about/">About</a>
 
-<!-- MAIN CONTENT -->
-<div class="main-content">
+      {% if not is_authenticated %}
+      <a href="/login/" style="color: var(--accent); margin-top: 20px;">Log In</a>
+      <a href="/signup/" style="color: var(--accent);">Join Free</a>
+      {% endif %}
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
 
     <!-- TOP BAR -->
     <div class="topbar" style="background: var(--ink); color: var(--surface); font-size: 0.75rem; padding: 8px 0; text-align: center;">
-        <a href="https://wa.me/255740706007" target="_blank" rel="noopener" style="color: #4ade80; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
-            <i class="fab fa-whatsapp"></i> Chat on WhatsApp
-        </a>
+      <a href="https://wa.me/255740706007" target="_blank" rel="noopener" style="color: #4ade80; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+        <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+      </a>
     </div>
 
     <!-- NAVBAR -->
     <nav class="mainnav">
-        <div class="mainnav-inner">
-            <div class="nav-left">
-                <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <a href="/" class="logo">
-                    <img src="/logo.png" alt="Student Hub" class="logo-full-img">
-                </a>
-            </div>
-
-            <div class="nav-right">
-                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-                    <i class="fas fa-moon" id="themeIcon"></i>
-                </button>
-
-                {% if is_authenticated %}
-                    <a href="/quiz/" class="streak-pill" title="Your Streak">
-                        <i class="fas fa-fire"></i> <span>{{ current_student.streak }}</span>
-                    </a>
-                    <a href="/profile/{{ current_student.username }}/" class="profile-pill" title="Go to Profile">
-                        <div class="avatar-circle">
-                            {% if current_student.avatar_url %}
-                                <img src="{{ current_student.avatar_url }}" alt="Avatar">
-                            {% else %}
-                                {{ current_student.initial }}
-                            {% endif %}
-                        </div>
-                        <span class="username-text">{{ current_student.username }}</span>
-                    </a>
-                {% else %}
-                    <a href="/login/?next=/browse/" class="btn-nav login hide-mobile">Log In</a>
-                    <a href="/signup/" class="btn-nav join">Join Free</a>
-                {% endif %}
-            </div>
+      <div class="mainnav-inner">
+        <div class="nav-left">
+          <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+            <i class="fas fa-bars"></i>
+          </button>
+          <a href="/" class="logo">
+            <img src="/logo.png" alt="Student Hub" class="logo-full-img">
+          </a>
         </div>
+
+        <div class="nav-right">
+          <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+            <i class="fas fa-moon" id="themeIcon"></i>
+          </button>
+
+          {% if is_authenticated %}
+            <a href="/quiz/" class="streak-pill" title="Your Streak">
+              <i class="fas fa-fire"></i> <span>{{ current_student.streak }}</span>
+            </a>
+            <a href="/profile/{{ current_student.username }}/" class="profile-pill" title="Go to Profile">
+              <div class="avatar-circle">
+                {% if current_student.avatar_url %}
+                  <img src="{{ current_student.avatar_url }}" alt="Avatar">
+                {% else %}
+                  {{ current_student.initial }}
+                {% endif %}
+              </div>
+              <span class="username-text">{{ current_student.username }}</span>
+            </a>
+          {% else %}
+            <a href="/login/?next=/browse/" class="btn-nav login hide-mobile">Log In</a>
+            <a href="/signup/" class="btn-nav join">Join Free</a>
+          {% endif %}
+        </div>
+      </div>
     </nav>
 
-    <!-- HERO SECTION (NO DARK BACKGROUND, NO OVERLAYS) -->
+    <!-- HERO SECTION – pic6.png as clear background (no filter, no overlay) -->
     <section class="browse-hero">
-        <!-- IMAGE TAG FOR pic6.png -->
-        <img src="pic6.png" alt="Hero Background" class="browse-hero-img">
-        
-        <div class="browse-hero-inner">
-            <span class="shaking-label">All Notes &amp; Papers</span>
-            <h1 id="typing-heading"></h1>
-            <p>Search notes, past papers, and study documents shared by students from universities across Tanzania.</p>
+      <div class="browse-hero-inner">
+        <span class="shaking-label">All Notes &amp; Papers</span>
+        <h1 id="typing-heading"></h1>
+        <p>Search notes, past papers, and study documents shared by students from universities across Tanzania.</p>
 
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Search by module, course, keyword..." autocomplete="off">
-                <button type="button" onclick="filterDocs()">Search</button>
-            </div>
+        <div class="search-bar">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchInput" placeholder="Search by module, course, keyword..." autocomplete="off">
+          <button type="button" onclick="filterDocs()">Search</button>
         </div>
+      </div>
     </section>
 
     <!-- STATS -->
     <div class="stats-bar">
-        <div class="stats-inner">
-            <span><i class="fas fa-file"></i> <strong id="totalCount">0</strong> Total</span>
-            <span><i class="fas fa-sticky-note"></i> <strong id="notesCount">0</strong> Notes</span>
-            <span><i class="fas fa-file-alt"></i> <strong id="papersCount">0</strong> Papers</span>
-        </div>
+      <div class="stats-inner">
+        <span><i class="fas fa-file"></i> <strong id="totalCount">0</strong> Total</span>
+        <span><i class="fas fa-sticky-note"></i> <strong id="notesCount">0</strong> Notes</span>
+        <span><i class="fas fa-file-alt"></i> <strong id="papersCount">0</strong> Papers</span>
+      </div>
     </div>
 
     <!-- BROWSE LIST -->
     <div class="browse-container">
-        <div class="browse-content-wrapper">
-            <div class="doc-list" id="docList">
-                {% if notes %}
-                    {% for note in notes %}
-                        <div class="doc-card"
-                             data-search="{{ note.module|default:''|lower }} {{ note.course|default:''|lower }} {{ note.description|default:''|lower }} {{ note.university|default:''|lower }} {{ note.file_type|default:''|lower }}"
-                             data-file-type="{{ note.file_type }}"
-                             data-privacy="{{ note.privacy }}">
+      <div class="browse-content-wrapper">
+        <div class="doc-list" id="docList">
+          {% if notes %}
+            {% for note in notes %}
+              <div class="doc-card"
+                   data-search="{{ note.module|default:''|lower }} {{ note.course|default:''|lower }} {{ note.description|default:''|lower }} {{ note.university|default:''|lower }} {{ note.file_type|default:''|lower }}"
+                   data-file-type="{{ note.file_type }}"
+                   data-privacy="{{ note.privacy }}">
 
-                            <!-- Top: Image Area -->
-                            <div class="doc-img-area">
-                                {% if note.file_type == 'pastpaper' %}
-                                    <div class="doc-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&q=60');"></div>
-                                    <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=600&q=60');"></div>
-                                    <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1550399105-c4db5fb85c18?w=600&q=60');"></div>
-                                {% else %}
-                                    <div class="doc-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&q=60');"></div>
-                                    <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&q=60');"></div>
-                                    <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&q=60');"></div>
-                                {% endif %}
+                <!-- Top: Image Area -->
+                <div class="doc-img-area">
+                  {% if note.file_type == 'pastpaper' %}
+                    <div class="doc-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&q=60');"></div>
+                    <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=600&q=60');"></div>
+                    <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1550399105-c4db5fb85c18?w=600&q=60');"></div>
+                  {% else %}
+                    <div class="doc-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&q=60');"></div>
+                    <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&q=60');"></div>
+                    <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&q=60');"></div>
+                  {% endif %}
 
-                                <span class="doc-badge">
-                                    <i class="fas fa-{% if note.file_type == 'pastpaper' %}file-alt{% else %}sticky-note{% endif %}"></i>
-                                    {{ note.file_type|default:"notes"|title }}
-                                </span>
+                  <span class="doc-badge">
+                    <i class="fas fa-{% if note.file_type == 'pastpaper' %}file-alt{% else %}sticky-note{% endif %}"></i>
+                    {{ note.file_type|default:"notes"|title }}
+                  </span>
 
-                                {% if note.privacy == 'private' %}
-                                    <span class="doc-privacy private"><i class="fas fa-lock"></i> Private</span>
-                                {% else %}
-                                    <span class="doc-privacy public"><i class="fas fa-globe"></i> Public</span>
-                                {% endif %}
+                  {% if note.privacy == 'private' %}
+                    <span class="doc-privacy private"><i class="fas fa-lock"></i> Private</span>
+                  {% else %}
+                    <span class="doc-privacy public"><i class="fas fa-globe"></i> Public</span>
+                  {% endif %}
 
-                                <div class="doc-img-dots">
-                                    <span class="active"></span><span></span><span></span>
-                                </div>
-                            </div>
+                  <div class="doc-img-dots">
+                    <span class="active"></span><span></span><span></span>
+                  </div>
+                </div>
 
-                            <!-- Bottom: Content Area -->
-                            <div class="doc-body">
-                                <h3 class="doc-module">
-                                    {% if note.privacy == 'private' %}
-                                        <i class="fas fa-lock lock-icon"></i>
-                                    {% endif %}
-                                    {{ note.module|default:"Untitled" }}
-                                </h3>
+                <!-- Bottom: Content Area -->
+                <div class="doc-body">
+                  <h3 class="doc-module">
+                    {% if note.privacy == 'private' %}
+                      <i class="fas fa-lock lock-icon"></i>
+                    {% endif %}
+                    {{ note.module|default:"Untitled" }}
+                  </h3>
 
-                                <div class="doc-meta">
-                                    <span class="course"><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
-                                    <span><i class="fas fa-university"></i> {{ note.university|default:"Not specified" }}</span>
-                                </div>
+                  <div class="doc-meta">
+                    <span class="course"><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
+                    <span><i class="fas fa-university"></i> {{ note.university|default:"Not specified" }}</span>
+                  </div>
 
-                                {% if note.description %}
-                                    <div class="doc-description">{{ note.description|truncatechars:100 }}</div>
-                                {% endif %}
+                  {% if note.description %}
+                    <div class="doc-description">{{ note.description|truncatechars:100 }}</div>
+                  {% endif %}
 
-                                <div class="doc-footer">
-                                    <div class="doc-info">
-                                        <span><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
-                                        <span><i class="fas fa-file"></i> {{ note.file_size|default:0|filesizeformat }}</span>
-                                    </div>
-
-                                    <div class="doc-actions">
-                                        <button class="btn-like {% if note.user_liked %}liked{% endif %}"
-                                                data-note-id="{{ note.id }}"
-                                                data-logged-in="{% if is_authenticated %}1{% else %}0{% endif %}"
-                                                title="{% if is_authenticated %}Like this note{% else %}Log in to like{% endif %}">
-                                            <i class="{% if note.user_liked %}fas{% else %}far{% endif %} fa-heart"></i>
-                                            <span class="like-count">{{ note.like_count|default:0 }}</span>
-                                        </button>
-                                        {% if note.can_view_inline %}
-                                            <a href="/view/{{ note.id }}/" class="btn-view">
-                                                <i class="fas fa-eye"></i> View
-                                            </a>
-                                        {% endif %}
-                                        <a href="/download/{{ note.id }}/" class="btn-download" download>
-                                            <i class="fas fa-download"></i> Download
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="empty-state">
-                        <div class="empty-icon"><i class="fas fa-book-open"></i></div>
-                        <h3>No files yet</h3>
-                        <p>Be the first to share your study materials with fellow students.</p>
-                        <a href="/upload/" class="empty-btn">
-                            <i class="fas fa-cloud-upload-alt"></i> Upload Now
-                        </a>
+                  <div class="doc-footer">
+                    <div class="doc-info">
+                      <span><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
+                      <span><i class="fas fa-file"></i> {{ note.file_size|default:0|filesizeformat }}</span>
                     </div>
-                {% endif %}
+
+                    <div class="doc-actions">
+                      <button class="btn-like {% if note.user_liked %}liked{% endif %}"
+                              data-note-id="{{ note.id }}"
+                              data-logged-in="{% if is_authenticated %}1{% else %}0{% endif %}"
+                              title="{% if is_authenticated %}Like this note{% else %}Log in to like{% endif %}">
+                        <i class="{% if note.user_liked %}fas{% else %}far{% endif %} fa-heart"></i>
+                        <span class="like-count">{{ note.like_count|default:0 }}</span>
+                      </button>
+                      {% if note.can_view_inline %}
+                        <a href="/view/{{ note.id }}/" class="btn-view">
+                          <i class="fas fa-eye"></i> View
+                        </a>
+                      {% endif %}
+                      <a href="/download/{{ note.id }}/" class="btn-download" download>
+                        <i class="fas fa-download"></i> Download
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="empty-state">
+              <div class="empty-icon"><i class="fas fa-book-open"></i></div>
+              <h3>No files yet</h3>
+              <p>Be the first to share your study materials with fellow students.</p>
+              <a href="/upload/" class="empty-btn">
+                <i class="fas fa-cloud-upload-alt"></i> Upload Now
+              </a>
             </div>
+          {% endif %}
         </div>
+      </div>
     </div>
 
     <!-- CTA -->
     <section class="cta">
-        <div class="cta-inner">
-            <div>
-                <h3>Have notes to share?</h3>
-                <p>Upload them in seconds — help the next student out.</p>
-            </div>
-            <a href="/upload/" class="btn-download" style="flex:none; padding: 12px 24px;">Upload Now <i class="fas fa-arrow-right"></i></a>
+      <div class="cta-inner">
+        <div>
+          <h3>Have notes to share?</h3>
+          <p>Upload them in seconds — help the next student out.</p>
         </div>
+        <a href="/upload/" class="btn-download" style="flex:none; padding: 12px 24px;">Upload Now <i class="fas fa-arrow-right"></i></a>
+      </div>
     </section>
 
     <!-- FOOTER -->
     <footer>
-        <div class="footer-inner">
-            <div class="footer-top">
-                <div class="footer-brand">
-                    <a href="/" class="logo">
-                        <img src="/logo.png" alt="Student Hub" class="logo-full-img" style="height: 40px;">
-                    </a>
-                    <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
-                </div>
+      <div class="footer-inner">
+        <div class="footer-top">
+          <div class="footer-brand">
+            <a href="/" class="logo">
+              <img src="/logo.png" alt="Student Hub" class="logo-full-img" style="height: 40px;">
+            </a>
+            <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
+          </div>
 
-                <div class="footer-col">
-                    <h4>Pages</h4>
-                    <ul>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/browse/">Browse</a></li>
-                        <li><a href="/upload/">Upload</a></li>
-                        <li><a href="/quiz/">Daily Quiz</a></li>
-                        <li><a href="/leaderboard/">Leaderboard</a></li>
-                        <li><a href="/free_course/">Free Courses</a></li>
-                        <li><a href="/about/">About</a></li>
-                    </ul>
-                </div>
+          <div class="footer-col">
+            <h4>Pages</h4>
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/browse/">Browse</a></li>
+              <li><a href="/upload/">Upload</a></li>
+              <li><a href="/quiz/">Daily Quiz</a></li>
+              <li><a href="/leaderboard/">Leaderboard</a></li>
+              <li><a href="/free_course/">Free Courses</a></li>
+              <li><a href="/about/">About</a></li>
+            </ul>
+          </div>
 
-                <div class="footer-col">
-                    <h4>Tools</h4>
-                    <ul>
-                        <li><a href="/calculator/">Calculator</a></li>
-                        <li><a href="/scanner/">Scanner</a></li>
-                        <li><a href="/upload/">PDF Maker</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <p>© 2026 Student Hub. All rights reserved.</p>
-                <div class="footer-socials">
-                    <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
-                </div>
-            </div>
+          <div class="footer-col">
+            <h4>Tools</h4>
+            <ul>
+              <li><a href="/calculator/">Calculator</a></li>
+              <li><a href="/scanner/">Scanner</a></li>
+              <li><a href="/upload/">PDF Maker</a></li>
+            </ul>
+          </div>
         </div>
+
+        <div class="footer-bottom">
+          <p>© 2026 Student Hub. All rights reserved.</p>
+          <div class="footer-socials">
+            <a href="https://www.instagram.com/twarvis_?igsh=aXF5YzA0enRwM2kx&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+            <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+      </div>
     </footer>
 
-</div>
+  </div>
 
-<!-- TOAST -->
-<div class="sh-toast" id="shToast">
+  <!-- TOAST -->
+  <div class="sh-toast" id="shToast">
     <i class="fas fa-info-circle"></i>
     <span id="shToastMsg">Done</span>
-</div>
+  </div>
 
-<script>
-// 1. THEME PERSISTENCE (Default to Light)
-(function() {
-    const savedTheme = localStorage.getItem('sh-theme');
-    const initialTheme = savedTheme ? savedTheme : 'light';
-    
-    document.documentElement.setAttribute('data-theme', initialTheme);
-    updateThemeMeta(initialTheme);
+  <script>
+    // 1. THEME PERSISTENCE
+    (function() {
+      const savedTheme = localStorage.getItem('sh-theme');
+      const initialTheme = savedTheme ? savedTheme : 'light';
+      document.documentElement.setAttribute('data-theme', initialTheme);
+      updateThemeMeta(initialTheme);
 
-    document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('DOMContentLoaded', function() {
         const toggle = document.getElementById('themeToggle');
         const icon = document.getElementById('themeIcon');
-
         function syncIcon() {
-            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            if (icon) icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+          const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+          if (icon) icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
         }
         syncIcon();
-
         if (toggle) {
-            toggle.addEventListener('click', function() {
-                const current = document.documentElement.getAttribute('data-theme');
-                const next = current === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', next);
-                localStorage.setItem('sh-theme', next);
-                updateThemeMeta(next);
-                syncIcon();
-            });
+          toggle.addEventListener('click', function() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('sh-theme', next);
+            updateThemeMeta(next);
+            syncIcon();
+          });
         }
-    });
+      });
 
-    function updateThemeMeta(theme) {
+      function updateThemeMeta(theme) {
         const meta = document.getElementById('themeColorMeta');
         if (meta) meta.content = theme === 'dark' ? '#120b08' : '#f8f9fa';
+      }
+    })();
+
+    // 2. SIDEBAR LOGIC
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const toggle = document.getElementById('menuToggle');
+    const closeBtn = document.getElementById('closeSidebar');
+
+    function openSidebar() {
+      sidebar.classList.add('open');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
     }
-})();
-
-// 2. SIDEBAR LOGIC
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('sidebarOverlay');
-const toggle = document.getElementById('menuToggle');
-const closeBtn = document.getElementById('closeSidebar');
-
-function openSidebar() {
-    sidebar.classList.add('open');
-    overlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeSidebar() {
-    sidebar.classList.remove('open');
-    overlay.classList.remove('active');
-    document.body.style.overflow = '';
-}
-
-if(toggle) toggle.addEventListener('click', openSidebar);
-if(closeBtn) closeBtn.addEventListener('click', closeSidebar);
-if(overlay) overlay.addEventListener('click', closeSidebar);
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    if(toggle) toggle.addEventListener('click', openSidebar);
+    if(closeBtn) closeBtn.addEventListener('click', closeSidebar);
+    if(overlay) overlay.addEventListener('click', closeSidebar);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && sidebar.classList.contains('open')) {
         closeSidebar();
-    }
-});
+      }
+    });
 
-// 3. Typing effect for "See Uploaded Notes"
-(function(){
-    const element = document.getElementById('typing-heading');
-    if (!element) return;
-    const fullText = "See Uploaded Notes";
-    let charIndex = 0;
-    let isDeleting = false;
-
-    function updateText() {
+    // 3. Typing effect
+    (function(){
+      const element = document.getElementById('typing-heading');
+      if (!element) return;
+      const fullText = "See Uploaded Notes";
+      let charIndex = 0;
+      let isDeleting = false;
+      function updateText() {
         let currentText = fullText.substring(0, charIndex);
         element.innerHTML = currentText + '<span class="typing-cursor"></span>';
-
         if (!isDeleting) {
-            if (charIndex < fullText.length) {
-                charIndex++;
-                setTimeout(updateText, 80);
-            } else {
-                isDeleting = true;
-                setTimeout(updateText, 2500);
-            }
+          if (charIndex < fullText.length) {
+            charIndex++;
+            setTimeout(updateText, 80);
+          } else {
+            isDeleting = true;
+            setTimeout(updateText, 2500);
+          }
         } else {
-            if (charIndex > 0) {
-                charIndex--;
-                setTimeout(updateText, 40);
-            } else {
-                isDeleting = false;
-                setTimeout(updateText, 600);
-            }
+          if (charIndex > 0) {
+            charIndex--;
+            setTimeout(updateText, 40);
+          } else {
+            isDeleting = false;
+            setTimeout(updateText, 600);
+          }
         }
-    }
-    setTimeout(updateText, 500);
-})();
+      }
+      setTimeout(updateText, 500);
+    })();
 
-// 4. Doc image rotation
-(function(){
-    const cards = document.querySelectorAll('.doc-card');
-    cards.forEach((card, cardIdx) => {
+    // 4. Doc image rotation
+    (function(){
+      const cards = document.querySelectorAll('.doc-card');
+      cards.forEach((card, cardIdx) => {
         const bgs = card.querySelectorAll('.doc-img-bg');
         const dots = card.querySelectorAll('.doc-img-dots span');
         if(bgs.length === 0) return;
         let idx = 0;
         const delay = 3000 + (cardIdx % 3) * 400 + Math.random() * 800;
         setInterval(() => {
-            bgs.forEach(b => b.classList.remove('active'));
-            dots.forEach(d => d.classList.remove('active'));
-            idx = (idx + 1) % bgs.length;
-            bgs[idx].classList.add('active');
-            if(dots[idx]) dots[idx].classList.add('active');
+          bgs.forEach(b => b.classList.remove('active'));
+          dots.forEach(d => d.classList.remove('active'));
+          idx = (idx + 1) % bgs.length;
+          bgs[idx].classList.add('active');
+          if(dots[idx]) dots[idx].classList.add('active');
         }, delay);
-    });
-})();
+      });
+    })();
 
-// 5. Search filter
-function filterDocs(){
-    const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
-    const cards = document.querySelectorAll('.doc-card');
-    let visible = 0, notes = 0, papers = 0;
-    cards.forEach(card => {
+    // 5. Search filter
+    function filterDocs(){
+      const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      const cards = document.querySelectorAll('.doc-card');
+      let visible = 0, notes = 0, papers = 0;
+      cards.forEach(card => {
         const data = (card.dataset.search || '').toLowerCase();
         if (!q || data.indexOf(q) !== -1) {
-            card.style.display = '';
-            visible++;
-            if (card.dataset.fileType === 'pastpaper') papers++;
-            else notes++;
+          card.style.display = '';
+          visible++;
+          if (card.dataset.fileType === 'pastpaper') papers++;
+          else notes++;
         } else {
-            card.style.display = 'none';
+          card.style.display = 'none';
         }
-    });
-    document.getElementById('totalCount').textContent = visible;
-    document.getElementById('notesCount').textContent = notes;
-    document.getElementById('papersCount').textContent = papers;
-}
-
-const searchInput = document.getElementById('searchInput');
-if (searchInput) {
-    let debounce;
-    searchInput.addEventListener('input', () => {
+      });
+      document.getElementById('totalCount').textContent = visible;
+      document.getElementById('notesCount').textContent = notes;
+      document.getElementById('papersCount').textContent = papers;
+    }
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+      let debounce;
+      searchInput.addEventListener('input', () => {
         clearTimeout(debounce);
         debounce = setTimeout(filterDocs, 150);
-    });
-    searchInput.addEventListener('keypress', (e) => {
+      });
+      searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') { e.preventDefault(); filterDocs(); }
-    });
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const cards = document.querySelectorAll('.doc-card');
-    let notes = 0, papers = 0;
-    cards.forEach(c => {
+      });
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.doc-card');
+      let notes = 0, papers = 0;
+      cards.forEach(c => {
         if (c.dataset.fileType === 'pastpaper') papers++;
         else notes++;
+      });
+      document.getElementById('notesCount').textContent = notes;
+      document.getElementById('papersCount').textContent = papers;
+      document.getElementById('totalCount').textContent = cards.length;
     });
-    document.getElementById('notesCount').textContent = notes;
-    document.getElementById('papersCount').textContent = papers;
-    document.getElementById('totalCount').textContent = cards.length;
-});
 
-// 6. LIKE BUTTONS + TOAST
-(function(){
-    const toast = document.getElementById('shToast');
-    const toastMsg = document.getElementById('shToastMsg');
-    let toastTimer;
-
-    function showToast(html, duration = 2800) {
+    // 6. LIKE BUTTONS + TOAST
+    (function(){
+      const toast = document.getElementById('shToast');
+      const toastMsg = document.getElementById('shToastMsg');
+      let toastTimer;
+      function showToast(html, duration = 2800) {
         toastMsg.innerHTML = html;
         toast.classList.add('show');
         clearTimeout(toastTimer);
         toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
-    }
-
-    document.querySelectorAll('.btn-like').forEach(btn => {
+      }
+      document.querySelectorAll('.btn-like').forEach(btn => {
         btn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            const noteId = btn.dataset.noteId;
-            const isLoggedIn = btn.dataset.loggedIn === '1';
-
-            if (!isLoggedIn) {
-                showToast(
-                    'Please <a href="/login/?next=' + encodeURIComponent(window.location.pathname) + '">log in</a> to like notes.',
-                    3200
-                );
-                return;
+          e.preventDefault();
+          const noteId = btn.dataset.noteId;
+          const isLoggedIn = btn.dataset.loggedIn === '1';
+          if (!isLoggedIn) {
+            showToast(
+              'Please <a href="/login/?next=' + encodeURIComponent(window.location.pathname) + '">log in</a> to like notes.',
+              3200
+            );
+            return;
+          }
+          btn.disabled = true;
+          try {
+            let r = await fetch(`/api/like/${noteId}/`, {
+              method: 'POST',
+              headers: {'X-Requested-With': 'XMLHttpRequest'},
+              credentials: 'same-origin',
+            });
+            if (r.status === 401) {
+              await new Promise(res => setTimeout(res, 200));
+              r = await fetch(`/api/like/${noteId}/`, {
+                method: 'POST',
+                headers: {'X-Requested-With': 'XMLHttpRequest'},
+                credentials: 'same-origin',
+              });
             }
-
-            btn.disabled = true;
-            try {
-                let r = await fetch(`/api/like/${noteId}/`, {
-                    method: 'POST',
-                    headers: {'X-Requested-With': 'XMLHttpRequest'},
-                    credentials: 'same-origin',
-                });
-
-                if (r.status === 401) {
-                    await new Promise(res => setTimeout(res, 200));
-                    r = await fetch(`/api/like/${noteId}/`, {
-                        method: 'POST',
-                        headers: {'X-Requested-With': 'XMLHttpRequest'},
-                        credentials: 'same-origin',
-                    });
-                }
-
-                if (r.status === 401) {
-                    showToast('Session expired. Please <a href="/login/">log in again</a>.', 3200);
-                    btn.disabled = false;
-                    return;
-                }
-
-                const data = await r.json();
-                if (data.error) {
-                    showToast(data.error);
-                    btn.disabled = false;
-                    return;
-                }
-
-                const icon = btn.querySelector('i');
-                const countEl = btn.querySelector('.like-count');
-
-                if (data.liked) {
-                    btn.classList.add('liked','animate');
-                    icon.className = 'fas fa-heart';
-                    showToast('❤️ Liked!');
-                } else {
-                    btn.classList.remove('liked');
-                    icon.className = 'far fa-heart';
-                }
-                countEl.textContent = data.count;
-                setTimeout(() => btn.classList.remove('animate'), 600);
-            } catch (err) {
-                console.error(err);
-                showToast('Something went wrong');
+            if (r.status === 401) {
+              showToast('Session expired. Please <a href="/login/">log in again</a>.', 3200);
+              btn.disabled = false;
+              return;
             }
-            btn.disabled = false;
+            const data = await r.json();
+            if (data.error) {
+              showToast(data.error);
+              btn.disabled = false;
+              return;
+            }
+            const icon = btn.querySelector('i');
+            const countEl = btn.querySelector('.like-count');
+            if (data.liked) {
+              btn.classList.add('liked','animate');
+              icon.className = 'fas fa-heart';
+              showToast('❤️ Liked!');
+            } else {
+              btn.classList.remove('liked');
+              icon.className = 'far fa-heart';
+            }
+            countEl.textContent = data.count;
+            setTimeout(() => btn.classList.remove('animate'), 600);
+          } catch (err) {
+            console.error(err);
+            showToast('Something went wrong');
+          }
+          btn.disabled = false;
         });
-    });
-})();
-</script>
+      });
+    })();
+  </script>
 
 </body>
 </html>
