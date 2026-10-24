@@ -253,10 +253,6 @@ img { max-width: 100%; height: auto; display: block; }
     background-position: center;
     background-repeat: no-repeat;
 }
-.browse-hero::after {
-    content: ''; position: absolute; inset: 0;
-    background: rgba(0, 0, 0, 0.5); z-index: 1; /* Dark overlay for text readability */
-}
 
 .browse-hero-inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 2; color: #fff; }
 
@@ -324,128 +320,120 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .browse-content-wrapper { max-width: 1000px; margin: 0 auto; }
 
-.doc-list { display: flex; flex-direction: column; gap: 20px; }
+.doc-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
 
-/* MODERN PROFESSIONAL DOC CARD */
+/* MODERN PROFESSIONAL DOC CARD WITH IMAGE */
 .doc-card {
     display: flex;
+    flex-direction: column;
     background: var(--surface);
     border-radius: 20px;
     border: 1px solid var(--border);
     overflow: hidden;
     transition: all 0.3s var(--smooth-slide);
     box-shadow: var(--shadow-sm);
+    position: relative;
 }
 .doc-card:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-6px);
     border-color: var(--accent-light);
 }
 
-/* Left Side Icon */
-.doc-icon-area {
-    width: 100px;
+/* Image Area */
+.doc-img-area {
+    height: 180px;
+    position: relative;
     background: var(--bg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    border-right: 1px solid var(--border);
-    padding: 20px;
-    flex-shrink: 0;
+    overflow: hidden;
 }
-.doc-icon-area .file-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: var(--accent-light);
-    color: var(--accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
+.doc-img-bg {
+    position: absolute; inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1.2s ease-in-out;
 }
-.doc-icon-area .file-ext {
-    font-size: 0.75rem;
-    font-weight: 800;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
+.doc-img-bg.active { opacity: 1; }
 
-/* Right Side Content */
+/* Badges over image */
+.doc-badge {
+    position: absolute; top: 12px; left: 12px; z-index: 2;
+    background: rgba(255,255,255,0.95); color: var(--ink);
+    font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 12px;
+    display: inline-flex; align-items: center; gap: 4px;
+    box-shadow: var(--shadow-sm);
+}
+.doc-badge i { color: var(--accent); }
+
+.doc-privacy {
+    position: absolute; top: 12px; right: 12px; z-index: 2;
+    font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 12px;
+    display: inline-flex; align-items: center; gap: 4px;
+    box-shadow: var(--shadow-sm);
+}
+.doc-privacy.public { background: #dcfce7; color: #14532d; }
+.doc-privacy.private { background: #fef3c7; color: #78350f; }
+
+.doc-img-dots {
+    position: absolute; bottom: 12px; left: 12px; z-index: 2;
+    display: flex; gap: 4px;
+}
+.doc-img-dots span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    transition: all 0.3s;
+}
+.doc-img-dots span.active { background: #fff; width: 16px; border-radius: 3px; }
+
+/* Content Area */
 .doc-body {
-    padding: 24px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     flex: 1;
     min-width: 0;
 }
 
-.doc-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 16px;
-    margin-bottom: 8px;
-}
-
 .doc-module {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     font-weight: 800;
     color: var(--ink);
     line-height: 1.3;
-    margin: 0;
+    margin-bottom: 8px;
 }
-.doc-module .lock-icon { color: #f59e0b; font-size: 0.9rem; margin-right: 6px; }
-
-.doc-privacy-badge {
-    font-size: 0.65rem;
-    font-weight: 800;
-    padding: 4px 10px;
-    border-radius: 999px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    white-space: nowrap;
-}
-.doc-privacy-badge.public { background: #dcfce7; color: #14532d; }
-.doc-privacy-badge.private { background: #fef3c7; color: #78350f; }
-[data-theme="dark"] .doc-privacy-badge.public { background: #064e3b; color: #a7f3d0; }
-[data-theme="dark"] .doc-privacy-badge.private { background: #451a03; color: #fde68a; }
+.doc-module .lock-icon { color: #f59e0b; font-size: 0.85rem; margin-right: 4px; }
 
 .doc-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
-    font-size: 0.85rem;
+    gap: 12px;
+    font-size: 0.8rem;
     font-weight: 600;
     color: var(--text-muted);
     margin-bottom: 12px;
 }
-.doc-meta span { display: inline-flex; align-items: center; gap: 6px; }
-.doc-meta span i { color: var(--accent); font-size: 0.8rem; }
+.doc-meta span { display: inline-flex; align-items: center; gap: 5px; }
+.doc-meta span i { color: var(--accent); font-size: 0.75rem; }
 .doc-meta .course { color: var(--ink); font-weight: 700; }
 
 .doc-description {
     color: var(--text-muted);
-    font-size: 0.9rem;
-    line-height: 1.6;
+    font-size: 0.85rem;
+    line-height: 1.5;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
+    flex: 1;
 }
 
 .doc-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     flex-wrap: wrap;
     margin-top: auto;
     padding-top: 16px;
@@ -454,31 +442,32 @@ img { max-width: 100%; height: auto; display: block; }
 
 .doc-info {
     display: flex;
-    gap: 16px;
-    font-size: 0.8rem;
+    gap: 12px;
+    font-size: 0.75rem;
     color: var(--text-muted);
     font-weight: 600;
 }
-.doc-info span { display: inline-flex; align-items: center; gap: 5px; }
-.doc-info i { font-size: 0.75rem; }
+.doc-info span { display: inline-flex; align-items: center; gap: 4px; }
+.doc-info i { font-size: 0.7rem; }
 
-.doc-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.doc-actions { display: flex; gap: 8px; flex-wrap: wrap; width: 100%; }
 
 /* BUTTONS */
 .btn-like {
-    padding: 8px 16px;
+    padding: 8px 12px;
     background: var(--bg);
     color: var(--ink);
     border: 1px solid var(--border);
     border-radius: 999px;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 700;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    gap: 5px;
     cursor: pointer;
     transition: all .25s;
-    white-space: nowrap;
+    flex: 1;
 }
 .btn-like:hover { border-color: var(--accent); color: var(--accent); }
 .btn-like.liked { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
@@ -487,42 +476,47 @@ img { max-width: 100%; height: auto; display: block; }
 [data-theme="dark"] .btn-like.liked i { color: #f87171; }
 
 .btn-view {
-    padding: 8px 16px;
+    padding: 8px 12px;
     background: var(--surface);
     color: var(--ink);
     border: 1px solid var(--border);
     border-radius: 999px;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 700;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    gap: 5px;
     cursor: pointer;
     transition: all .25s;
     text-decoration: none;
+    flex: 1;
 }
 .btn-view:hover { border-color: var(--ink); background: var(--bg); }
 
 .btn-download {
-    padding: 8px 20px;
+    padding: 8px 12px;
     background: var(--accent);
     color: #fff;
     border: none;
     border-radius: 999px;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 700;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    gap: 5px;
     cursor: pointer;
     transition: all .25s;
     box-shadow: var(--shadow-cta);
     text-decoration: none;
+    flex: 1.5;
 }
 .btn-download:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(46,139,87,0.4); }
 
 /* EMPTY STATE */
 .empty-state {
+    grid-column: 1 / -1;
     text-align: center;
     padding: 80px 20px;
     background: var(--surface);
@@ -583,9 +577,7 @@ footer { background: var(--surface); border-top: 1px solid var(--border); paddin
     .footer-top { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 720px) {
-    .doc-card { flex-direction: column; }
-    .doc-icon-area { width: 100%; border-right: none; border-bottom: 1px solid var(--border); flex-direction: row; justify-content: flex-start; padding: 16px; gap: 12px; }
-    .doc-icon-area .file-icon { width: 36px; height: 36px; font-size: 1.1rem; }
+    .doc-list { grid-template-columns: 1fr; }
     .browse-hero { padding: 60px 18px 40px; min-height: 30vh; }
     .browse-hero h1 { font-size: clamp(1.6rem, 6vw, 2.2rem); }
     .footer-top { gap: 26px; }
@@ -594,14 +586,12 @@ footer { background: var(--surface); border-top: 1px solid var(--border); paddin
     .browse-hero { padding: 50px 16px 30px; }
     .browse-hero h1 { font-size: 1.5rem; }
     .browse-container { padding: 24px 14px 50px; }
-    .doc-body { padding: 20px; }
-    .doc-module { font-size: 1.1rem; }
+    .doc-body { padding: 16px; }
+    .doc-module { font-size: 1.05rem; }
     .search-bar input { padding: 13px 12px; font-size: .88rem; }
     .search-bar button { padding: 13px 18px; font-size: .78rem; }
     .footer-top { grid-template-columns: 1fr; gap: 24px; }
     .cta-inner { flex-direction: column; text-align: center; }
-    .doc-actions { width: 100%; }
-    .btn-view, .btn-download, .btn-like { flex: 1; justify-content: center; }
 }
 @media (prefers-reduced-motion:reduce) {
     * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
@@ -743,29 +733,42 @@ footer { background: var(--surface); border-top: 1px solid var(--border); paddin
                              data-file-type="{{ note.file_type }}"
                              data-privacy="{{ note.privacy }}">
 
-                            <!-- Left Side: File Type Icon -->
-                            <div class="doc-icon-area">
-                                <div class="file-icon">
+                            <!-- Top: Image Area -->
+                            <div class="doc-img-area">
+                                {% if note.file_type == 'pastpaper' %}
+                                    <div class="doc-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&q=60');"></div>
+                                    <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=600&q=60');"></div>
+                                    <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1550399105-c4db5fb85c18?w=600&q=60');"></div>
+                                {% else %}
+                                    <div class="doc-img-bg active" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=600&q=60');"></div>
+                                    <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&q=60');"></div>
+                                    <div class="doc-img-bg" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&q=60');"></div>
+                                {% endif %}
+
+                                <span class="doc-badge">
                                     <i class="fas fa-{% if note.file_type == 'pastpaper' %}file-alt{% else %}sticky-note{% endif %}"></i>
+                                    {{ note.file_type|default:"notes"|title }}
+                                </span>
+
+                                {% if note.privacy == 'private' %}
+                                    <span class="doc-privacy private"><i class="fas fa-lock"></i> Private</span>
+                                {% else %}
+                                    <span class="doc-privacy public"><i class="fas fa-globe"></i> Public</span>
+                                {% endif %}
+
+                                <div class="doc-img-dots">
+                                    <span class="active"></span><span></span><span></span>
                                 </div>
-                                <div class="file-ext">{{ note.file_ext|default:"FILE" }}</div>
                             </div>
 
-                            <!-- Right Side: Content -->
+                            <!-- Bottom: Content Area -->
                             <div class="doc-body">
-                                <div class="doc-header">
-                                    <h3 class="doc-module">
-                                        {% if note.privacy == 'private' %}
-                                            <i class="fas fa-lock lock-icon"></i>
-                                        {% endif %}
-                                        {{ note.module|default:"Untitled" }}
-                                    </h3>
+                                <h3 class="doc-module">
                                     {% if note.privacy == 'private' %}
-                                        <span class="doc-privacy-badge private"><i class="fas fa-lock"></i> Private</span>
-                                    {% else %}
-                                        <span class="doc-privacy-badge public"><i class="fas fa-globe"></i> Public</span>
+                                        <i class="fas fa-lock lock-icon"></i>
                                     {% endif %}
-                                </div>
+                                    {{ note.module|default:"Untitled" }}
+                                </h3>
 
                                 <div class="doc-meta">
                                     <span class="course"><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
@@ -773,7 +776,7 @@ footer { background: var(--surface); border-top: 1px solid var(--border); paddin
                                 </div>
 
                                 {% if note.description %}
-                                    <div class="doc-description">{{ note.description|truncatechars:140 }}</div>
+                                    <div class="doc-description">{{ note.description|truncatechars:100 }}</div>
                                 {% endif %}
 
                                 <div class="doc-footer">
@@ -824,7 +827,7 @@ footer { background: var(--surface); border-top: 1px solid var(--border); paddin
                 <h3>Have notes to share?</h3>
                 <p>Upload them in seconds — help the next student out.</p>
             </div>
-            <a href="/upload/" class="btn-download">Upload Now <i class="fas fa-arrow-right"></i></a>
+            <a href="/upload/" class="btn-download" style="flex:none; padding: 12px 24px;">Upload Now <i class="fas fa-arrow-right"></i></a>
         </div>
     </section>
 
@@ -979,7 +982,26 @@ document.addEventListener('keydown', (e) => {
     setTimeout(updateText, 500);
 })();
 
-// 4. Search filter
+// 4. Doc image rotation
+(function(){
+    const cards = document.querySelectorAll('.doc-card');
+    cards.forEach((card, cardIdx) => {
+        const bgs = card.querySelectorAll('.doc-img-bg');
+        const dots = card.querySelectorAll('.doc-img-dots span');
+        if(bgs.length === 0) return;
+        let idx = 0;
+        const delay = 3000 + (cardIdx % 3) * 400 + Math.random() * 800;
+        setInterval(() => {
+            bgs.forEach(b => b.classList.remove('active'));
+            dots.forEach(d => d.classList.remove('active'));
+            idx = (idx + 1) % bgs.length;
+            bgs[idx].classList.add('active');
+            if(dots[idx]) dots[idx].classList.add('active');
+        }, delay);
+    });
+})();
+
+// 5. Search filter
 function filterDocs(){
     const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
     const cards = document.querySelectorAll('.doc-card');
@@ -1023,7 +1045,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('papersCount').textContent = papers;
 });
 
-// 5. LIKE BUTTONS + TOAST
+// 6. LIKE BUTTONS + TOAST
 (function(){
     const toast = document.getElementById('shToast');
     const toastMsg = document.getElementById('shToastMsg');
