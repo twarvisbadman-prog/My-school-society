@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#120b08" id="themeColorMeta" />
+  <meta name="theme-color" content="#f8f9fa" id="themeColorMeta" />
   <title>Student Hub | Share Notes, Find Notes</title>
   <link rel="icon" type="image/png" href="/logo.png" />
 
@@ -14,39 +14,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <style>
-    /* ----- THEME VARIABLES (DEFAULT IS DARK) ----- */
+    /* ----- THEME VARIABLES (DEFAULT IS LIGHT) ----- */
     :root {
-      --bg: #120b08; 
-      --surface: #1f1613;
-      --ink: #fafaf9;
-      --text-muted: #a8a29e;
-      --accent: #4ade80; 
-      --accent-light: #052e16;
-      --accent-dark: #22c55e;
-      --border: rgba(255,255,255,0.08);
-      
-      /* Sidebar Theme */
-      --sidebar-bg: rgba(31, 22, 19, 0.98);
-      --sidebar-icon-border: rgba(255,255,255,0.1);
-      --sidebar-icon-hover: rgba(255,255,255,0.05);
-      
-      /* Logo Container */
-      --logo-container-bg: rgba(255, 255, 255, 0.95);
-      --logo-container-shadow: 0 4px 16px rgba(0,0,0,0.4);
-      
-      /* Animations */
-      --smooth-slide: cubic-bezier(0.16, 1, 0.3, 1);
-      --bounce-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
-      
-      /* Shadows */
-      --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
-      --shadow-md: 0 10px 30px rgba(0,0,0,0.5);
-      --shadow-lg: 0 20px 40px rgba(0,0,0,0.6);
-      --shadow-cta: 0 4px 12px rgba(74, 222, 128, 0.2);
-    }
-
-    /* LIGHT THEME OVERRIDES */
-    [data-theme="light"] {
       --bg: #f8f9fa; 
       --surface: #ffffff;
       --ink: #111827;
@@ -65,11 +34,42 @@
       --logo-container-bg: transparent;
       --logo-container-shadow: none;
       
+      /* Animations */
+      --smooth-slide: cubic-bezier(0.16, 1, 0.3, 1);
+      --bounce-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
+      
       /* Shadows */
       --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
       --shadow-md: 0 10px 30px rgba(0,0,0,0.06);
       --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
       --shadow-cta: 0 4px 12px rgba(46, 139, 87, 0.3);
+    }
+
+    /* DARK THEME OVERRIDES */
+    [data-theme="dark"] {
+      --bg: #120b08; 
+      --surface: #1f1613;
+      --ink: #fafaf9;
+      --text-muted: #a8a29e;
+      --accent: #4ade80; 
+      --accent-light: #052e16;
+      --accent-dark: #22c55e;
+      --border: rgba(255,255,255,0.08);
+      
+      /* Sidebar Theme */
+      --sidebar-bg: rgba(31, 22, 19, 0.98);
+      --sidebar-icon-border: rgba(255,255,255,0.1);
+      --sidebar-icon-hover: rgba(255,255,255,0.05);
+      
+      /* Logo Container */
+      --logo-container-bg: rgba(255, 255, 255, 0.95);
+      --logo-container-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      
+      /* Shadows */
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
+      --shadow-md: 0 10px 30px rgba(0,0,0,0.5);
+      --shadow-lg: 0 20px 40px rgba(0,0,0,0.6);
+      --shadow-cta: 0 4px 12px rgba(74, 222, 128, 0.2);
     }
 
     /* ----- RESET & BASE ----- */
@@ -112,8 +112,10 @@
     }
     .menu-toggle:hover { background: var(--surface); transform: scale(1.05); }
 
+    /* LOGO */
     .logo-full-img { 
-      height: 38px; width: auto; object-fit: contain; 
+      height: 48px; 
+      width: auto; object-fit: contain; 
       background: var(--logo-container-bg); padding: 4px 8px;
       border-radius: 8px; box-shadow: var(--logo-container-shadow);
       transition: all 0.35s ease;
@@ -132,12 +134,12 @@
 
     .streak-pill {
       display: inline-flex; align-items: center; gap: 6px;
-      background: #2c1a0e; color: #fb923c; border: 1.5px solid #ea580c;
+      background: #fff7ed; color: #ea580c; border: 1.5px solid #fed7aa;
       padding: 6px 12px; border-radius: 999px; font-weight: 800; font-size: 0.8rem;
       text-decoration: none; transition: all 0.25s var(--smooth-slide);
       white-space: nowrap;
     }
-    [data-theme="light"] .streak-pill { background: #fff7ed; color: #ea580c; border-color: #fed7aa; }
+    [data-theme="dark"] .streak-pill { background: #2c1a0e; color: #fb923c; border-color: #ea580c; }
     .streak-pill:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(234,88,12,0.4); }
     
     .profile-pill {
@@ -161,12 +163,12 @@
     .btn-nav.login { border: 1px solid var(--border); color: var(--ink); }
     .btn-nav.login:hover { background: var(--bg); }
     .btn-nav.join { background: var(--accent); color: #fff; box-shadow: var(--shadow-cta); }
-    .btn-nav.join:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(74, 222, 128, 0.4); }
+    .btn-nav.join:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(46, 139, 87, 0.4); }
 
     @media (max-width: 600px) {
       .hide-mobile { display: none !important; }
       .mainnav-inner { padding: 10px 15px; }
-      .logo-full-img { height: 32px; }
+      .logo-full-img { height: 40px; }
       .streak-pill span { display: none; } 
       .streak-pill { padding: 6px 8px; }
       .profile-pill .username-text { display: none; } 
@@ -175,7 +177,7 @@
 
     /* ----- POLISHED SIDEBAR ----- */
     .sidebar-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4);
       backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
       z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.5s var(--smooth-slide);
     }
@@ -185,7 +187,7 @@
       position: fixed; top: 0; left: 0; width: 85%; max-width: 320px; height: 100vh;
       background: var(--sidebar-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
       z-index: 1001; display: flex; flex-direction: column; padding: 24px 0;
-      box-shadow: 10px 0 40px rgba(0,0,0,0.2), inset -1px 0 0 rgba(255,255,255,0.1);
+      box-shadow: 10px 0 40px rgba(0,0,0,0.08), inset -1px 0 0 rgba(255,255,255,0.8);
       transform: translateX(-100%); transition: transform 0.65s var(--smooth-slide), background 0.35s ease;
     }
     .sidebar.open { transform: translateX(0); }
@@ -207,8 +209,8 @@
     .mobile-user-card .avatar-circle { width: 44px; height: 44px; font-size: 1.1rem; }
     .mobile-user-info { flex: 1; }
     .mobile-user-info strong { display: block; font-size: 1rem; color: var(--ink); }
-    .mobile-user-info span { font-size: 0.8rem; color: #fb923c; font-weight: 700; }
-    [data-theme="light"] .mobile-user-info span { color: #ea580c; }
+    .mobile-user-info span { font-size: 0.8rem; color: #ea580c; font-weight: 700; }
+    [data-theme="dark"] .mobile-user-info span { color: #fb923c; }
 
     .sidebar-nav { display: flex; flex-direction: column; padding: 0 24px; overflow-y: auto; flex: 1; }
     .sidebar-nav a {
@@ -233,35 +235,116 @@
     .sidebar-nav a i { font-size: 1.1rem; color: var(--text-muted); transition: color 0.3s; }
     .sidebar-nav a:hover i, .sidebar-nav a.active i { color: var(--accent); }
 
-    /* ----- HERO SECTION (STRICTLY PICTURE ONLY) ----- */
+    /* ----- HERO SECTION (Banner with Image, Text, and Buttons) ----- */
     .hero {
       position: relative; 
-      height: 85vh; 
-      min-height: 600px;
+      height: 50vh; 
+      min-height: 400px;
       width: 100%;
       overflow: hidden;
-      background-color: var(--surface); /* Fallback if image is loading */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #000; /* Fallback if image fails */
     }
     
-    /* Background Images */
-    .hero-bg { position: absolute; inset: 0; z-index: 0; }
+    .hero-bg { 
+      position: absolute; inset: 0; z-index: 0; 
+    }
     .hero-bg img { 
-      width: 100%; 
-      height: 100%; 
-      object-fit: cover; 
+      width: 100%; height: 100%; object-fit: cover; 
       display: block;
     }
+    
+    /* Dark overlay to make text readable without obscuring the whole image */
+    .hero::after {
+      content: ''; position: absolute; inset: 0; 
+      background: rgba(0, 0, 0, 0.6); z-index: 1;
+    }
 
-    /* Dark Mode Background */
-    .hero-bg .bg-dark { display: block; }
-    /* Light Mode Background */
-    .hero-bg .bg-light { display: none; }
+    .hero-content {
+      position: relative; z-index: 2;
+      text-align: center;
+      width: 100%;
+      padding: 0 20px;
+    }
 
-    [data-theme="light"] .hero-bg .bg-dark { display: none; }
-    [data-theme="light"] .hero-bg .bg-light { display: block; }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+      display: inline-block;
+      text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+
+    /* Shaking animation for the text */
+    @keyframes shakeText {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-2px) rotate(-1deg); }
+      50% { transform: translateX(2px) rotate(1deg); }
+      75% { transform: translateX(-1px) rotate(0); }
+    }
+    .shaking-text {
+      animation: shakeText 0.15s infinite;
+      display: inline-block;
+    }
+
+    .typing-cursor {
+      display: inline-block;
+      width: 4px;
+      height: 0.9em;
+      background-color: var(--accent);
+      margin-left: 6px;
+      animation: blink 0.8s infinite;
+      vertical-align: middle;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    .hero-btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.3s var(--bounce-soft);
+    }
+    
+    .btn-hero.primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(46,139,87,0.4);
+    }
+    .btn-hero.primary:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 24px rgba(46,139,87,0.6);
+    }
+    
+    .btn-hero.secondary {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(5px);
+    }
+    .btn-hero.secondary:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-3px) scale(1.05);
+    }
 
     @media (max-width: 600px) {
-      .hero { height: 60vh; min-height: 400px; }
+      .hero { height: 45vh; min-height: 350px; }
+      .btn-hero { padding: 12px 20px; font-size: 0.9rem; }
     }
 
     /* ----- MODERN SECTIONS & CARDS ----- */
@@ -507,7 +590,7 @@
 
         <div class="nav-right">
           <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-            <i class="fas fa-sun" id="themeIcon"></i>
+            <i class="fas fa-moon" id="themeIcon"></i>
           </button>
 
           {% if is_authenticated %}
@@ -532,13 +615,17 @@
       </div>
     </nav>
 
-    <!-- HERO SECTION (STRICTLY PICTURE ONLY, NO WORDS) -->
+    <!-- HERO SECTION (Reduced size, typing text with shake, buttons) -->
     <section class="hero">
       <div class="hero-bg">
-        <!-- Dark mode image -->
-        <img class="bg-dark" src="pic5.png" alt="">
-        <!-- Light mode image -->
-        <img class="bg-light" src="pic5.png" alt="">
+        <img src="pic5.png" alt="">
+      </div>
+      <div class="hero-content">
+        <h1 id="typingHero" class="shaking-text"></h1>
+        <div class="hero-btns">
+          <a href="/browse/" class="btn-hero primary"><i class="fas fa-book-open"></i> Browse Notes</a>
+          <a href="/upload/" class="btn-hero secondary"><i class="fas fa-cloud-upload-alt"></i> Upload Now</a>
+        </div>
       </div>
     </section>
 
@@ -695,7 +782,7 @@
     <!-- FOOTER -->
     <footer>
       <div class="footer-inner">
-        <img src="/logo.png" alt="Student Hub" class="logo-full-img" style="height: 32px; margin-bottom: 10px;">
+        <img src="/logo.png" alt="Student Hub" class="logo-full-img" style="height: 40px; margin-bottom: 10px;">
         <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
         <p style="font-size: 0.75rem; margin-top: 10px; color: var(--text-muted);">&copy; 2026 Student Hub. All rights reserved.</p>
       </div>
@@ -751,10 +838,10 @@
 
   <!-- JAVASCRIPT -->
   <script>
-    // 1. THEME PERSISTENCE (Default to Dark)
+    // 1. THEME PERSISTENCE (Default to Light)
     (function() {
         const savedTheme = localStorage.getItem('sh-theme');
-        const initialTheme = savedTheme ? savedTheme : 'dark';
+        const initialTheme = savedTheme ? savedTheme : 'light';
         
         document.documentElement.setAttribute('data-theme', initialTheme);
         updateThemeMeta(initialTheme);
@@ -815,7 +902,33 @@
         }
     });
 
-    // 3. TNC & COOKIE LOGIC
+    // 3. HERO TYPING EFFECT
+    (function() {
+        const textToType = "Welcome to Student Hub";
+        const element = document.getElementById('typingHero');
+        let index = 0;
+        let isDeleting = false;
+        
+        function type() {
+            if (!element) return;
+            
+            if (!isDeleting && index <= textToType.length) {
+                element.innerHTML = textToType.substring(0, index) + '<span class="typing-cursor"></span>';
+                index++;
+                setTimeout(type, 100);
+            } else if (isDeleting && index >= 0) {
+                element.innerHTML = textToType.substring(0, index) + '<span class="typing-cursor"></span>';
+                index--;
+                setTimeout(type, 50);
+            } else {
+                isDeleting = !isDeleting;
+                setTimeout(type, isDeleting ? 2000 : 500); // Pause before deleting or restarting
+            }
+        }
+        type();
+    })();
+
+    // 4. TNC & COOKIE LOGIC
     document.addEventListener('DOMContentLoaded', function() {
         const tncOverlay = document.getElementById('tncOverlay');
         const tncAgree = document.getElementById('tncAgree');
@@ -824,7 +937,6 @@
         const cookieAccept = document.getElementById('cookieAccept');
         const cookieDecline = document.getElementById('cookieDecline');
 
-        // Check TNC
         const tncAccepted = localStorage.getItem('studenthub_tnc_accepted');
         if (tncAccepted !== 'true') {
             setTimeout(() => {
@@ -833,19 +945,17 @@
             }, 800);
         }
 
-        // TNC Actions
         tncAgree.addEventListener('click', () => {
             localStorage.setItem('studenthub_tnc_accepted', 'true');
             tncOverlay.classList.remove('active');
             document.body.style.overflow = '';
-            checkCookies(); // Trigger cookie banner after TNC
+            checkCookies();
         });
 
         tncDecline.addEventListener('click', () => {
             alert('You must accept the Terms & Conditions to use Student Hub.');
         });
 
-        // Check Cookies
         function checkCookies() {
             const cookiesAccepted = localStorage.getItem('studenthub_cookies_accepted');
             if (cookiesAccepted !== 'true' && cookiesAccepted !== 'false') {
@@ -855,12 +965,10 @@
             }
         }
 
-        // If TNC is already accepted, check cookies immediately
         if (tncAccepted === 'true') {
             checkCookies();
         }
 
-        // Cookie Actions
         cookieAccept.addEventListener('click', () => {
             localStorage.setItem('studenthub_cookies_accepted', 'true');
             cookieBanner.classList.remove('active');
