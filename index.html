@@ -3,13 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#f8f9fa" id="themeColorMeta" />
+  <meta name="theme-color" content="#120b08" id="themeColorMeta" />
   <title>Student Hub | Share Notes, Find Notes</title>
   <link rel="icon" type="image/png" href="/logo.png" />
-
-  <!-- Preloads -->
-  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&q=60" />
-  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&q=60" />
 
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,39 +14,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <style>
-    /* ----- THEME VARIABLES ----- */
+    /* ----- THEME VARIABLES (DEFAULT IS DARK) ----- */
     :root {
-      --bg: #f8f9fa; 
-      --surface: #ffffff;
-      --ink: #111827;
-      --text-muted: #6b7280;
-      --accent: #2e8b57; 
-      --accent-light: #e8f5e9;
-      --accent-dark: #236b42;
-      --border: rgba(0,0,0,0.05);
-      
-      /* Sidebar Theme */
-      --sidebar-bg: rgba(255, 255, 255, 0.98);
-      --sidebar-icon-border: rgba(0,0,0,0.08);
-      --sidebar-icon-hover: rgba(0,0,0,0.03);
-      
-      /* Logo Container */
-      --logo-container-bg: transparent;
-      --logo-container-shadow: none;
-      --logo-container-padding: 0;
-      
-      /* Animations */
-      --smooth-slide: cubic-bezier(0.16, 1, 0.3, 1);
-      --bounce-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
-      
-      /* Shadows */
-      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
-      --shadow-md: 0 10px 30px rgba(0,0,0,0.06);
-      --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
-      --shadow-cta: 0 4px 12px rgba(46, 139, 87, 0.3);
-    }
-
-    [data-theme="dark"] {
       --bg: #120b08; 
       --surface: #1f1613;
       --ink: #fafaf9;
@@ -68,13 +33,43 @@
       /* Logo Container */
       --logo-container-bg: rgba(255, 255, 255, 0.95);
       --logo-container-shadow: 0 4px 16px rgba(0,0,0,0.4);
-      --logo-container-padding: 6px 16px;
+      
+      /* Animations */
+      --smooth-slide: cubic-bezier(0.16, 1, 0.3, 1);
+      --bounce-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
       
       /* Shadows */
       --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
       --shadow-md: 0 10px 30px rgba(0,0,0,0.5);
       --shadow-lg: 0 20px 40px rgba(0,0,0,0.6);
       --shadow-cta: 0 4px 12px rgba(74, 222, 128, 0.2);
+    }
+
+    /* LIGHT THEME OVERRIDES */
+    [data-theme="light"] {
+      --bg: #f8f9fa; 
+      --surface: #ffffff;
+      --ink: #111827;
+      --text-muted: #6b7280;
+      --accent: #2e8b57; 
+      --accent-light: #e8f5e9;
+      --accent-dark: #236b42;
+      --border: rgba(0,0,0,0.05);
+      
+      /* Sidebar Theme */
+      --sidebar-bg: rgba(255, 255, 255, 0.98);
+      --sidebar-icon-border: rgba(0,0,0,0.08);
+      --sidebar-icon-hover: rgba(0,0,0,0.03);
+      
+      /* Logo Container */
+      --logo-container-bg: transparent;
+      --logo-container-shadow: none;
+      
+      /* Shadows */
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --shadow-md: 0 10px 30px rgba(0,0,0,0.06);
+      --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
+      --shadow-cta: 0 4px 12px rgba(46, 139, 87, 0.3);
     }
 
     /* ----- RESET & BASE ----- */
@@ -93,25 +88,7 @@
     ul { list-style: none; }
     img { max-width: 100%; height: auto; display: block; }
 
-    /* ----- THEME TOGGLE ----- */
-    .theme-toggle {
-      position: fixed; top: 76px; right: 20px; z-index: 1100;
-      width: 44px; height: 44px; border-radius: 50%;
-      border: 1px solid var(--border); background: var(--surface); color: var(--ink);
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem; box-shadow: var(--shadow-md);
-      transition: all .3s var(--smooth-slide);
-    }
-    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); transform: scale(1.1) rotate(12deg); }
-    @media (max-width: 800px) {
-      .theme-toggle { top: 20px; right: 20px; }
-    }
-
-    /* ----- TOPBAR & NAV ----- */
-    .topbar { background: var(--ink); color: var(--surface); font-size: 0.8rem; padding: 10px 0; text-align: center; transition: background-color 0.35s ease; }
-    .topbar a { color: #4ade80; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
-    .topbar a:hover { text-decoration: underline; }
-    
+    /* ----- NAVBAR ----- */
     .mainnav { 
       background: var(--surface); 
       backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -119,110 +96,124 @@
       position: sticky; top: 0; z-index: 100; 
       transition: background-color 0.35s ease, border-color 0.35s ease;
     }
-    .mainnav-inner { max-width: 1200px; margin: 0 auto; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .mainnav-inner { 
+      max-width: 1200px; margin: 0 auto; padding: 12px 20px; 
+      display: flex; justify-content: space-between; align-items: center; 
+      gap: 10px;
+    }
     
+    .nav-left { display: flex; align-items: center; gap: 12px; }
+    
+    .menu-toggle { 
+      display: flex; background: var(--bg); border: 1px solid var(--border); 
+      border-radius: 50%; width: 40px; height: 40px; align-items: center; justify-content: center; 
+      font-size: 1.1rem; color: var(--ink); cursor: pointer; box-shadow: var(--shadow-sm);
+      transition: all 0.3s; flex-shrink: 0;
+    }
+    .menu-toggle:hover { background: var(--surface); transform: scale(1.05); }
+
     .logo-full-img { 
-      height: 48px; width: auto; object-fit: contain; 
-      background: var(--logo-container-bg); padding: var(--logo-container-padding);
-      border-radius: 12px; box-shadow: var(--logo-container-shadow);
+      height: 38px; width: auto; object-fit: contain; 
+      background: var(--logo-container-bg); padding: 4px 8px;
+      border-radius: 8px; box-shadow: var(--logo-container-shadow);
       transition: all 0.35s ease;
     }
     
-    .nav-right { display: flex; gap: 12px; align-items: center; }
+    .nav-right { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
     
-    /* New Logged-in Nav Styles */
-    .user-nav-group {
-      display: flex; align-items: center; gap: 12px;
+    .theme-toggle {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid var(--border); background: var(--bg); color: var(--ink);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; box-shadow: var(--shadow-sm);
+      transition: all .3s var(--smooth-slide);
     }
+    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); transform: scale(1.1) rotate(12deg); }
+
     .streak-pill {
       display: inline-flex; align-items: center; gap: 6px;
-      background: #fff7ed; color: #ea580c; border: 1.5px solid #fed7aa;
-      padding: 8px 14px; border-radius: 999px; font-weight: 800; font-size: 0.85rem;
+      background: #2c1a0e; color: #fb923c; border: 1.5px solid #ea580c;
+      padding: 6px 12px; border-radius: 999px; font-weight: 800; font-size: 0.8rem;
       text-decoration: none; transition: all 0.25s var(--smooth-slide);
+      white-space: nowrap;
     }
-    [data-theme="dark"] .streak-pill { background: #2c1a0e; color: #fb923c; border-color: #ea580c; }
+    [data-theme="light"] .streak-pill { background: #fff7ed; color: #ea580c; border-color: #fed7aa; }
     .streak-pill:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(234,88,12,0.4); }
     
     .profile-pill {
-      display: inline-flex; align-items: center; gap: 10px;
+      display: inline-flex; align-items: center; gap: 8px;
       background: var(--bg); border: 1.5px solid var(--border);
-      padding: 6px 16px 6px 6px; border-radius: 999px;
-      font-weight: 700; font-size: 0.9rem; color: var(--ink);
+      padding: 4px 10px 4px 4px; border-radius: 999px;
+      font-weight: 700; font-size: 0.85rem; color: var(--ink);
       transition: all 0.25s var(--smooth-slide);
+      white-space: nowrap;
     }
     .profile-pill:hover { border-color: var(--accent); background: var(--surface); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
     .avatar-circle {
-      width: 34px; height: 34px; border-radius: 50%;
+      width: 28px; height: 28px; border-radius: 50%;
       background: var(--accent); color: #fff;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 0.9rem; overflow: hidden;
+      font-weight: 800; font-size: 0.75rem; overflow: hidden;
     }
     .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
 
-    .btn-nav { padding: 10px 20px; border-radius: 999px; font-weight: 600; font-size: 0.9rem; transition: all 0.3s var(--smooth-slide); }
+    .btn-nav { padding: 8px 14px; border-radius: 999px; font-weight: 600; font-size: 0.85rem; transition: all 0.3s var(--smooth-slide); white-space: nowrap; }
     .btn-nav.login { border: 1px solid var(--border); color: var(--ink); }
     .btn-nav.login:hover { background: var(--bg); }
-    .btn-nav.join { background: var(--accent); color: var(--surface); box-shadow: var(--shadow-cta); }
-    .btn-nav.join:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(46, 139, 87, 0.4); }
+    .btn-nav.join { background: var(--accent); color: #fff; box-shadow: var(--shadow-cta); }
+    .btn-nav.join:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(74, 222, 128, 0.4); }
 
-    /* Mobile Menu Button */
-    .menu-toggle { 
-      display: none; background: var(--surface); border: 1px solid var(--border); 
-      border-radius: 50%; width: 44px; height: 44px; align-items: center; justify-content: center; 
-      font-size: 1.2rem; color: var(--ink); cursor: pointer; box-shadow: var(--shadow-sm);
-      transition: all 0.3s; position: fixed; top: 20px; left: 20px; z-index: 1100;
-    }
-    .menu-toggle:hover { background: var(--bg); transform: scale(1.05); }
-
-    @media (max-width: 800px) {
-      .menu-toggle { display: flex; }
-      .nav-right { display: none; } /* Hide desktop nav on mobile */
-      .mainnav-inner { justify-content: center; padding-top: 70px; }
+    @media (max-width: 600px) {
+      .hide-mobile { display: none !important; }
+      .mainnav-inner { padding: 10px 15px; }
+      .logo-full-img { height: 32px; }
+      .streak-pill span { display: none; } 
+      .streak-pill { padding: 6px 8px; }
+      .profile-pill .username-text { display: none; } 
+      .profile-pill { padding: 4px; }
     }
 
     /* ----- POLISHED SIDEBAR ----- */
     .sidebar-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
       backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
       z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.5s var(--smooth-slide);
     }
     .sidebar-overlay.active { opacity: 1; visibility: visible; }
 
     .sidebar {
-      position: fixed; top: 0; left: 0; width: 85%; max-width: 380px; height: 100vh;
+      position: fixed; top: 0; left: 0; width: 85%; max-width: 320px; height: 100vh;
       background: var(--sidebar-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
       z-index: 1001; display: flex; flex-direction: column; padding: 24px 0;
-      box-shadow: 10px 0 40px rgba(0,0,0,0.08), inset -1px 0 0 rgba(255,255,255,0.8);
+      box-shadow: 10px 0 40px rgba(0,0,0,0.2), inset -1px 0 0 rgba(255,255,255,0.1);
       transform: translateX(-100%); transition: transform 0.65s var(--smooth-slide), background 0.35s ease;
     }
     .sidebar.open { transform: translateX(0); }
 
-    .sidebar-header { display: flex; justify-content: flex-end; padding: 0 24px 30px; gap: 12px; }
+    .sidebar-header { display: flex; justify-content: flex-end; padding: 0 24px 20px; gap: 12px; }
     .icon-btn {
       background: transparent; border: 1px solid var(--sidebar-icon-border); border-radius: 50%;
-      width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
       cursor: pointer; color: var(--ink); transition: all 0.3s;
     }
     .icon-btn:hover { background: var(--sidebar-icon-hover); transform: scale(1.05); }
-    .icon-btn svg { width: 20px; height: 20px; stroke-width: 1.5; }
+    .icon-btn svg { width: 18px; height: 18px; stroke-width: 1.5; }
 
-    /* Mobile Logged-in Profile (Inside Sidebar) */
     .mobile-user-card {
-      display: none; /* Hidden by default, shown via JS if logged in */
-      align-items: center; gap: 16px;
+      display: none; align-items: center; gap: 16px;
       margin: 0 24px 20px; padding: 16px;
       background: var(--bg); border-radius: 16px; border: 1px solid var(--border);
     }
     .mobile-user-card .avatar-circle { width: 44px; height: 44px; font-size: 1.1rem; }
     .mobile-user-info { flex: 1; }
     .mobile-user-info strong { display: block; font-size: 1rem; color: var(--ink); }
-    .mobile-user-info span { font-size: 0.8rem; color: #ea580c; font-weight: 700; }
-    [data-theme="dark"] .mobile-user-info span { color: #fb923c; }
+    .mobile-user-info span { font-size: 0.8rem; color: #fb923c; font-weight: 700; }
+    [data-theme="light"] .mobile-user-info span { color: #ea580c; }
 
     .sidebar-nav { display: flex; flex-direction: column; padding: 0 24px; overflow-y: auto; flex: 1; }
     .sidebar-nav a {
       display: flex; align-items: center; justify-content: space-between;
-      color: var(--ink); font-size: 18px; font-weight: 500; padding: 16px 0;
+      color: var(--ink); font-size: 16px; font-weight: 500; padding: 14px 0;
       border-bottom: 2px solid transparent; transition: all 0.3s var(--smooth-slide);
       opacity: 0; transform: translateX(-20px);
     }
@@ -242,144 +233,206 @@
     .sidebar-nav a i { font-size: 1.1rem; color: var(--text-muted); transition: color 0.3s; }
     .sidebar-nav a:hover i, .sidebar-nav a.active i { color: var(--accent); }
 
-    /* ----- HERO SECTION ----- */
+    /* ----- HERO SECTION (STRICTLY PICTURE ONLY) ----- */
     .hero {
-      position: relative; padding: 120px 20px 100px; text-align: center;
-      display: flex; align-items: center; justify-content: center; min-height: 80vh;
+      position: relative; 
+      height: 85vh; 
+      min-height: 600px;
+      width: 100%;
+      overflow: hidden;
+      background-color: var(--surface); /* Fallback if image is loading */
     }
-    .hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
-    .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
-    .hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(248,249,250,0.7), var(--bg)); transition: background 0.35s ease; }
-    [data-theme="dark"] .hero-bg::after { background: linear-gradient(to bottom, rgba(18,11,8,0.8), var(--bg)); }
     
-    .hero-inner { position: relative; z-index: 1; max-width: 800px; }
-    .hero h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; line-height: 1.1; letter-spacing: -0.04em; margin-bottom: 20px; color: var(--ink); }
-    .hero h1 span { color: var(--accent); }
-    .hero p { font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 40px; }
-
-    /* Search Bar */
-    .hero-search { display: flex; background: var(--surface); border-radius: 999px; padding: 8px; max-width: 600px; margin: 0 auto; box-shadow: var(--shadow-lg); border: 1px solid var(--border); }
-    .hero-search input { flex: 1; border: none; outline: none; padding: 12px 20px; font-family: inherit; font-size: 1rem; background: transparent; color: var(--ink); }
-    .hero-search button { background: var(--accent); color: #fff; border: none; padding: 0 30px; border-radius: 999px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-    .hero-search button:hover { background: var(--accent-dark); }
-
-    /* Floating Animation for Hero */
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0px); }
+    /* Background Images */
+    .hero-bg { position: absolute; inset: 0; z-index: 0; }
+    .hero-bg img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+      display: block;
     }
-    .hero-inner { animation: float 6s ease-in-out infinite; }
+
+    /* Dark Mode Background */
+    .hero-bg .bg-dark { display: block; }
+    /* Light Mode Background */
+    .hero-bg .bg-light { display: none; }
+
+    [data-theme="light"] .hero-bg .bg-dark { display: none; }
+    [data-theme="light"] .hero-bg .bg-light { display: block; }
+
+    @media (max-width: 600px) {
+      .hero { height: 60vh; min-height: 400px; }
+    }
 
     /* ----- MODERN SECTIONS & CARDS ----- */
-    .section-container { max-width: 1200px; margin: 0 auto; padding: 80px 20px; }
-    .section-head { text-align: center; margin-bottom: 50px; }
-    .section-head h2 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 10px; color: var(--ink); }
-    .section-head p { color: var(--text-muted); font-size: 1.1rem; }
+    .section-container { max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
+    .section-head { text-align: center; margin-bottom: 40px; }
+    .section-head h2 { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 10px; color: var(--ink); }
+    .section-head p { color: var(--text-muted); font-size: 1rem; }
 
-    /* Grids */
-    .clean-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
-    .compact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .clean-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .compact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
     
     .clean-card {
-      background: var(--surface); border-radius: 24px; overflow: hidden;
+      background: var(--surface); border-radius: 20px; overflow: hidden;
       box-shadow: var(--shadow-md); transition: all 0.4s var(--smooth-slide);
       display: flex; flex-direction: column; border: 1px solid var(--border);
     }
-    .clean-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); }
+    .clean-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
     
-    .card-img-wrapper { height: 200px; overflow: hidden; position: relative; }
+    .card-img-wrapper { height: 180px; overflow: hidden; position: relative; }
     .card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--smooth-slide); }
     .clean-card:hover .card-img-wrapper img { transform: scale(1.05); }
 
-    .card-content { padding: 24px; display: flex; flex-direction: column; flex: 1; }
-    .card-tag { display: inline-block; padding: 6px 12px; background: var(--accent-light); color: var(--accent); border-radius: 999px; font-size: 0.75rem; font-weight: 700; margin-bottom: 16px; align-self: flex-start; text-transform: uppercase; letter-spacing: 0.05em; }
-    .card-content h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; line-height: 1.3; color: var(--ink); }
-    .card-content p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px; flex: 1; }
-    .card-link { font-weight: 700; color: var(--accent); display: inline-flex; align-items: center; gap: 8px; transition: gap 0.3s; }
-    .clean-card:hover .card-link { gap: 12px; }
+    .card-content { padding: 20px; display: flex; flex-direction: column; flex: 1; }
+    .card-tag { display: inline-block; padding: 4px 10px; background: var(--accent-light); color: var(--accent); border-radius: 999px; font-size: 0.7rem; font-weight: 700; margin-bottom: 12px; align-self: flex-start; text-transform: uppercase; letter-spacing: 0.05em; }
+    .card-content h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 8px; line-height: 1.3; color: var(--ink); }
+    .card-content p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px; flex: 1; }
+    .card-link { font-weight: 700; color: var(--accent); display: inline-flex; align-items: center; gap: 6px; transition: gap 0.3s; font-size: 0.9rem; }
+    .clean-card:hover .card-link { gap: 10px; }
 
-    /* Compact Cards */
     .compact-card {
-      background: var(--surface); border-radius: 20px; padding: 24px;
+      background: var(--surface); border-radius: 18px; padding: 20px;
       box-shadow: var(--shadow-sm); border: 1px solid var(--border);
       transition: all 0.35s var(--bounce-soft); display: flex; flex-direction: column; align-items: flex-start;
     }
-    .compact-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: var(--shadow-lg); border-color: var(--accent-light); }
-    .compact-icon { width: 50px; height: 50px; border-radius: 14px; background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 16px; transition: transform 0.3s var(--bounce-soft); }
+    .compact-card:hover { transform: translateY(-4px) scale(1.02); box-shadow: var(--shadow-lg); border-color: var(--accent-light); }
+    .compact-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 12px; transition: transform 0.3s var(--bounce-soft); }
     .compact-card:hover .compact-icon { transform: scale(1.1) rotate(5deg); }
-    .compact-card h4 { font-size: 1.15rem; font-weight: 700; margin-bottom: 8px; color: var(--ink); }
-    .compact-card p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; flex: 1; }
-    .compact-link { font-size: 0.85rem; font-weight: 700; color: var(--accent); display: inline-flex; align-items: center; gap: 6px; transition: gap 0.3s; }
-    .compact-card:hover .compact-link { gap: 10px; }
+    .compact-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; color: var(--ink); }
+    .compact-card p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; flex: 1; }
+    .compact-link { font-size: 0.8rem; font-weight: 700; color: var(--accent); display: inline-flex; align-items: center; gap: 4px; transition: gap 0.3s; }
+    .compact-card:hover .compact-link { gap: 8px; }
 
     /* ----- ABOUT & CREATOR SECTIONS ----- */
     .about-card {
-      background: var(--surface); border-radius: 32px; padding: 60px 40px;
+      background: var(--surface); border-radius: 24px; padding: 40px 20px;
       display: flex; flex-direction: column; align-items: center; text-align: center;
       box-shadow: var(--shadow-md); border: 1px solid var(--border);
       position: relative; overflow: hidden;
     }
     .about-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
       background: linear-gradient(90deg, var(--accent), #3b82f6, #8b5cf6);
     }
-    .about-card h2 { font-size: 2rem; font-weight: 800; margin-bottom: 16px; color: var(--ink); }
-    .about-card p { font-size: 1.1rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 30px; line-height: 1.8; }
+    .about-card h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 12px; color: var(--ink); }
+    .about-card p { font-size: 1rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 24px; line-height: 1.6; }
     
     .creator-card {
-      background: var(--surface); border-radius: 32px; padding: 60px 40px;
+      background: var(--surface); border-radius: 24px; padding: 40px 20px;
       display: flex; flex-direction: column; align-items: center; text-align: center;
       box-shadow: var(--shadow-md); border: 1px solid var(--border);
     }
     .creator-avatar {
-      width: 120px; height: 120px; border-radius: 50%; object-fit: cover;
-      border: 4px solid var(--surface); box-shadow: var(--shadow-lg); margin-bottom: 24px;
+      width: 100px; height: 100px; border-radius: 50%; object-fit: cover;
+      border: 3px solid var(--surface); box-shadow: var(--shadow-lg); margin-bottom: 16px;
       background: var(--accent-light); display: flex; align-items: center; justify-content: center;
-      font-size: 3rem; color: var(--accent);
+      font-size: 2.5rem; color: var(--accent);
     }
 
     /* ----- TOOLS SECTION ----- */
-    .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
     .tool-item { 
-      display: flex; align-items: center; gap: 16px; padding: 20px; 
-      background: var(--surface); border-radius: 16px; box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; gap: 12px; padding: 16px; 
+      background: var(--surface); border-radius: 14px; box-shadow: var(--shadow-sm);
       transition: all 0.3s var(--smooth-slide); border: 1px solid var(--border);
     }
-    .tool-item:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--accent-light); }
-    .tool-icon { width: 48px; height: 48px; background: var(--accent-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 1.2rem; }
-    .tool-text strong { display: block; font-size: 1rem; color: var(--ink); }
-    .tool-text small { color: var(--text-muted); font-size: 0.85rem; }
+    .tool-item:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--accent-light); }
+    .tool-icon { width: 40px; height: 40px; background: var(--accent-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 1.1rem; flex-shrink: 0; }
+    .tool-text strong { display: block; font-size: 0.9rem; color: var(--ink); }
+    .tool-text small { color: var(--text-muted); font-size: 0.75rem; }
 
     /* ----- FOOTER ----- */
-    footer { background: var(--surface); border-top: 1px solid var(--border); padding: 60px 20px 30px; margin-top: 40px; transition: background-color 0.35s ease; }
-    .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px; }
-    .footer-inner p { color: var(--text-muted); font-size: 0.9rem; }
+    footer { background: var(--surface); border-top: 1px solid var(--border); padding: 40px 20px 20px; margin-top: 30px; transition: background-color 0.35s ease; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; }
+    .footer-inner p { color: var(--text-muted); font-size: 0.85rem; }
     
     /* Floating CTA */
-    .floating-cta { position: fixed; bottom: 24px; right: 24px; z-index: 900; display: flex; flex-direction: column; gap: 12px; align-items: flex-end; }
-    .fab-main { display: inline-flex; align-items: center; gap: 10px; padding: 14px 24px; background: var(--accent); color: #fff; border-radius: 999px; font-weight: 800; font-size: .9rem; box-shadow: var(--shadow-cta); transition: all .3s; text-decoration: none; white-space: nowrap; border: none; cursor: pointer; }
+    .floating-cta { position: fixed; bottom: 20px; right: 20px; z-index: 900; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+    .fab-main { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; background: var(--accent); color: #fff; border-radius: 999px; font-weight: 800; font-size: .85rem; box-shadow: var(--shadow-cta); transition: all .3s; text-decoration: none; white-space: nowrap; border: none; cursor: pointer; }
     .fab-main:hover { transform: translateY(-3px) scale(1.03); background: var(--accent-dark); box-shadow: 0 8px 24px rgba(46,139,87,0.5); }
 
-    @media (max-width: 560px) {
+    @media (max-width: 480px) {
       .fab-main span.long { display: none; }
       .fab-main { padding: 14px; border-radius: 50%; }
-      .about-card, .creator-card { padding: 40px 20px; }
-      .compact-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ----- MODALS & OVERLAYS (TNC & Cookies) ----- */
+    .tnc-overlay {
+      display: none; position: fixed; inset: 0; z-index: 5000;
+      background: rgba(15, 15, 25, 0.85); backdrop-filter: blur(10px);
+      justify-content: center; align-items: center; padding: 20px;
+      animation: fadeIn 0.3s ease;
+    }
+    .tnc-overlay.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .tnc-content {
+      background: var(--surface); border-radius: 24px; padding: 40px 32px;
+      max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto;
+      text-align: left; box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+      animation: popIn 0.4s var(--bounce-soft); position: relative;
+      border-top: 5px solid var(--accent);
+    }
+    @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    .tnc-icon {
+      width: 60px; height: 60px; background: var(--accent-light); border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--accent); font-size: 1.8rem; margin: 0 auto 16px;
+    }
+    .tnc-content h2 { font-size: 1.4rem; font-weight: 900; color: var(--ink); text-align: center; margin-bottom: 8px; }
+    .tnc-subtitle { text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px; font-weight: 500; }
+    
+    .tnc-body {
+      background: var(--bg); border-radius: 14px; padding: 20px; margin-bottom: 24px;
+      border: 1px solid var(--border); font-size: 0.9rem; color: var(--text-muted);
+    }
+    .tnc-body ul { list-style: none; padding: 0; }
+    .tnc-body ul li { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; line-height: 1.5; }
+    .tnc-body ul li:last-child { margin-bottom: 0; }
+    .tnc-body ul li i { color: var(--accent); margin-top: 4px; font-size: 0.9rem; }
+    .tnc-body ul li strong { color: var(--ink); }
+
+    .tnc-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .tnc-btn { flex: 1; min-width: 120px; padding: 14px 20px; border-radius: 12px; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: all 0.25s ease; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .tnc-btn.agree { background: var(--accent); color: #fff; box-shadow: var(--shadow-cta); }
+    .tnc-btn.agree:hover { background: var(--accent-dark); transform: translateY(-2px); }
+    .tnc-btn.decline { background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
+    .tnc-btn.decline:hover { background: var(--surface); color: var(--ink); }
+
+    .tnc-footer { text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 16px; font-weight: 600; }
+    .tnc-footer i { color: var(--accent); margin-right: 6px; }
+
+    /* Cookie Banner */
+    .cookie-banner {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      width: calc(100% - 40px); max-width: 600px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 20px; box-shadow: var(--shadow-lg);
+      display: none; z-index: 4000; animation: slideUp 0.5s var(--smooth-slide);
+      backdrop-filter: blur(10px);
+    }
+    .cookie-banner.active { display: flex; flex-direction: column; gap: 16px; }
+    @keyframes slideUp { from { transform: translate(-50%, 100px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+    
+    .cookie-text { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+    .cookie-text a { color: var(--accent); text-decoration: underline; font-weight: 600; }
+    .cookie-actions { display: flex; gap: 10px; justify-content: flex-end; }
+    .cookie-btn { padding: 10px 20px; border-radius: 999px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; border: none; }
+    .cookie-btn.decline { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+    .cookie-btn.decline:hover { background: var(--bg); }
+    .cookie-btn.accept { background: var(--accent); color: #fff; }
+    .cookie-btn.accept:hover { background: var(--accent-dark); }
+
+    @media (max-width: 480px) {
+      .cookie-banner { flex-direction: column; }
+      .cookie-actions { width: 100%; flex-direction: column; }
+      .cookie-btn { width: 100%; }
     }
   </style>
 </head>
 <body>
-
-  <!-- THEME TOGGLE -->
-  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-    <i class="fas fa-moon" id="themeIcon"></i>
-  </button>
-
-  <!-- MOBILE HAMBURGER -->
-  <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
-    <i class="fas fa-bars"></i>
-  </button>
 
   <!-- SIDEBAR OVERLAY -->
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -395,19 +448,18 @@
       </button>
     </div>
 
-    <!-- Mobile Profile View (Only visible if logged in) -->
-    {% if user.is_authenticated %}
-    <a href="/profile.html" class="mobile-user-card" style="display: flex;">
+    {% if is_authenticated %}
+    <a href="/profile/{{ current_student.username }}/" class="mobile-user-card" style="display: flex;">
       <div class="avatar-circle">
-        {% if user.profile.avatar %}
-          <img src="{{ user.profile.avatar.url }}" alt="Avatar">
+        {% if current_student.avatar_url %}
+          <img src="{{ current_student.avatar_url }}" alt="Avatar">
         {% else %}
-          {{ user.username|make_list|first|upper }}
+          {{ current_student.initial }}
         {% endif %}
       </div>
       <div class="mobile-user-info">
-        <strong>{{ user.username }}</strong>
-        <span><i class="fas fa-fire"></i> {{ user.profile.streak|default:"0" }} Day Streak</span>
+        <strong>{{ current_student.username }}</strong>
+        <span><i class="fas fa-fire"></i> {{ current_student.streak }} Day Streak</span>
       </div>
       <i class="fas fa-chevron-right" style="color: var(--text-muted);"></i>
     </a>
@@ -423,8 +475,7 @@
       <a href="/free_course/">Free Courses</a>
       <a href="/about/">About</a>
       
-      <!-- Mobile Login/Join Links (Only visible if NOT logged in) -->
-      {% if not user.is_authenticated %}
+      {% if not is_authenticated %}
       <a href="/login/" style="color: var(--accent); margin-top: 20px;">Log In</a>
       <a href="/signup/" style="color: var(--accent);">Join Free</a>
       {% endif %}
@@ -435,62 +486,59 @@
   <div class="main-content">
 
     <!-- TOP BAR -->
-    <div class="topbar">
-      <a href="https://wa.me/255740706007" target="_blank" rel="noopener">
+    <div class="topbar" style="background: var(--ink); color: var(--surface); font-size: 0.75rem; padding: 8px 0; text-align: center;">
+      <a href="https://wa.me/255740706007" target="_blank" rel="noopener" style="color: #4ade80; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
         <i class="fab fa-whatsapp"></i> Chat on WhatsApp
       </a>
     </div>
 
-    <!-- NAV -->
+    <!-- NAVBAR -->
     <nav class="mainnav">
       <div class="mainnav-inner">
-        <a href="/" class="logo">
-          <img src="/logo.png" alt="Student Hub" class="logo-full-img">
-        </a>
         
-        <!-- Desktop Nav Right -->
+        <div class="nav-left">
+          <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+            <i class="fas fa-bars"></i>
+          </button>
+          <a href="/" class="logo">
+            <img src="/logo.png" alt="Student Hub" class="logo-full-img">
+          </a>
+        </div>
+
         <div class="nav-right">
-          {% if user.is_authenticated %}
-            <!-- Logged In State -->
-            <div class="user-nav-group">
-              <a href="/quiz/" class="streak-pill" title="Your Streak">
-                <i class="fas fa-fire"></i> {{ user.profile.streak|default:"0" }}
-              </a>
-              <a href="/profile.html" class="profile-pill" title="Go to Profile">
-                <div class="avatar-circle">
-                  {% if user.profile.avatar %}
-                    <img src="{{ user.profile.avatar.url }}" alt="Avatar">
-                  {% else %}
-                    {{ user.username|make_list|first|upper }}
-                  {% endif %}
-                </div>
-                <span>{{ user.username }}</span>
-              </a>
-            </div>
+          <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+            <i class="fas fa-sun" id="themeIcon"></i>
+          </button>
+
+          {% if is_authenticated %}
+            <a href="/quiz/" class="streak-pill" title="Your Streak">
+              <i class="fas fa-fire"></i> <span>{{ current_student.streak }}</span>
+            </a>
+            <a href="/profile/{{ current_student.username }}/" class="profile-pill" title="Go to Profile">
+              <div class="avatar-circle">
+                {% if current_student.avatar_url %}
+                  <img src="{{ current_student.avatar_url }}" alt="Avatar">
+                {% else %}
+                  {{ current_student.initial }}
+                {% endif %}
+              </div>
+              <span class="username-text">{{ current_student.username }}</span>
+            </a>
           {% else %}
-            <!-- Logged Out State -->
-            <a href="/login/" class="btn-nav login">Log In</a>
+            <a href="/login/" class="btn-nav login hide-mobile">Log In</a>
             <a href="/signup/" class="btn-nav join">Join Free</a>
           {% endif %}
         </div>
       </div>
     </nav>
 
-    <!-- HERO SECTION -->
+    <!-- HERO SECTION (STRICTLY PICTURE ONLY, NO WORDS) -->
     <section class="hero">
       <div class="hero-bg">
-        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&q=60" alt="Students studying">
-      </div>
-      <div class="hero-inner">
-        <h1>Share notes.<br>Learn <span>together</span>.</h1>
-        <p>The free platform where students upload, discover, and organize study materials — past papers, notes, slides, and more. Built in Tanzania.</p>
-        
-        <div class="hero-search">
-          <form action="/browse/" method="get" style="display:flex; width:100%;">
-            <input type="text" name="q" placeholder="Search notes, courses, or module codes..." />
-            <button type="submit">Search</button>
-          </form>
-        </div>
+        <!-- Dark mode image -->
+        <img class="bg-dark" src="pic5.png" alt="">
+        <!-- Light mode image -->
+        <img class="bg-light" src="pic5.png" alt="">
       </div>
     </section>
 
@@ -540,87 +588,41 @@
       </div>
     </section>
 
-    <!-- COMPACT CARDS (Challenge, AutoQuiz, Calculator, Leaderboard) -->
+    <!-- COMPACT CARDS -->
     <section class="section-container" style="padding-top: 0;">
-      <div class="section-head" style="margin-bottom: 30px;">
+      <div class="section-head" style="margin-bottom: 20px;">
         <h2>Level up your studies</h2>
         <p>Packed with tools to help you succeed.</p>
       </div>
 
       <div class="compact-grid">
-        <a href="/quiz.html" class="compact-card">
+        <a href="/quiz/" class="compact-card">
           <div class="compact-icon"><i class="fas fa-bolt"></i></div>
           <h4>Challenge Yourself</h4>
           <p>Take the daily quiz to earn points, maintain your streak, and test your knowledge.</p>
           <span class="compact-link">Start Quiz <i class="fas fa-arrow-right"></i></span>
         </a>
 
-        <a href="/autoquiz.html" class="compact-card">
+        <a href="/autoquiz/" class="compact-card">
           <div class="compact-icon"><i class="fas fa-robot"></i></div>
           <h4>AutoQuiz AI</h4>
           <p>Upload your notes and let our AI generate custom practice questions instantly.</p>
           <span class="compact-link">Try AutoQuiz <i class="fas fa-arrow-right"></i></span>
         </a>
 
-        <a href="/calculator.html" class="compact-card">
+        <a href="/calculator/" class="compact-card">
           <div class="compact-icon"><i class="fas fa-calculator"></i></div>
           <h4>Student Calculator</h4>
           <p>A smart calculator designed for students. GPA, scientific, and basic math tools.</p>
           <span class="compact-link">Open Calculator <i class="fas fa-arrow-right"></i></span>
         </a>
 
-        <a href="/leaderboard.html" class="compact-card">
+        <a href="/leaderboard/" class="compact-card">
           <div class="compact-icon"><i class="fas fa-trophy"></i></div>
           <h4>Leaderboard</h4>
           <p>See how you rank against other students. Climb to the top and showcase your streak!</p>
           <span class="compact-link">View Rankings <i class="fas fa-arrow-right"></i></span>
         </a>
-      </div>
-    </section>
-
-    <!-- EXPLORE PROGRAMS -->
-    <section class="section-container" style="background: var(--surface); border-radius: 40px; margin: 0 20px; box-shadow: var(--shadow-md); max-width: 1200px; margin-left: auto; margin-right: auto; border: 1px solid var(--border);">
-      <div class="section-head">
-        <h2>Explore our programs</h2>
-        <p>Level up your skills and test your knowledge.</p>
-      </div>
-
-      <div class="clean-grid">
-        <div class="clean-card">
-          <div class="card-img-wrapper">
-            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=60" alt="AI">
-          </div>
-          <div class="card-content">
-            <span class="card-tag">AutoQuiz AI</span>
-            <h3>Quiz yourself with AI</h3>
-            <p>AutoQuiz AI generates practice questions from your uploaded notes. Test yourself and prepare better.</p>
-            <a href="/autoquiz.html" class="card-link">Try AutoQuiz <i class="fas fa-arrow-right"></i></a>
-          </div>
-        </div>
-
-        <div class="clean-card">
-          <div class="card-img-wrapper">
-            <img src="https://images.unsplash.com/photo-1504148455328-c376907d081c?w=1200&q=60" alt="Hackathon">
-          </div>
-          <div class="card-content">
-            <span class="card-tag">Hackathon</span>
-            <h3>Build. Compete. Win.</h3>
-            <p>Join our coding challenges, team up with other students, and showcase your skills.</p>
-            <a href="/hackerthon/" class="card-link">Join Hackathon <i class="fas fa-arrow-right"></i></a>
-          </div>
-        </div>
-
-        <div class="clean-card">
-          <div class="card-img-wrapper">
-            <img src="https://images.unsplash.com/photo-1524578271613-d550eacf6090?w=1200&q=60" alt="Courses">
-          </div>
-          <div class="card-content">
-            <span class="card-tag">Free Courses</span>
-            <h3>Learn HTML, CSS &amp; more</h3>
-            <p>Professional, project-based lessons with 50 modules and 10 real capstone labs.</p>
-            <a href="/free_course/" class="card-link">Start Learning <i class="fas fa-arrow-right"></i></a>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -631,14 +633,14 @@
         <p>Join the largest student network in Tanzania.</p>
       </div>
 
-      <a href="/community.html" class="clean-card" style="display: flex; flex-direction: row; align-items: center; gap: 30px; max-width: 900px; margin: 0 auto; padding: 20px;">
-        <div style="flex-shrink: 0; width: 150px; height: 150px; border-radius: 20px; overflow: hidden;">
+      <a href="/community/" class="clean-card" style="display: flex; flex-direction: row; align-items: center; gap: 20px; max-width: 900px; margin: 0 auto; padding: 20px;">
+        <div style="flex-shrink: 0; width: 80px; height: 80px; border-radius: 12px; overflow: hidden;">
           <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=60" alt="Community" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
-        <div class="card-content" style="padding: 10px;">
+        <div class="card-content" style="padding: 0;">
           <span class="card-tag">Community</span>
-          <h3>Meet Your Community</h3>
-          <p style="margin-bottom: 10px;">Follow classmates, share resources, and build your study network. See what others are learning and collaborate on projects.</p>
+          <h3 style="font-size: 1.2rem;">Meet Your Community</h3>
+          <p style="margin-bottom: 10px; font-size: 0.9rem;">Follow classmates, share resources, and build your study network.</p>
           <span class="card-link">Join the Community <i class="fas fa-arrow-right"></i></span>
         </div>
       </a>
@@ -649,7 +651,7 @@
       <div class="about-card">
         <h2>About Student Hub</h2>
         <p>Student Hub is a 100% free, student-built platform designed to make studying easier. We believe that knowledge should be shared freely. Our mission is to connect students across Tanzania, giving everyone access to high-quality notes, past papers, and interactive tools to help them succeed.</p>
-        <a href="/about.html" class="btn-nav join" style="display: inline-flex; padding: 14px 32px; font-size: 1rem;">Learn More About Us <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></a>
+        <a href="/about/" class="btn-nav join" style="display: inline-flex; padding: 12px 24px; font-size: 0.95rem;">Learn More About Us <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></a>
       </div>
     </section>
 
@@ -660,8 +662,8 @@
           <i class="fas fa-user-astronaut"></i>
         </div>
         <h2>Meet the Creator</h2>
-        <p style="font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin-bottom: 30px;">Hi, I'm the developer behind Student Hub. I built this platform to solve a real problem I faced as a student: accessing reliable study materials. My goal is to empower every student in Tanzania and beyond with the tools they need to excel.</p>
-        <a href="/aboutcreator.html" class="btn-nav login" style="display: inline-flex; padding: 14px 32px; font-size: 1rem; background: var(--surface);">Read My Story <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></a>
+        <p style="font-size: 1rem; color: var(--text-muted); max-width: 600px; margin-bottom: 24px;">Hi, I'm the developer behind Student Hub. I built this platform to solve a real problem I faced as a student: accessing reliable study materials. My goal is to empower every student in Tanzania and beyond with the tools they need to excel.</p>
+        <a href="/aboutcreator.html" class="btn-nav login" style="display: inline-flex; padding: 12px 24px; font-size: 0.95rem; background: var(--surface);">Read My Story <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></a>
       </div>
     </section>
 
@@ -673,11 +675,11 @@
       <div class="tools-grid">
         <a href="https://twarvis-pdf-50le.onrender.com" target="_blank" rel="noopener" class="tool-item">
           <div class="tool-icon"><i class="fas fa-file-pdf"></i></div>
-          <div class="tool-text"><strong>PDF Maker</strong><small>create &amp; edit PDFs</small></div>
+          <div class="tool-text"><strong>PDF Maker</strong><small>create PDFs</small></div>
         </a>
         <a href="https://indext.oneapp.dev" target="_blank" rel="noopener" class="tool-item">
           <div class="tool-icon"><i class="fas fa-code"></i></div>
-          <div class="tool-text"><strong>Code Convert</strong><small>file extensions</small></div>
+          <div class="tool-text"><strong>Code Convert</strong><small>file tools</small></div>
         </a>
         <a href="https://soma.dit.ac.tz/auth/login" target="_blank" rel="noopener" class="tool-item">
           <div class="tool-icon"><i class="fas fa-university"></i></div>
@@ -685,7 +687,7 @@
         </a>
         <a href="https://movieboxapp.in" target="_blank" rel="noopener" class="tool-item">
           <div class="tool-icon"><i class="fas fa-film"></i></div>
-          <div class="tool-text"><strong>MovieBox</strong><small>movies &amp; shows</small></div>
+          <div class="tool-text"><strong>MovieBox</strong><small>movies</small></div>
         </a>
       </div>
     </section>
@@ -693,16 +695,16 @@
     <!-- FOOTER -->
     <footer>
       <div class="footer-inner">
-        <img src="/logo.png" alt="Student Hub" class="logo-full-img" style="height: 40px;">
+        <img src="/logo.png" alt="Student Hub" class="logo-full-img" style="height: 32px; margin-bottom: 10px;">
         <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
-        <p style="font-size: 0.8rem; margin-top: 20px; color: var(--text-muted);">&copy; 2026 Student Hub. All rights reserved.</p>
+        <p style="font-size: 0.75rem; margin-top: 10px; color: var(--text-muted);">&copy; 2026 Student Hub. All rights reserved.</p>
       </div>
     </footer>
 
   </div>
 
   <!-- FLOATING CTA (Only show if not logged in) -->
-  {% if not user.is_authenticated %}
+  {% if not is_authenticated %}
   <div class="floating-cta">
     <a href="/signup/" class="fab-main">
       <i class="fas fa-sparkles"></i> <span class="long">Join Free</span>
@@ -710,13 +712,49 @@
   </div>
   {% endif %}
 
+  <!-- TERMS & CONDITIONS MODAL -->
+  <div class="tnc-overlay" id="tncOverlay">
+    <div class="tnc-content">
+      <div class="tnc-icon"><i class="fas fa-shield-alt"></i></div>
+      <h2>Welcome to Student Hub</h2>
+      <p class="tnc-subtitle">Please read and accept our terms before continuing</p>
+      
+      <div class="tnc-body">
+        <ul>
+          <li><i class="fas fa-check-circle"></i><span><strong>Free to use:</strong> Student Hub is 100% free for all students. No hidden fees, no subscriptions.</span></li>
+          <li><i class="fas fa-check-circle"></i><span><strong>Respect copyright:</strong> Only upload materials you have the right to share. Do not upload paid textbooks or copyrighted content.</span></li>
+          <li><i class="fas fa-check-circle"></i><span><strong>Be respectful:</strong> No offensive, harmful, or inappropriate content. We remove anything that violates this rule.</span></li>
+          <li><i class="fas fa-check-circle"></i><span><strong>Your responsibility:</strong> You are responsible for the files you upload. Student Hub is not liable for user content.</span></li>
+          <li><i class="fas fa-check-circle"></i><span><strong>Privacy:</strong> We store only what is needed to run the platform. We never sell your data.</span></li>
+        </ul>
+      </div>
+      
+      <div class="tnc-actions">
+        <button class="tnc-btn decline" id="tncDecline"><i class="fas fa-times"></i> Decline</button>
+        <button class="tnc-btn agree" id="tncAgree"><i class="fas fa-check"></i> I Agree</button>
+      </div>
+      <div class="tnc-footer"><i class="fas fa-lock"></i> By clicking "I Agree", you accept our Terms & Privacy Policy.</div>
+    </div>
+  </div>
+
+  <!-- COOKIE BANNER -->
+  <div class="cookie-banner" id="cookieBanner">
+    <div class="cookie-text">
+      <i class="fas fa-cookie-bite" style="color: var(--accent); margin-right: 8px;"></i>
+      We use cookies to enhance your experience, analyze traffic, and personalize content. Read our <a href="/about/">Privacy Policy</a>.
+    </div>
+    <div class="cookie-actions">
+      <button class="cookie-btn decline" id="cookieDecline">Decline</button>
+      <button class="cookie-btn accept" id="cookieAccept">Accept Cookies</button>
+    </div>
+  </div>
+
   <!-- JAVASCRIPT -->
   <script>
-    // 1. THEME PERSISTENCE & TOGGLE
+    // 1. THEME PERSISTENCE (Default to Dark)
     (function() {
         const savedTheme = localStorage.getItem('sh-theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+        const initialTheme = savedTheme ? savedTheme : 'dark';
         
         document.documentElement.setAttribute('data-theme', initialTheme);
         updateThemeMeta(initialTheme);
@@ -741,15 +779,6 @@
                     syncIcon();
                 });
             }
-
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-                if (!localStorage.getItem('sh-theme')) {
-                    const next = e.matches ? 'dark' : 'light';
-                    document.documentElement.setAttribute('data-theme', next);
-                    updateThemeMeta(next);
-                    syncIcon();
-                }
-            });
         });
 
         function updateThemeMeta(theme) {
@@ -784,6 +813,63 @@
         if (e.key === 'Escape' && sidebar.classList.contains('open')) {
             closeSidebar();
         }
+    });
+
+    // 3. TNC & COOKIE LOGIC
+    document.addEventListener('DOMContentLoaded', function() {
+        const tncOverlay = document.getElementById('tncOverlay');
+        const tncAgree = document.getElementById('tncAgree');
+        const tncDecline = document.getElementById('tncDecline');
+        const cookieBanner = document.getElementById('cookieBanner');
+        const cookieAccept = document.getElementById('cookieAccept');
+        const cookieDecline = document.getElementById('cookieDecline');
+
+        // Check TNC
+        const tncAccepted = localStorage.getItem('studenthub_tnc_accepted');
+        if (tncAccepted !== 'true') {
+            setTimeout(() => {
+                tncOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }, 800);
+        }
+
+        // TNC Actions
+        tncAgree.addEventListener('click', () => {
+            localStorage.setItem('studenthub_tnc_accepted', 'true');
+            tncOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+            checkCookies(); // Trigger cookie banner after TNC
+        });
+
+        tncDecline.addEventListener('click', () => {
+            alert('You must accept the Terms & Conditions to use Student Hub.');
+        });
+
+        // Check Cookies
+        function checkCookies() {
+            const cookiesAccepted = localStorage.getItem('studenthub_cookies_accepted');
+            if (cookiesAccepted !== 'true' && cookiesAccepted !== 'false') {
+                setTimeout(() => {
+                    cookieBanner.classList.add('active');
+                }, 1000);
+            }
+        }
+
+        // If TNC is already accepted, check cookies immediately
+        if (tncAccepted === 'true') {
+            checkCookies();
+        }
+
+        // Cookie Actions
+        cookieAccept.addEventListener('click', () => {
+            localStorage.setItem('studenthub_cookies_accepted', 'true');
+            cookieBanner.classList.remove('active');
+        });
+
+        cookieDecline.addEventListener('click', () => {
+            localStorage.setItem('studenthub_cookies_accepted', 'false');
+            cookieBanner.classList.remove('active');
+        });
     });
   </script>
 </body>
