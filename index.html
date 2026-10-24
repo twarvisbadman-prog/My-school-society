@@ -32,16 +32,60 @@
       --radius-sm:10px; --radius-md:14px; --radius-lg:20px; --radius-xl:28px;
       --shadow-sm:0 1px 2px rgba(28,25,23,.06); --shadow-md:0 10px 28px -12px rgba(28,25,23,.18);
       --shadow-lg:0 28px 64px -20px rgba(28,25,23,.22); --shadow-cta:0 8px 22px -8px rgba(219,39,119,.5);
+      --nav-bg: rgba(255, 255, 255, 0.95);
+      --topbar-bg: #1c1917;
+      --topbar-text: #f5f5f4;
+      --topbar-muted: #a8a29e;
     }
+
+    /* ----- DARK THEME OVERRIDES (only theme-able UI; logo untouched) ----- */
+    [data-theme="dark"]{
+      --bg:#0c0a09;
+      --surface:#1c1917;
+      --alt:#292524;
+      --border:#292524;
+      --border-strong:#44403c;
+      --ink:#fafaf9;
+      --text-2:#d6d3d1;
+      --text-3:#a8a29e;
+      --accent:#fb923c;
+      --accent-bright:#f97316;
+      --accent-dim:#2c1a0e;
+      --grad:linear-gradient(120deg,#f97316,#f472b6);
+      --grad-cta:linear-gradient(120deg,#ea580c,#db2777);
+      --grad-cta-hover:linear-gradient(120deg,#f97316,#ec4899);
+      --shadow-sm:0 1px 2px rgba(0,0,0,.4);
+      --shadow-md:0 10px 28px -12px rgba(0,0,0,.5);
+      --shadow-lg:0 28px 64px -20px rgba(0,0,0,.75);
+      --shadow-cta:0 8px 22px -8px rgba(219,39,119,.6);
+      --nav-bg: rgba(28, 25, 23, 0.92);
+      --topbar-bg: #0c0a09;
+      --topbar-text: #fafaf9;
+      --topbar-muted: #a8a29e;
+    }
+
     *{box-sizing:border-box;margin:0;padding:0}
-    html{overflow-x:hidden;scroll-behavior:smooth;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
-    body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;overflow-x:hidden;width:100%;-webkit-font-smoothing:antialiased;min-height:100vh}
+    html{overflow-x:hidden;scroll-behavior:smooth;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;transition:background-color .35s ease}
+    body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;overflow-x:hidden;width:100%;-webkit-font-smoothing:antialiased;min-height:100vh;transition:background-color .35s ease,color .35s ease}
     a{color:inherit;text-decoration:none}
     ul{list-style:none}
     button{font-family:inherit}
     img{max-width:100%;height:auto;display:block}
 
-    /* ----- SIDEBAR (NEW) ----- */
+    /* ----- THEME TOGGLE BUTTON ----- */
+    .theme-toggle{
+      position:fixed;top:56px;right:20px;z-index:1100;
+      width:46px;height:46px;border-radius:50%;
+      border:1px solid var(--border);background:var(--surface);color:var(--text-2);
+      cursor:pointer;display:flex;align-items:center;justify-content:center;
+      font-size:1.05rem;box-shadow:0 4px 14px -4px rgba(0,0,0,.2);
+      transition:all .3s cubic-bezier(.34,1.56,.64,1);
+    }
+    .theme-toggle:hover{color:var(--accent);border-color:var(--accent-bright);transform:scale(1.1) rotate(12deg);box-shadow:0 6px 20px -4px rgba(234,88,12,.35)}
+    .theme-toggle:active{transform:scale(.95)}
+    @media (max-width:800px){.theme-toggle{top:18px;right:70px;width:42px;height:42px;font-size:.95rem}}
+
+    /* ----- SIDEBAR (unchanged) ----- */
     .sidebar {
       position: fixed;
       top: 0;
@@ -134,7 +178,7 @@
 
     .sidebar-nav a:hover {
       background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: none; /* plain, no blur */
+      backdrop-filter: none;
       color: #ffffff;
       transform: translateX(4px);
     }
@@ -152,7 +196,6 @@
       color: #ffb07c;
     }
 
-    /* badge-like subtle effect */
     .sidebar-nav a .badge {
       margin-left: auto;
       background: rgba(255,255,255,0.2);
@@ -164,7 +207,6 @@
       text-shadow: none;
     }
 
-    /* email icon / pressable */
     .sidebar-email {
       margin-top: 16px;
       padding-top: 16px;
@@ -199,7 +241,6 @@
     .email-icon-btn i {
       filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
     }
-    /* tooltip */
     .email-icon-btn::after {
       content: "Email us";
       position: absolute;
@@ -224,7 +265,7 @@
       transform: translateY(-50%) translateX(0);
     }
 
-    /* ----- MAIN CONTENT (offset for sidebar) ----- */
+    /* ----- MAIN CONTENT ----- */
     .main-content {
       margin-left: 280px;
       min-height: 100vh;
@@ -232,36 +273,35 @@
       transition: margin-left 0.3s ease;
     }
 
-    /* ---- everything else stays the same except removed top menu items ---- */
-    .topbar{background:var(--ink);color:#f5f5f4;font-size:.82rem;padding:9px 0}
+    /* ---- topbar / nav ---- */
+    .topbar{background:var(--topbar-bg);color:var(--topbar-text);font-size:.82rem;padding:9px 0;transition:background-color .35s ease,color .35s ease}
     .topbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;text-align:center}
-    .topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:#a8a29e;white-space:nowrap}
-    .topbar-inner span i{color:var(--accent-bright);font-size:.78rem}
+    .topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:var(--topbar-muted);white-space:nowrap;transition:color .35s ease}
+    .topbar-inner span i{color:var(--accent-bright);font-size:.78rem;transition:color .35s ease}
     .topbar-inner a.whatsapp-link{display:inline-flex;align-items:center;gap:8px;color:#25D366;font-weight:700;transition:all .2s ease;background:rgba(37,211,102,0.15);padding:6px 14px;border-radius:999px;border:1px solid rgba(37,211,102,0.35);}
     .topbar-inner a.whatsapp-link:hover{color:#fff;background:#25D366;transform:translateY(-1px);box-shadow:0 6px 16px rgba(37,211,102,.4)}
     .topbar-inner a.whatsapp-link i{font-size:1.05rem}
 
-    /* simplified nav: only logo and right buttons (menu removed from top) */
     .mainnav{
-      background: rgba(255, 255, 255, 0.95);
+      background: var(--nav-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-bottom:1px solid var(--border);
       position:sticky;top:0;z-index:100;width:100%;
+      transition:background-color .35s ease,border-color .35s ease;
     }
     .mainnav-inner{
       max-width:100%;margin:0 auto;padding:14px 30px;
       display:flex;justify-content:space-between;align-items:center;gap:20px;
     }
     .logo{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
+    /* LOGO UNCHANGED — same size in both themes, no filter, no color change */
     .logo-full-img{height:72px;width:auto;display:block;max-width:320px;object-fit:contain}
 
     .nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:auto}
 
-    /* remove old .menu entirely */
     .menu { display: none; }
 
-    /* keep all other styles exactly as before */
     .btn-quote{background:var(--grad-cta);color:#fff;padding:9px 16px;border-radius:999px;font-weight:700;font-size:.8rem;display:inline-flex;align-items:center;gap:8px;transition:all .25s ease;white-space:nowrap;box-shadow:var(--shadow-cta);flex-shrink:0}
     .btn-quote:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
     .btn-nav-login{
@@ -300,18 +340,19 @@
       border:1.5px solid var(--border);border-radius:999px;
       text-decoration:none;transition:all .25s ease;max-width:180px;
     }
-    .user-profile-pill:hover{border-color:var(--accent);background:#fff;transform:translateY(-1px);box-shadow:0 8px 20px -8px rgba(194,65,12,.35)}
-    .user-avatar{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.1)}
-    .user-avatar-fallback{width:32px;height:32px;border-radius:50%;background:var(--grad-cta);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+    .user-profile-pill:hover{border-color:var(--accent);background:var(--surface);transform:translateY(-1px);box-shadow:0 8px 20px -8px rgba(194,65,12,.35)}
+    .user-avatar{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--surface);box-shadow:0 2px 6px rgba(0,0,0,.1)}
+    .user-avatar-fallback{width:32px;height:32px;border-radius:50%;background:var(--grad-cta);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0;border:2px solid var(--surface);box-shadow:0 2px 6px rgba(0,0,0,.1)}
     .user-name{font-weight:800;font-size:.82rem;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100px}
 
-    .login-suggestion-banner{background:linear-gradient(120deg,#fff1e8,#fce7f3);border-bottom:1px solid var(--border);padding:10px 20px}
+    .login-suggestion-banner{background:linear-gradient(120deg,#fff1e8,#fce7f3);border-bottom:1px solid var(--border);padding:10px 20px;transition:background .35s ease,border-color .35s ease}
+    [data-theme="dark"] .login-suggestion-banner{background:linear-gradient(120deg,#2c1a0e,#3b0f26)}
     .login-suggestion-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
     .login-suggestion-text{display:flex;align-items:center;gap:10px;color:var(--ink);font-size:.85rem;font-weight:600;flex:1;min-width:240px}
     .login-suggestion-text .sparkle{font-size:1.1rem;animation:spark 1.6s ease-in-out infinite}
     .login-suggestion-actions{display:flex;gap:8px;flex-wrap:wrap}
     .btn-pill-login{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;font-weight:700;font-size:.78rem;background:transparent;color:var(--ink);border:1.5px solid var(--border-strong);text-decoration:none;transition:all .25s ease}
-    .btn-pill-login:hover{background:#fff;border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+    .btn-pill-login:hover{background:var(--surface);border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
     .btn-pill-signup{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:999px;font-weight:800;font-size:.78rem;background:var(--grad-cta);color:#fff;text-decoration:none;box-shadow:var(--shadow-cta);transition:all .25s ease}
     .btn-pill-signup:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
 
@@ -349,7 +390,7 @@
     .hero-top-stat-num{font-size:clamp(24px,2.8vw,32px);font-weight:900;letter-spacing:-.04em;color:#fdba8c;line-height:1}
     .hero-top-stat-label{font-size:13px;color:#a8a29e;font-weight:600;letter-spacing:.02em}
 
-    /* ... rest of sections stay identical ... (too long but we keep all) */
+    /* ... rest of sections stay identical ... */
     .hero-slider-section{position:relative;padding:60px 20px;overflow:hidden;background:#0a0a0a}
     .hero-section-bg-container{position:absolute;inset:0;z-index:0}
     .hero-section-bg-img{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;transition:opacity 2s ease-in-out}
@@ -443,7 +484,7 @@
     .explore-card:last-child .explore-cta{color:#f9a8d4}
     .explore-card:hover .explore-cta{gap:14px}
 
-    .tools{position:relative;padding:90px 20px;background:var(--surface);overflow:hidden}
+    .tools{position:relative;padding:90px 20px;background:var(--surface);overflow:hidden;transition:background-color .35s ease}
     .tools-bg-container{position:absolute;inset:0;z-index:0}
     .tools-bg-img{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;transition:opacity 1.8s ease-in-out}
     .tools-bg-img.active{opacity:1}
@@ -459,7 +500,7 @@
     .tool strong{display:block;color:#fff;font-size:.92rem;font-weight:800;margin-bottom:2px;letter-spacing:-.01em;text-shadow:0 2px 6px rgba(0,0,0,.8)}
     .tool small{color:#e7e5e4;font-size:.78rem;font-weight:600;text-shadow:0 1px 4px rgba(0,0,0,.8)}
 
-    .cta-section{padding:40px 20px 80px;background:var(--bg)}
+    .cta-section{padding:40px 20px 80px;background:var(--bg);transition:background-color .35s ease}
     .cta{max-width:1000px;margin:0 auto;border-radius:36px;padding:80px 40px;text-align:center;color:#fff;position:relative;overflow:hidden;background:#1c1917;min-height:420px}
     .cta-bg-container{position:absolute;inset:0;z-index:0}
     .cta-bg-img{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;transition:opacity 1.8s ease-in-out}
@@ -473,7 +514,7 @@
     .cta .btn-quote{background:#fff;color:var(--ink);height:56px;padding:0 32px;font-size:1rem;box-shadow:0 12px 32px -10px rgba(0,0,0,.5)}
     .cta .btn-quote:hover{background:var(--alt);transform:translateY(-2px)}
 
-    footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e}
+    footer{background:var(--ink);padding:60px 20px 24px;color:#a8a29e;transition:background-color .35s ease,color .35s ease}
     .footer-inner{max-width:1200px;margin:0 auto}
     .footer-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:48px;margin-bottom:40px}
     .footer-brand .logo{color:#fff;margin-bottom:14px}
@@ -491,24 +532,24 @@
     .tnc-overlay{display:none;position:fixed;inset:0;z-index:5000;background:rgba(15,15,25,.85);backdrop-filter:blur(10px);justify-content:center;align-items:center;padding:20px;animation:fadeInTnC .3s ease}
     .tnc-overlay.active{display:flex}
     @keyframes fadeInTnC{from{opacity:0}to{opacity:1}}
-    .tnc-content{background:#fff;border-radius:24px;padding:40px 36px 32px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;text-align:left;box-shadow:0 30px 80px rgba(0,0,0,.6);animation:popInTnC .5s cubic-bezier(.34,1.56,.64,1);position:relative;border-top:5px solid var(--accent)}
+    .tnc-content{background:var(--surface);border-radius:24px;padding:40px 36px 32px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;text-align:left;box-shadow:0 30px 80px rgba(0,0,0,.6);animation:popInTnC .5s cubic-bezier(.34,1.56,.64,1);position:relative;border-top:5px solid var(--accent);transition:background-color .35s ease,color .35s ease}
     @keyframes popInTnC{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
-    .tnc-icon{width:64px;height:64px;background:var(--accent-dim);border-radius:16px;display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:1.8rem;margin:0 auto 16px}
-    .tnc-content h2{font-size:1.5rem;font-weight:900;color:var(--ink);text-align:center;margin-bottom:8px;letter-spacing:-.02em}
-    .tnc-subtitle{text-align:center;color:var(--text-2);font-size:.88rem;margin-bottom:24px;font-weight:500}
-    .tnc-body{background:var(--alt);border-radius:14px;padding:20px 22px;margin-bottom:22px;border:1px solid var(--border)}
+    .tnc-icon{width:64px;height:64px;background:var(--accent-dim);border-radius:16px;display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:1.8rem;margin:0 auto 16px;transition:background-color .35s ease,color .35s ease}
+    .tnc-content h2{font-size:1.5rem;font-weight:900;color:var(--ink);text-align:center;margin-bottom:8px;letter-spacing:-.02em;transition:color .35s ease}
+    .tnc-subtitle{text-align:center;color:var(--text-2);font-size:.88rem;margin-bottom:24px;font-weight:500;transition:color .35s ease}
+    .tnc-body{background:var(--alt);border-radius:14px;padding:20px 22px;margin-bottom:22px;border:1px solid var(--border);transition:background-color .35s ease,border-color .35s ease}
     .tnc-body ul{list-style:none;padding:0}
-    .tnc-body ul li{display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:.86rem;line-height:1.6;margin-bottom:12px;font-weight:500}
+    .tnc-body ul li{display:flex;align-items:flex-start;gap:10px;color:var(--text-2);font-size:.86rem;line-height:1.6;margin-bottom:12px;font-weight:500;transition:color .35s ease}
     .tnc-body ul li:last-child{margin-bottom:0}
-    .tnc-body ul li i{color:var(--accent);font-size:.85rem;margin-top:4px;flex-shrink:0}
-    .tnc-body ul li strong{color:var(--ink);font-weight:700}
+    .tnc-body ul li i{color:var(--accent);font-size:.85rem;margin-top:4px;flex-shrink:0;transition:color .35s ease}
+    .tnc-body ul li strong{color:var(--ink);font-weight:700;transition:color .35s ease}
     .tnc-actions{display:flex;gap:12px;flex-wrap:wrap}
     .tnc-btn{flex:1;min-width:140px;padding:14px 20px;border-radius:12px;font-family:inherit;font-weight:800;font-size:.9rem;cursor:pointer;transition:all .25s ease;border:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
     .tnc-btn.agree{background:var(--grad-cta);color:#fff;box-shadow:var(--shadow-cta)}
     .tnc-btn.agree:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
     .tnc-btn.decline{background:var(--alt);color:var(--text-2);border:1px solid var(--border-strong)}
     .tnc-btn.decline:hover{background:var(--bg);color:var(--ink);border-color:var(--text-3)}
-    .tnc-footer{text-align:center;font-size:.75rem;color:var(--text-3);margin-top:16px;font-weight:600}
+    .tnc-footer{text-align:center;font-size:.75rem;color:var(--text-3);margin-top:16px;font-weight:600;transition:color .35s ease}
     .tnc-footer i{color:#15803d;margin-right:6px}
 
     .floating-cta{position:fixed;bottom:24px;right:24px;z-index:900;display:flex;flex-direction:column;gap:12px;align-items:flex-end;pointer-events:none}
@@ -517,11 +558,11 @@
     @keyframes pulseCTA{0%,100%{box-shadow:0 20px 44px -10px rgba(194,65,12,.6),0 0 0 0 rgba(194,65,12,.6)}50%{box-shadow:0 20px 44px -10px rgba(194,65,12,.6),0 0 0 12px rgba(194,65,12,0)}}
     .fab-main:hover{transform:translateY(-3px) scale(1.03);background:var(--grad-cta-hover);animation:none;box-shadow:0 24px 52px -8px rgba(194,65,12,.75)}
     .fab-main i{font-size:1rem}
-    .fab-secondary{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;background:rgba(255,255,255,.95);backdrop-filter:blur(14px);border:1px solid var(--border);color:var(--ink);border-radius:50%;box-shadow:0 14px 32px -10px rgba(28,25,23,.35);transition:all .25s ease;text-decoration:none;font-size:1.05rem;position:relative}
+    .fab-secondary{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;background:var(--surface);backdrop-filter:blur(14px);border:1px solid var(--border);color:var(--ink);border-radius:50%;box-shadow:0 14px 32px -10px rgba(28,25,23,.35);transition:all .25s ease;text-decoration:none;font-size:1.05rem;position:relative}
     .fab-secondary:hover{transform:translateY(-3px) scale(1.08);background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 20px 40px -10px rgba(194,65,12,.6)}
     .fab-secondary[data-tooltip]::after{content:attr(data-tooltip);position:absolute;right:calc(100% + 12px);top:50%;transform:translateY(-50%) translateX(8px);background:var(--ink);color:#fff;font-size:.72rem;font-weight:700;padding:7px 12px;border-radius:8px;white-space:nowrap;opacity:0;pointer-events:none;transition:all .25s}
     .fab-secondary:hover::after{opacity:1;transform:translateY(-50%) translateX(0)}
-    .fab-close{position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.6rem;cursor:pointer;border:2px solid #fff;box-shadow:0 4px 10px rgba(0,0,0,.25);transition:all .2s}
+    .fab-close{position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.6rem;cursor:pointer;border:2px solid var(--surface);box-shadow:0 4px 10px rgba(0,0,0,.25);transition:all .2s}
     .fab-close:hover{background:#dc2626;transform:scale(1.15)}
     .fab-wrap{position:relative;display:inline-flex}
 
@@ -530,7 +571,7 @@
     body.logged-in .btn-pill-login,
     body.logged-in .btn-pill-signup{display:none !important}
 
-    /* RESPONSIVE adjustments for sidebar */
+    /* RESPONSIVE */
     @media (max-width: 1000px){
       .sidebar { width: 240px; }
       .main-content { margin-left: 240px; width: calc(100% - 240px); }
@@ -549,7 +590,6 @@
       .menu-toggle { display: none !important; }
     }
 
-    /* hamburger for small screens */
     .menu-toggle {
       display: none;
       position: fixed;
@@ -571,7 +611,6 @@
     }
     .menu-toggle:hover { background: var(--alt); }
 
-    /* overlay for mobile sidebar */
     .sidebar-overlay {
       display: none;
       position: fixed;
@@ -584,7 +623,6 @@
       .sidebar-overlay.active { display: block; }
     }
 
-    /* restore some responsive rules */
     @media (max-width:1000px){
       .tools-grid{grid-template-columns:repeat(2,1fr)}
       .footer-top{grid-template-columns:1fr 1fr}
@@ -707,10 +745,15 @@
 </head>
 <body class="{% if is_authenticated %}logged-in{% endif %}">
 
+<!-- THEME TOGGLE BUTTON -->
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+  <i class="fas fa-moon" id="themeIcon"></i>
+</button>
+
 <!-- SIDEBAR OVERLAY (mobile) -->
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-<!-- SIDEBAR (the unique side menu, background ic.jpg) -->
+<!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
@@ -731,7 +774,6 @@
     {% endif %}
   </nav>
 
-  <!-- pressable email icon, cool -->
   <div class="sidebar-email">
     <a href="mailto:Twarvistech@gmail.com" class="email-icon-btn" aria-label="Email us">
       <i class="fas fa-envelope"></i>
@@ -753,12 +795,11 @@
       <a href="https://wa.me/255740706007" target="_blank" rel="noopener" class="whatsapp-link" aria-label="Chat on WhatsApp">
         <i class="fab fa-whatsapp"></i> Chat on WhatsApp
       </a>
-      <!-- email icon moved to sidebar, but we keep location -->
       <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
     </div>
   </div>
 
-  <!-- LOGIN SUGGESTION BANNER (unchanged) -->
+  <!-- LOGIN SUGGESTION BANNER -->
   {% if not is_authenticated %}
   <div class="login-suggestion-banner">
     <div class="login-suggestion-inner">
@@ -774,14 +815,13 @@
   </div>
   {% endif %}
 
-  <!-- NAV (simplified, no menu links) -->
+  <!-- NAV -->
   <nav class="mainnav">
     <div class="mainnav-inner">
       <a href="/" class="logo">
+        <!-- LOGO UNCHANGED — same size/color in both themes -->
         <img src="/logo.png" alt="Student Hub" class="logo-full-img">
       </a>
-
-      <!-- no .menu div here — all moved to sidebar -->
 
       <div class="nav-right">
         {% if is_authenticated %}
@@ -808,7 +848,7 @@
     </div>
   </nav>
 
-  <!-- HERO TOP, all sections same as original -->
+  <!-- HERO TOP -->
   <section class="hero-top">
     <video autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1600&q=60">
       <source src="https://cdn.coverr.co/videos/coverr-a-student-studying-in-a-library-1571/1080p.mp4" type="video/mp4">
@@ -841,7 +881,6 @@
     </div>
   </section>
 
-  <!-- ... ALL OTHER SECTIONS (exactly same as original) ... -->
   <!-- WHAT WE DO -->
   <section class="hero-slider-section">
     <div class="hero-section-bg-container">
@@ -862,7 +901,6 @@
       </div>
 
       <div class="hero-stack" id="heroSlider">
-        <!-- slide 1..6 same as original -->
         <div class="slide s1 active">
           <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1532012197267-da84d127e765?w=1200&q=60');"></div>
           <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=1200&q=60');"></div>
@@ -876,7 +914,6 @@
             </div>
           </a>
         </div>
-        <!-- slide 2 -->
         <div class="slide s2">
           <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=1200&q=60');"></div>
           <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&q=60');"></div>
@@ -890,8 +927,6 @@
             </div>
           </a>
         </div>
-        <!-- slide 3,4,5,6 identical to original, omitted for brevity but you must copy them fully -->
-        <!-- I will include them all to preserve function -->
         <div class="slide s3">
           <div class="slide-bg active" style="background-image: url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1200&q=60');"></div>
           <div class="slide-bg" style="background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&q=60');"></div>
@@ -977,7 +1012,6 @@
         <span class="stack-label">What's inside</span>
         <h2>Everything a student <em>needs</em></h2>
       </div>
-      <!-- four stack items, identical -->
       <div class="stack-item">
         <div class="stack-card">
           <div class="stack-img">
@@ -1045,7 +1079,7 @@
     </div>
   </section>
 
-  <!-- EXPLORE section (identical) -->
+  <!-- EXPLORE -->
   <section class="explore">
     <div class="explore-bg-container">
       <div class="explore-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=60');"></div>
@@ -1063,7 +1097,6 @@
         <p>Free courses to level up your skills, an AI quiz tool, and a hackathon to prove them.</p>
       </div>
       <div class="explore-grid">
-        <!-- all 7 explore cards (same as original) -->
         <a href="/free_course/" class="explore-card">
           <div class="explore-icon free"><i class="fas fa-graduation-cap"></i></div>
           <div class="explore-body">
@@ -1131,7 +1164,7 @@
     </div>
   </section>
 
-  <!-- TOOLS, CTA, FOOTER etc. same as original -->
+  <!-- TOOLS -->
   <section class="tools">
     <div class="tools-bg-container">
       <div class="tools-bg-img active" style="background-image: url('https://images.unsplash.com/photo-1504148455328-c376907d081c?w=1200&q=60');"></div>
@@ -1192,6 +1225,7 @@
       <div class="footer-top">
         <div class="footer-brand">
           <a href="/" class="logo">
+            <!-- FOOTER LOGO UNCHANGED -->
             <img src="/logo.png" alt="Student Hub Logo" class="logo-full-img">
           </a>
           <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
@@ -1252,7 +1286,7 @@
     </button>
   </div>
 
-  <!-- TNC POPUP remains unchanged -->
+  <!-- TNC POPUP -->
   <div class="tnc-overlay" id="tncOverlay">
     <div class="tnc-content">
       <div class="tnc-icon"><i class="fas fa-shield-alt"></i></div>
@@ -1278,6 +1312,55 @@
 </div> <!-- end main-content -->
 
 <script>
+  // ============================================================
+  // THEME PERSISTENCE (sh-theme) — same key as login page
+  // Applies to all pages that use this script
+  // ============================================================
+  (function() {
+      const savedTheme = localStorage.getItem('sh-theme');
+      if (savedTheme === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+      } else if (savedTheme === 'light') {
+          document.documentElement.setAttribute('data-theme', 'light');
+      } else {
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+          const toggle = document.getElementById('themeToggle');
+          const icon = document.getElementById('themeIcon');
+
+          function syncIcon() {
+              const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+              if (icon) icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+              if (toggle) {
+                  toggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+                  toggle.setAttribute('title', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+              }
+          }
+          syncIcon();
+
+          if (toggle) {
+              toggle.addEventListener('click', function() {
+                  const current = document.documentElement.getAttribute('data-theme');
+                  const next = current === 'dark' ? 'light' : 'dark';
+                  document.documentElement.setAttribute('data-theme', next);
+                  localStorage.setItem('sh-theme', next);
+                  syncIcon();
+              });
+          }
+
+          window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+              if (!localStorage.getItem('sh-theme')) {
+                  const next = e.matches ? 'dark' : 'light';
+                  document.documentElement.setAttribute('data-theme', next);
+                  syncIcon();
+              }
+          });
+      });
+  })();
+
   // Hide FAB if previously dismissed
   (function(){
       if (localStorage.getItem('sh_fab_hidden') === '1') {
@@ -1352,7 +1435,7 @@
       startTyping('explore-typing-text', "Explore our <em>programs</em>", 1500);
   });
 
-  // HERO SLIDER (copied from original)
+  // HERO SLIDER
   (function(){
       const hero = document.getElementById('heroSlider');
       const slides = document.querySelectorAll('.slide');
@@ -1512,7 +1595,6 @@
       });
       overlay.addEventListener('click', closeSidebar);
 
-      // close on escape
       document.addEventListener('keydown', function(e){
           if (e.key === 'Escape' && sidebar.classList.contains('open')) {
               closeSidebar();
