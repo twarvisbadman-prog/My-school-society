@@ -233,11 +233,7 @@ img { max-width: 100%; height: auto; display: block; }
 .sidebar-nav a:hover i, .sidebar-nav a.active i { color: var(--accent); }
 
 /* ============================================================
-   HERO SECTION — rebuilt to match community page pattern
-   · Image on its own layer (z-index 0)
-   · Light overlay only (z-index 1) — image stays clearly visible
-   · Tight text shadows — no bleed onto photo
-   · Search bar overlaps hero bottom (negative margin)
+   HERO SECTION — fixed to load /pic6.png clearly
    ============================================================ */
 .browse-hero {
     position: relative;
@@ -252,17 +248,18 @@ img { max-width: 100%; height: auto; display: block; }
     justify-content: center;
     text-align: center;
     width: calc(100% - 40px);
-    background: #1c1917;
+    /* Fallback color just in case */
+    background-color: #1c1917;
     box-shadow: 0 24px 60px -20px rgba(0,0,0,.6);
     border: 1px solid rgba(255,255,255,.18);
     border-bottom: none;
 }
 
-/* Dedicated image layer — no filters, no blur */
+/* Dedicated image layer — pointing to ROOT /pic6.png */
 .browse-hero-bg {
     position: absolute;
     inset: 0;
-    background-image: url('pic6.png');
+    background-image: url('/pic6.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -328,7 +325,7 @@ img { max-width: 100%; height: auto; display: block; }
     text-shadow: 0 2px 10px rgba(0,0,0,.85);
 }
 
-/* SEARCH BAR — overlaps hero bottom like community */
+/* SEARCH BAR — overlaps hero bottom like community page */
 .search-wrap {
     max-width: 1000px;
     margin: -28px auto 30px;
@@ -758,10 +755,7 @@ footer { background: var(--surface); border-top: 1px solid var(--border); paddin
     </nav>
 
     <!-- ============================================================
-         HERO SECTION — image clearly visible, matching community page
-         · .browse-hero-bg  → image on own layer (z-index 0)
-         · .browse-hero-overlay → light .35 overlay (z-index 1)
-         · text on z-index 2 with tight shadows
+         HERO SECTION — image clearly visible, pointing to /pic6.png
          ============================================================ -->
     <section class="browse-hero">
         <div class="browse-hero-bg"></div>
