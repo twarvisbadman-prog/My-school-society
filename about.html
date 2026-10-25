@@ -3,924 +3,1009 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#f8f9fa" id="themeColorMeta" />
 <title>About | Student Hub</title>
 <link rel="icon" type="image/png" href="/logo.png" />
 <link rel="apple-touch-icon" href="/logo.png" />
 
-<!-- ═══════════════════════════════════════════════════════════
-     PRELOAD — Tiny thumbnails only (~2KB each)
-     These load INSTANTLY so no white flash ever appears
-     ═══════════════════════════════════════════════════════════ -->
-<link rel="preload" as="image" href="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=40&q=20" />
-<link rel="preload" as="image" href="https://images.unsplash.com/photo-1514565131-fce0801e5785?w=40&q=20" />
+<!-- Preloads for faster loading -->
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=40&q=20" />
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=40&q=20" />
 <link rel="preload" as="image" href="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=40&q=20" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
 <style>
-:root{
-    --bg:#fafaf9;
-    --surface:#ffffff;
-    --alt:#f5f5f4;
-    --border:#e7e5e4;
-    --border-strong:#d6d3d1;
-    --ink:#1c1917;
-    --text-2:#44403c;
-    --text-3:#57534e;
-    --accent:#c2410c;
-    --accent-bright:#ea580c;
-    --accent-pink:#db2777;
-    --accent-dim:#fff1e8;
-    --grad:linear-gradient(120deg,#ea580c,#db2777);
-    --grad-cta:linear-gradient(120deg,#c2410c,#be185d);
-    --grad-cta-hover:linear-gradient(120deg,#9a3412,#9d174d);
-    --success:#15803d;
-    --blue:#2563eb;
-    --blue-dim:#dbeafe;
-    --radius-sm:10px;
-    --radius-md:14px;
-    --radius-lg:20px;
-    --radius-xl:28px;
-    --shadow-sm:0 1px 2px rgba(28,25,23,.06);
-    --shadow-md:0 10px 28px -12px rgba(28,25,23,.18);
-    --shadow-lg:0 28px 64px -20px rgba(28,25,23,.22);
-    --shadow-cta:0 8px 22px -8px rgba(219,39,119,.5);
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{overflow-x:hidden;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-
-/* ═══════════════════════════════════════════════════════════
-   BODY: dark background from the very first paint
-   So no white blank flash EVER appears
-   ═══════════════════════════════════════════════════════════ */
-body{
-    font-family:'Inter',sans-serif;
-    background:#0a0a14; /* solid dark — no flash */
-    color:var(--ink);
-    line-height:1.5;
-    overflow-x:hidden;
-    width:100%;
-    -webkit-font-smoothing:antialiased;
-    min-height:100vh;
-    position:relative;
-}
-a{color:inherit;text-decoration:none}
-ul{list-style:none}
-button{font-family:inherit}
-img{max-width:100%;height:auto;display:block}
-
-/* ═══════════════════════════════════════════════════════════
-   PAGE BACKGROUND — 2 PARTS
-   Each image is 2 layers: tiny placeholder + full image
-   ═══════════════════════════════════════════════════════════ */
-.page-bg-part{
-    position:absolute;
-    left:0;right:0;
-    overflow:hidden;
-    z-index:-3;
-    background:#0a0a14;
-}
-.page-bg-part.part-one{
-    top:0;
-    height:1900px;
-}
-.page-bg-part.part-two{
-    top:1900px;
-    bottom:0;
+/* ----- THEME VARIABLES (DEFAULT IS LIGHT) ----- */
+:root {
+    --bg: #f8f9fa; 
+    --surface: #ffffff;
+    --ink: #111827;
+    --text-muted: #6b7280;
+    --accent: #2e8b57; 
+    --accent-light: #e8f5e9;
+    --accent-dark: #236b42;
+    --border: rgba(0,0,0,0.05);
+    
+    /* Sidebar Theme */
+    --sidebar-bg: rgba(255, 255, 255, 0.98);
+    --sidebar-icon-border: rgba(0,0,0,0.08);
+    --sidebar-icon-hover: rgba(0,0,0,0.03);
+    
+    /* Logo Container */
+    --logo-container-bg: transparent;
+    --logo-container-shadow: none;
+    
+    /* Animations */
+    --smooth-slide: cubic-bezier(0.16, 1, 0.3, 1);
+    --bounce-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+    --shadow-md: 0 10px 30px rgba(0,0,0,0.06);
+    --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
+    --shadow-cta: 0 4px 12px rgba(46, 139, 87, 0.3);
 }
 
-.bg-layer{
-    position:absolute;
-    inset:0;
-    background-size:cover;
-    background-position:center top;
-    background-repeat:no-repeat;
-    opacity:0;
-    transition:
-        opacity 2.2s cubic-bezier(.45,.05,.55,.95),
-        transform 3s cubic-bezier(.45,.05,.55,.95);
-    will-change:opacity, transform;
-    transform:scale(1.08);
-}
-.bg-layer.placeholder{
-    filter: blur(20px);
-    transition: opacity .4s ease;
-    transform:scale(1.15);
-}
-.bg-layer.placeholder.active{
-    opacity:1;
-    transform:scale(1.15);
-}
-.bg-layer.full{
-    transition: opacity 1.8s ease, transform 3s cubic-bezier(.45,.05,.55,.95);
-}
-.bg-layer.full.active{
-    opacity:1;
-    transform:scale(1);
+/* DARK THEME OVERRIDES */
+[data-theme="dark"] {
+    --bg: #120b08; 
+    --surface: #1f1613;
+    --ink: #fafaf9;
+    --text-muted: #a8a29e;
+    --accent: #4ade80; 
+    --accent-light: #052e16;
+    --accent-dark: #22c55e;
+    --border: rgba(255,255,255,0.08);
+    
+    /* Sidebar Theme */
+    --sidebar-bg: rgba(31, 22, 19, 0.98);
+    --sidebar-icon-border: rgba(255,255,255,0.1);
+    --sidebar-icon-hover: rgba(255,255,255,0.05);
+    
+    /* Logo Container */
+    --logo-container-bg: rgba(255, 255, 255, 0.95);
+    --logo-container-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
+    --shadow-md: 0 10px 30px rgba(0,0,0,0.5);
+    --shadow-lg: 0 20px 40px rgba(0,0,0,0.6);
+    --shadow-cta: 0 4px 12px rgba(74, 222, 128, 0.2);
 }
 
-/* Soft field glow */
-.page-bg-field{
-    position:absolute;
-    left:0;right:0;
-    height:400px;
-    z-index:-2;
-    pointer-events:none;
-    background:radial-gradient(ellipse at center, rgba(234,88,12,.18) 0%, transparent 70%);
-    filter:blur(30px);
-    animation:fieldPulse 7s ease-in-out infinite;
+/* ----- RESET & BASE ----- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; transition: background-color 0.35s ease; }
+body { 
+    font-family: 'Inter', sans-serif; 
+    background: var(--bg); 
+    color: var(--ink); 
+    line-height: 1.6; 
+    overflow-x: hidden; 
+    -webkit-font-smoothing: antialiased; 
+    transition: background-color 0.35s ease, color 0.35s ease;
+    min-height: 100vh;
+    position: relative;
 }
-.page-bg-field.field-one{ top: 1750px; }
-.page-bg-field.field-two{ top: 3650px; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+button { font-family: inherit; }
+img { max-width: 100%; height: auto; display: block; }
 
-@keyframes fieldPulse{
-    0%,100%{ opacity:.4; transform:scale(1); }
-    50%{ opacity:.85; transform:scale(1.15); }
+/* ----- NAVBAR ----- */
+.mainnav { 
+    background: var(--surface); 
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100; 
+    transition: background-color 0.35s ease, border-color 0.35s ease;
+}
+.mainnav-inner { 
+    max-width: 1200px; margin: 0 auto; padding: 12px 20px; 
+    display: flex; justify-content: space-between; align-items: center; 
+    gap: 10px;
 }
 
-.page-bg-overlay{
-    position:absolute;
-    left:0;right:0;
-    top:0;bottom:0;
-    background:rgba(15,15,25,0.62);
-    z-index:-1;
-    pointer-events:none;
+.nav-left { display: flex; align-items: center; gap: 12px; }
+
+.menu-toggle { 
+    display: flex; background: var(--bg); border: 1px solid var(--border); 
+    border-radius: 50%; width: 40px; height: 40px; align-items: center; justify-content: center; 
+    font-size: 1.1rem; color: var(--ink); cursor: pointer; box-shadow: var(--shadow-sm);
+    transition: all 0.3s; flex-shrink: 0;
+}
+.menu-toggle:hover { background: var(--surface); transform: scale(1.05); }
+
+.logo-full-img { 
+    height: 48px; width: auto; object-fit: contain; 
+    background: var(--logo-container-bg); padding: 4px 8px;
+    border-radius: 8px; box-shadow: var(--logo-container-shadow);
+    transition: all 0.35s ease;
 }
 
-body{ min-height: 4000px; }
+.nav-right { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
 
-/* TOP BAR */
-.topbar{background:rgba(28,25,23,.9);backdrop-filter:blur(10px);color:#f5f5f4;font-size:.82rem;padding:9px 0;position:relative;z-index:10}
-.topbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;text-align:center}
-.topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:#a8a29e;white-space:nowrap}
-.topbar-inner span i{color:var(--accent-bright);font-size:.78rem}
-.topbar-inner a.whatsapp-link{display:inline-flex;align-items:center;gap:8px;color:#25D366;font-weight:700;transition:all .2s ease;background:rgba(37,211,102,0.15);padding:6px 14px;border-radius:999px;border:1px solid rgba(37,211,102,0.35)}
-.topbar-inner a.whatsapp-link:hover{color:#fff;background:#25D366;transform:translateY(-1px);box-shadow:0 6px 16px rgba(37,211,102,.4)}
-
-/* NAV */
-.mainnav{
-    background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-bottom:1px solid var(--border);
-    position:sticky;
-    top:0;
-    z-index:100;
-    width:100%;
+.theme-toggle {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--bg); color: var(--ink);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; box-shadow: var(--shadow-sm);
+    transition: all .3s var(--smooth-slide);
 }
-.mainnav-inner{
-    max-width:100%;
-    margin:0 auto;
-    padding:14px 30px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:20px;
+.theme-toggle:hover { color: var(--accent); border-color: var(--accent); transform: scale(1.1) rotate(12deg); }
+
+.streak-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #fff7ed; color: #ea580c; border: 1.5px solid #fed7aa;
+    padding: 6px 12px; border-radius: 999px; font-weight: 800; font-size: 0.8rem;
+    text-decoration: none; transition: all 0.25s var(--smooth-slide);
+    white-space: nowrap;
 }
-.logo{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
-.logo-full-img { height: 56px; width: auto; display: block; max-width: 260px; object-fit: contain; }
+[data-theme="dark"] .streak-pill { background: #2c1a0e; color: #fb923c; border-color: #ea580c; }
+.streak-pill:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(234,88,12,0.4); }
 
-.menu{display:flex;align-items:center;gap:0px;flex-wrap:nowrap;justify-content:center;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
-.menu::-webkit-scrollbar{display:none}
-.menu a{padding:6px 8px;font-size:.75rem;font-weight:600;color:var(--text-2);border-radius:6px;white-space:nowrap;transition:all .25s ease}
-.menu a:hover{color:var(--ink);background:var(--alt)}
-.menu a.active{color:var(--accent);background:var(--accent-dim);font-weight:700}
-.menu a.course-link{color:var(--accent)}
-.menu a.course-link i{font-size:.7rem;margin-right:4px}
-.menu a.hack-link{color:var(--accent-pink)}
-.menu a.hack-link i{font-size:.7rem;margin-right:4px}
+.profile-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--bg); border: 1.5px solid var(--border);
+    padding: 4px 10px 4px 4px; border-radius: 999px;
+    font-weight: 700; font-size: 0.85rem; color: var(--ink);
+    transition: all 0.25s var(--smooth-slide);
+    white-space: nowrap;
+}
+.profile-pill:hover { border-color: var(--accent); background: var(--surface); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.avatar-circle {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.75rem; overflow: hidden;
+}
+.avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
 
-.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
-.btn-quote{background:var(--accent);color:#fff;padding:9px 18px;border-radius:999px;font-weight:700;font-size:.78rem;display:inline-flex;align-items:center;gap:6px;transition:all .25s ease;white-space:nowrap;box-shadow:var(--shadow-cta);border:none;cursor:pointer;flex-shrink:0}
-.btn-quote:hover{background:#9a3412;transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(194,65,12,.5)}
+.btn-nav { padding: 8px 14px; border-radius: 999px; font-weight: 600; font-size: 0.85rem; transition: all 0.3s var(--smooth-slide); white-space: nowrap; }
+.btn-nav.login { border: 1px solid var(--border); color: var(--ink); }
+.btn-nav.login:hover { background: var(--bg); }
+.btn-nav.join { background: var(--accent); color: #fff; box-shadow: var(--shadow-cta); }
+.btn-nav.join:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(46, 139, 87, 0.4); }
 
-/* HERO */
-.about-hero{
-    padding:100px 20px 90px;
-    text-align:center;
-    position:relative;
-    overflow:hidden;
+@media (max-width: 600px) {
+    .hide-mobile { display: none !important; }
+    .mainnav-inner { padding: 10px 15px; }
+    .logo-full-img { height: 40px; }
+    .streak-pill span { display: none; } 
+    .streak-pill { padding: 6px 8px; }
+    .profile-pill .username-text { display: none; } 
+    .profile-pill { padding: 4px; }
+}
+
+/* ----- POLISHED SIDEBAR ----- */
+.sidebar-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.5s var(--smooth-slide);
+}
+.sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+.sidebar {
+    position: fixed; top: 0; left: 0; width: 85%; max-width: 320px; height: 100vh;
+    background: var(--sidebar-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    z-index: 1001; display: flex; flex-direction: column; padding: 24px 0;
+    box-shadow: 10px 0 40px rgba(0,0,0,0.08), inset -1px 0 0 rgba(255,255,255,0.8);
+    transform: translateX(-100%); transition: transform 0.65s var(--smooth-slide), background 0.35s ease;
+}
+.sidebar.open { transform: translateX(0); }
+
+.sidebar-header { display: flex; justify-content: flex-end; padding: 0 24px 20px; gap: 12px; }
+.icon-btn {
+    background: transparent; border: 1px solid var(--sidebar-icon-border); border-radius: 50%;
+    width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--ink); transition: all 0.3s;
+}
+.icon-btn:hover { background: var(--sidebar-icon-hover); transform: scale(1.05); }
+.icon-btn svg { width: 18px; height: 18px; stroke-width: 1.5; }
+
+.mobile-user-card {
+    display: none; align-items: center; gap: 16px;
+    margin: 0 24px 20px; padding: 16px;
+    background: var(--bg); border-radius: 16px; border: 1px solid var(--border);
+}
+.mobile-user-card .avatar-circle { width: 44px; height: 44px; font-size: 1.1rem; }
+.mobile-user-info { flex: 1; }
+.mobile-user-info strong { display: block; font-size: 1rem; color: var(--ink); }
+.mobile-user-info span { font-size: 0.8rem; color: #ea580c; font-weight: 700; }
+[data-theme="dark"] .mobile-user-info span { color: #fb923c; }
+
+.sidebar-nav { display: flex; flex-direction: column; padding: 0 24px; overflow-y: auto; flex: 1; }
+.sidebar-nav a {
+    display: flex; align-items: center; justify-content: space-between;
+    color: var(--ink); font-size: 16px; font-weight: 500; padding: 14px 0;
+    border-bottom: 2px solid transparent; transition: all 0.3s var(--smooth-slide);
+    opacity: 0; transform: translateX(-20px);
+}
+.sidebar.open .sidebar-nav a { opacity: 1; transform: translateX(0); }
+
+.sidebar.open .sidebar-nav a:nth-child(1) { transition-delay: 0.1s; }
+.sidebar.open .sidebar-nav a:nth-child(2) { transition-delay: 0.15s; }
+.sidebar.open .sidebar-nav a:nth-child(3) { transition-delay: 0.2s; }
+.sidebar.open .sidebar-nav a:nth-child(4) { transition-delay: 0.25s; }
+.sidebar.open .sidebar-nav a:nth-child(5) { transition-delay: 0.3s; }
+.sidebar.open .sidebar-nav a:nth-child(6) { transition-delay: 0.35s; }
+.sidebar.open .sidebar-nav a:nth-child(7) { transition-delay: 0.4s; }
+.sidebar.open .sidebar-nav a:nth-child(8) { transition-delay: 0.45s; }
+.sidebar.open .sidebar-nav a:nth-child(9) { transition-delay: 0.5s; }
+
+.sidebar-nav a:hover, .sidebar-nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
+.sidebar-nav a i { font-size: 1.1rem; color: var(--text-muted); transition: color 0.3s; }
+.sidebar-nav a:hover i, .sidebar-nav a.active i { color: var(--accent); }
+
+/* ----- MAIN CONTENT (Replacing the page bg structure) ----- */
+.main-content {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+}
+
+/* HERO SECTION */
+.about-hero {
+    position: relative;
+    padding: 100px 20px 90px;
+    text-align: center;
+    overflow: hidden;
     min-height: 55vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
 }
-.about-hero-inner{max-width:820px;margin:0 auto;position:relative;z-index:2}
-.about-label{color:#fdba8c;font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px;display:block;text-shadow: 0 2px 6px rgba(0,0,0,.8)}
-.about-hero h1{font-size:clamp(2rem,5vw,3.4rem);font-weight:900;line-height:1.1;letter-spacing:-.025em;margin-bottom:20px;color:#fff;text-shadow: 0 2px 12px rgba(0,0,0,.8)}
-.about-hero h1 .accent{color:#fdba8c;text-decoration:underline;text-decoration-color:#fdba8c;text-underline-offset:8px;text-decoration-thickness:5px}
-.about-hero p{color:#f5f5f4;font-size:clamp(1rem,1.6vw,1.15rem);max-width:620px;margin:0 auto;line-height:1.75;text-shadow: 0 2px 6px rgba(0,0,0,.7)}
+.about-hero-inner { max-width: 820px; margin: 0 auto; position: relative; z-index: 2; }
+.about-label { color: var(--accent); font-size: .75rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 14px; display: block; }
+.about-hero h1 { font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 900; line-height: 1.1; letter-spacing: -.025em; margin-bottom: 20px; color: var(--ink); }
+.about-hero h1 .accent { color: var(--accent); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 8px; text-decoration-thickness: 5px; }
+.about-hero p { color: var(--text-muted); font-size: clamp(1rem, 1.6vw, 1.15rem); max-width: 620px; margin: 0 auto; line-height: 1.75; }
 
-.container{max-width:1100px;margin:0 auto;padding:70px 20px;position:relative;z-index:2}
+/* CONTAINER */
+.container { max-width: 1100px; margin: 0 auto; padding: 70px 20px; position: relative; z-index: 2; }
 
-.section-head{text-align:center;margin-bottom:50px}
-.section-label{color:#fdba8c;font-size:.75rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px;display:block;text-shadow: 0 2px 6px rgba(0,0,0,.8)}
-.section-head h2{font-size:clamp(1.6rem,3.2vw,2.3rem);font-weight:900;color:#fff;letter-spacing:-.025em;line-height:1.2;margin-bottom:14px;text-shadow: 0 2px 10px rgba(0,0,0,.9)}
-.section-head h2 em{font-style:normal;color:#fdba8c}
-.section-head p{color:#e7e5e4;font-size:.98rem;max-width:600px;margin:0 auto;line-height:1.7;text-shadow: 0 2px 6px rgba(0,0,0,.8)}
+/* SECTIONS */
+.section-head { text-align: center; margin-bottom: 50px; }
+.section-label { color: var(--accent); font-size: .75rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 12px; display: block; }
+.section-head h2 { font-size: clamp(1.6rem, 3.2vw, 2.3rem); font-weight: 900; color: var(--ink); letter-spacing: -.025em; line-height: 1.2; margin-bottom: 14px; }
+.section-head h2 em { font-style: normal; color: var(--accent); }
+.section-head p { color: var(--text-muted); font-size: .98rem; max-width: 600px; margin: 0 auto; line-height: 1.7; }
 
-.section-transparent{
-    position:relative;
-    border-top:1px solid rgba(255,255,255,.08);
-    border-bottom:1px solid rgba(255,255,255,.08);
+.section-transparent {
+    position: relative;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
 }
-.section-transparent .container{position:relative;z-index:2}
+.section-transparent .container { position: relative; z-index: 2; }
 
-.intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
-.intro-text h2{font-size:clamp(1.6rem,3vw,2.1rem);font-weight:800;color:#fff;letter-spacing:-.02em;line-height:1.2;margin-bottom:20px;text-shadow: 0 2px 10px rgba(0,0,0,.9)}
-.intro-text h2 .accent{color:#fdba8c}
-.intro-text p{color:#e7e5e4;font-size:.98rem;line-height:1.8;margin-bottom:16px;text-shadow: 0 1px 4px rgba(0,0,0,.7)}
-.intro-text p:last-child{margin-bottom:0}
-.intro-text strong{color:#fff;font-weight:700}
+/* INTRO GRID */
+.intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.intro-text h2 { font-size: clamp(1.6rem, 3vw, 2.1rem); font-weight: 800; color: var(--ink); letter-spacing: -.02em; line-height: 1.2; margin-bottom: 20px; }
+.intro-text h2 .accent { color: var(--accent); }
+.intro-text p { color: var(--text-muted); font-size: .98rem; line-height: 1.8; margin-bottom: 16px; }
+.intro-text p:last-child { margin-bottom: 0; }
+.intro-text strong { color: var(--ink); font-weight: 700; }
 
-.intro-image{
-    position:relative;
-    border-radius:var(--radius-lg);
-    overflow:hidden;
-    box-shadow: 0 20px 60px rgba(0,0,0,.5);
-    aspect-ratio:4/3;
-    background:#1c1917;
-    border: 1px solid rgba(255,255,255,.2);
+.intro-image {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    aspect-ratio: 4/3;
+    background: var(--bg);
+    border: 1px solid var(--border);
 }
-.intro-image-bg{
-    position:absolute;inset:0;
-    background-size:cover;background-position:center;
-    opacity:0;
-    transform:scale(1.08);
-    transition:opacity 2s ease-in-out, transform 2.8s ease-in-out;
+.intro-image-bg {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    opacity: 0;
+    transform: scale(1.08);
+    transition: opacity 2s ease-in-out, transform 2.8s ease-in-out;
 }
-.intro-image-bg.active{opacity:1;transform:scale(1)}
+.intro-image-bg.active { opacity: 1; transform: scale(1); }
 
-.feature-list{display:grid;gap:12px;margin-top:26px}
-.feature-list li{
-    display:flex;align-items:flex-start;gap:14px;
-    padding:14px 18px;
-    background:rgba(255,255,255,.1);
-    border:1px solid rgba(255,255,255,.2);
-    border-radius:var(--radius-md);
-    font-size:.9rem;color:#f5f5f4;
-    line-height:1.55;
-    transition:all .25s ease;
-    backdrop-filter: blur(6px);
+/* FEATURE LIST */
+.feature-list { display: grid; gap: 12px; margin-top: 26px; }
+.feature-list li {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 14px 18px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    font-size: .9rem; color: var(--text-muted);
+    line-height: 1.55;
+    transition: all .25s ease;
 }
-.feature-list li:hover{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.18);transform:translateX(4px);box-shadow:0 8px 22px rgba(0,0,0,.3)}
-.feature-list li i{color:#fdba8c;font-size:1rem;margin-top:2px;flex-shrink:0;width:20px;text-align:center}
-.feature-list li strong{color:#fff;font-weight:700}
+.feature-list li:hover { border-color: var(--accent); background: var(--surface); transform: translateX(4px); box-shadow: var(--shadow-sm); }
+.feature-list li i { color: var(--accent); font-size: 1rem; margin-top: 2px; flex-shrink: 0; width: 20px; text-align: center; }
+.feature-list li strong { color: var(--ink); font-weight: 700; }
 
-.creator-card{
-    display:grid;
-    grid-template-columns:auto 1fr;
-    gap:36px;
-    align-items:center;
-    background:rgba(255,255,255,.12);
-    backdrop-filter: blur(14px);
-    border:1px solid rgba(255,255,255,.25);
-    border-radius:var(--radius-xl);
-    padding:44px 40px;
-    position:relative;
-    overflow:hidden;
-    box-shadow: 0 20px 60px rgba(0,0,0,.4);
+/* CREATOR CARD */
+.creator-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 36px;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 44px 40px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+.creator-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent); }
+.creator-avatar {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem;
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 4px solid var(--surface);
+    box-shadow: var(--shadow-lg);
+    flex-shrink: 0;
+}
+.creator-info h3 { font-size: clamp(1.4rem, 2.6vw, 1.8rem); font-weight: 800; color: var(--ink); margin-bottom: 6px; letter-spacing: -.02em; }
+.creator-info .role { color: var(--accent); font-size: .85rem; font-weight: 700; letter-spacing: .10em; text-transform: uppercase; margin-bottom: 16px; }
+.creator-info p { color: var(--text-muted); font-size: .96rem; line-height: 1.75; }
+.creator-info p strong { color: var(--ink); font-weight: 700; }
+
+/* SOCIAL BUTTONS */
+.social-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
+.social-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    font-size: .85rem; font-weight: 700;
+    transition: all .25s ease;
+    border: 1px solid transparent;
+}
+.social-btn i { font-size: .9rem; }
+.social-btn.whatsapp { background: #dcfce7; color: var(--success); border-color: #86efac; }
+.social-btn.whatsapp i { color: #25D366; }
+.social-btn.whatsapp:hover { background: #25D366; color: #fff; border-color: #25D366; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,211,102,.4); }
+.social-btn.instagram { background: #fce7f3; color: #be185d; border-color: #fbcfe8; }
+.social-btn.instagram i { color: #e4405f; }
+.social-btn.instagram:hover { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); color: #fff; border-color: #dc2743; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(225,48,108,.4); }
+.social-btn.tiktok { background: var(--alt); color: var(--ink); border-color: var(--border); }
+.social-btn.tiktok i { color: var(--ink); }
+.social-btn.tiktok:hover { background: #000; color: #fff; border-color: #000; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.4); }
+
+/* PROJECTS GRID */
+.projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+.project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    transition: all .3s ease;
+    display: flex; flex-direction: column;
+    box-shadow: var(--shadow-md);
+}
+.project-card:hover { border-color: var(--accent); transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.project-image { position: relative; height: 180px; overflow: hidden; background: var(--bg); }
+.project-image-bg { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transform: scale(1.08); transition: opacity 2s ease-in-out, transform 2.8s ease-in-out; }
+.project-image-bg.active { opacity: 1; transform: scale(1); }
+.project-icon {
+    position: absolute; top: 24px; left: 24px;
+    width: 56px; height: 56px;
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; color: var(--accent);
+    box-shadow: var(--shadow-sm);
+    z-index: 2;
+}
+.project-body { padding: 26px 26px 24px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+.project-body h3 { font-size: 1.2rem; font-weight: 800; color: var(--ink); letter-spacing: -.01em; }
+.project-url { font-size: .78rem; color: var(--accent); font-weight: 600; word-break: break-all; font-family: 'JetBrains Mono', monospace; }
+.project-body p { color: var(--text-muted); font-size: .9rem; line-height: 1.65; flex: 1; }
+.project-features { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.project-features span {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: .7rem; font-weight: 700;
+    border: 1px solid var(--border);
+}
+.project-features span i { font-size: .65rem; }
+.project-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px 20px;
+    background: var(--accent);
     color: #fff;
+    border-radius: var(--radius-sm);
+    font-size: .85rem; font-weight: 700;
+    transition: all .25s ease;
+    margin-top: 8px;
+    box-shadow: var(--shadow-cta);
 }
-.creator-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--grad)}
-.creator-avatar{
-    width:120px;height:120px;
-    border-radius:50%;
-    display:flex;align-items:center;justify-content:center;
-    font-size:3rem;
-    background:var(--grad-cta);
-    color:#fff;
-    border:4px solid rgba(255,255,255,.3);
-    box-shadow:0 12px 30px rgba(219,39,119,.5);
-    flex-shrink:0;
-}
-.creator-info h3{font-size:clamp(1.4rem,2.6vw,1.8rem);font-weight:800;color:#fff;margin-bottom:6px;letter-spacing:-.02em;text-shadow: 0 2px 8px rgba(0,0,0,.8)}
-.creator-info .role{color:#fdba8c;font-size:.85rem;font-weight:700;letter-spacing:.10em;text-transform:uppercase;margin-bottom:16px}
-.creator-info p{color:#f5f5f4;font-size:.96rem;line-height:1.75;text-shadow: 0 1px 4px rgba(0,0,0,.7)}
-.creator-info p strong{color:#fff;font-weight:700}
+.project-btn:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 8px 22px rgba(46,139,87,.6); }
 
-.social-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
-.social-btn{
-    display:inline-flex;align-items:center;gap:8px;
-    padding:10px 20px;
-    border-radius:var(--radius-sm);
-    font-size:.85rem;font-weight:700;
-    transition:all .25s ease;
-    border:1px solid transparent;
+/* CC GRID */
+.cc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+.cc-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 22px 22px 20px;
+    transition: all .25s ease;
+    display: flex; flex-direction: column; gap: 12px;
+    box-shadow: var(--shadow-sm);
 }
-.social-btn i{font-size:.9rem}
-.social-btn.whatsapp{background:#dcfce7;color:var(--success);border-color:#86efac}
-.social-btn.whatsapp i{color:#25D366}
-.social-btn.whatsapp:hover{background:#25D366;color:#fff;border-color:#25D366;transform:translateY(-2px);box-shadow:0 8px 20px rgba(37,211,102,.4)}
-.social-btn.whatsapp:hover i{color:#fff}
-.social-btn.instagram{background:#fce7f3;color:#be185d;border-color:#fbcfe8}
-.social-btn.instagram i{color:#e4405f}
-.social-btn.instagram:hover{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;border-color:#dc2743;transform:translateY(-2px);box-shadow:0 8px 20px rgba(225,48,108,.4)}
-.social-btn.instagram:hover i{color:#fff}
-.social-btn.tiktok{background:var(--alt);color:var(--ink);border-color:var(--border)}
-.social-btn.tiktok i{color:var(--ink)}
-.social-btn.tiktok:hover{background:#000;color:#fff;border-color:#000;transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.4)}
-.social-btn.tiktok:hover i{color:#fff}
+.cc-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.cc-head { display: flex; align-items: center; gap: 12px; }
+.cc-icon {
+    width: 46px; height: 46px;
+    border-radius: var(--radius-md);
+    background: var(--accent-light);
+    color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+}
+.cc-head-text h4 { font-size: .98rem; font-weight: 800; color: var(--ink); margin-bottom: 2px; }
+.cc-head-text span { font-size: .72rem; color: var(--text-muted); font-weight: 600; letter-spacing: .02em; }
+.cc-desc { color: var(--text-muted); font-size: .85rem; line-height: 1.6; flex: 1; }
+.cc-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: .68rem; font-weight: 700;
+    letter-spacing: .03em;
+    align-self: flex-start;
+    border: 1px solid var(--border);
+}
+.cc-tag i { font-size: .65rem; }
+.cc-visit { display: inline-flex; align-items: center; gap: 8px; color: var(--accent); font-size: .82rem; font-weight: 700; transition: gap .25s ease; }
+.cc-visit:hover { gap: 14px; }
 
-.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}
-.project-card{
-    background:rgba(255,255,255,.12);
-    backdrop-filter: blur(14px);
-    border:1px solid rgba(255,255,255,.25);
-    border-radius:var(--radius-xl);
-    overflow:hidden;
-    transition:all .3s ease;
-    display:flex;flex-direction:column;
-    box-shadow: 0 12px 40px rgba(0,0,0,.35);
-    color: #fff;
+/* CC NOTE */
+.cc-note {
+    margin-top: 30px;
+    background: var(--accent-light);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius-md);
+    padding: 18px 22px;
+    color: var(--text-muted);
+    font-size: .88rem; line-height: 1.7;
+    display: flex; gap: 14px; align-items: flex-start;
 }
-.project-card:hover{border-color:rgba(255,255,255,.5);transform:translateY(-6px);box-shadow: 0 24px 60px rgba(0,0,0,.5)}
-.project-image{position:relative;height:180px;overflow:hidden;background:#1c1917}
-.project-image-bg{
-    position:absolute;inset:0;
-    background-size:cover;background-position:center;
-    opacity:0;transform:scale(1.08);
-    transition:opacity 2s ease-in-out, transform 2.8s ease-in-out;
-}
-.project-image-bg.active{opacity:1;transform:scale(1)}
-.project-icon{
-    position:absolute;top:24px;left:24px;
-    width:56px;height:56px;
-    border-radius:var(--radius-md);
-    background:#fff;
-    display:flex;align-items:center;justify-content:center;
-    font-size:1.5rem;color:var(--accent);
-    box-shadow:0 8px 20px rgba(0,0,0,.2);
-    z-index:2;
-}
-.project-body{padding:26px 26px 24px;display:flex;flex-direction:column;gap:12px;flex:1}
-.project-body h3{font-size:1.2rem;font-weight:800;color:#fff;letter-spacing:-.01em;text-shadow: 0 2px 8px rgba(0,0,0,.8)}
-.project-url{font-size:.78rem;color:#fdba8c;font-weight:600;word-break:break-all;font-family:'JetBrains Mono',monospace}
-.project-body p{color:#e7e5e4;font-size:.9rem;line-height:1.65;flex:1;text-shadow: 0 1px 4px rgba(0,0,0,.7)}
-.project-features{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
-.project-features span{
-    display:inline-flex;align-items:center;gap:5px;
-    padding:4px 10px;
-    border-radius:20px;
-    background:rgba(234,88,12,.3);
-    color:#fdba8c;
-    font-size:.7rem;font-weight:700;
-    border:1px solid rgba(253,186,140,.4);
-}
-.project-features span i{font-size:.65rem}
-.project-btn{
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    padding:12px 20px;
-    background:var(--grad-cta);
-    color:#fff;
-    border-radius:var(--radius-sm);
-    font-size:.85rem;font-weight:700;
-    transition:all .25s ease;
-    margin-top:8px;
-    box-shadow:var(--shadow-cta);
-}
-.project-btn:hover{background:var(--grad-cta-hover);transform:translateY(-1px);box-shadow:0 8px 22px rgba(219,39,119,.6)}
+.cc-note i { color: var(--accent); font-size: 1.1rem; margin-top: 2px; flex-shrink: 0; }
+.cc-note strong { color: var(--ink); font-weight: 700; }
+.cc-note a { color: var(--accent); font-weight: 600; border-bottom: 1px dotted var(--accent); }
+.cc-note a:hover { color: var(--accent-dark); border-bottom-color: var(--accent-dark); }
 
-.cc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
-.cc-card{
-    background:rgba(255,255,255,.12);
-    backdrop-filter: blur(14px);
-    border:1px solid rgba(255,255,255,.25);
-    border-radius:var(--radius-lg);
-    padding:22px 22px 20px;
-    transition:all .25s ease;
-    display:flex;flex-direction:column;gap:12px;
-    box-shadow: 0 8px 28px rgba(0,0,0,.3);
-    color: #fff;
-}
-.cc-card:hover{border-color:rgba(255,255,255,.5);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.5);background:rgba(255,255,255,.18)}
-.cc-head{display:flex;align-items:center;gap:12px}
-.cc-icon{
-    width:46px;height:46px;
-    border-radius:var(--radius-md);
-    background:rgba(37,99,235,.9);
-    color:#fff;
-    display:flex;align-items:center;justify-content:center;
-    font-size:1.2rem;flex-shrink:0;
-}
-.cc-head-text h4{font-size:.98rem;font-weight:800;color:#fff;margin-bottom:2px;text-shadow: 0 2px 6px rgba(0,0,0,.7)}
-.cc-head-text span{font-size:.72rem;color:#d6d3d1;font-weight:600;letter-spacing:.02em}
-.cc-desc{color:#e7e5e4;font-size:.85rem;line-height:1.6;flex:1;text-shadow: 0 1px 4px rgba(0,0,0,.7)}
-.cc-tag{
-    display:inline-flex;align-items:center;gap:5px;
-    padding:3px 10px;
-    border-radius:20px;
-    background:rgba(37,99,235,.3);
-    color:#93c5fd;
-    font-size:.68rem;font-weight:700;
-    letter-spacing:.03em;
-    align-self:flex-start;
-    border:1px solid rgba(147,197,253,.4);
-}
-.cc-tag i{font-size:.65rem}
-.cc-visit{display:inline-flex;align-items:center;gap:8px;color:#fdba8c;font-size:.82rem;font-weight:700;transition:gap .25s ease;text-shadow: 0 1px 4px rgba(0,0,0,.7)}
-.cc-visit:hover{gap:14px}
+/* CTA */
+.cta { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 60px 20px; }
+.cta-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+.cta h3 { color: var(--ink); font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; letter-spacing: -.01em; }
+.cta p { color: var(--text-muted); font-size: .95rem; }
 
-.cc-note{
-    margin-top:30px;
-    background:rgba(234,88,12,.2);
-    border:1px solid rgba(253,186,140,.4);
-    border-left:4px solid var(--accent);
-    border-radius:var(--radius-md);
-    padding:18px 22px;
-    color:#f5f5f4;
-    font-size:.88rem;line-height:1.7;
-    display:flex;gap:14px;align-items:flex-start;
-    backdrop-filter: blur(8px);
-    text-shadow: 0 1px 4px rgba(0,0,0,.7);
-}
-.cc-note i{color:#fdba8c;font-size:1.1rem;margin-top:2px;flex-shrink:0}
-.cc-note strong{color:#fff;font-weight:700}
-.cc-note a{color:#fdba8c;font-weight:600;border-bottom:1px dotted rgba(253,186,140,.6)}
-.cc-note a:hover{color:#fff;border-bottom-color:#fff}
+/* FOOTER */
+footer { background: var(--surface); padding: 50px 20px 24px; color: var(--text-muted); position: relative; }
+.footer-inner { max-width: 1200px; margin: 0 auto; }
+.footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 34px; }
+.footer-brand .logo { color: var(--ink); }
+.footer-brand p { color: var(--text-muted); font-size: .88rem; margin-top: 14px; max-width: 320px; line-height: 1.7; }
+.footer-col h4 { font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--ink); margin-bottom: 14px; }
+.footer-col ul li { margin-bottom: 8px; }
+.footer-col ul li a { color: var(--text-muted); font-size: .88rem; transition: color .25s ease; }
+.footer-col ul li a:hover { color: var(--accent); }
+.footer-bottom { border-top: 1px solid var(--border); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.footer-bottom p { color: var(--text-muted); font-size: .83rem; }
+.footer-socials { display: flex; gap: 8px; }
+.footer-socials a { width: 38px; height: 38px; border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: .9rem; transition: all .25s ease; background: var(--bg); }
+.footer-socials a:hover { background: var(--accent); color: #fff; border-color: transparent; transform: translateY(-2px); box-shadow: 0 8px 20px -6px rgba(46,139,87,.5); }
 
-.cta{background:rgba(28,25,23,.9);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1);padding:60px 20px;color:#fff;position:relative;z-index:5}
-.cta-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
-.cta h3{color:#fff;font-size:1.5rem;font-weight:800;margin-bottom:6px;letter-spacing:-.01em;text-shadow: 0 2px 8px rgba(0,0,0,.8)}
-.cta p{color:#d6d3d1;font-size:.95rem}
-.cta .btn-quote{background: rgba(255,255,255,.15);backdrop-filter:blur(10px);color:#fff;border:1px solid rgba(255,255,255,.3);box-shadow: 0 12px 32px -10px rgba(0,0,0,.5)}
-.cta .btn-quote:hover{background: rgba(255,255,255,.25);border-color: rgba(255,255,255,.5);transform:translateY(-2px)}
-
-footer{background:rgba(28,25,23,.95);backdrop-filter:blur(10px);padding:50px 20px 24px;color:#a8a29e;position:relative;z-index:5}
-.footer-inner{max-width:1200px;margin:0 auto}
-.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:34px}
-.footer-brand .logo{color:#fff}
-.footer-brand p{color:#a8a29e;font-size:.88rem;margin-top:14px;max-width:320px;line-height:1.7}
-.footer-col h4{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#fff;margin-bottom:14px}
-.footer-col ul li{margin-bottom:8px}
-.footer-col ul li a{color:#a8a29e;font-size:.88rem;transition:color .25s ease}
-.footer-col ul li a:hover{color:#fdba8c}
-.footer-bottom{border-top:1px solid #292524;padding-top:20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-.footer-bottom p{color:#78716c;font-size:.83rem}
-.footer-socials{display:flex;gap:8px}
-.footer-socials a{width:38px;height:38px;border:1px solid #292524;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#a8a29e;font-size:.9rem;transition:all .25s ease;background:#1c1917}
-.footer-socials a:hover{background:var(--grad-cta);color:#fff;border-color:transparent;transform:translateY(-2px);box-shadow:0 8px 20px -6px rgba(219,39,119,.5)}
-
-@media (max-width:900px){
-    .intro-grid{grid-template-columns:1fr;gap:40px}
-    .intro-image{order:-1}
-    .creator-card{grid-template-columns:1fr;text-align:center;padding:36px 26px}
-    .creator-card::before{width:100%;height:4px;background:var(--grad)}
-    .creator-avatar{margin:0 auto}
-    .social-row{justify-content:center}
-    .footer-top{grid-template-columns:1fr 1fr}
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .intro-grid { grid-template-columns: 1fr; gap: 40px; }
+    .intro-image { order: -1; }
+    .creator-card { grid-template-columns: 1fr; text-align: center; padding: 36px 26px; }
+    .creator-card::before { width: 100%; height: 4px; background: var(--accent); }
+    .creator-avatar { margin: 0 auto; }
+    .social-row { justify-content: center; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
 }
-@media (max-width:720px){
-    .mainnav-inner{flex-wrap:wrap;padding:12px 16px;gap:12px}
-    .logo-full-img{height:46px}
-    .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0;margin:0 -16px;padding-left:16px;padding-right:16px}
-    .menu::-webkit-scrollbar{display:none}
-    .menu a{padding:6px 10px;font-size:.75rem;flex-shrink:0}
-    .about-hero{padding:70px 18px 60px}
-    .container{padding:50px 16px}
-    .creator-card{padding:30px 22px}
-    .footer-top{gap:26px}
-    .cta-inner{flex-direction:column;text-align:center}
-    .page-bg-part.part-one{ height:2200px; }
-    .page-bg-part.part-two{ top:2200px; }
+@media (max-width: 720px) {
+    .about-hero { padding: 70px 18px 60px; }
+    .container { padding: 50px 16px; }
+    .creator-card { padding: 30px 22px; }
+    .footer-top { gap: 26px; }
+    .cta-inner { flex-direction: column; text-align: center; }
 }
-@media (max-width:560px){
-    .topbar-inner{gap:12px;font-size:.72rem}
-    .topbar-inner span:nth-child(3){display:none}
-    .creator-avatar{width:100px;height:100px;font-size:2.4rem}
-    .footer-top{grid-template-columns:1fr;gap:24px}
-    .btn-quote span{display:none}
-    .section-head h2{font-size:1.5rem}
-    .cta h3{font-size:1.25rem}
-    .creator-info h3{font-size:1.3rem}
+@media (max-width: 560px) {
+    .creator-avatar { width: 100px; height: 100px; font-size: 2.4rem; }
+    .footer-top { grid-template-columns: 1fr; gap: 24px; }
+    .section-head h2 { font-size: 1.5rem; }
+    .cta h3 { font-size: 1.25rem; }
+    .creator-info h3 { font-size: 1.3rem; }
 }
-@media (max-width:400px){
-    .logo-full-img{height:38px}
-    .topbar-inner span:nth-child(2){display:none}
-    .about-hero h1{font-size:1.6rem}
-}
-@media (prefers-reduced-motion:reduce){
-    *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+@media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
 </style>
 </head>
-<body>
+<body class="{% if is_authenticated %}logged-in{% endif %}">
 
-<!-- ═══════════════════════════════════════════════════════════
-     PAGE BACKGROUND — 2 PARTS
-     Each image = placeholder (instant) + full image (fades in)
-     ═══════════════════════════════════════════════════════════ -->
-<div class="page-bg-part part-one" id="partOne">
-    <!-- Image 1 -->
-    <div class="bg-layer placeholder active" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=40&q=20');"></div>
-    <div class="bg-layer full active" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=60');"></div>
-    <!-- Image 2 -->
-    <div class="bg-layer placeholder" style="background-image: url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=40&q=20');"></div>
-    <div class="bg-layer full" style="background-image: url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1600&q=60');"></div>
-    <!-- Image 3 -->
-    <div class="bg-layer placeholder" style="background-image: url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=40&q=20');"></div>
-    <div class="bg-layer full" style="background-image: url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1600&q=60');"></div>
-    <!-- Image 4 -->
-    <div class="bg-layer placeholder" style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=40&q=20');"></div>
-    <div class="bg-layer full" style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1600&q=60');"></div>
-</div>
+<!-- SIDEBAR OVERLAY -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-<div class="page-bg-part part-two" id="partTwo">
-    <div class="bg-layer placeholder active" style="background-image: url('https://images.unsplash.com/photo-1514565131-fce0801e5785?w=40&q=20');"></div>
-    <div class="bg-layer full active" style="background-image: url('https://images.unsplash.com/photo-1514565131-fce0801e5785?w=1600&q=60');"></div>
-    <div class="bg-layer placeholder" style="background-image: url('https://images.unsplash.com/photo-1465447142348-e9952c393450?w=40&q=20');"></div>
-    <div class="bg-layer full" style="background-image: url('https://images.unsplash.com/photo-1465447142348-e9952c393450?w=1600&q=60');"></div>
-    <div class="bg-layer placeholder" style="background-image: url('https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=40&q=20');"></div>
-    <div class="bg-layer full" style="background-image: url('https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1600&q=60');"></div>
-    <div class="bg-layer placeholder" style="background-image: url('https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=40&q=20');"></div>
-    <div class="bg-layer full" style="background-image: url('https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1600&q=60');"></div>
-</div>
+<!-- POLISHED SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <button class="icon-btn" aria-label="Search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+        <button class="icon-btn" id="closeSidebar" aria-label="Close menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+    </div>
 
-<div class="page-bg-field field-one"></div>
-<div class="page-bg-field field-two"></div>
-<div class="page-bg-overlay"></div>
+    {% if is_authenticated %}
+    <a href="/profile/{{ current_student.username }}/" class="mobile-user-card" style="display: flex;">
+        <div class="avatar-circle">
+            {% if current_student.avatar_url %}
+                <img src="{{ current_student.avatar_url }}" alt="Avatar">
+            {% else %}
+                {{ current_student.initial }}
+            {% endif %}
+        </div>
+        <div class="mobile-user-info">
+            <strong>{{ current_student.username }}</strong>
+            <span><i class="fas fa-fire"></i> {{ current_student.streak }} Day Streak</span>
+        </div>
+        <i class="fas fa-chevron-right" style="color: var(--text-muted);"></i>
+    </a>
+    {% endif %}
 
-<!-- TOP BAR -->
-<div class="topbar">
-    <div class="topbar-inner">
-        <a href="https://wa.me/255740706007" target="_blank" rel="noopener" class="whatsapp-link" aria-label="Chat on WhatsApp">
+    <nav class="sidebar-nav">
+        <a href="/">Home</a>
+        <a href="/browse/">Browse Notes</a>
+        <a href="/upload/">Upload</a>
+        <a href="/quiz/">Daily Quiz</a>
+        <a href="/leaderboard/">Leaderboard</a>
+        <a href="/community/">Community</a>
+        <a href="/free_course/">Free Courses</a>
+        <a href="/about/" class="active">About</a>
+        
+        {% if not is_authenticated %}
+        <a href="/login/" style="color: var(--accent); margin-top: 20px;">Log In</a>
+        <a href="/signup/" style="color: var(--accent);">Join Free</a>
+        {% endif %}
+    </nav>
+</aside>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+
+    <!-- TOP BAR -->
+    <div class="topbar" style="background: var(--ink); color: var(--surface); font-size: 0.75rem; padding: 8px 0; text-align: center;">
+        <a href="https://wa.me/255740706007" target="_blank" rel="noopener" style="color: #4ade80; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
             <i class="fab fa-whatsapp"></i> Chat on WhatsApp
         </a>
-        <span><i class="fas fa-envelope"></i> Twarvistech@gmail.com</span>
-        <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
     </div>
-</div>
 
-<!-- NAV -->
-<nav class="mainnav">
-    <div class="mainnav-inner">
-        <a href="/" class="logo">
-            <img src="/logo.png" alt="Student Hub" class="logo-full-img">
-        </a>
-
-        <div class="menu">
-            <a href="/">Home</a>
-            <a href="/browse/">Browse</a>
-            <a href="/upload/">Upload</a>
-            <a href="/autoquiz/" class="quiz-link"><i class="fas fa-brain"></i>AutoQuiz AI</a>
-            <a href="/calculator/">Calculator</a>
-            <a href="/scanner/">Scanner</a>
-            <a href="/free_course/" class="course-link"><i class="fas fa-book-open"></i>Free Courses</a>
-            <a href="/hackerthon/" class="hack-link"><i class="fas fa-code"></i>Hackathon</a>
-            <a href="/about/" class="active">About</a>
-        </div>
-
-        <div class="nav-right">
-            <a href="/upload/" class="btn-quote">
-                <span>Upload File</span> <i class="fas fa-arrow-right"></i>
-            </a>
-        </div>
-    </div>
-</nav>
-
-<!-- HERO -->
-<section class="about-hero">
-    <div class="about-hero-inner">
-        <span class="about-label">Get to know us</span>
-        <h1>About <span class="accent">Student</span> Hub</h1>
-        <p>Everything you need to know about the platform, the creator, and the free tools we love. Built in Tanzania, for students everywhere.</p>
-    </div>
-</section>
-
-<!-- WHAT IS STUDENT HUB -->
-<section class="section-transparent">
-    <div class="container">
-        <div class="intro-grid">
-            <div class="intro-text">
-                <span class="section-label" style="text-align:left;display:block;margin-bottom:12px;">What is Student Hub?</span>
-                <h2>A free platform for <span class="accent">sharing notes</span></h2>
-                <p>
-                    <strong>Student Hub</strong> is a free, student-built platform made to help learners
-                    share, discover, and organize study materials — all in one calm, distraction-free space.
-                </p>
-                <p>
-                    It was born from a simple idea: <em>someone already took this note</em> — so why not share it?
-                    Whether you're revising for exams, catching up on a missed lecture, or looking for past papers,
-                    Student Hub connects you with what other students have already uploaded.
-                </p>
-
-                <ul class="feature-list">
-                    <li><i class="fas fa-cloud-upload-alt"></i><span><strong>Upload notes &amp; papers</strong> — share PDFs, slides, docs, images and archives in seconds.</span></li>
-                    <li><i class="fas fa-eye"></i><span><strong>See uploaded notes</strong> — browse everything other students have shared.</span></li>
-                    <li><i class="fas fa-search"></i><span><strong>Smart search</strong> — find files fast by module, course code, or keyword.</span></li>
-                    <li><i class="fas fa-camera-retro"></i><span><strong>Built-in scanner</strong> — photograph handwritten pages and turn them into clean PDFs.</span></li>
-                    <li><i class="fas fa-lock"></i><span><strong>Private mode</strong> — protect sensitive files with a 4-digit passcode.</span></li>
-                    <li><i class="fas fa-brain"></i><span><strong>AutoQuiz AI</strong> — generate practice questions from your uploaded notes instantly.</span></li>
-                    <li><i class="fas fa-calculator"></i><span><strong>Smart calculators</strong> — GPA, scientific, and basic — all in one place.</span></li>
-                    <li><i class="fas fa-graduation-cap"></i><span><strong>Free courses</strong> — project-based lessons with 50 modules and 10 capstone labs.</span></li>
-                    <li><i class="fas fa-code"></i><span><strong>Hackathons</strong> — join coding challenges and compete with other students.</span></li>
-                    <li><i class="fas fa-mobile-screen"></i><span><strong>Works everywhere</strong> — fully responsive on phone, tablet, and desktop.</span></li>
-                </ul>
-            </div>
-
-            <div class="intro-image">
-                <div class="intro-image-bg active" style="background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=900&q=60');"></div>
-                <div class="intro-image-bg" style="background-image: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=900&q=60');"></div>
-                <div class="intro-image-bg" style="background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=900&q=60');"></div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- CREATOR -->
-<section class="section-transparent">
-    <div class="container">
-        <div class="section-head">
-            <span class="section-label">The person behind it</span>
-            <h2>About the Creator</h2>
-        </div>
-
-        <div class="creator-card">
-            <div class="creator-avatar">
-                <i class="fas fa-code"></i>
-            </div>
-            <div class="creator-info">
-                <h3>Twarvis</h3>
-                <div class="role">Student Developer &amp; Founder</div>
-                <p>
-                    Hi! I'm <strong>Twarvis</strong> — a student who got tired of losing notes and
-                    scrambling for past papers. I built Student Hub to make sharing study material
-                    effortless, beautiful, and free for everyone. Every pixel, animation, and line of
-                    code here was crafted with care (and a lot of late-night coding sessions).
-                </p>
-                <div class="social-row">
-                    <a href="https://wa.me/255740706007?text=Hello%20Twarvis%2C%20I%20saw%20your%20Student%20Hub" class="social-btn whatsapp" target="_blank" rel="noopener">
-                        <i class="fab fa-whatsapp"></i> WhatsApp
-                    </a>
-                    <a href="https://www.instagram.com/twarvice?stkn=NGw0NGR5NjZnNTdy&utm_source=qr" class="social-btn instagram" target="_blank" rel="noopener">
-                        <i class="fab fa-instagram"></i> Instagram
-                    </a>
-                    <a href="https://www.tiktok.com/@twarvis" class="social-btn tiktok" target="_blank" rel="noopener">
-                        <i class="fab fa-tiktok"></i> TikTok
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- PROJECTS -->
-<section class="section-transparent">
-    <div class="container">
-        <div class="section-head">
-            <span class="section-label">More from me</span>
-            <h2>My Other Projects</h2>
-            <p>Besides Student Hub, I also build other tools that students and creators can use for free.</p>
-        </div>
-
-        <div class="projects-grid">
-            <div class="project-card">
-                <div class="project-image">
-                    <div class="project-image-bg active" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=60');"></div>
-                    <div class="project-image-bg" style="background-image: url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=60');"></div>
-                    <div class="project-icon"><i class="fas fa-shield-halved"></i></div>
-                </div>
-                <div class="project-body">
-                    <h3>CyberCraft</h3>
-                    <div class="project-url">cybercraft.twarvistech.workers.dev</div>
-                    <p>A cyber-security toolkit and playground for students learning ethical hacking, cryptography, and safe browsing — built with a sleek, hacker-inspired interface.</p>
-                    <div class="project-features">
-                        <span><i class="fas fa-lock"></i> Security Tools</span>
-                        <span><i class="fas fa-terminal"></i> Terminal UI</span>
-                        <span><i class="fas fa-code"></i> Open Source</span>
-                    </div>
-                    <a href="https://cybercraft.twarvistech.workers.dev/" class="project-btn" target="_blank" rel="noopener">
-                        Visit CyberCraft <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-
-            <div class="project-card">
-                <div class="project-image">
-                    <div class="project-image-bg active" style="background-image: url('https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=800&q=60');"></div>
-                    <div class="project-image-bg" style="background-image: url('https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=800&q=60');"></div>
-                    <div class="project-icon"><i class="fas fa-file-pdf"></i></div>
-                </div>
-                <div class="project-body">
-                    <h3>PDF Scanner &amp; Maker</h3>
-                    <div class="project-url">twarvisscanner.twarvistech.workers.dev</div>
-                    <p>Scan documents with your phone camera, crop and straighten them, then save as clean PDFs — or build new PDFs from scratch. Everything runs in the browser.</p>
-                    <div class="project-features">
-                        <span><i class="fas fa-camera"></i> Scan</span>
-                        <span><i class="fas fa-crop"></i> Crop &amp; Edit</span>
-                        <span><i class="fas fa-file-export"></i> Export PDF</span>
-                    </div>
-                    <a href="https://twarvisscanner.twarvistech.workers.dev/" class="project-btn" target="_blank" rel="noopener">
-                        Visit Scanner <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- CREATIVE COMMONS -->
-<section class="section-transparent">
-    <div class="container">
-        <div class="section-head">
-            <span class="section-label">Free &amp; open resources</span>
-            <h2>Creative Commons Websites We Love</h2>
-            <p>These websites offer free, openly-licensed content — perfect for students who want to learn, remix, and share legally.</p>
-        </div>
-
-        <div class="cc-grid">
-            <div class="cc-card">
-                <div class="cc-head">
-                    <div class="cc-icon"><i class="fas fa-wikipedia-w"></i></div>
-                    <div class="cc-head-text"><h4>Wikipedia</h4><span>wikipedia.org</span></div>
-                </div>
-                <div class="cc-desc">The world's largest free encyclopedia — every article is CC BY-SA licensed and editable by anyone.</div>
-                <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-SA</span>
-                <a href="https://www.wikipedia.org" class="cc-visit" target="_blank" rel="noopener">Visit Wikipedia <i class="fas fa-arrow-right"></i></a>
-            </div>
-
-            <div class="cc-card">
-                <div class="cc-head">
-                    <div class="cc-icon"><i class="fas fa-image"></i></div>
-                    <div class="cc-head-text"><h4>Unsplash</h4><span>unsplash.com</span></div>
-                </div>
-                <div class="cc-desc">Beautiful, high-resolution photos you can use freely for projects, presentations and websites.</div>
-                <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC0</span>
-                <a href="https://unsplash.com" class="cc-visit" target="_blank" rel="noopener">Visit Unsplash <i class="fas fa-arrow-right"></i></a>
-            </div>
-
-            <div class="cc-card">
-                <div class="cc-head">
-                    <div class="cc-icon"><i class="fas fa-book-open"></i></div>
-                    <div class="cc-head-text"><h4>OpenStax</h4><span>openstax.org</span></div>
-                </div>
-                <div class="cc-desc">Free, peer-reviewed, openly-licensed textbooks for university courses — perfect for students.</div>
-                <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY</span>
-                <a href="https://openstax.org" class="cc-visit" target="_blank" rel="noopener">Visit OpenStax <i class="fas fa-arrow-right"></i></a>
-            </div>
-
-            <div class="cc-card">
-                <div class="cc-head">
-                    <div class="cc-icon"><i class="fas fa-brain"></i></div>
-                    <div class="cc-head-text"><h4>Khan Academy</h4><span>khanacademy.org</span></div>
-                </div>
-                <div class="cc-desc">Free lessons and practice for math, science, computing and more — mostly CC BY-NC-SA.</div>
-                <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-NC-SA</span>
-                <a href="https://www.khanacademy.org" class="cc-visit" target="_blank" rel="noopener">Visit Khan Academy <i class="fas fa-arrow-right"></i></a>
-            </div>
-
-            <div class="cc-card">
-                <div class="cc-head">
-                    <div class="cc-icon"><i class="fas fa-file-lines"></i></div>
-                    <div class="cc-head-text"><h4>Project Gutenberg</h4><span>gutenberg.org</span></div>
-                </div>
-                <div class="cc-desc">Over 70,000 free eBooks — classic literature, reference works and more, all openly licensed.</div>
-                <span class="cc-tag"><i class="fab fa-creative-commons"></i> Public Domain</span>
-                <a href="https://www.gutenberg.org" class="cc-visit" target="_blank" rel="noopener">Visit Gutenberg <i class="fas fa-arrow-right"></i></a>
-            </div>
-
-            <div class="cc-card">
-                <div class="cc-head">
-                    <div class="cc-icon"><i class="fas fa-music"></i></div>
-                    <div class="cc-head-text"><h4>Free Music Archive</h4><span>freemusicarchive.org</span></div>
-                </div>
-                <div class="cc-desc">Curated, legal, free music under Creative Commons — great for projects and videos.</div>
-                <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC Licensed</span>
-                <a href="https://freemusicarchive.org" class="cc-visit" target="_blank" rel="noopener">Visit FMA <i class="fas fa-arrow-right"></i></a>
-            </div>
-
-            <div class="cc-card">
-                <div class="cc-head">
-                    <div class="cc-icon"><i class="fas fa-palette"></i></div>
-                    <div class="cc-head-text"><h4>Openverse</h4><span>openverse.org</span></div>
-                </div>
-                <div class="cc-desc">Search over 800 million openly-licensed images and audio from one place — by WordPress.</div>
-                <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC Search</span>
-                <a href="https://openverse.org" class="cc-visit" target="_blank" rel="noopener">Visit Openverse <i class="fas fa-arrow-right"></i></a>
-            </div>
-
-            <div class="cc-card">
-                <div class="cc-head">
-                    <div class="cc-icon"><i class="fas fa-flask"></i></div>
-                    <div class="cc-head-text"><h4>MIT OpenCourseWare</h4><span>ocw.mit.edu</span></div>
-                </div>
-                <div class="cc-desc">Free lecture notes, exams and videos from actual MIT courses — CC BY-NC-SA.</div>
-                <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-NC-SA</span>
-                <a href="https://ocw.mit.edu" class="cc-visit" target="_blank" rel="noopener">Visit MIT OCW <i class="fas fa-arrow-right"></i></a>
-            </div>
-        </div>
-
-        <div class="cc-note">
-            <i class="fas fa-circle-info"></i>
-            <span>
-                <strong>About Creative Commons:</strong> CC licenses let creators share their work
-                legally while keeping some rights. Always check the specific license (BY, BY-SA, BY-NC, CC0)
-                before reusing content — especially for commercial use. Learn more at
-                <a href="https://creativecommons.org/licenses/" target="_blank" rel="noopener">creativecommons.org/licenses</a>.
-            </span>
-        </div>
-    </div>
-</section>
-
-<!-- CTA -->
-<section class="cta">
-    <div class="cta-inner">
-        <div>
-            <h3>Have notes to share?</h3>
-            <p>Upload them in seconds — help the next student out.</p>
-        </div>
-        <a href="/upload/" class="btn-quote">Upload Now <i class="fas fa-arrow-right"></i></a>
-    </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-    <div class="footer-inner">
-        <div class="footer-top">
-            <div class="footer-brand">
+    <!-- NAVBAR -->
+    <nav class="mainnav">
+        <div class="mainnav-inner">
+            <div class="nav-left">
+                <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <a href="/" class="logo">
                     <img src="/logo.png" alt="Student Hub" class="logo-full-img">
                 </a>
-                <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
             </div>
 
-            <div class="footer-col">
-                <h4>Pages</h4>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/browse/">Browse</a></li>
-                    <li><a href="/upload/">Upload</a></li>
-                    <li><a href="/free_course/">Free Courses</a></li>
-                    <li><a href="/hackerthon/">Hackathon</a></li>
-                    <li><a href="/about/">About</a></li>
-                </ul>
-            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
 
-            <div class="footer-col">
-                <h4>Tools</h4>
-                <ul>
-                    <li><a href="/calculator/">Calculator</a></li>
-                    <li><a href="/scanner/">Scanner</a></li>
-                    <li><a href="/upload/">PDF Maker</a></li>
-                </ul>
+                {% if is_authenticated %}
+                    <a href="/quiz/" class="streak-pill" title="Your Streak">
+                        <i class="fas fa-fire"></i> <span>{{ current_student.streak }}</span>
+                    </a>
+                    <a href="/profile/{{ current_student.username }}/" class="profile-pill" title="Go to Profile">
+                        <div class="avatar-circle">
+                            {% if current_student.avatar_url %}
+                                <img src="{{ current_student.avatar_url }}" alt="Avatar">
+                            {% else %}
+                                {{ current_student.initial }}
+                            {% endif %}
+                        </div>
+                        <span class="username-text">{{ current_student.username }}</span>
+                    </a>
+                {% else %}
+                    <a href="/login/" class="btn-nav login hide-mobile">Log In</a>
+                    <a href="/signup/" class="btn-nav join">Join Free</a>
+                {% endif %}
             </div>
         </div>
+    </nav>
 
-        <div class="footer-bottom">
-            <p>© 2026 Student Hub. All rights reserved.</p>
-            <div class="footer-socials">
-                <a href="https://www.instagram.com/twarvice?stkn=NGw0NGR5NjZnNTdy&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
-                <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
-                <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+    <!-- HERO -->
+    <section class="about-hero">
+        <div class="about-hero-inner">
+            <span class="about-label">Get to know us</span>
+            <h1>About <span class="accent">Student</span> Hub</h1>
+            <p>Everything you need to know about the platform, the creator, and the free tools we love. Built in Tanzania, for students everywhere.</p>
+        </div>
+    </section>
+
+    <!-- WHAT IS STUDENT HUB -->
+    <section class="section-transparent">
+        <div class="container">
+            <div class="intro-grid">
+                <div class="intro-text">
+                    <span class="section-label" style="text-align:left;display:block;margin-bottom:12px;">What is Student Hub?</span>
+                    <h2>A free platform for <span class="accent">sharing notes</span></h2>
+                    <p>
+                        <strong>Student Hub</strong> is a free, student-built platform made to help learners
+                        share, discover, and organize study materials — all in one calm, distraction-free space.
+                    </p>
+                    <p>
+                        It was born from a simple idea: <em>someone already took this note</em> — so why not share it?
+                        Whether you're revising for exams, catching up on a missed lecture, or looking for past papers,
+                        Student Hub connects you with what other students have already uploaded.
+                    </p>
+
+                    <ul class="feature-list">
+                        <li><i class="fas fa-cloud-upload-alt"></i><span><strong>Upload notes &amp; papers</strong> — share PDFs, slides, docs, images and archives in seconds.</span></li>
+                        <li><i class="fas fa-eye"></i><span><strong>See uploaded notes</strong> — browse everything other students have shared.</span></li>
+                        <li><i class="fas fa-search"></i><span><strong>Smart search</strong> — find files fast by module, course code, or keyword.</span></li>
+                        <li><i class="fas fa-camera-retro"></i><span><strong>Built-in scanner</strong> — photograph handwritten pages and turn them into clean PDFs.</span></li>
+                        <li><i class="fas fa-lock"></i><span><strong>Private mode</strong> — protect sensitive files with a 4-digit passcode.</span></li>
+                        <li><i class="fas fa-brain"></i><span><strong>AutoQuiz AI</strong> — generate practice questions from your uploaded notes instantly.</span></li>
+                        <li><i class="fas fa-calculator"></i><span><strong>Smart calculators</strong> — GPA, scientific, and basic — all in one place.</span></li>
+                        <li><i class="fas fa-graduation-cap"></i><span><strong>Free courses</strong> — project-based lessons with 50 modules and 10 capstone labs.</span></li>
+                        <li><i class="fas fa-code"></i><span><strong>Hackathons</strong> — join coding challenges and compete with other students.</span></li>
+                        <li><i class="fas fa-mobile-screen"></i><span><strong>Works everywhere</strong> — fully responsive on phone, tablet, and desktop.</span></li>
+                    </ul>
+                </div>
+
+                <div class="intro-image">
+                    <!-- Real students collaborating photos -->
+                    <div class="intro-image-bg active" style="background-image: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=900&q=80');"></div>
+                    <div class="intro-image-bg" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=900&q=80');"></div>
+                    <div class="intro-image-bg" style="background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=900&q=80');"></div>
+                </div>
             </div>
         </div>
-    </div>
-</footer>
+    </section>
+
+    <!-- CREATOR -->
+    <section class="section-transparent">
+        <div class="container">
+            <div class="section-head">
+                <span class="section-label">The person behind it</span>
+                <h2>About the Creator</h2>
+            </div>
+
+            <div class="creator-card">
+                <div class="creator-avatar">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div class="creator-info">
+                    <h3>Twarvis</h3>
+                    <div class="role">Student Developer &amp; Founder</div>
+                    <p>
+                        Hi! I'm <strong>Twarvis</strong> — a student who got tired of losing notes and
+                        scrambling for past papers. I built Student Hub to make sharing study material
+                        effortless, beautiful, and free for everyone. Every pixel, animation, and line of
+                        code here was crafted with care (and a lot of late-night coding sessions).
+                    </p>
+                    <div class="social-row">
+                        <a href="https://wa.me/255740706007?text=Hello%20Twarvis%2C%20I%20saw%20your%20Student%20Hub" class="social-btn whatsapp" target="_blank" rel="noopener">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                        <a href="https://www.instagram.com/twarvice?stkn=NGw0NGR5NjZnNTdy&utm_source=qr" class="social-btn instagram" target="_blank" rel="noopener">
+                            <i class="fab fa-instagram"></i> Instagram
+                        </a>
+                        <a href="https://www.tiktok.com/@twarvis" class="social-btn tiktok" target="_blank" rel="noopener">
+                            <i class="fab fa-tiktok"></i> TikTok
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section class="section-transparent">
+        <div class="container">
+            <div class="section-head">
+                <span class="section-label">More from me</span>
+                <h2>My Other Projects</h2>
+                <p>Besides Student Hub, I also build other tools that students and creators can use for free.</p>
+            </div>
+
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image">
+                        <!-- Real cyber security / coding photos -->
+                        <div class="project-image-bg active" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80');"></div>
+                        <div class="project-image-bg" style="background-image: url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80');"></div>
+                        <div class="project-icon"><i class="fas fa-shield-halved"></i></div>
+                    </div>
+                    <div class="project-body">
+                        <h3>CyberCraft</h3>
+                        <div class="project-url">cybercraft.twarvistech.workers.dev</div>
+                        <p>A cyber-security toolkit and playground for students learning ethical hacking, cryptography, and safe browsing — built with a sleek, hacker-inspired interface.</p>
+                        <div class="project-features">
+                            <span><i class="fas fa-lock"></i> Security Tools</span>
+                            <span><i class="fas fa-terminal"></i> Terminal UI</span>
+                            <span><i class="fas fa-code"></i> Open Source</span>
+                        </div>
+                        <a href="https://cybercraft.twarvistech.workers.dev/" class="project-btn" target="_blank" rel="noopener">
+                            Visit CyberCraft <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <!-- Real scanner / document photos -->
+                        <div class="project-image-bg active" style="background-image: url('https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=800&q=80');"></div>
+                        <div class="project-image-bg" style="background-image: url('https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=800&q=80');"></div>
+                        <div class="project-icon"><i class="fas fa-file-pdf"></i></div>
+                    </div>
+                    <div class="project-body">
+                        <h3>PDF Scanner &amp; Maker</h3>
+                        <div class="project-url">twarvisscanner.twarvistech.workers.dev</div>
+                        <p>Scan documents with your phone camera, crop and straighten them, then save as clean PDFs — or build new PDFs from scratch. Everything runs in the browser.</p>
+                        <div class="project-features">
+                            <span><i class="fas fa-camera"></i> Scan</span>
+                            <span><i class="fas fa-crop"></i> Crop &amp; Edit</span>
+                            <span><i class="fas fa-file-export"></i> Export PDF</span>
+                        </div>
+                        <a href="https://twarvisscanner.twarvistech.workers.dev/" class="project-btn" target="_blank" rel="noopener">
+                            Visit Scanner <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CREATIVE COMMONS -->
+    <section class="section-transparent">
+        <div class="container">
+            <div class="section-head">
+                <span class="section-label">Free &amp; open resources</span>
+                <h2>Creative Commons Websites We Love</h2>
+                <p>These websites offer free, openly-licensed content — perfect for students who want to learn, remix, and share legally.</p>
+            </div>
+
+            <div class="cc-grid">
+                <div class="cc-card">
+                    <div class="cc-head">
+                        <div class="cc-icon"><i class="fas fa-wikipedia-w"></i></div>
+                        <div class="cc-head-text"><h4>Wikipedia</h4><span>wikipedia.org</span></div>
+                    </div>
+                    <div class="cc-desc">The world's largest free encyclopedia — every article is CC BY-SA licensed and editable by anyone.</div>
+                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-SA</span>
+                    <a href="https://www.wikipedia.org" class="cc-visit" target="_blank" rel="noopener">Visit Wikipedia <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="cc-card">
+                    <div class="cc-head">
+                        <div class="cc-icon"><i class="fas fa-image"></i></div>
+                        <div class="cc-head-text"><h4>Unsplash</h4><span>unsplash.com</span></div>
+                    </div>
+                    <div class="cc-desc">Beautiful, high-resolution photos you can use freely for projects, presentations and websites.</div>
+                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC0</span>
+                    <a href="https://unsplash.com" class="cc-visit" target="_blank" rel="noopener">Visit Unsplash <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="cc-card">
+                    <div class="cc-head">
+                        <div class="cc-icon"><i class="fas fa-book-open"></i></div>
+                        <div class="cc-head-text"><h4>OpenStax</h4><span>openstax.org</span></div>
+                    </div>
+                    <div class="cc-desc">Free, peer-reviewed, openly-licensed textbooks for university courses — perfect for students.</div>
+                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY</span>
+                    <a href="https://openstax.org" class="cc-visit" target="_blank" rel="noopener">Visit OpenStax <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="cc-card">
+                    <div class="cc-head">
+                        <div class="cc-icon"><i class="fas fa-brain"></i></div>
+                        <div class="cc-head-text"><h4>Khan Academy</h4><span>khanacademy.org</span></div>
+                    </div>
+                    <div class="cc-desc">Free lessons and practice for math, science, computing and more — mostly CC BY-NC-SA.</div>
+                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-NC-SA</span>
+                    <a href="https://www.khanacademy.org" class="cc-visit" target="_blank" rel="noopener">Visit Khan Academy <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="cc-card">
+                    <div class="cc-head">
+                        <div class="cc-icon"><i class="fas fa-file-lines"></i></div>
+                        <div class="cc-head-text"><h4>Project Gutenberg</h4><span>gutenberg.org</span></div>
+                    </div>
+                    <div class="cc-desc">Over 70,000 free eBooks — classic literature, reference works and more, all openly licensed.</div>
+                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> Public Domain</span>
+                    <a href="https://www.gutenberg.org" class="cc-visit" target="_blank" rel="noopener">Visit Gutenberg <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="cc-card">
+                    <div class="cc-head">
+                        <div class="cc-icon"><i class="fas fa-music"></i></div>
+                        <div class="cc-head-text"><h4>Free Music Archive</h4><span>freemusicarchive.org</span></div>
+                    </div>
+                    <div class="cc-desc">Curated, legal, free music under Creative Commons — great for projects and videos.</div>
+                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC Licensed</span>
+                    <a href="https://freemusicarchive.org" class="cc-visit" target="_blank" rel="noopener">Visit FMA <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="cc-card">
+                    <div class="cc-head">
+                        <div class="cc-icon"><i class="fas fa-palette"></i></div>
+                        <div class="cc-head-text"><h4>Openverse</h4><span>openverse.org</span></div>
+                    </div>
+                    <div class="cc-desc">Search over 800 million openly-licensed images and audio from one place — by WordPress.</div>
+                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC Search</span>
+                    <a href="https://openverse.org" class="cc-visit" target="_blank" rel="noopener">Visit Openverse <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="cc-card">
+                    <div class="cc-head">
+                        <div class="cc-icon"><i class="fas fa-flask"></i></div>
+                        <div class="cc-head-text"><h4>MIT OpenCourseWare</h4><span>ocw.mit.edu</span></div>
+                    </div>
+                    <div class="cc-desc">Free lecture notes, exams and videos from actual MIT courses — CC BY-NC-SA.</div>
+                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-NC-SA</span>
+                    <a href="https://ocw.mit.edu" class="cc-visit" target="_blank" rel="noopener">Visit MIT OCW <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="cc-note">
+                <i class="fas fa-circle-info"></i>
+                <span>
+                    <strong>About Creative Commons:</strong> CC licenses let creators share their work
+                    legally while keeping some rights. Always check the specific license (BY, BY-SA, BY-NC, CC0)
+                    before reusing content — especially for commercial use. Learn more at
+                    <a href="https://creativecommons.org/licenses/" target="_blank" rel="noopener">creativecommons.org/licenses</a>.
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="cta-inner">
+            <div>
+                <h3>Have notes to share?</h3>
+                <p>Upload them in seconds — help the next student out.</p>
+            </div>
+            <a href="/upload/" class="btn-nav join" style="padding:12px 24px;">Upload Now <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <a href="/" class="logo">
+                        <img src="/logo.png" alt="Student Hub" class="logo-full-img" style="height:40px;">
+                    </a>
+                    <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Pages</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/browse/">Browse</a></li>
+                        <li><a href="/upload/">Upload</a></li>
+                        <li><a href="/free_course/">Free Courses</a></li>
+                        <li><a href="/hackerthon/">Hackathon</a></li>
+                        <li><a href="/about/">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Tools</h4>
+                    <ul>
+                        <li><a href="/calculator/">Calculator</a></li>
+                        <li><a href="/scanner/">Scanner</a></li>
+                        <li><a href="/upload/">PDF Maker</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2026 Student Hub. All rights reserved.</p>
+                <div class="footer-socials">
+                    <a href="https://www.instagram.com/twarvice?stkn=NGw0NGR5NjZnNTdy&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
 
 <script>
-// ═══════════════════════════════════════════════════════════
-// PART 1 (top → About Student Hub) — rotating wallpapers
-// Shows placeholder instantly, then full image fades in
-// ═══════════════════════════════════════════════════════════
-(function(){
-    const part = document.getElementById('partOne');
-    if(!part) return;
-    const placeholders = part.querySelectorAll('.bg-layer.placeholder');
-    const fulls = part.querySelectorAll('.bg-layer.full');
-    if(!placeholders.length) return;
-    let i = 0;
-    setInterval(() => {
-        placeholders.forEach(b => b.classList.remove('active'));
-        fulls.forEach(b => b.classList.remove('active'));
-        i = (i + 1) % placeholders.length;
-        placeholders[i].classList.add('active');
-        fulls[i].classList.add('active');
-    }, 5500);
+// 1. THEME PERSISTENCE (Default to Light)
+(function() {
+    const savedTheme = localStorage.getItem('sh-theme');
+    const initialTheme = savedTheme ? savedTheme : 'light';
+    
+    document.documentElement.setAttribute('data-theme', initialTheme);
+    updateThemeMeta(initialTheme);
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggle = document.getElementById('themeToggle');
+        const icon = document.getElementById('themeIcon');
+
+        function syncIcon() {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (icon) icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        }
+        syncIcon();
+
+        if (toggle) {
+            toggle.addEventListener('click', function() {
+                const current = document.documentElement.getAttribute('data-theme');
+                const next = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('sh-theme', next);
+                updateThemeMeta(next);
+                syncIcon();
+            });
+        }
+    });
+
+    function updateThemeMeta(theme) {
+        const meta = document.getElementById('themeColorMeta');
+        if (meta) meta.content = theme === 'dark' ? '#120b08' : '#f8f9fa';
+    }
 })();
 
-// ═══════════════════════════════════════════════════════════
-// PART 2 (About Creator → bottom) — rotating wallpapers
-// ═══════════════════════════════════════════════════════════
-(function(){
-    const part = document.getElementById('partTwo');
-    if(!part) return;
-    const placeholders = part.querySelectorAll('.bg-layer.placeholder');
-    const fulls = part.querySelectorAll('.bg-layer.full');
-    if(!placeholders.length) return;
-    let i = 0;
-    setInterval(() => {
-        placeholders.forEach(b => b.classList.remove('active'));
-        fulls.forEach(b => b.classList.remove('active'));
-        i = (i + 1) % placeholders.length;
-        placeholders[i].classList.add('active');
-        fulls[i].classList.add('active');
-    }, 6000);
-})();
+// 2. SIDEBAR LOGIC
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebarOverlay');
+const toggle = document.getElementById('menuToggle');
+const closeBtn = document.getElementById('closeSidebar');
 
-// ═══════════════════════════════════════════════════════════
-// INTRO IMAGE ROTATION
-// ═══════════════════════════════════════════════════════════
+function openSidebar() {
+    sidebar.classList.add('open');
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+if(toggle) toggle.addEventListener('click', openSidebar);
+if(closeBtn) closeBtn.addEventListener('click', closeSidebar);
+if(overlay) overlay.addEventListener('click', closeSidebar);
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+        closeSidebar();
+    }
+});
+
+// 3. INTRO IMAGE ROTATION
 (function(){
     const bgs = document.querySelectorAll('.intro-image-bg');
     if(!bgs.length) return;
@@ -932,9 +1017,7 @@ footer{background:rgba(28,25,23,.95);backdrop-filter:blur(10px);padding:50px 20p
     }, 4500);
 })();
 
-// ═══════════════════════════════════════════════════════════
-// PROJECT CARD IMAGE ROTATION
-// ═══════════════════════════════════════════════════════════
+// 4. PROJECT CARD IMAGE ROTATION
 document.querySelectorAll('.project-image').forEach(function(img){
     var bgs = img.querySelectorAll('.project-image-bg');
     if(!bgs.length) return;
