@@ -379,7 +379,7 @@ def build_view_context(request):
         "username": username,
         "full_name": p.get("full_name", ""),
         "avatar_url": p.get("avatar_url", ""),
-        "university": p.get("university", ""),      # 👈 NEW
+        "university": p.get("university", ""),
         "initial": initial,
         "streak": streak,
         "longest_streak": p.get("longest_streak", 0) or 0,
@@ -738,7 +738,6 @@ def serve_root_file(request, filename):
         ".pdf": "application/pdf", 
         ".woff": "font/woff", 
         ".woff2": "font/woff2",
-        # Explicitly add pic5.png to pic9.png if they are requested dynamically
         ".mp4": "video/mp4"
     }
     content_type = content_types.get(ext, "application/octet-stream")
@@ -2167,8 +2166,8 @@ urlpatterns = [
     # ABOUT
     path("about.html", about_view, name="about"),
     path("about/", about_view, name="about_alt"),
-    
-    # ABOUT CREATOR (New additions)
+
+    # ABOUT CREATOR (must be above the catch-all root file server)
     path("aboutcreator.html", aboutcreator_view, name="aboutcreator"),
     path("aboutcreator/", aboutcreator_view, name="aboutcreator_alt"),
 
