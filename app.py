@@ -1555,6 +1555,14 @@ def about_view(request):
 
 
 def aboutcreator_view(request):
+    """
+    Serves the About Creator page from the root-level file.
+    Accessible at:
+      /aboutcreator.html
+      /aboutcreator/
+      /about/aboutcreator.html   (via the nested alias below)
+    Always renders as text/html — never as a download.
+    """
     try:
         return render(request, "aboutcreator.html", build_view_context(request))
     except Exception as e:
@@ -2194,9 +2202,14 @@ urlpatterns = [
     path("scanner.html", scanner_view, name="scanner"),
     path("scanner/", scanner_view, name="scanner_alt"),
 
-    # ABOUT CREATOR (MUST be above the catch-all root file server)
+    # ABOUT CREATOR — all paths resolve to the root-level aboutcreator.html
+    #   /aboutcreator.html
+    #   /aboutcreator/
+    #   /about/aboutcreator.html
     path("aboutcreator.html", aboutcreator_view, name="aboutcreator"),
     path("aboutcreator/", aboutcreator_view, name="aboutcreator_alt"),
+    path("about/aboutcreator.html", aboutcreator_view, name="aboutcreator_nested"),
+    path("about/aboutcreator/", aboutcreator_view, name="aboutcreator_nested_alt"),
 
     # ROOT FILE SERVER (must be LAST)
     path("<str:filename>", serve_root_file, name="root_file"),
