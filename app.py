@@ -723,29 +723,36 @@ def serve_root_file(request, filename):
         return HttpResponse("Not found", status=404)
     ext = os.path.splitext(safe_name)[1].lower()
     content_types = {
-        ".png": "image/png", 
-        ".jpg": "image/jpeg", 
+        ".png": "image/png",
+        ".jpg": "image/jpeg",
         ".jpeg": "image/jpeg",
-        ".gif": "image/gif", 
-        ".svg": "image/svg+xml", 
+        ".gif": "image/gif",
+        ".svg": "image/svg+xml",
         ".webp": "image/webp",
-        ".ico": "image/x-icon", 
-        ".css": "text/css", 
+        ".ico": "image/x-icon",
+        ".css": "text/css",
         ".js": "application/javascript",
-        ".json": "application/json", 
-        ".txt": "text/plain", 
+        ".json": "application/json",
+        ".txt": "text/plain",
         ".xml": "application/xml",
-        ".pdf": "application/pdf", 
-        ".woff": "font/woff", 
+        ".pdf": "application/pdf",
+        ".woff": "font/woff",
         ".woff2": "font/woff2",
-        ".mp4": "video/mp4"
+        ".mp4": "video/mp4",
+        ".html": "text/html; charset=utf-8",
+        ".htm": "text/html; charset=utf-8",
     }
     content_type = content_types.get(ext, "application/octet-stream")
     try:
         with open(file_path, "rb") as f:
             data = f.read()
         response = HttpResponse(data, content_type=content_type)
-        response["Cache-Control"] = "public, max-age=2592000"
+        if ext in (".html", ".htm"):
+            # Always open HTML inline — never trigger a download
+            response["Content-Disposition"] = "inline"
+            response["Cache-Control"] = "public, max-age=300"
+        else:
+            response["Cache-Control"] = "public, max-age=2592000"
         return response
     except Exception as e:
         print(f"Error serving {safe_name}: {e}")
@@ -778,7 +785,11 @@ def serve_subfolder_file(request, subpath):
         with open(real_path, "rb") as f:
             data = f.read()
         response = HttpResponse(data, content_type=content_type)
-        response["Cache-Control"] = "public, max-age=300" if ext in (".html", ".htm") else "public, max-age=2592000"
+        if ext in (".html", ".htm"):
+            response["Content-Disposition"] = "inline"
+            response["Cache-Control"] = "public, max-age=300"
+        else:
+            response["Cache-Control"] = "public, max-age=2592000"
         return response
     except Exception as e:
         print(f"Error serving {safe_subpath}: {e}")
@@ -1556,15 +1567,30 @@ def about_view(request):
 
 def aboutcreator_view(request):
     """
-    Serves the About Creator page from the root-level file.
+    Serves the About Creator page directly from the root-level file.
+    aboutcreator.html is STATIC HTML (no Django template tags inside),
+    so we read it as a plain file and send it with `Content-Disposition: inline`.
+    This guarantees:
+      - The page opens as a normal webpage (never triggers a download).
+      - Images (img1.png … img6.png) load from the SAME folder (BASE_DIR)
+        through the root-file server.
+
     Accessible at:
       /aboutcreator.html
       /aboutcreator/
-      /about/aboutcreator.html   (via the nested alias below)
-    Always renders as text/html — never as a download.
+      /about/aboutcreator.html
+      /about/aboutcreator/
     """
+    path = os.path.join(BASE_DIR, "aboutcreator.html")
+    if not os.path.exists(path):
+        return HttpResponse("About Creator page not found.", status=404)
     try:
-        return render(request, "aboutcreator.html", build_view_context(request))
+        with open(path, "r", encoding="utf-8") as f:
+            html = f.read()
+        response = HttpResponse(html, content_type="text/html; charset=utf-8")
+        response["Content-Disposition"] = "inline"
+        response["Cache-Control"] = "public, max-age=300"
+        return response
     except Exception as e:
         return HttpResponse(f"About Creator page error: {e}", status=500)
 
@@ -1595,6 +1621,7 @@ def _serve_course_index(course_slug):
         with open(path, "r", encoding="utf-8") as f:
             html = f.read()
         response = HttpResponse(html, content_type="text/html; charset=utf-8")
+        response["Content-Disposition"] = "inline"
         response["Cache-Control"] = "public, max-age=300"
         return response
     except Exception as e:
@@ -1621,7 +1648,9 @@ def autoquiz_view(request):
         try:
             with open(path, "r", encoding="utf-8") as f:
                 html = f.read()
-            return HttpResponse(html, content_type="text/html")
+            response = HttpResponse(html, content_type="text/html; charset=utf-8")
+            response["Content-Disposition"] = "inline"
+            return response
         except Exception as e:
             return HttpResponse(f"Error loading AutoQuiz: {e}", status=500)
     return HttpResponse("AutoQuiz page not found.", status=404)
@@ -2206,6 +2235,7 @@ urlpatterns = [
     #   /aboutcreator.html
     #   /aboutcreator/
     #   /about/aboutcreator.html
+    #   /about/aboutcreator/
     path("aboutcreator.html", aboutcreator_view, name="aboutcreator"),
     path("aboutcreator/", aboutcreator_view, name="aboutcreator_alt"),
     path("about/aboutcreator.html", aboutcreator_view, name="aboutcreator_nested"),
