@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,6 +60,9 @@ nav.stuck{border-color:var(--line);box-shadow:0 4px 18px rgba(15,23,32,.05)}
 .btn.ghost:hover{transform:translateY(-3px);border-color:var(--accent);color:var(--accent)}
 .portrait{position:relative;justify-self:center;width:min(100%,330px)}
 .portrait img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:50%;border:1px solid var(--line);background:var(--soft);display:block;position:relative;z-index:1}
+.portrait .fallback{display:none;width:100%;aspect-ratio:1;border-radius:50%;border:1px solid var(--line);background:linear-gradient(135deg,#e4e7ec,#f6f7f9);align-items:center;justify-content:center;font:600 5rem var(--head);color:var(--muted);position:relative;z-index:1}
+.portrait img[data-broken="true"]{display:none}
+.portrait img[data-broken="true"] + .fallback{display:flex}
 .ring{position:absolute;inset:-18px;border:1.5px dashed #b9c3d3;border-radius:50%;animation:spin 40s linear infinite}
 .ring.two{inset:-36px;border-style:solid;border-color:var(--line);animation-direction:reverse;animation-duration:60s}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -142,9 +147,13 @@ section.alt{background:var(--soft);border-top:1px solid var(--line);border-botto
 .cert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:1.4rem}
 .cert{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;transition:transform .35s var(--ease),box-shadow .35s}
 .cert:hover{transform:translateY(-6px);box-shadow:0 18px 38px rgba(15,23,32,.1)}
-.cert .img{height:170px;overflow:hidden;background:var(--soft)}
+.cert .img{height:170px;overflow:hidden;background:var(--soft);position:relative}
 .cert img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s var(--ease)}
 .cert:hover img{transform:scale(1.07)}
+.cert .img-fallback{display:none;width:100%;height:100%;align-items:center;justify-content:center;flex-direction:column;gap:.5rem;background:linear-gradient(135deg,#e4e7ec,#f6f7f9);color:var(--muted);font:600 .9rem var(--body);text-align:center;padding:1rem}
+.cert .img-fallback svg{width:42px;height:42px;stroke:var(--muted);fill:none;stroke-width:1.4}
+.cert img[data-broken="true"]{display:none}
+.cert img[data-broken="true"] ~ .img-fallback{display:flex}
 .cert .info{padding:1rem 1.15rem 1.2rem}
 .cert h3{font-size:1.02rem}
 .cert p{font-size:.84rem;color:var(--muted);margin:.2rem 0 .7rem}
@@ -247,7 +256,8 @@ footer{border-top:1px solid var(--line);padding:2.4rem 0;color:var(--muted);font
       </div>
       <div class="portrait float">
         <span class="ring"></span><span class="ring two"></span>
-        <img src="img1.png" alt="Portrait of Rwechungura Evodius Lutta">
+        <img src="img1.png" alt="Portrait of Rwechungura Evodius Lutta" data-broken="false" onerror="this.dataset.broken='true';this.alt='Profile photo not found'">
+        <div class="fallback" aria-hidden="true">RE</div>
       </div>
     </div>
 
@@ -356,11 +366,60 @@ footer{border-top:1px solid var(--line);padding:2.4rem 0;color:var(--muted);font
     </div>
     <p class="cert-note reveal">Professional and training certificates only. School certificates such as primary and Form Four are not listed here.</p>
     <div class="cert-grid">
-      <article class="cert reveal d1"><div class="img"><img src="img2.png" alt="Hackviser CORE certificate"></div><div class="info"><h3>Hackviser CORE</h3><p>Hackviser, 2026</p><a class="view" href="img2.png" data-title="Hackviser CORE">View certificate <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></article>
-      <article class="cert reveal d2"><div class="img"><img src="img3.png" alt="Cisco NetAcad certificate"></div><div class="info"><h3>Cisco NetAcad</h3><p>Cisco Networking Academy, 2026</p><a class="view" href="img3.png" data-title="Cisco NetAcad">View certificate <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></article>
-      <article class="cert reveal d3"><div class="img"><img src="img4.png" alt="CyberClub DIT participation certificate"></div><div class="info"><h3>CyberClub DIT, Participation</h3><p>DIT CyberClub, 2026</p><a class="view" href="img4.png" data-title="CyberClub DIT Participation">View certificate <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></article>
-      <article class="cert reveal d4"><div class="img"><img src="img5.png" alt="Certificate 4"></div><div class="info"><h3>[Certificate Title 4]</h3><p>[Issuing organization], [Year]</p><a class="view" href="img5.png" data-title="Certificate 4">View certificate <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></article>
-      <article class="cert reveal d1"><div class="img"><img src="img6.png" alt="Certificate 5"></div><div class="info"><h3>[Certificate Title 5]</h3><p>[Issuing organization], [Year]</p><a class="view" href="img6.png" data-title="Certificate 5">View certificate <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></article>
+      <article class="cert reveal d1">
+        <div class="img">
+          <img src="img2.png" alt="Hackviser CORE certificate" data-broken="false" onerror="this.dataset.broken='true'">
+          <div class="img-fallback">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h6M8 16h4"/></svg>
+            <span>Hackviser CORE<br><em>img2.png not found</em></span>
+          </div>
+        </div>
+        <div class="info"><h3>Hackviser CORE</h3><p>Hackviser, 2026</p><a class="view" href="img2.png" data-title="Hackviser CORE">View certificate <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+      </article>
+
+      <article class="cert reveal d2">
+        <div class="img">
+          <img src="img3.png" alt="Cisco NetAcad certificate" data-broken="false" onerror="this.dataset.broken='true'">
+          <div class="img-fallback">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h6M8 16h4"/></svg>
+            <span>Cisco NetAcad<br><em>img3.png not found</em></span>
+          </div>
+        </div>
+        <div class="info"><h3>Cisco NetAcad</h3><p>Cisco Networking Academy, 2026</p><a class="view" href="img3.png" data-title="Cisco NetAcad">View certificate <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+      </article>
+
+      <article class="cert reveal d3">
+        <div class="img">
+          <img src="img4.png" alt="CyberClub DIT participation certificate" data-broken="false" onerror="this.dataset.broken='true'">
+          <div class="img-fallback">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h6M8 16h4"/></svg>
+            <span>CyberClub DIT<br><em>img4.png not found</em></span>
+          </div>
+        </div>
+        <div class="info"><h3>CyberClub DIT, Participation</h3><p>DIT CyberClub, 2026</p><a class="view" href="img4.png" data-title="CyberClub DIT Participation">View certificate <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+      </article>
+
+      <article class="cert reveal d4">
+        <div class="img">
+          <img src="img5.png" alt="Certificate 4" data-broken="false" onerror="this.dataset.broken='true'">
+          <div class="img-fallback">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h6M8 16h4"/></svg>
+            <span>[Certificate Title 4]<br><em>img5.png not found</em></span>
+          </div>
+        </div>
+        <div class="info"><h3>[Certificate Title 4]</h3><p>[Issuing organization], [Year]</p><a class="view" href="img5.png" data-title="Certificate 4">View certificate <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+      </article>
+
+      <article class="cert reveal d1">
+        <div class="img">
+          <img src="img6.png" alt="Certificate 5" data-broken="false" onerror="this.dataset.broken='true'">
+          <div class="img-fallback">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h6M8 16h4"/></svg>
+            <span>[Certificate Title 5]<br><em>img6.png not found</em></span>
+          </div>
+        </div>
+        <div class="info"><h3>[Certificate Title 5]</h3><p>[Issuing organization], [Year]</p><a class="view" href="img6.png" data-title="Certificate 5">View certificate <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+      </article>
     </div>
   </div>
 </section>
@@ -374,14 +433,14 @@ footer{border-top:1px solid var(--line);padding:2.4rem 0;color:var(--muted);font
     <div class="site reveal">
       <div class="txt">
         <h3>Personal portfolio</h3>
-        <p>My main website, showing my web development work. [Add one line about what you build, for example: I build simple, fast websites for individuals and small businesses.]</p>
+        <p>My main website, showing my web development work. I build simple, fast and responsive websites for individuals and small projects.</p>
         <a class="btn primary" href="https://twarvis.cc.cd" target="_blank" rel="noopener">Visit twarvis.cc.cd</a>
       </div>
       <div class="browser"><div class="win"><div class="top"><i></i><i></i><i></i><span>twarvis.cc.cd</span></div><div class="body"><u></u><u></u><u></u><u></u></div></div></div>
     </div>
     <div class="proj-grid">
-      <article class="proj reveal d1"><h3>[Project name]</h3><p>Short description of what it does and the problem it solves.</p><a href="#">View project</a></article>
-      <article class="proj reveal d2"><h3>[Project name]</h3><p>Short description of what it does and the problem it solves.</p><a href="#">View project</a></article>
+      <article class="proj reveal d1"><h3>Student Hub</h3><p>A free platform where students share notes, past papers and study material. Built with Django, Supabase and Cloudflare R2.</p><a href="https://twarvis.cc.cd" target="_blank" rel="noopener">View project</a></article>
+      <article class="proj reveal d2"><h3>CyberCraft</h3><p>A cyber-security toolkit and playground for students learning ethical hacking, cryptography and safe browsing.</p><a href="https://twarvis.cc.cd" target="_blank" rel="noopener">View project</a></article>
     </div>
   </div>
 </section>
@@ -400,10 +459,10 @@ footer{border-top:1px solid var(--line);padding:2.4rem 0;color:var(--muted);font
       <div class="reveal d2">
         <p style="color:var(--muted);margin-bottom:.8rem">Find me online</p>
         <div class="social">
-          <a href="https://instagram.com/YOUR_USERNAME" target="_blank" rel="noopener">Instagram</a>
-          <a href="https://wa.me/255XXXXXXXXX" target="_blank" rel="noopener">WhatsApp</a>
-          <a href="https://linkedin.com/in/YOUR_USERNAME" target="_blank" rel="noopener">LinkedIn</a>
-          <a href="https://tiktok.com/@YOUR_USERNAME" target="_blank" rel="noopener">TikTok</a>
+          <a href="https://instagram.com/twarvice" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://wa.me/255740706007" target="_blank" rel="noopener">WhatsApp</a>
+          <a href="https://tiktok.com/@twarvis" target="_blank" rel="noopener">TikTok</a>
+          <a href="https://twarvis.cc.cd" target="_blank" rel="noopener">Website</a>
         </div>
       </div>
     </div>
@@ -457,7 +516,6 @@ footer{border-top:1px solid var(--line);padding:2.4rem 0;color:var(--muted);font
     if(!e.isIntersecting)return;
     e.target.classList.add('in');
     $$('[data-count]',e.target).forEach(count);
-    if(e.target.classList.contains('stats'))$$('[data-count]',e.target).forEach(function(){});
     io.unobserve(e.target);
   })},{threshold:.15});
   $$('.reveal').forEach(function(el){io.observe(el)});
@@ -493,11 +551,21 @@ footer{border-top:1px solid var(--line);padding:2.4rem 0;color:var(--muted);font
     })();
   }
 
-  /* certificate lightbox */
+  /* certificate lightbox — skip if image is broken */
   var lb=$('#lb'),lbi=$('#lbi'),lbt=$('#lbt');
   function close(){lb.classList.remove('open')}
   $$('a.view').forEach(function(a){a.addEventListener('click',function(e){
-    e.preventDefault();lbi.src=a.href;lbi.alt=a.dataset.title+' certificate';lbt.textContent=a.dataset.title;lb.classList.add('open');$('#lbx').focus();
+    var img = a.closest('.cert').querySelector('img');
+    if(img && img.dataset.broken === 'true'){
+      e.preventDefault();
+      return; // no lightbox for missing images
+    }
+    e.preventDefault();
+    lbi.src=a.href;
+    lbi.alt=a.dataset.title+' certificate';
+    lbt.textContent=a.dataset.title;
+    lb.classList.add('open');
+    $('#lbx').focus();
   })});
   $('#lbx').onclick=close;
   lb.addEventListener('click',function(e){if(e.target===lb)close()});
