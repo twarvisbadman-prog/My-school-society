@@ -2167,10 +2167,6 @@ urlpatterns = [
     path("about.html", about_view, name="about"),
     path("about/", about_view, name="about_alt"),
 
-    # ABOUT CREATOR (must be above the catch-all root file server)
-    path("aboutcreator.html", aboutcreator_view, name="aboutcreator"),
-    path("aboutcreator/", aboutcreator_view, name="aboutcreator_alt"),
-
     # CALCULATOR
     path("calculator.html", calculator_view),
     path("calculator/", calculator_view, name="calculator"),
@@ -2197,6 +2193,10 @@ urlpatterns = [
     # SCANNER
     path("scanner.html", scanner_view, name="scanner"),
     path("scanner/", scanner_view, name="scanner_alt"),
+
+    # ABOUT CREATOR (MUST be above the catch-all root file server)
+    path("aboutcreator.html", aboutcreator_view, name="aboutcreator"),
+    path("aboutcreator/", aboutcreator_view, name="aboutcreator_alt"),
 
     # ROOT FILE SERVER (must be LAST)
     path("<str:filename>", serve_root_file, name="root_file"),
