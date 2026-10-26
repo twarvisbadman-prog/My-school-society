@@ -1,1423 +1,1203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="theme-color" content="#f8f9fa" id="themeColorMeta" />
-<title>About | Student Hub</title>
-<link rel="icon" type="image/png" href="/logo.png" />
-<link rel="apple-touch-icon" href="/logo.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f8f9fa" id="themeColorMeta" />
+  <title>About | Student Hub</title>
+  <link rel="icon" type="image/png" href="/logo.png" />
+  <link rel="apple-touch-icon" href="/logo.png" />
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-<style>
-/* ----- THEME VARIABLES (DEFAULT IS LIGHT) ----- */
-:root {
-    --bg: #f8f9fa; 
-    --surface: #ffffff;
-    --ink: #111827;
-    --text-muted: #6b7280;
-    --accent: #2e8b57; 
-    --accent-light: #e8f5e9;
-    --accent-dark: #236b42;
-    --border: rgba(0,0,0,0.05);
-    
-    /* Footer */
-    --footer-bg: #1f2937; 
-    --footer-text: #d1d5db;
-    --footer-border: rgba(255,255,255,0.08);
-    
-    /* Sidebar Theme */
-    --sidebar-bg: rgba(255, 255, 255, 0.98);
-    --sidebar-icon-border: rgba(0,0,0,0.08);
-    --sidebar-icon-hover: rgba(0,0,0,0.03);
-    
-    /* Logo Container */
-    --logo-container-bg: transparent;
-    --logo-container-shadow: none;
-    
-    /* Animations */
-    --smooth-slide: cubic-bezier(0.16, 1, 0.3, 1);
-    --bounce-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
-    
-    /* Shadows */
-    --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
-    --shadow-md: 0 10px 30px rgba(0,0,0,0.06);
-    --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
-    --shadow-cta: 0 4px 12px rgba(46, 139, 87, 0.3);
+  <style>
+    /* ----- THEME VARIABLES (DEFAULT IS LIGHT) ----- */
+    :root {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --ink: #111827;
+      --text-muted: #6b7280;
+      --accent: #2e8b57;
+      --accent-light: #e8f5e9;
+      --accent-dark: #236b42;
+      --border: rgba(0,0,0,0.05);
 
-    /* Upgrades */
-    --radius-sm:12px; --radius-md:16px; --radius-lg:22px; --radius-xl:28px;
-    --success:#166534; --alt:var(--bg);
-    --grad-cta:linear-gradient(135deg,#2e8b57,#34c38f);
-}
+      --footer-bg: #1f2937;
+      --footer-text: #d1d5db;
+      --footer-border: rgba(255,255,255,0.08);
 
-/* DARK THEME OVERRIDES */
-[data-theme="dark"] {
-    --bg: #120b08; 
-    --surface: #1f1613;
-    --ink: #fafaf9;
-    --text-muted: #a8a29e;
-    --accent: #4ade80; 
-    --accent-light: #052e16;
-    --accent-dark: #22c55e;
-    --border: rgba(255,255,255,0.08);
-    
-    --footer-bg: #0a0705;
-    --footer-text: #a8a29e;
-    --footer-border: rgba(255,255,255,0.05);
-    
-    --sidebar-bg: rgba(31, 22, 19, 0.98);
-    --sidebar-icon-border: rgba(255,255,255,0.1);
-    --sidebar-icon-hover: rgba(255,255,255,0.05);
-    
-    --logo-container-bg: rgba(255, 255, 255, 0.95);
-    --logo-container-shadow: 0 4px 16px rgba(0,0,0,0.4);
-    
-    --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
-    --shadow-md: 0 10px 30px rgba(0,0,0,0.5);
-    --shadow-lg: 0 20px 40px rgba(0,0,0,0.6);
-    --shadow-cta: 0 4px 12px rgba(74, 222, 128, 0.2);
-    --grad-cta:linear-gradient(135deg,#22c55e,#4ade80);
-}
+      --sidebar-bg: rgba(255, 255, 255, 0.98);
+      --sidebar-icon-border: rgba(0,0,0,0.08);
+      --sidebar-icon-hover: rgba(0,0,0,0.03);
 
-/* ----- RESET & BASE ----- */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; transition: background-color 0.35s ease; }
-body { 
-    font-family: 'Inter', sans-serif; 
-    background: var(--bg); 
-    color: var(--ink); 
-    line-height: 1.6; 
-    overflow-x: hidden; 
-    -webkit-font-smoothing: antialiased; 
-    transition: background-color 0.35s ease, color 0.35s ease;
-    min-height: 100vh;
-    position: relative;
-}
-a { color: inherit; text-decoration: none; }
-ul { list-style: none; }
-button { font-family: inherit; }
-img { max-width: 100%; height: auto; display: block; }
+      --logo-container-bg: transparent;
+      --logo-container-shadow: none;
 
-/* ----- NAVBAR ----- */
-.mainnav { 
-    background: var(--surface); 
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    position: sticky; top: 0; z-index: 100; 
-    transition: background-color 0.35s ease, border-color 0.35s ease;
-}
-.mainnav-inner { 
-    max-width: 1200px; margin: 0 auto; padding: 12px 20px; 
-    display: flex; justify-content: space-between; align-items: center; 
-    gap: 10px;
-}
+      --smooth-slide: cubic-bezier(0.16, 1, 0.3, 1);
+      --bounce-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
 
-.nav-left { display: flex; align-items: center; gap: 12px; }
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --shadow-md: 0 10px 30px rgba(0,0,0,0.06);
+      --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
+      --shadow-cta: 0 4px 12px rgba(46, 139, 87, 0.3);
 
-.menu-toggle { 
-    display: flex; background: var(--bg); border: 1px solid var(--border); 
-    border-radius: 50%; width: 40px; height: 40px; align-items: center; justify-content: center; 
-    font-size: 1.1rem; color: var(--ink); cursor: pointer; box-shadow: var(--shadow-sm);
-    transition: all 0.3s; flex-shrink: 0;
-}
-.menu-toggle:hover { background: var(--surface); transform: scale(1.05); }
-
-.logo-full-img { 
-    height: 48px; width: auto; object-fit: contain; 
-    background: var(--logo-container-bg); padding: 4px 8px;
-    border-radius: 8px; box-shadow: var(--logo-container-shadow);
-    transition: all 0.35s ease;
-}
-
-.nav-right { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
-
-.theme-toggle {
-    width: 40px; height: 40px; border-radius: 50%;
-    border: 1px solid var(--border); background: var(--bg); color: var(--ink);
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    font-size: 1rem; box-shadow: var(--shadow-sm);
-    transition: all .3s var(--smooth-slide);
-}
-.theme-toggle:hover { color: var(--accent); border-color: var(--accent); transform: scale(1.1) rotate(12deg); }
-
-.streak-pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: #fff7ed; color: #ea580c; border: 1.5px solid #fed7aa;
-    padding: 6px 12px; border-radius: 999px; font-weight: 800; font-size: 0.8rem;
-    text-decoration: none; transition: all 0.25s var(--smooth-slide);
-    white-space: nowrap;
-}
-[data-theme="dark"] .streak-pill { background: #2c1a0e; color: #fb923c; border-color: #ea580c; }
-.streak-pill:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(234,88,12,0.4); }
-
-.profile-pill {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: var(--bg); border: 1.5px solid var(--border);
-    padding: 4px 10px 4px 4px; border-radius: 999px;
-    font-weight: 700; font-size: 0.85rem; color: var(--ink);
-    transition: all 0.25s var(--smooth-slide);
-    white-space: nowrap;
-}
-.profile-pill:hover { border-color: var(--accent); background: var(--surface); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
-.avatar-circle {
-    width: 28px; height: 28px; border-radius: 50%;
-    background: var(--accent); color: #fff;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 800; font-size: 0.75rem; overflow: hidden;
-}
-.avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
-
-.btn-nav { padding: 8px 14px; border-radius: 999px; font-weight: 600; font-size: 0.85rem; transition: all 0.3s var(--smooth-slide); white-space: nowrap; }
-.btn-nav.login { border: 1px solid var(--border); color: var(--ink); }
-.btn-nav.login:hover { background: var(--bg); }
-.btn-nav.join { background: var(--accent); color: #fff; box-shadow: var(--shadow-cta); }
-.btn-nav.join:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(46, 139, 87, 0.4); }
-
-@media (max-width: 600px) {
-    .hide-mobile { display: none !important; }
-    .mainnav-inner { padding: 10px 15px; }
-    .logo-full-img { height: 40px; }
-    .streak-pill span { display: none; } 
-    .streak-pill { padding: 6px 8px; }
-    .profile-pill .username-text { display: none; } 
-    .profile-pill { padding: 4px; }
-}
-
-/* ----- POLISHED SIDEBAR ----- */
-.sidebar-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-    z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.5s var(--smooth-slide);
-}
-.sidebar-overlay.active { opacity: 1; visibility: visible; }
-
-.sidebar {
-    position: fixed; top: 0; left: 0; width: 85%; max-width: 320px; height: 100vh;
-    background: var(--sidebar-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    z-index: 1001; display: flex; flex-direction: column; padding: 24px 0;
-    box-shadow: 10px 0 40px rgba(0,0,0,0.08), inset -1px 0 0 rgba(255,255,255,0.8);
-    transform: translateX(-100%); transition: transform 0.65s var(--smooth-slide), background 0.35s ease;
-}
-.sidebar.open { transform: translateX(0); }
-
-.sidebar-header { display: flex; justify-content: flex-end; padding: 0 24px 20px; gap: 12px; }
-.icon-btn {
-    background: transparent; border: 1px solid var(--sidebar-icon-border); border-radius: 50%;
-    width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
-    cursor: pointer; color: var(--ink); transition: all 0.3s;
-}
-.icon-btn:hover { background: var(--sidebar-icon-hover); transform: scale(1.05); }
-.icon-btn svg { width: 18px; height: 18px; stroke-width: 1.5; }
-
-.mobile-user-card {
-    display: none; align-items: center; gap: 16px;
-    margin: 0 24px 20px; padding: 16px;
-    background: var(--bg); border-radius: 16px; border: 1px solid var(--border);
-}
-.mobile-user-card .avatar-circle { width: 44px; height: 44px; font-size: 1.1rem; }
-.mobile-user-info { flex: 1; }
-.mobile-user-info strong { display: block; font-size: 1rem; color: var(--ink); }
-.mobile-user-info span { font-size: 0.8rem; color: #ea580c; font-weight: 700; }
-[data-theme="dark"] .mobile-user-info span { color: #fb923c; }
-
-.sidebar-nav { display: flex; flex-direction: column; padding: 0 24px; overflow-y: auto; flex: 1; }
-.sidebar-nav a {
-    display: flex; align-items: center; justify-content: space-between;
-    color: var(--ink); font-size: 16px; font-weight: 500; padding: 14px 0;
-    border-bottom: 2px solid transparent; transition: all 0.3s var(--smooth-slide);
-    opacity: 0; transform: translateX(-20px);
-}
-.sidebar.open .sidebar-nav a { opacity: 1; transform: translateX(0); }
-
-.sidebar.open .sidebar-nav a:nth-child(1) { transition-delay: 0.1s; }
-.sidebar.open .sidebar-nav a:nth-child(2) { transition-delay: 0.15s; }
-.sidebar.open .sidebar-nav a:nth-child(3) { transition-delay: 0.2s; }
-.sidebar.open .sidebar-nav a:nth-child(4) { transition-delay: 0.25s; }
-.sidebar.open .sidebar-nav a:nth-child(5) { transition-delay: 0.3s; }
-.sidebar.open .sidebar-nav a:nth-child(6) { transition-delay: 0.35s; }
-.sidebar.open .sidebar-nav a:nth-child(7) { transition-delay: 0.4s; }
-.sidebar.open .sidebar-nav a:nth-child(8) { transition-delay: 0.45s; }
-.sidebar.open .sidebar-nav a:nth-child(9) { transition-delay: 0.5s; }
-
-.sidebar-nav a:hover, .sidebar-nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
-.sidebar-nav a i { font-size: 1.1rem; color: var(--text-muted); transition: color 0.3s; }
-.sidebar-nav a:hover i, .sidebar-nav a.active i { color: var(--accent); }
-
-/* ----- MAIN CONTENT ----- */
-.main-content {
-    position: relative;
-    z-index: 1;
-    min-height: 100vh;
-}
-
-/* ----- PROFESSIONAL HERO SECTION (No emojis, no buttons) ----- */
-.about-hero {
-    position: relative;
-    padding: 120px 20px 100px;
-    text-align: center;
-    overflow: hidden;
-    min-height: 60vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    isolation: isolate;
-}
-
-/* Animated Professional Background */
-.hero-bg {
-    position: absolute; inset: 0; z-index: 0;
-    overflow: hidden;
-}
-.hero-bg::before {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(45deg, transparent 48%, rgba(46,139,87,0.1) 49%, rgba(46,139,87,0.1) 51%, transparent 52%);
-    background-size: 40px 40px;
-    opacity: 0.5;
-    animation: moveGrid 20s linear infinite;
-}
-[data-theme="dark"] .hero-bg::before {
-    background: linear-gradient(45deg, transparent 48%, rgba(74,222,128,0.08) 49%, rgba(74,222,128,0.08) 51%, transparent 52%);
-    background-size: 40px 40px;
-    opacity: 0.4;
-}
-@keyframes moveGrid {
-    0% { transform: translateY(0) translateX(0); }
-    100% { transform: translateY(40px) translateX(40px); }
-}
-
-.hero-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(60px);
-    opacity: 0.4;
-    z-index: 0;
-    animation: pulseOrb 8s ease-in-out infinite alternate;
-}
-.hero-orb.orb1 {
-    width: 400px; height: 400px;
-    background: var(--accent);
-    top: -100px; left: -100px;
-}
-.hero-orb.orb2 {
-    width: 300px; height: 300px;
-    background: #3b82f6;
-    bottom: -50px; right: -50px;
-    animation-delay: -3s;
-}
-.hero-orb.orb3 {
-    width: 200px; height: 200px;
-    background: #8b5cf6;
-    top: 40%; right: 20%;
-    animation-delay: -6s;
-}
-@keyframes pulseOrb {
-    0% { transform: scale(1) translate(0,0); opacity: 0.2; }
-    100% { transform: scale(1.3) translate(20px, 20px); opacity: 0.5; }
-}
-
-.about-hero-inner { 
-    position: relative; z-index: 2; 
-    max-width: 820px; margin: 0 auto; 
-}
-.about-label { 
-    color: var(--accent); font-size: .85rem; font-weight: 800; 
-    letter-spacing: .15em; text-transform: uppercase; 
-    margin-bottom: 20px; display: inline-block;
-    padding: 6px 16px; border-radius: 999px;
-    background: var(--accent-light);
-    border: 1px solid var(--border);
-}
-.about-hero h1 { 
-    font-size: clamp(2.4rem, 6vw, 4rem); 
-    font-weight: 900; line-height: 1.1; 
-    letter-spacing: -.03em; margin-bottom: 24px; 
-    color: var(--ink);
-}
-.about-hero h1 .accent { 
-    color: var(--accent); 
-    text-decoration: underline; 
-    text-decoration-color: var(--accent); 
-    text-underline-offset: 10px; 
-    text-decoration-thickness: 5px; 
-    text-decoration-skip-ink: none;
-}
-.about-hero p { 
-    color: var(--text-muted); 
-    font-size: clamp(1.1rem, 1.8vw, 1.25rem); 
-    max-width: 620px; margin: 0 auto; 
-    line-height: 1.8; 
-}
-
-/* ----- CONTAINER ----- */
-.container { max-width: 1100px; margin: 0 auto; padding: 70px 20px; position: relative; z-index: 2; }
-
-/* ----- SECTIONS ----- */
-.section-head { text-align: center; margin-bottom: 50px; }
-.section-label { color: var(--accent); font-size: .75rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 12px; display: block; }
-.section-head h2 { font-size: clamp(1.8rem, 3.5vw, 2.5rem); font-weight: 900; color: var(--ink); letter-spacing: -.025em; line-height: 1.2; margin-bottom: 14px; }
-.section-head h2 em { font-style: normal; color: var(--accent); }
-.section-head p { color: var(--text-muted); font-size: .98rem; max-width: 600px; margin: 0 auto; line-height: 1.7; }
-
-.section-transparent {
-    position: relative;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-}
-
-/* ----- WHAT IS STUDENT HUB (Image + Text) ----- */
-.intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-.intro-text h2 { font-size: clamp(1.8rem, 3vw, 2.2rem); font-weight: 800; color: var(--ink); letter-spacing: -.02em; line-height: 1.2; margin-bottom: 20px; }
-.intro-text h2 .accent { color: var(--accent); }
-.intro-text p { color: var(--text-muted); font-size: 1rem; line-height: 1.8; margin-bottom: 16px; }
-.intro-text p:last-child { margin-bottom: 0; }
-.intro-text strong { color: var(--ink); font-weight: 700; }
-
-/* Image placeholder for imag9.png */
-.intro-image-container {
-    position: relative;
-    border-radius: var(--radius-xl);
-    overflow: hidden;
-    box-shadow: var(--shadow-lg);
-    aspect-ratio: 4/3;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    transition: transform 0.4s var(--bounce-soft);
-}
-.intro-image-container:hover {
-    transform: scale(1.02);
-}
-.intro-image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* ----- ZIGZAG FEATURES LIST ----- */
-.features-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    max-width: 900px;
-    margin: 0 auto;
-}
-.feature-item {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 24px 30px;
-    transition: all 0.4s var(--smooth-slide);
-    opacity: 0;
-    transform: translateY(30px);
-}
-.feature-item.in {
-    opacity: 1;
-    transform: translateY(0);
-}
-.feature-item:hover {
-    border-color: var(--accent);
-    background: var(--surface);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-4px) scale(1.01);
-}
-
-/* Zigzag alignment (Odd items to the left, Even to the right) */
-.feature-item:nth-child(odd) {
-    flex-direction: row;
-    margin-right: auto;
-    margin-left: 0;
-    width: 90%;
-}
-.feature-item:nth-child(even) {
-    flex-direction: row-reverse;
-    text-align: right;
-    margin-left: auto;
-    margin-right: 0;
-    width: 90%;
-}
-.feature-item:nth-child(even) .feature-text {
-    text-align: right;
-}
-
-.feature-icon {
-    width: 60px; height: 60px;
-    border-radius: var(--radius-md);
-    background: var(--accent-light);
-    color: var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.6rem;
-    flex-shrink: 0;
-    transition: all 0.3s;
-}
-.feature-item:hover .feature-icon {
-    background: var(--accent);
-    color: #fff;
-    transform: rotate(10deg) scale(1.1);
-}
-.feature-text {
-    flex: 1;
-}
-.feature-text strong {
-    display: block;
-    font-size: 1.15rem;
-    font-weight: 800;
-    color: var(--ink);
-    margin-bottom: 6px;
-}
-.feature-text span {
-    display: block;
-    font-size: 0.95rem;
-    color: var(--text-muted);
-    line-height: 1.6;
-}
-
-/* ----- CREATOR CARD ----- */
-.creator-card {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 36px;
-    align-items: center;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
-    padding: 44px 40px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: var(--shadow-md);
-}
-.creator-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent); }
-.creator-avatar {
-    width: 120px; height: 120px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 3rem;
-    background: var(--accent-light);
-    color: var(--accent);
-    border: 4px solid var(--surface);
-    box-shadow: var(--shadow-lg);
-    flex-shrink: 0;
-}
-.creator-info h3 { font-size: clamp(1.4rem, 2.6vw, 1.8rem); font-weight: 800; color: var(--ink); margin-bottom: 6px; letter-spacing: -.02em; }
-.creator-info .role { color: var(--accent); font-size: .85rem; font-weight: 700; letter-spacing: .10em; text-transform: uppercase; margin-bottom: 16px; }
-.creator-info p { color: var(--text-muted); font-size: .96rem; line-height: 1.75; }
-.creator-info p strong { color: var(--ink); font-weight: 700; }
-
-/* SOCIAL BUTTONS */
-.social-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
-.social-btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 10px 20px;
-    border-radius: var(--radius-sm);
-    font-size: .85rem; font-weight: 700;
-    transition: all .25s ease;
-    border: 1px solid transparent;
-}
-.social-btn i { font-size: .9rem; }
-.social-btn.whatsapp { background: #dcfce7; color: var(--success); border-color: #86efac; }
-.social-btn.whatsapp i { color: #25D366; }
-.social-btn.whatsapp:hover { background: #25D366; color: #fff; border-color: #25D366; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,211,102,.4); }
-.social-btn.instagram { background: #fce7f3; color: #be185d; border-color: #fbcfe8; }
-.social-btn.instagram i { color: #e4405f; }
-.social-btn.instagram:hover { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); color: #fff; border-color: #dc2743; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(225,48,108,.4); }
-.social-btn.tiktok { background: var(--alt); color: var(--ink); border-color: var(--border); }
-.social-btn.tiktok i { color: var(--ink); }
-.social-btn.tiktok:hover { background: #000; color: #fff; border-color: #000; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.4); }
-
-/* SEE MORE ABOUT CREATOR CARD */
-.about-creator-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
-    padding: 60px 40px;
-    text-align: center;
-    box-shadow: var(--shadow-lg);
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 24px;
-    transition: all 0.4s var(--bounce-soft);
-}
-.about-creator-card:hover {
-    transform: translateY(-6px) scale(1.01);
-    border-color: var(--accent);
-    box-shadow: 0 30px 60px -15px rgba(46, 139, 87, 0.4);
-}
-.about-creator-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
-    background: linear-gradient(90deg, var(--accent), #3b82f6, #8b5cf6, var(--accent));
-    background-size: 300% 100%;
-    animation: gradientMove 3s linear infinite;
-}
-@keyframes gradientMove {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 300% 50%; }
-}
-.about-creator-card .pulse-icon {
-    width: 70px; height: 70px; border-radius: 50%;
-    background: var(--accent-light);
-    color: var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 2rem;
-    position: relative;
-    margin-bottom: 10px;
-}
-.about-creator-card .pulse-icon::before,
-.about-creator-card .pulse-icon::after {
-    content: ''; position: absolute; inset: 0; border-radius: 50%;
-    border: 2px solid var(--accent); opacity: 0.6;
-    animation: pulseRing 2s infinite ease-out;
-}
-.about-creator-card .pulse-icon::after { animation-delay: 1s; }
-@keyframes pulseRing {
-    0% { transform: scale(1); opacity: 0.6; }
-    100% { transform: scale(1.6); opacity: 0; }
-}
-.about-creator-card h2 {
-    font-size: clamp(1.6rem, 3vw, 2.2rem);
-    font-weight: 900;
-    color: var(--ink);
-    letter-spacing: -.02em;
-}
-.about-creator-card p {
-    color: var(--text-muted);
-    font-size: 1.05rem;
-    max-width: 650px;
-    line-height: 1.7;
-    margin-bottom: 10px;
-}
-
-.btn-see-more {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 16px 40px;
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: #fff;
-    background: var(--grad-cta);
-    border-radius: 999px;
-    box-shadow: 0 10px 30px -5px rgba(46, 139, 87, 0.5);
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s var(--bounce-soft);
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    width: 100%;
-    max-width: 320px;
-}
-.btn-see-more::before {
-    content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.5s ease;
-}
-.btn-see-more:hover {
-    transform: translateY(-4px) scale(1.03);
-    box-shadow: 0 15px 40px -5px rgba(46, 139, 87, 0.6);
-}
-.btn-see-more:hover::before { left: 100%; }
-.btn-see-more:active { transform: translateY(0) scale(0.98); }
-.btn-see-more i {
-    transition: transform 0.3s;
-    font-size: 1.2rem;
-}
-.btn-see-more:hover i { transform: translateX(6px); }
-
-/* PROJECTS GRID */
-.projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
-.project-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
-    overflow: hidden;
-    transition: all .3s ease;
-    display: flex; flex-direction: column;
-    box-shadow: var(--shadow-md);
-}
-.project-card:hover { border-color: var(--accent); transform: translateY(-6px); box-shadow: var(--shadow-lg); }
-.project-image { position: relative; height: 180px; overflow: hidden; background: var(--bg); }
-.project-image-bg { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transform: scale(1.08); transition: opacity 2s ease-in-out, transform 2.8s ease-in-out; }
-.project-image-bg.active { opacity: 1; transform: scale(1); }
-.project-icon {
-    position: absolute; top: 24px; left: 24px;
-    width: 56px; height: 56px;
-    border-radius: var(--radius-md);
-    background: var(--surface);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.5rem; color: var(--accent);
-    box-shadow: var(--shadow-sm);
-    z-index: 2;
-}
-.project-body { padding: 26px 26px 24px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
-.project-body h3 { font-size: 1.2rem; font-weight: 800; color: var(--ink); letter-spacing: -.01em; }
-.project-url { font-size: .78rem; color: var(--accent); font-weight: 600; word-break: break-all; font-family: 'JetBrains Mono', monospace; }
-.project-body p { color: var(--text-muted); font-size: .9rem; line-height: 1.65; flex: 1; }
-.project-features { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
-.project-features span {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    background: var(--accent-light);
-    color: var(--accent);
-    font-size: .7rem; font-weight: 700;
-    border: 1px solid var(--border);
-}
-.project-features span i { font-size: .65rem; }
-.project-btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    padding: 12px 20px;
-    background: var(--accent);
-    color: #fff;
-    border-radius: var(--radius-sm);
-    font-size: .85rem; font-weight: 700;
-    transition: all .25s ease;
-    margin-top: 8px;
-    box-shadow: var(--shadow-cta);
-}
-.project-btn:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 8px 22px rgba(46,139,87,.6); }
-
-/* CC GRID */
-.cc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
-.cc-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 22px 22px 20px;
-    transition: all .25s ease;
-    display: flex; flex-direction: column; gap: 12px;
-    box-shadow: var(--shadow-sm);
-}
-.cc-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: var(--shadow-md); }
-.cc-head { display: flex; align-items: center; gap: 12px; }
-.cc-icon {
-    width: 46px; height: 46px;
-    border-radius: var(--radius-md);
-    background: var(--accent-light);
-    color: var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem; flex-shrink: 0;
-}
-.cc-head-text h4 { font-size: .98rem; font-weight: 800; color: var(--ink); margin-bottom: 2px; }
-.cc-head-text span { font-size: .72rem; color: var(--text-muted); font-weight: 600; letter-spacing: .02em; }
-.cc-desc { color: var(--text-muted); font-size: .85rem; line-height: 1.6; flex: 1; }
-.cc-tag {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 3px 10px;
-    border-radius: 20px;
-    background: var(--accent-light);
-    color: var(--accent);
-    font-size: .68rem; font-weight: 700;
-    letter-spacing: .03em;
-    align-self: flex-start;
-    border: 1px solid var(--border);
-}
-.cc-tag i { font-size: .65rem; }
-.cc-visit { display: inline-flex; align-items: center; gap: 8px; color: var(--accent); font-size: .82rem; font-weight: 700; transition: gap .25s ease; }
-.cc-visit:hover { gap: 14px; }
-
-.cc-note {
-    margin-top: 30px;
-    background: var(--accent-light);
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--accent);
-    border-radius: var(--radius-md);
-    padding: 18px 22px;
-    color: var(--text-muted);
-    font-size: .88rem; line-height: 1.7;
-    display: flex; gap: 14px; align-items: flex-start;
-}
-.cc-note i { color: var(--accent); font-size: 1.1rem; margin-top: 2px; flex-shrink: 0; }
-.cc-note strong { color: var(--ink); font-weight: 700; }
-.cc-note a { color: var(--accent); font-weight: 600; border-bottom: 1px dotted var(--accent); }
-.cc-note a:hover { color: var(--accent-dark); border-bottom-color: var(--accent-dark); }
-
-/* CTA */
-.cta { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 60px 20px; }
-.cta-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
-.cta h3 { color: var(--ink); font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; letter-spacing: -.01em; }
-.cta p { color: var(--text-muted); font-size: .95rem; }
-
-/* FOOTER */
-footer { 
-    background: var(--footer-bg); 
-    padding: 50px 20px 24px; 
-    color: var(--footer-text); 
-    position: relative; 
-    transition: background-color 0.35s ease, color 0.35s ease;
-}
-.footer-inner { max-width: 1200px; margin: 0 auto; }
-.footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 34px; }
-.footer-brand .logo { color: var(--footer-text); }
-.footer-brand p { color: var(--footer-text); opacity: 0.8; font-size: .88rem; margin-top: 14px; max-width: 320px; line-height: 1.7; }
-.footer-col h4 { font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--footer-text); margin-bottom: 14px; }
-.footer-col ul li { margin-bottom: 8px; }
-.footer-col ul li a { color: var(--footer-text); opacity: 0.8; font-size: .88rem; transition: all .25s ease; }
-.footer-col ul li a:hover { color: var(--accent); opacity: 1; transform: translateX(4px); display: inline-block; }
-.footer-bottom { border-top: 1px solid var(--footer-border); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
-.footer-bottom p { color: var(--footer-text); opacity: 0.7; font-size: .83rem; }
-.footer-socials { display: flex; gap: 8px; }
-.footer-socials a { width: 38px; height: 38px; border: 1px solid var(--footer-border); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--footer-text); font-size: .9rem; transition: all .25s ease; background: transparent; }
-.footer-socials a:hover { background: var(--accent); color: #fff; border-color: transparent; transform: translateY(-2px); box-shadow: 0 8px 20px -6px rgba(46,139,87,.5); }
-
-/* ----- UTILITIES ----- */
-.reveal{ opacity:0; transform:translateY(28px) scale(.98); transition:opacity .7s var(--smooth-slide), transform .7s var(--smooth-slide); }
-.reveal.in{ opacity:1; transform:none; }
-.scroll-progress{ position:fixed; top:0; left:0; height:4px; width:0; background:var(--grad-cta); z-index:2000; }
-.to-top{ position:fixed; right:16px; bottom:calc(16px + env(safe-area-inset-bottom,0px)); width:48px;height:48px; border-radius:50%; border:none; background:var(--grad-cta); color:#fff; font-size:1.1rem; box-shadow:var(--shadow-cta); cursor:pointer; z-index:900; opacity:0; transform:translateY(20px) scale(.8); pointer-events:none; transition:all .35s var(--bounce-soft); }
-.to-top.show{ opacity:1; transform:none; pointer-events:auto; }
-.to-top:active{ transform:scale(.9); }
-.heart-pop{ position:fixed; pointer-events:none; z-index:3000; font-size:1.3rem; animation:heartUp 1s ease-out forwards; }
-@keyframes heartUp{to{transform:translateY(-90px) scale(1.5); opacity:0}}
-.cc-card,.project-card,.feature-item{ -webkit-tap-highlight-color:transparent; }
-.cc-icon i,.project-icon i,.pulse-icon i{ animation:floaty 4s ease-in-out infinite; }
-.ripple { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.5); transform: scale(0); animation: rippleEffect 0.6s ease-out forwards; pointer-events: none; }
-@keyframes rippleEffect { to { transform: scale(3); opacity: 0; } }
-
-/* RESPONSIVE */
-@media (max-width: 900px) {
-    .intro-grid { grid-template-columns: 1fr; gap: 40px; }
-    .intro-image-container { order: -1; }
-    .creator-card { grid-template-columns: 1fr; text-align: center; padding: 36px 26px; }
-    .creator-card::before { width: 100%; height: 4px; background: var(--accent); }
-    .creator-avatar { margin: 0 auto; }
-    .social-row { justify-content: center; }
-    .footer-top { grid-template-columns: 1fr 1fr; }
-    
-    /* Disable zigzag on mobile, make it a clean stacked list */
-    .feature-item:nth-child(odd),
-    .feature-item:nth-child(even) {
-        flex-direction: row;
-        text-align: left;
-        margin: 0;
-        width: 100%;
+      --radius-sm:12px; --radius-md:16px; --radius-lg:22px; --radius-xl:28px;
+      --success:#166534; --alt:var(--bg);
+      --grad-cta:linear-gradient(135deg,#2e8b57,#34c38f);
     }
-    .feature-item:nth-child(even) .feature-text {
-        text-align: left;
+
+    [data-theme="dark"] {
+      --bg: #120b08;
+      --surface: #1f1613;
+      --ink: #fafaf9;
+      --text-muted: #a8a29e;
+      --accent: #4ade80;
+      --accent-light: #052e16;
+      --accent-dark: #22c55e;
+      --border: rgba(255,255,255,0.08);
+
+      --footer-bg: #0a0705;
+      --footer-text: #a8a29e;
+      --footer-border: rgba(255,255,255,0.05);
+
+      --sidebar-bg: rgba(31, 22, 19, 0.98);
+      --sidebar-icon-border: rgba(255,255,255,0.1);
+      --sidebar-icon-hover: rgba(255,255,255,0.05);
+
+      --logo-container-bg: rgba(255, 255, 255, 0.95);
+      --logo-container-shadow: 0 4px 16px rgba(0,0,0,0.4);
+
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
+      --shadow-md: 0 10px 30px rgba(0,0,0,0.5);
+      --shadow-lg: 0 20px 40px rgba(0,0,0,0.6);
+      --shadow-cta: 0 4px 12px rgba(74, 222, 128, 0.2);
+      --grad-cta:linear-gradient(135deg,#22c55e,#4ade80);
     }
-}
-@media (max-width: 720px) {
-    .about-hero { padding: 80px 18px 60px; min-height: 50vh; }
-    .container { padding: 50px 16px; }
-    .creator-card { padding: 30px 22px; }
-    .about-creator-card { padding: 40px 24px; gap: 18px; }
-    .btn-see-more { padding: 14px 30px; font-size: 1rem; }
-    .footer-top { gap: 26px; }
-    .cta-inner { flex-direction: column; text-align: center; }
-    .feature-item { padding: 20px; gap: 16px; }
-    .feature-icon { width: 50px; height: 50px; font-size: 1.3rem; }
-    .feature-text strong { font-size: 1.05rem; }
-    .feature-text span { font-size: 0.88rem; }
-}
-@media (max-width: 560px) {
-    .creator-avatar { width: 100px; height: 100px; font-size: 2.4rem; }
-    .footer-top { grid-template-columns: 1fr; gap: 24px; }
-    .section-head h2 { font-size: 1.5rem; }
-    .cta h3 { font-size: 1.25rem; }
-    .creator-info h3 { font-size: 1.3rem; }
-    .about-creator-card .pulse-icon { width: 60px; height: 60px; font-size: 1.6rem; }
-}
-@media (prefers-reduced-motion: reduce) {
-    * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-    .reveal{ opacity:1; transform:none; }
-    .hero-bg::before, .hero-orb { animation: none !important; }
-}
-</style>
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; transition: background-color 0.35s ease; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.35s ease, color 0.35s ease;
+      min-height: 100vh;
+      position: relative;
+    }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    button { font-family: inherit; }
+    img { max-width: 100%; height: auto; display: block; }
+
+    /* ----- NAVBAR (same as original, kept intact) ----- */
+    .mainnav {
+      background: var(--surface);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      transition: background-color 0.35s ease, border-color 0.35s ease;
+    }
+    .mainnav-inner {
+      max-width: 1200px; margin: 0 auto; padding: 12px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 10px;
+    }
+    .nav-left { display: flex; align-items: center; gap: 12px; }
+    .menu-toggle {
+      display: flex; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 50%; width: 40px; height: 40px; align-items: center; justify-content: center;
+      font-size: 1.1rem; color: var(--ink); cursor: pointer; box-shadow: var(--shadow-sm);
+      transition: all 0.3s; flex-shrink: 0;
+    }
+    .menu-toggle:hover { background: var(--surface); transform: scale(1.05); }
+    .logo-full-img {
+      height: 48px; width: auto; object-fit: contain;
+      background: var(--logo-container-bg); padding: 4px 8px;
+      border-radius: 8px; box-shadow: var(--logo-container-shadow);
+      transition: all 0.35s ease;
+    }
+    .nav-right { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+    .theme-toggle {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid var(--border); background: var(--bg); color: var(--ink);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; box-shadow: var(--shadow-sm);
+      transition: all .3s var(--smooth-slide);
+    }
+    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); transform: scale(1.1) rotate(12deg); }
+    .streak-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #fff7ed; color: #ea580c; border: 1.5px solid #fed7aa;
+      padding: 6px 12px; border-radius: 999px; font-weight: 800; font-size: 0.8rem;
+      text-decoration: none; transition: all 0.25s var(--smooth-slide);
+      white-space: nowrap;
+    }
+    [data-theme="dark"] .streak-pill { background: #2c1a0e; color: #fb923c; border-color: #ea580c; }
+    .streak-pill:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(234,88,12,0.4); }
+    .profile-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--bg); border: 1.5px solid var(--border);
+      padding: 4px 10px 4px 4px; border-radius: 999px;
+      font-weight: 700; font-size: 0.85rem; color: var(--ink);
+      transition: all 0.25s var(--smooth-slide);
+      white-space: nowrap;
+    }
+    .profile-pill:hover { border-color: var(--accent); background: var(--surface); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+    .avatar-circle {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.75rem; overflow: hidden;
+    }
+    .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+    .btn-nav { padding: 8px 14px; border-radius: 999px; font-weight: 600; font-size: 0.85rem; transition: all 0.3s var(--smooth-slide); white-space: nowrap; }
+    .btn-nav.login { border: 1px solid var(--border); color: var(--ink); }
+    .btn-nav.login:hover { background: var(--bg); }
+    .btn-nav.join { background: var(--accent); color: #fff; box-shadow: var(--shadow-cta); }
+    .btn-nav.join:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(46, 139, 87, 0.4); }
+    @media (max-width: 600px) {
+      .hide-mobile { display: none !important; }
+      .mainnav-inner { padding: 10px 15px; }
+      .logo-full-img { height: 40px; }
+      .streak-pill span { display: none; }
+      .streak-pill { padding: 6px 8px; }
+      .profile-pill .username-text { display: none; }
+      .profile-pill { padding: 4px; }
+    }
+
+    /* ----- SIDEBAR (kept intact) ----- */
+    .sidebar-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.5s var(--smooth-slide);
+    }
+    .sidebar-overlay.active { opacity: 1; visibility: visible; }
+    .sidebar {
+      position: fixed; top: 0; left: 0; width: 85%; max-width: 320px; height: 100vh;
+      background: var(--sidebar-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      z-index: 1001; display: flex; flex-direction: column; padding: 24px 0;
+      box-shadow: 10px 0 40px rgba(0,0,0,0.08), inset -1px 0 0 rgba(255,255,255,0.8);
+      transform: translateX(-100%); transition: transform 0.65s var(--smooth-slide), background 0.35s ease;
+    }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-header { display: flex; justify-content: flex-end; padding: 0 24px 20px; gap: 12px; }
+    .icon-btn {
+      background: transparent; border: 1px solid var(--sidebar-icon-border); border-radius: 50%;
+      width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--ink); transition: all 0.3s;
+    }
+    .icon-btn:hover { background: var(--sidebar-icon-hover); transform: scale(1.05); }
+    .icon-btn svg { width: 18px; height: 18px; stroke-width: 1.5; }
+    .mobile-user-card {
+      display: none; align-items: center; gap: 16px;
+      margin: 0 24px 20px; padding: 16px;
+      background: var(--bg); border-radius: 16px; border: 1px solid var(--border);
+    }
+    .mobile-user-card .avatar-circle { width: 44px; height: 44px; font-size: 1.1rem; }
+    .mobile-user-info { flex: 1; }
+    .mobile-user-info strong { display: block; font-size: 1rem; color: var(--ink); }
+    .mobile-user-info span { font-size: 0.8rem; color: #ea580c; font-weight: 700; }
+    [data-theme="dark"] .mobile-user-info span { color: #fb923c; }
+    .sidebar-nav { display: flex; flex-direction: column; padding: 0 24px; overflow-y: auto; flex: 1; }
+    .sidebar-nav a {
+      display: flex; align-items: center; justify-content: space-between;
+      color: var(--ink); font-size: 16px; font-weight: 500; padding: 14px 0;
+      border-bottom: 2px solid transparent; transition: all 0.3s var(--smooth-slide);
+      opacity: 0; transform: translateX(-20px);
+    }
+    .sidebar.open .sidebar-nav a { opacity: 1; transform: translateX(0); }
+    .sidebar.open .sidebar-nav a:nth-child(1) { transition-delay: 0.1s; }
+    .sidebar.open .sidebar-nav a:nth-child(2) { transition-delay: 0.15s; }
+    .sidebar.open .sidebar-nav a:nth-child(3) { transition-delay: 0.2s; }
+    .sidebar.open .sidebar-nav a:nth-child(4) { transition-delay: 0.25s; }
+    .sidebar.open .sidebar-nav a:nth-child(5) { transition-delay: 0.3s; }
+    .sidebar.open .sidebar-nav a:nth-child(6) { transition-delay: 0.35s; }
+    .sidebar.open .sidebar-nav a:nth-child(7) { transition-delay: 0.4s; }
+    .sidebar.open .sidebar-nav a:nth-child(8) { transition-delay: 0.45s; }
+    .sidebar.open .sidebar-nav a:nth-child(9) { transition-delay: 0.5s; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .sidebar-nav a i { font-size: 1.1rem; color: var(--text-muted); transition: color 0.3s; }
+    .sidebar-nav a:hover i, .sidebar-nav a.active i { color: var(--accent); }
+
+    /* ----- MAIN CONTENT & HERO (NEW ANIMATED BACKGROUND) ----- */
+    .main-content { position: relative; z-index: 1; min-height: 100vh; }
+
+    .about-hero {
+      position: relative;
+      padding: 120px 20px 100px;
+      text-align: center;
+      overflow: hidden;
+      min-height: 70vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      isolation: isolate;
+    }
+
+    /* ----- NEW ANIMATED HERO BACKGROUND (canvas + orbs + grid) ----- */
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0; overflow: hidden;
+      pointer-events: none;
+    }
+    /* canvas particle motion */
+    #heroCanvas {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      display: block; opacity: 0.7; pointer-events: none;
+    }
+    /* animated grid lines (subtle) */
+    .hero-bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(45deg, transparent 48%, rgba(46,139,87,0.08) 49%, rgba(46,139,87,0.08) 51%, transparent 52%);
+      background-size: 60px 60px;
+      opacity: 0.5;
+      animation: moveGrid 30s linear infinite;
+      pointer-events: none;
+    }
+    [data-theme="dark"] .hero-bg::before {
+      background: linear-gradient(45deg, transparent 48%, rgba(74,222,128,0.06) 49%, rgba(74,222,128,0.06) 51%, transparent 52%);
+      background-size: 60px 60px;
+    }
+    @keyframes moveGrid {
+      0% { transform: translateY(0) translateX(0); }
+      100% { transform: translateY(60px) translateX(60px); }
+    }
+    /* floating orbs */
+    .hero-orb {
+      position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.4; z-index: 0;
+      animation: pulseOrb 12s ease-in-out infinite alternate;
+      will-change: transform, opacity;
+    }
+    .hero-orb.orb1 {
+      width: 500px; height: 500px; background: var(--accent);
+      top: -150px; left: -100px; animation-duration: 14s;
+    }
+    .hero-orb.orb2 {
+      width: 400px; height: 400px; background: #3b82f6;
+      bottom: -100px; right: -80px; animation-delay: -4s; animation-duration: 16s;
+    }
+    .hero-orb.orb3 {
+      width: 300px; height: 300px; background: #8b5cf6;
+      top: 30%; right: 15%; animation-delay: -8s; animation-duration: 18s;
+    }
+    .hero-orb.orb4 {
+      width: 250px; height: 250px; background: #ec4899;
+      bottom: 15%; left: 5%; animation-delay: -2s; animation-duration: 20s;
+      opacity: 0.25;
+    }
+    @keyframes pulseOrb {
+      0% { transform: scale(1) translate(0, 0); opacity: 0.2; }
+      100% { transform: scale(1.4) translate(30px, 30px); opacity: 0.55; }
+    }
+
+    .about-hero-inner { position: relative; z-index: 2; max-width: 820px; margin: 0 auto; }
+    .about-label {
+      color: var(--accent); font-size: .85rem; font-weight: 800;
+      letter-spacing: .15em; text-transform: uppercase;
+      margin-bottom: 20px; display: inline-block;
+      padding: 6px 16px; border-radius: 999px;
+      background: var(--accent-light);
+      border: 1px solid var(--border);
+      animation: fadeUp 0.8s var(--smooth-slide) both;
+    }
+    .about-hero h1 {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 900; line-height: 1.1;
+      letter-spacing: -.03em; margin-bottom: 24px;
+      color: var(--ink);
+      animation: fadeUp 0.8s 0.15s var(--smooth-slide) both;
+    }
+    .about-hero h1 .accent {
+      color: var(--accent);
+      text-decoration: underline;
+      text-decoration-color: var(--accent);
+      text-underline-offset: 10px;
+      text-decoration-thickness: 5px;
+      text-decoration-skip-ink: none;
+    }
+    .about-hero p {
+      color: var(--text-muted);
+      font-size: clamp(1.1rem, 1.8vw, 1.25rem);
+      max-width: 620px; margin: 0 auto;
+      line-height: 1.8;
+      animation: fadeUp 0.8s 0.3s var(--smooth-slide) both;
+    }
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ----- CONTAINER & SECTIONS (same as original) ----- */
+    .container { max-width: 1100px; margin: 0 auto; padding: 70px 20px; position: relative; z-index: 2; }
+    .section-head { text-align: center; margin-bottom: 50px; }
+    .section-label { color: var(--accent); font-size: .75rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 12px; display: block; }
+    .section-head h2 { font-size: clamp(1.8rem, 3.5vw, 2.5rem); font-weight: 900; color: var(--ink); letter-spacing: -.025em; line-height: 1.2; margin-bottom: 14px; }
+    .section-head h2 em { font-style: normal; color: var(--accent); }
+    .section-head p { color: var(--text-muted); font-size: .98rem; max-width: 600px; margin: 0 auto; line-height: 1.7; }
+    .section-transparent {
+      position: relative;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    /* intro grid, feature zigzag, creator, etc. (original styles preserved) */
+    .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .intro-text h2 { font-size: clamp(1.8rem, 3vw, 2.2rem); font-weight: 800; color: var(--ink); letter-spacing: -.02em; line-height: 1.2; margin-bottom: 20px; }
+    .intro-text h2 .accent { color: var(--accent); }
+    .intro-text p { color: var(--text-muted); font-size: 1rem; line-height: 1.8; margin-bottom: 16px; }
+    .intro-text p:last-child { margin-bottom: 0; }
+    .intro-text strong { color: var(--ink); font-weight: 700; }
+    .intro-image-container {
+      position: relative; border-radius: var(--radius-xl); overflow: hidden;
+      box-shadow: var(--shadow-lg); aspect-ratio: 4/3; background: var(--bg);
+      border: 1px solid var(--border); transition: transform 0.4s var(--bounce-soft);
+    }
+    .intro-image-container:hover { transform: scale(1.02); }
+    .intro-image-container img { width: 100%; height: 100%; object-fit: cover; }
+
+    .features-wrapper { display: flex; flex-direction: column; gap: 20px; max-width: 900px; margin: 0 auto; }
+    .feature-item {
+      display: flex; align-items: center; gap: 24px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 24px 30px;
+      transition: all 0.4s var(--smooth-slide);
+      opacity: 0; transform: translateY(30px);
+    }
+    .feature-item.in { opacity: 1; transform: translateY(0); }
+    .feature-item:hover {
+      border-color: var(--accent); background: var(--surface);
+      box-shadow: var(--shadow-md); transform: translateY(-4px) scale(1.01);
+    }
+    .feature-item:nth-child(odd) { flex-direction: row; margin-right: auto; margin-left: 0; width: 90%; }
+    .feature-item:nth-child(even) { flex-direction: row-reverse; text-align: right; margin-left: auto; margin-right: 0; width: 90%; }
+    .feature-item:nth-child(even) .feature-text { text-align: right; }
+    .feature-icon {
+      width: 60px; height: 60px; border-radius: var(--radius-md);
+      background: var(--accent-light); color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; flex-shrink: 0; transition: all 0.3s;
+    }
+    .feature-item:hover .feature-icon { background: var(--accent); color: #fff; transform: rotate(10deg) scale(1.1); }
+    .feature-text { flex: 1; }
+    .feature-text strong { display: block; font-size: 1.15rem; font-weight: 800; color: var(--ink); margin-bottom: 6px; }
+    .feature-text span { display: block; font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; }
+
+    .creator-card {
+      display: grid; grid-template-columns: auto 1fr; gap: 36px; align-items: center;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-xl); padding: 44px 40px;
+      position: relative; overflow: hidden; box-shadow: var(--shadow-md);
+    }
+    .creator-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent); }
+    .creator-avatar {
+      width: 120px; height: 120px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; background: var(--accent-light); color: var(--accent);
+      border: 4px solid var(--surface); box-shadow: var(--shadow-lg); flex-shrink: 0;
+    }
+    .creator-info h3 { font-size: clamp(1.4rem, 2.6vw, 1.8rem); font-weight: 800; color: var(--ink); margin-bottom: 6px; letter-spacing: -.02em; }
+    .creator-info .role { color: var(--accent); font-size: .85rem; font-weight: 700; letter-spacing: .10em; text-transform: uppercase; margin-bottom: 16px; }
+    .creator-info p { color: var(--text-muted); font-size: .96rem; line-height: 1.75; }
+    .creator-info p strong { color: var(--ink); font-weight: 700; }
+
+    .social-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
+    .social-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: var(--radius-sm);
+      font-size: .85rem; font-weight: 700; transition: all .25s ease;
+      border: 1px solid transparent;
+    }
+    .social-btn i { font-size: .9rem; }
+    .social-btn.whatsapp { background: #dcfce7; color: var(--success); border-color: #86efac; }
+    .social-btn.whatsapp i { color: #25D366; }
+    .social-btn.whatsapp:hover { background: #25D366; color: #fff; border-color: #25D366; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,211,102,.4); }
+    .social-btn.instagram { background: #fce7f3; color: #be185d; border-color: #fbcfe8; }
+    .social-btn.instagram i { color: #e4405f; }
+    .social-btn.instagram:hover { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); color: #fff; border-color: #dc2743; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(225,48,108,.4); }
+    .social-btn.tiktok { background: var(--alt); color: var(--ink); border-color: var(--border); }
+    .social-btn.tiktok i { color: var(--ink); }
+    .social-btn.tiktok:hover { background: #000; color: #fff; border-color: #000; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.4); }
+
+    /* About creator card & CTA button (with added arrow) */
+    .about-creator-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-xl); padding: 60px 40px; text-align: center;
+      box-shadow: var(--shadow-lg); position: relative; overflow: hidden;
+      display: flex; flex-direction: column; align-items: center; gap: 24px;
+      transition: all 0.4s var(--bounce-soft);
+    }
+    .about-creator-card:hover {
+      transform: translateY(-6px) scale(1.01); border-color: var(--accent);
+      box-shadow: 0 30px 60px -15px rgba(46, 139, 87, 0.4);
+    }
+    .about-creator-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+      background: linear-gradient(90deg, var(--accent), #3b82f6, #8b5cf6, var(--accent));
+      background-size: 300% 100%;
+      animation: gradientMove 3s linear infinite;
+    }
+    @keyframes gradientMove { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
+    .about-creator-card .pulse-icon {
+      width: 70px; height: 70px; border-radius: 50%;
+      background: var(--accent-light); color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; position: relative; margin-bottom: 10px;
+    }
+    .about-creator-card .pulse-icon::before,
+    .about-creator-card .pulse-icon::after {
+      content: ''; position: absolute; inset: 0; border-radius: 50%;
+      border: 2px solid var(--accent); opacity: 0.6;
+      animation: pulseRing 2s infinite ease-out;
+    }
+    .about-creator-card .pulse-icon::after { animation-delay: 1s; }
+    @keyframes pulseRing { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(1.6); opacity: 0; } }
+    .about-creator-card h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 900; color: var(--ink); letter-spacing: -.02em; }
+    .about-creator-card p { color: var(--text-muted); font-size: 1.05rem; max-width: 650px; line-height: 1.7; margin-bottom: 10px; }
+
+    .btn-see-more {
+      display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+      padding: 16px 40px; font-size: 1.1rem; font-weight: 800;
+      color: #fff; background: var(--grad-cta); border-radius: 999px;
+      box-shadow: 0 10px 30px -5px rgba(46, 139, 87, 0.5);
+      position: relative; overflow: hidden; transition: all 0.3s var(--bounce-soft);
+      border: none; cursor: pointer; text-decoration: none; width: 100%; max-width: 320px;
+    }
+    .btn-see-more::before {
+      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s ease;
+    }
+    .btn-see-more:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 15px 40px -5px rgba(46, 139, 87, 0.6); }
+    .btn-see-more:hover::before { left: 100%; }
+    .btn-see-more:active { transform: translateY(0) scale(0.98); }
+    .btn-see-more i { transition: transform 0.3s; font-size: 1.2rem; }
+    .btn-see-more:hover i { transform: translateX(6px); }
+
+    /* Projects & CC cards (original) */
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+    .project-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-xl); overflow: hidden;
+      transition: all .3s ease; display: flex; flex-direction: column;
+      box-shadow: var(--shadow-md);
+    }
+    .project-card:hover { border-color: var(--accent); transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .project-image { position: relative; height: 180px; overflow: hidden; background: var(--bg); }
+    .project-image-bg { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transform: scale(1.08); transition: opacity 2s ease-in-out, transform 2.8s ease-in-out; }
+    .project-image-bg.active { opacity: 1; transform: scale(1); }
+    .project-icon {
+      position: absolute; top: 24px; left: 24px; width: 56px; height: 56px;
+      border-radius: var(--radius-md); background: var(--surface);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; color: var(--accent); box-shadow: var(--shadow-sm); z-index: 2;
+    }
+    .project-body { padding: 26px 26px 24px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+    .project-body h3 { font-size: 1.2rem; font-weight: 800; color: var(--ink); letter-spacing: -.01em; }
+    .project-url { font-size: .78rem; color: var(--accent); font-weight: 600; word-break: break-all; font-family: 'JetBrains Mono', monospace; }
+    .project-body p { color: var(--text-muted); font-size: .9rem; line-height: 1.65; flex: 1; }
+    .project-features { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .project-features span {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 20px; background: var(--accent-light);
+      color: var(--accent); font-size: .7rem; font-weight: 700; border: 1px solid var(--border);
+    }
+    .project-features span i { font-size: .65rem; }
+    .project-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 20px; background: var(--accent); color: #fff;
+      border-radius: var(--radius-sm); font-size: .85rem; font-weight: 700;
+      transition: all .25s ease; margin-top: 8px; box-shadow: var(--shadow-cta);
+    }
+    .project-btn:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 8px 22px rgba(46,139,87,.6); }
+
+    .cc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+    .cc-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 22px 22px 20px;
+      transition: all .25s ease; display: flex; flex-direction: column; gap: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+    .cc-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .cc-head { display: flex; align-items: center; gap: 12px; }
+    .cc-icon {
+      width: 46px; height: 46px; border-radius: var(--radius-md);
+      background: var(--accent-light); color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .cc-head-text h4 { font-size: .98rem; font-weight: 800; color: var(--ink); margin-bottom: 2px; }
+    .cc-head-text span { font-size: .72rem; color: var(--text-muted); font-weight: 600; letter-spacing: .02em; }
+    .cc-desc { color: var(--text-muted); font-size: .85rem; line-height: 1.6; flex: 1; }
+    .cc-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 20px; background: var(--accent-light);
+      color: var(--accent); font-size: .68rem; font-weight: 700;
+      letter-spacing: .03em; align-self: flex-start; border: 1px solid var(--border);
+    }
+    .cc-tag i { font-size: .65rem; }
+    .cc-visit { display: inline-flex; align-items: center; gap: 8px; color: var(--accent); font-size: .82rem; font-weight: 700; transition: gap .25s ease; }
+    .cc-visit:hover { gap: 14px; }
+    .cc-note {
+      margin-top: 30px; background: var(--accent-light); border: 1px solid var(--border);
+      border-left: 4px solid var(--accent); border-radius: var(--radius-md);
+      padding: 18px 22px; color: var(--text-muted); font-size: .88rem; line-height: 1.7;
+      display: flex; gap: 14px; align-items: flex-start;
+    }
+    .cc-note i { color: var(--accent); font-size: 1.1rem; margin-top: 2px; flex-shrink: 0; }
+    .cc-note strong { color: var(--ink); font-weight: 700; }
+    .cc-note a { color: var(--accent); font-weight: 600; border-bottom: 1px dotted var(--accent); }
+    .cc-note a:hover { color: var(--accent-dark); border-bottom-color: var(--accent-dark); }
+
+    .cta { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 60px 20px; }
+    .cta-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+    .cta h3 { color: var(--ink); font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; letter-spacing: -.01em; }
+    .cta p { color: var(--text-muted); font-size: .95rem; }
+
+    footer {
+      background: var(--footer-bg); padding: 50px 20px 24px; color: var(--footer-text);
+      position: relative; transition: background-color 0.35s ease, color 0.35s ease;
+    }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 34px; }
+    .footer-brand .logo { color: var(--footer-text); }
+    .footer-brand p { color: var(--footer-text); opacity: 0.8; font-size: .88rem; margin-top: 14px; max-width: 320px; line-height: 1.7; }
+    .footer-col h4 { font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--footer-text); margin-bottom: 14px; }
+    .footer-col ul li { margin-bottom: 8px; }
+    .footer-col ul li a { color: var(--footer-text); opacity: 0.8; font-size: .88rem; transition: all .25s ease; }
+    .footer-col ul li a:hover { color: var(--accent); opacity: 1; transform: translateX(4px); display: inline-block; }
+    .footer-bottom { border-top: 1px solid var(--footer-border); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .footer-bottom p { color: var(--footer-text); opacity: 0.7; font-size: .83rem; }
+    .footer-socials { display: flex; gap: 8px; }
+    .footer-socials a { width: 38px; height: 38px; border: 1px solid var(--footer-border); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--footer-text); font-size: .9rem; transition: all .25s ease; background: transparent; }
+    .footer-socials a:hover { background: var(--accent); color: #fff; border-color: transparent; transform: translateY(-2px); box-shadow: 0 8px 20px -6px rgba(46,139,87,.5); }
+
+    .reveal{ opacity:0; transform:translateY(28px) scale(.98); transition:opacity .7s var(--smooth-slide), transform .7s var(--smooth-slide); }
+    .reveal.in{ opacity:1; transform:none; }
+    .scroll-progress{ position:fixed; top:0; left:0; height:4px; width:0; background:var(--grad-cta); z-index:2000; }
+    .to-top{ position:fixed; right:16px; bottom:calc(16px + env(safe-area-inset-bottom,0px)); width:48px;height:48px; border-radius:50%; border:none; background:var(--grad-cta); color:#fff; font-size:1.1rem; box-shadow:var(--shadow-cta); cursor:pointer; z-index:900; opacity:0; transform:translateY(20px) scale(.8); pointer-events:none; transition:all .35s var(--bounce-soft); }
+    .to-top.show{ opacity:1; transform:none; pointer-events:auto; }
+    .to-top:active{ transform:scale(.9); }
+    .heart-pop{ position:fixed; pointer-events:none; z-index:3000; font-size:1.3rem; animation:heartUp 1s ease-out forwards; }
+    @keyframes heartUp{to{transform:translateY(-90px) scale(1.5); opacity:0}}
+    .cc-card,.project-card,.feature-item{ -webkit-tap-highlight-color:transparent; }
+    .cc-icon i,.project-icon i,.pulse-icon i{ animation:floaty 4s ease-in-out infinite; }
+    .ripple { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.5); transform: scale(0); animation: rippleEffect 0.6s ease-out forwards; pointer-events: none; }
+    @keyframes rippleEffect { to { transform: scale(3); opacity: 0; } }
+
+    @media (max-width: 900px) {
+      .intro-grid { grid-template-columns: 1fr; gap: 40px; }
+      .intro-image-container { order: -1; }
+      .creator-card { grid-template-columns: 1fr; text-align: center; padding: 36px 26px; }
+      .creator-card::before { width: 100%; height: 4px; background: var(--accent); }
+      .creator-avatar { margin: 0 auto; }
+      .social-row { justify-content: center; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      .feature-item:nth-child(odd),
+      .feature-item:nth-child(even) {
+        flex-direction: row; text-align: left; margin: 0; width: 100%;
+      }
+      .feature-item:nth-child(even) .feature-text { text-align: left; }
+    }
+    @media (max-width: 720px) {
+      .about-hero { padding: 80px 18px 60px; min-height: 50vh; }
+      .container { padding: 50px 16px; }
+      .creator-card { padding: 30px 22px; }
+      .about-creator-card { padding: 40px 24px; gap: 18px; }
+      .btn-see-more { padding: 14px 30px; font-size: 1rem; }
+      .footer-top { gap: 26px; }
+      .cta-inner { flex-direction: column; text-align: center; }
+      .feature-item { padding: 20px; gap: 16px; }
+      .feature-icon { width: 50px; height: 50px; font-size: 1.3rem; }
+      .feature-text strong { font-size: 1.05rem; }
+      .feature-text span { font-size: 0.88rem; }
+    }
+    @media (max-width: 560px) {
+      .creator-avatar { width: 100px; height: 100px; font-size: 2.4rem; }
+      .footer-top { grid-template-columns: 1fr; gap: 24px; }
+      .section-head h2 { font-size: 1.5rem; }
+      .cta h3 { font-size: 1.25rem; }
+      .creator-info h3 { font-size: 1.3rem; }
+      .about-creator-card .pulse-icon { width: 60px; height: 60px; font-size: 1.6rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+      .reveal{ opacity:1; transform:none; }
+      .hero-bg::before, .hero-orb, #heroCanvas { animation: none !important; }
+    }
+  </style>
 </head>
 <body class="{% if is_authenticated %}logged-in{% endif %}">
 
 <!-- SIDEBAR OVERLAY -->
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-<!-- POLISHED SIDEBAR -->
+<!-- POLISHED SIDEBAR (same structure) -->
 <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <button class="icon-btn" aria-label="Search">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        </button>
-        <button class="icon-btn" id="closeSidebar" aria-label="Close menu">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
+  <div class="sidebar-header">
+    <button class="icon-btn" aria-label="Search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    </button>
+    <button class="icon-btn" id="closeSidebar" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+  </div>
+
+  {% if is_authenticated %}
+  <a href="/profile/{{ current_student.username }}/" class="mobile-user-card" style="display: flex;">
+    <div class="avatar-circle">
+      {% if current_student.avatar_url %}
+        <img src="{{ current_student.avatar_url }}" alt="Avatar">
+      {% else %}
+        {{ current_student.initial }}
+      {% endif %}
     </div>
+    <div class="mobile-user-info">
+      <strong>{{ current_student.username }}</strong>
+      <span><i class="fas fa-fire"></i> {{ current_student.streak }} Day Streak</span>
+    </div>
+    <i class="fas fa-chevron-right" style="color: var(--text-muted);"></i>
+  </a>
+  {% endif %}
 
-    {% if is_authenticated %}
-    <a href="/profile/{{ current_student.username }}/" class="mobile-user-card" style="display: flex;">
-        <div class="avatar-circle">
-            {% if current_student.avatar_url %}
-                <img src="{{ current_student.avatar_url }}" alt="Avatar">
-            {% else %}
-                {{ current_student.initial }}
-            {% endif %}
-        </div>
-        <div class="mobile-user-info">
-            <strong>{{ current_student.username }}</strong>
-            <span><i class="fas fa-fire"></i> {{ current_student.streak }} Day Streak</span>
-        </div>
-        <i class="fas fa-chevron-right" style="color: var(--text-muted);"></i>
-    </a>
+  <nav class="sidebar-nav">
+    <a href="/">Home</a>
+    <a href="/browse/">Browse Notes</a>
+    <a href="/upload/">Upload</a>
+    <a href="/quiz/">Daily Quiz</a>
+    <a href="/leaderboard/">Leaderboard</a>
+    <a href="/community/">Community</a>
+    <a href="/free_course/">Free Courses</a>
+    <a href="/about/" class="active">About</a>
+    {% if not is_authenticated %}
+    <a href="/login/" style="color: var(--accent); margin-top: 20px;">Log In</a>
+    <a href="/signup/" style="color: var(--accent);">Join Free</a>
     {% endif %}
-
-    <nav class="sidebar-nav">
-        <a href="/">Home</a>
-        <a href="/browse/">Browse Notes</a>
-        <a href="/upload/">Upload</a>
-        <a href="/quiz/">Daily Quiz</a>
-        <a href="/leaderboard/">Leaderboard</a>
-        <a href="/community/">Community</a>
-        <a href="/free_course/">Free Courses</a>
-        <a href="/about/" class="active">About</a>
-        
-        {% if not is_authenticated %}
-        <a href="/login/" style="color: var(--accent); margin-top: 20px;">Log In</a>
-        <a href="/signup/" style="color: var(--accent);">Join Free</a>
-        {% endif %}
-    </nav>
+  </nav>
 </aside>
 
 <!-- MAIN CONTENT -->
 <div class="main-content">
 
-    <!-- TOP BAR -->
-    <div class="topbar" style="background: var(--ink); color: var(--surface); font-size: 0.75rem; padding: 8px 0; text-align: center;">
-        <a href="https://wa.me/255740706007" target="_blank" rel="noopener" style="color: #4ade80; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
-            <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+  <!-- TOP BAR -->
+  <div class="topbar" style="background: var(--ink); color: var(--surface); font-size: 0.75rem; padding: 8px 0; text-align: center;">
+    <a href="https://wa.me/255740706007" target="_blank" rel="noopener" style="color: #4ade80; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+      <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+    </a>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="mainnav">
+    <div class="mainnav-inner">
+      <div class="nav-left">
+        <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+          <i class="fas fa-bars"></i>
+        </button>
+        <a href="/" class="logo">
+          <img src="/logo.png" alt="Student Hub" class="logo-full-img">
         </a>
+      </div>
+
+      <div class="nav-right">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+          <i class="fas fa-moon" id="themeIcon"></i>
+        </button>
+
+        {% if is_authenticated %}
+          <a href="/quiz/" class="streak-pill" title="Your Streak">
+            <i class="fas fa-fire"></i> <span>{{ current_student.streak }}</span>
+          </a>
+          <a href="/profile/{{ current_student.username }}/" class="profile-pill" title="Go to Profile">
+            <div class="avatar-circle">
+              {% if current_student.avatar_url %}
+                <img src="{{ current_student.avatar_url }}" alt="Avatar">
+              {% else %}
+                {{ current_student.initial }}
+              {% endif %}
+            </div>
+            <span class="username-text">{{ current_student.username }}</span>
+          </a>
+        {% else %}
+          <a href="/login/" class="btn-nav login hide-mobile">Log In</a>
+          <a href="/signup/" class="btn-nav join">Join Free</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO with enhanced animated background -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <section class="about-hero">
+    <div class="hero-bg" aria-hidden="true">
+      <canvas id="heroCanvas"></canvas>
+      <div class="hero-orb orb1"></div>
+      <div class="hero-orb orb2"></div>
+      <div class="hero-orb orb3"></div>
+      <div class="hero-orb orb4"></div>
     </div>
 
-    <!-- NAVBAR -->
-    <nav class="mainnav">
-        <div class="mainnav-inner">
-            <div class="nav-left">
-                <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <a href="/" class="logo">
-                    <img src="/logo.png" alt="Student Hub" class="logo-full-img">
-                </a>
-            </div>
+    <div class="about-hero-inner">
+      <span class="about-label">Get to know us</span>
+      <h1>About <span class="accent">Student</span> Hub</h1>
+      <p>Everything you need to know about the platform, the creator, and the free tools we love. Built in Tanzania, for students everywhere.</p>
+    </div>
+  </section>
 
-            <div class="nav-right">
-                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-                    <i class="fas fa-moon" id="themeIcon"></i>
-                </button>
-
-                {% if is_authenticated %}
-                    <a href="/quiz/" class="streak-pill" title="Your Streak">
-                        <i class="fas fa-fire"></i> <span>{{ current_student.streak }}</span>
-                    </a>
-                    <a href="/profile/{{ current_student.username }}/" class="profile-pill" title="Go to Profile">
-                        <div class="avatar-circle">
-                            {% if current_student.avatar_url %}
-                                <img src="{{ current_student.avatar_url }}" alt="Avatar">
-                            {% else %}
-                                {{ current_student.initial }}
-                            {% endif %}
-                        </div>
-                        <span class="username-text">{{ current_student.username }}</span>
-                    </a>
-                {% else %}
-                    <a href="/login/" class="btn-nav login hide-mobile">Log In</a>
-                    <a href="/signup/" class="btn-nav join">Join Free</a>
-                {% endif %}
-            </div>
-        </div>
-    </nav>
-
-    <!-- PROFESSIONAL HERO SECTION -->
-    <div class="scroll-progress" id="scrollProgress"></div>
-
-    <section class="about-hero">
-        <div class="hero-bg" aria-hidden="true">
-            <div class="hero-orb orb1"></div>
-            <div class="hero-orb orb2"></div>
-            <div class="hero-orb orb3"></div>
+  <!-- WHAT IS STUDENT HUB -->
+  <section class="section-transparent">
+    <div class="container">
+      <div class="intro-grid">
+        <div class="intro-text">
+          <span class="section-label" style="text-align:left;display:block;margin-bottom:12px;">What is Student Hub?</span>
+          <h2>A free platform for <span class="accent">sharing notes</span></h2>
+          <p>
+            <strong>Student Hub</strong> is a free, student-built platform made to help learners
+            share, discover, and organize study materials — all in one calm, distraction-free space.
+          </p>
+          <p>
+            It was born from a simple idea: <em>someone already took this note</em> — so why not share it?
+            Whether you're revising for exams, catching up on a missed lecture, or looking for past papers,
+            Student Hub connects you with what other students have already uploaded.
+          </p>
         </div>
 
-        <div class="about-hero-inner">
-            <span class="about-label">Get to know us</span>
-            <h1>About <span class="accent">Student</span> Hub</h1>
-            <p>Everything you need to know about the platform, the creator, and the free tools we love. Built in Tanzania, for students everywhere.</p>
+        <div class="intro-image-container">
+          <img src="imag9.png" alt="Student Hub Preview">
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- WHAT IS STUDENT HUB -->
-    <section class="section-transparent">
-        <div class="container">
-            <div class="intro-grid">
-                <div class="intro-text">
-                    <span class="section-label" style="text-align:left;display:block;margin-bottom:12px;">What is Student Hub?</span>
-                    <h2>A free platform for <span class="accent">sharing notes</span></h2>
-                    <p>
-                        <strong>Student Hub</strong> is a free, student-built platform made to help learners
-                        share, discover, and organize study materials — all in one calm, distraction-free space.
-                    </p>
-                    <p>
-                        It was born from a simple idea: <em>someone already took this note</em> — so why not share it?
-                        Whether you're revising for exams, catching up on a missed lecture, or looking for past papers,
-                        Student Hub connects you with what other students have already uploaded.
-                    </p>
-                </div>
+  <!-- ZIGZAG FEATURES SECTION -->
+  <section class="section-transparent">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="section-label">What we offer</span>
+        <h2>Features that make <em>learning easier</em></h2>
+        <p>Explore the tools designed to help you succeed.</p>
+      </div>
 
-                <!-- Image placeholder for imag9.png -->
-                <div class="intro-image-container">
-                    <img src="imag9.png" alt="Student Hub Preview">
-                </div>
-            </div>
+      <div class="features-wrapper">
+        <div class="feature-item reveal">
+          <div class="feature-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+          <div class="feature-text">
+            <strong>Upload notes & papers</strong>
+            <span>share PDFs, slides, docs, images and archives in seconds.</span>
+          </div>
         </div>
-    </section>
-
-    <!-- ZIGZAG FEATURES SECTION -->
-    <section class="section-transparent">
-        <div class="container">
-            <div class="section-head reveal">
-                <span class="section-label">What we offer</span>
-                <h2>Features that make <em>learning easier</em></h2>
-                <p>Explore the tools designed to help you succeed.</p>
-            </div>
-
-            <div class="features-wrapper">
-                <div class="feature-item reveal">
-                    <div class="feature-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                    <div class="feature-text">
-                        <strong>Upload notes & papers</strong>
-                        <span>share PDFs, slides, docs, images and archives in seconds.</span>
-                    </div>
-                </div>
-
-                <div class="feature-item reveal">
-                    <div class="feature-icon"><i class="fas fa-eye"></i></div>
-                    <div class="feature-text">
-                        <strong>See uploaded notes</strong>
-                        <span>browse everything other students have shared.</span>
-                    </div>
-                </div>
-
-                <div class="feature-item reveal">
-                    <div class="feature-icon"><i class="fas fa-search"></i></div>
-                    <div class="feature-text">
-                        <strong>Smart search</strong>
-                        <span>find files fast by module, course code, or keyword.</span>
-                    </div>
-                </div>
-
-                <div class="feature-item reveal">
-                    <div class="feature-icon"><i class="fas fa-camera-retro"></i></div>
-                    <div class="feature-text">
-                        <strong>Built-in scanner</strong>
-                        <span>photograph handwritten pages and turn them into clean PDFs.</span>
-                    </div>
-                </div>
-
-                <div class="feature-item reveal">
-                    <div class="feature-icon"><i class="fas fa-lock"></i></div>
-                    <div class="feature-text">
-                        <strong>Private mode</strong>
-                        <span>protect sensitive files with a 4-digit passcode.</span>
-                    </div>
-                </div>
-
-                <div class="feature-item reveal">
-                    <div class="feature-icon"><i class="fas fa-brain"></i></div>
-                    <div class="feature-text">
-                        <strong>AutoQuiz AI</strong>
-                        <span>generate practice questions from your uploaded notes instantly.</span>
-                    </div>
-                </div>
-
-                <div class="feature-item reveal">
-                    <div class="feature-icon"><i class="fas fa-calculator"></i></div>
-                    <div class="feature-text">
-                        <strong>Smart calculators</strong>
-                        <span>GPA, scientific, and basic — all in one place.</span>
-                    </div>
-                </div>
-
-                <div class="feature-item reveal">
-                    <div class="feature-icon"><i class="fas fa-graduation-cap"></i></div>
-                    <div class="feature-text">
-                        <strong>Free courses</strong>
-                        <span>project-based lessons with 50 modules and 10 capstone labs.</span>
-                    </div>
-                </div>
-
-                <div class="feature-item reveal">
-                    <div class="feature-icon"><i class="fas fa-code"></i></div>
-                    <div class="feature-text">
-                        <strong>Hackathons</strong>
-                        <span>join coding challenges and compete with other students.</span>
-                    </div>
-                </div>
-
-                <div class="feature-item reveal">
-                    <div class="feature-icon"><i class="fas fa-mobile-screen"></i></div>
-                    <div class="feature-text">
-                        <strong>Works everywhere</strong>
-                        <span>fully responsive on phone, tablet, and desktop.</span>
-                    </div>
-                </div>
-            </div>
+        <div class="feature-item reveal">
+          <div class="feature-icon"><i class="fas fa-eye"></i></div>
+          <div class="feature-text">
+            <strong>See uploaded notes</strong>
+            <span>browse everything other students have shared.</span>
+          </div>
         </div>
-    </section>
-
-    <!-- CREATOR -->
-    <section class="section-transparent">
-        <div class="container">
-            <div class="section-head">
-                <span class="section-label">The person behind it</span>
-                <h2>About the Creator</h2>
-            </div>
-
-            <div class="creator-card">
-                <div class="creator-avatar">
-                    <i class="fas fa-code"></i>
-                </div>
-                <div class="creator-info">
-                    <h3>Twarvis</h3>
-                    <div class="role">Student Developer &amp; Founder</div>
-                    <p>
-                        Hi! I'm <strong>Twarvis</strong> — a student who got tired of losing notes and
-                        scrambling for past papers. I built Student Hub to make sharing study material
-                        effortless, beautiful, and free for everyone. Every pixel, animation, and line of
-                        code here was crafted with care (and a lot of late-night coding sessions).
-                    </p>
-                    <div class="social-row">
-                        <a href="https://wa.me/255740706007?text=Hello%20Twarvis%2C%20I%20saw%20your%20Student%20Hub" class="social-btn whatsapp" target="_blank" rel="noopener">
-                            <i class="fab fa-whatsapp"></i> WhatsApp
-                        </a>
-                        <a href="https://www.instagram.com/twarvice?stkn=NGw0NGR5NjZnNTdy&utm_source=qr" class="social-btn instagram" target="_blank" rel="noopener">
-                            <i class="fab fa-instagram"></i> Instagram
-                        </a>
-                        <a href="https://www.tiktok.com/@twarvis" class="social-btn tiktok" target="_blank" rel="noopener">
-                            <i class="fab fa-tiktok"></i> TikTok
-                        </a>
-                    </div>
-                </div>
-            </div>
+        <div class="feature-item reveal">
+          <div class="feature-icon"><i class="fas fa-search"></i></div>
+          <div class="feature-text">
+            <strong>Smart search</strong>
+            <span>find files fast by module, course code, or keyword.</span>
+          </div>
         </div>
-    </section>
+        <div class="feature-item reveal">
+          <div class="feature-icon"><i class="fas fa-camera-retro"></i></div>
+          <div class="feature-text">
+            <strong>Built-in scanner</strong>
+            <span>photograph handwritten pages and turn them into clean PDFs.</span>
+          </div>
+        </div>
+        <div class="feature-item reveal">
+          <div class="feature-icon"><i class="fas fa-lock"></i></div>
+          <div class="feature-text">
+            <strong>Private mode</strong>
+            <span>protect sensitive files with a 4-digit passcode.</span>
+          </div>
+        </div>
+        <div class="feature-item reveal">
+          <div class="feature-icon"><i class="fas fa-brain"></i></div>
+          <div class="feature-text">
+            <strong>AutoQuiz AI</strong>
+            <span>generate practice questions from your uploaded notes instantly.</span>
+          </div>
+        </div>
+        <div class="feature-item reveal">
+          <div class="feature-icon"><i class="fas fa-calculator"></i></div>
+          <div class="feature-text">
+            <strong>Smart calculators</strong>
+            <span>GPA, scientific, and basic — all in one place.</span>
+          </div>
+        </div>
+        <div class="feature-item reveal">
+          <div class="feature-icon"><i class="fas fa-graduation-cap"></i></div>
+          <div class="feature-text">
+            <strong>Free courses</strong>
+            <span>project-based lessons with 50 modules and 10 capstone labs.</span>
+          </div>
+        </div>
+        <div class="feature-item reveal">
+          <div class="feature-icon"><i class="fas fa-code"></i></div>
+          <div class="feature-text">
+            <strong>Hackathons</strong>
+            <span>join coding challenges and compete with other students.</span>
+          </div>
+        </div>
+        <div class="feature-item reveal">
+          <div class="feature-icon"><i class="fas fa-mobile-screen"></i></div>
+          <div class="feature-text">
+            <strong>Works everywhere</strong>
+            <span>fully responsive on phone, tablet, and desktop.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- SEE MORE ABOUT CREATOR CARD -->
-    <section class="section-transparent">
-        <div class="container">
-            <a href="/aboutcreator.html" class="about-creator-card" style="text-decoration:none; color:inherit;">
-                <div class="pulse-icon"><i class="fas fa-user-astronaut"></i></div>
-                <h2>See more about the Creator</h2>
-                <p>Discover the full story behind Student Hub, my coding journey, the skills I've built, and the vision that drives this platform. Tap below to read my complete portfolio.</p>
-                <span class="btn-see-more">
-                    Read My Story <i class="fas fa-arrow-right"></i>
-                </span>
+  <!-- CREATOR -->
+  <section class="section-transparent">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-label">The person behind it</span>
+        <h2>About the Creator</h2>
+      </div>
+
+      <div class="creator-card">
+        <div class="creator-avatar">
+          <i class="fas fa-code"></i>
+        </div>
+        <div class="creator-info">
+          <h3>Twarvis</h3>
+          <div class="role">Student Developer &amp; Founder</div>
+          <p>
+            Hi! I'm <strong>Twarvis</strong> — a student who got tired of losing notes and
+            scrambling for past papers. I built Student Hub to make sharing study material
+            effortless, beautiful, and free for everyone. Every pixel, animation, and line of
+            code here was crafted with care (and a lot of late-night coding sessions).
+          </p>
+          <div class="social-row">
+            <a href="https://wa.me/255740706007?text=Hello%20Twarvis%2C%20I%20saw%20your%20Student%20Hub" class="social-btn whatsapp" target="_blank" rel="noopener">
+              <i class="fab fa-whatsapp"></i> WhatsApp
             </a>
+            <a href="https://www.instagram.com/twarvice?stkn=NGw0NGR5NjZnNTdy&utm_source=qr" class="social-btn instagram" target="_blank" rel="noopener">
+              <i class="fab fa-instagram"></i> Instagram
+            </a>
+            <a href="https://www.tiktok.com/@twarvis" class="social-btn tiktok" target="_blank" rel="noopener">
+              <i class="fab fa-tiktok"></i> TikTok
+            </a>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- PROJECTS -->
-    <section class="section-transparent">
-        <div class="container">
-            <div class="section-head">
-                <span class="section-label">More from me</span>
-                <h2>My Other Projects</h2>
-                <p>Besides Student Hub, I also build other tools that students and creators can use for free.</p>
+  <!-- SEE MORE ABOUT CREATOR (link to aboutcreator.html) -->
+  <section class="section-transparent">
+    <div class="container">
+      <a href="/aboutcreator.html" class="about-creator-card" style="text-decoration:none; color:inherit;">
+        <div class="pulse-icon"><i class="fas fa-user-astronaut"></i></div>
+        <h2>See more about the Creator</h2>
+        <p>Discover the full story behind Student Hub, my coding journey, the skills I've built, and the vision that drives this platform. Tap below to read my complete portfolio.</p>
+        <span class="btn-see-more">
+          Read My Story <i class="fas fa-arrow-right"></i>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="section-transparent">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-label">More from me</span>
+        <h2>My Other Projects</h2>
+        <p>Besides Student Hub, I also build other tools that students and creators can use for free.</p>
+      </div>
+
+      <div class="projects-grid">
+        <div class="project-card">
+          <div class="project-image">
+            <div class="project-image-bg active" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&q=60');"></div>
+            <div class="project-image-bg" style="background-image: url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&q=60');"></div>
+            <div class="project-icon"><i class="fas fa-shield-halved"></i></div>
+          </div>
+          <div class="project-body">
+            <h3>CyberCraft</h3>
+            <div class="project-url">cybercraft.twarvistech.workers.dev</div>
+            <p>A cyber-security toolkit and playground for students learning ethical hacking, cryptography, and safe browsing — built with a sleek, hacker-inspired interface.</p>
+            <div class="project-features">
+              <span><i class="fas fa-lock"></i> Security Tools</span>
+              <span><i class="fas fa-terminal"></i> Terminal UI</span>
+              <span><i class="fas fa-code"></i> Open Source</span>
             </div>
-
-            <div class="projects-grid">
-                <div class="project-card">
-                    <div class="project-image">
-                        <div class="project-image-bg active" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&q=60');"></div>
-                        <div class="project-image-bg" style="background-image: url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&q=60');"></div>
-                        <div class="project-icon"><i class="fas fa-shield-halved"></i></div>
-                    </div>
-                    <div class="project-body">
-                        <h3>CyberCraft</h3>
-                        <div class="project-url">cybercraft.twarvistech.workers.dev</div>
-                        <p>A cyber-security toolkit and playground for students learning ethical hacking, cryptography, and safe browsing — built with a sleek, hacker-inspired interface.</p>
-                        <div class="project-features">
-                            <span><i class="fas fa-lock"></i> Security Tools</span>
-                            <span><i class="fas fa-terminal"></i> Terminal UI</span>
-                            <span><i class="fas fa-code"></i> Open Source</span>
-                        </div>
-                        <a href="https://cybercraft.twarvistech.workers.dev/" class="project-btn" target="_blank" rel="noopener">
-                            Visit CyberCraft <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <div class="project-image">
-                        <div class="project-image-bg active" style="background-image: url('https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=600&q=60');"></div>
-                        <div class="project-image-bg" style="background-image: url('https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&q=60');"></div>
-                        <div class="project-icon"><i class="fas fa-file-pdf"></i></div>
-                    </div>
-                    <div class="project-body">
-                        <h3>PDF Scanner &amp; Maker</h3>
-                        <div class="project-url">twarvisscanner.twarvistech.workers.dev</div>
-                        <p>Scan documents with your phone camera, crop and straighten them, then save as clean PDFs — or build new PDFs from scratch. Everything runs in the browser.</p>
-                        <div class="project-features">
-                            <span><i class="fas fa-camera"></i> Scan</span>
-                            <span><i class="fas fa-crop"></i> Crop &amp; Edit</span>
-                            <span><i class="fas fa-file-export"></i> Export PDF</span>
-                        </div>
-                        <a href="https://twarvisscanner.twarvistech.workers.dev/" class="project-btn" target="_blank" rel="noopener">
-                            Visit Scanner <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <a href="https://cybercraft.twarvistech.workers.dev/" class="project-btn" target="_blank" rel="noopener">
+              Visit CyberCraft <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
         </div>
-    </section>
 
-    <!-- CREATIVE COMMONS -->
-    <section class="section-transparent">
-        <div class="container">
-            <div class="section-head">
-                <span class="section-label">Free &amp; open resources</span>
-                <h2>Creative Commons Websites We Love</h2>
-                <p>These websites offer free, openly-licensed content — perfect for students who want to learn, remix, and share legally.</p>
+        <div class="project-card">
+          <div class="project-image">
+            <div class="project-image-bg active" style="background-image: url('https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=600&q=60');"></div>
+            <div class="project-image-bg" style="background-image: url('https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&q=60');"></div>
+            <div class="project-icon"><i class="fas fa-file-pdf"></i></div>
+          </div>
+          <div class="project-body">
+            <h3>PDF Scanner &amp; Maker</h3>
+            <div class="project-url">twarvisscanner.twarvistech.workers.dev</div>
+            <p>Scan documents with your phone camera, crop and straighten them, then save as clean PDFs — or build new PDFs from scratch. Everything runs in the browser.</p>
+            <div class="project-features">
+              <span><i class="fas fa-camera"></i> Scan</span>
+              <span><i class="fas fa-crop"></i> Crop &amp; Edit</span>
+              <span><i class="fas fa-file-export"></i> Export PDF</span>
             </div>
-
-            <div class="cc-grid">
-                <div class="cc-card">
-                    <div class="cc-head">
-                        <div class="cc-icon"><i class="fas fa-wikipedia-w"></i></div>
-                        <div class="cc-head-text"><h4>Wikipedia</h4><span>wikipedia.org</span></div>
-                    </div>
-                    <div class="cc-desc">The world's largest free encyclopedia — every article is CC BY-SA licensed and editable by anyone.</div>
-                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-SA</span>
-                    <a href="https://www.wikipedia.org" class="cc-visit" target="_blank" rel="noopener">Visit Wikipedia <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="cc-card">
-                    <div class="cc-head">
-                        <div class="cc-icon"><i class="fas fa-image"></i></div>
-                        <div class="cc-head-text"><h4>Unsplash</h4><span>unsplash.com</span></div>
-                    </div>
-                    <div class="cc-desc">Beautiful, high-resolution photos you can use freely for projects, presentations and websites.</div>
-                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC0</span>
-                    <a href="https://unsplash.com" class="cc-visit" target="_blank" rel="noopener">Visit Unsplash <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="cc-card">
-                    <div class="cc-head">
-                        <div class="cc-icon"><i class="fas fa-book-open"></i></div>
-                        <div class="cc-head-text"><h4>OpenStax</h4><span>openstax.org</span></div>
-                    </div>
-                    <div class="cc-desc">Free, peer-reviewed, openly-licensed textbooks for university courses — perfect for students.</div>
-                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY</span>
-                    <a href="https://openstax.org" class="cc-visit" target="_blank" rel="noopener">Visit OpenStax <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="cc-card">
-                    <div class="cc-head">
-                        <div class="cc-icon"><i class="fas fa-brain"></i></div>
-                        <div class="cc-head-text"><h4>Khan Academy</h4><span>khanacademy.org</span></div>
-                    </div>
-                    <div class="cc-desc">Free lessons and practice for math, science, computing and more — mostly CC BY-NC-SA.</div>
-                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-NC-SA</span>
-                    <a href="https://www.khanacademy.org" class="cc-visit" target="_blank" rel="noopener">Visit Khan Academy <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="cc-card">
-                    <div class="cc-head">
-                        <div class="cc-icon"><i class="fas fa-file-lines"></i></div>
-                        <div class="cc-head-text"><h4>Project Gutenberg</h4><span>gutenberg.org</span></div>
-                    </div>
-                    <div class="cc-desc">Over 70,000 free eBooks — classic literature, reference works and more, all openly licensed.</div>
-                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> Public Domain</span>
-                    <a href="https://www.gutenberg.org" class="cc-visit" target="_blank" rel="noopener">Visit Gutenberg <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="cc-card">
-                    <div class="cc-head">
-                        <div class="cc-icon"><i class="fas fa-music"></i></div>
-                        <div class="cc-head-text"><h4>Free Music Archive</h4><span>freemusicarchive.org</span></div>
-                    </div>
-                    <div class="cc-desc">Curated, legal, free music under Creative Commons — great for projects and videos.</div>
-                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC Licensed</span>
-                    <a href="https://freemusicarchive.org" class="cc-visit" target="_blank" rel="noopener">Visit FMA <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="cc-card">
-                    <div class="cc-head">
-                        <div class="cc-icon"><i class="fas fa-palette"></i></div>
-                        <div class="cc-head-text"><h4>Openverse</h4><span>openverse.org</span></div>
-                    </div>
-                    <div class="cc-desc">Search over 800 million openly-licensed images and audio from one place — by WordPress.</div>
-                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC Search</span>
-                    <a href="https://openverse.org" class="cc-visit" target="_blank" rel="noopener">Visit Openverse <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <div class="cc-card">
-                    <div class="cc-head">
-                        <div class="cc-icon"><i class="fas fa-flask"></i></div>
-                        <div class="cc-head-text"><h4>MIT OpenCourseWare</h4><span>ocw.mit.edu</span></div>
-                    </div>
-                    <div class="cc-desc">Free lecture notes, exams and videos from actual MIT courses — CC BY-NC-SA.</div>
-                    <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-NC-SA</span>
-                    <a href="https://ocw.mit.edu" class="cc-visit" target="_blank" rel="noopener">Visit MIT OCW <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-            <div class="cc-note">
-                <i class="fas fa-circle-info"></i>
-                <span>
-                    <strong>About Creative Commons:</strong> CC licenses let creators share their work
-                    legally while keeping some rights. Always check the specific license (BY, BY-SA, BY-NC, CC0)
-                    before reusing content — especially for commercial use. Learn more at
-                    <a href="https://creativecommons.org/licenses/" target="_blank" rel="noopener">creativecommons.org/licenses</a>.
-                </span>
-            </div>
+            <a href="https://twarvisscanner.twarvistech.workers.dev/" class="project-btn" target="_blank" rel="noopener">
+              Visit Scanner <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- CTA -->
-    <section class="cta">
-        <div class="cta-inner">
-            <div>
-                <h3>Have notes to share?</h3>
-                <p>Upload them in seconds — help the next student out.</p>
-            </div>
-            <a href="/upload/" class="btn-nav join" style="padding:12px 24px;">Upload Now <i class="fas fa-arrow-right"></i></a>
+  <!-- CREATIVE COMMONS -->
+  <section class="section-transparent">
+    <div class="container">
+      <div class="section-head">
+        <span class="section-label">Free &amp; open resources</span>
+        <h2>Creative Commons Websites We Love</h2>
+        <p>These websites offer free, openly-licensed content — perfect for students who want to learn, remix, and share legally.</p>
+      </div>
+
+      <div class="cc-grid">
+        <div class="cc-card">
+          <div class="cc-head">
+            <div class="cc-icon"><i class="fas fa-wikipedia-w"></i></div>
+            <div class="cc-head-text"><h4>Wikipedia</h4><span>wikipedia.org</span></div>
+          </div>
+          <div class="cc-desc">The world's largest free encyclopedia — every article is CC BY-SA licensed and editable by anyone.</div>
+          <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-SA</span>
+          <a href="https://www.wikipedia.org" class="cc-visit" target="_blank" rel="noopener">Visit Wikipedia <i class="fas fa-arrow-right"></i></a>
         </div>
-    </section>
-
-    <!-- FOOTER (DARKER) -->
-    <footer>
-        <div class="footer-inner">
-            <div class="footer-top">
-                <div class="footer-brand">
-                    <a href="/" class="logo">
-                        <img src="/logo.png" alt="Student Hub" class="logo-full-img" style="height:40px; background: rgba(255,255,255,0.95); padding: 4px 8px; border-radius: 8px;">
-                    </a>
-                    <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Pages</h4>
-                    <ul>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/browse/">Browse</a></li>
-                        <li><a href="/upload/">Upload</a></li>
-                        <li><a href="/free_course/">Free Courses</a></li>
-                        <li><a href="/hackerthon/">Hackathon</a></li>
-                        <li><a href="/about/">About</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Tools</h4>
-                    <ul>
-                        <li><a href="/calculator/">Calculator</a></li>
-                        <li><a href="/scanner/">Scanner</a></li>
-                        <li><a href="/upload/">PDF Maker</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <p>© 2026 Student Hub. All rights reserved.</p>
-                <div class="footer-socials">
-                    <a href="https://www.instagram.com/twarvice?stkn=NGw0NGR5NjZnNTdy&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
-                </div>
-            </div>
+        <div class="cc-card">
+          <div class="cc-head">
+            <div class="cc-icon"><i class="fas fa-image"></i></div>
+            <div class="cc-head-text"><h4>Unsplash</h4><span>unsplash.com</span></div>
+          </div>
+          <div class="cc-desc">Beautiful, high-resolution photos you can use freely for projects, presentations and websites.</div>
+          <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC0</span>
+          <a href="https://unsplash.com" class="cc-visit" target="_blank" rel="noopener">Visit Unsplash <i class="fas fa-arrow-right"></i></a>
         </div>
-    </footer>
+        <div class="cc-card">
+          <div class="cc-head">
+            <div class="cc-icon"><i class="fas fa-book-open"></i></div>
+            <div class="cc-head-text"><h4>OpenStax</h4><span>openstax.org</span></div>
+          </div>
+          <div class="cc-desc">Free, peer-reviewed, openly-licensed textbooks for university courses — perfect for students.</div>
+          <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY</span>
+          <a href="https://openstax.org" class="cc-visit" target="_blank" rel="noopener">Visit OpenStax <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="cc-card">
+          <div class="cc-head">
+            <div class="cc-icon"><i class="fas fa-brain"></i></div>
+            <div class="cc-head-text"><h4>Khan Academy</h4><span>khanacademy.org</span></div>
+          </div>
+          <div class="cc-desc">Free lessons and practice for math, science, computing and more — mostly CC BY-NC-SA.</div>
+          <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-NC-SA</span>
+          <a href="https://www.khanacademy.org" class="cc-visit" target="_blank" rel="noopener">Visit Khan Academy <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="cc-card">
+          <div class="cc-head">
+            <div class="cc-icon"><i class="fas fa-file-lines"></i></div>
+            <div class="cc-head-text"><h4>Project Gutenberg</h4><span>gutenberg.org</span></div>
+          </div>
+          <div class="cc-desc">Over 70,000 free eBooks — classic literature, reference works and more, all openly licensed.</div>
+          <span class="cc-tag"><i class="fab fa-creative-commons"></i> Public Domain</span>
+          <a href="https://www.gutenberg.org" class="cc-visit" target="_blank" rel="noopener">Visit Gutenberg <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="cc-card">
+          <div class="cc-head">
+            <div class="cc-icon"><i class="fas fa-music"></i></div>
+            <div class="cc-head-text"><h4>Free Music Archive</h4><span>freemusicarchive.org</span></div>
+          </div>
+          <div class="cc-desc">Curated, legal, free music under Creative Commons — great for projects and videos.</div>
+          <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC Licensed</span>
+          <a href="https://freemusicarchive.org" class="cc-visit" target="_blank" rel="noopener">Visit FMA <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="cc-card">
+          <div class="cc-head">
+            <div class="cc-icon"><i class="fas fa-palette"></i></div>
+            <div class="cc-head-text"><h4>Openverse</h4><span>openverse.org</span></div>
+          </div>
+          <div class="cc-desc">Search over 800 million openly-licensed images and audio from one place — by WordPress.</div>
+          <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC Search</span>
+          <a href="https://openverse.org" class="cc-visit" target="_blank" rel="noopener">Visit Openverse <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="cc-card">
+          <div class="cc-head">
+            <div class="cc-icon"><i class="fas fa-flask"></i></div>
+            <div class="cc-head-text"><h4>MIT OpenCourseWare</h4><span>ocw.mit.edu</span></div>
+          </div>
+          <div class="cc-desc">Free lecture notes, exams and videos from actual MIT courses — CC BY-NC-SA.</div>
+          <span class="cc-tag"><i class="fab fa-creative-commons"></i> CC BY-NC-SA</span>
+          <a href="https://ocw.mit.edu" class="cc-visit" target="_blank" rel="noopener">Visit MIT OCW <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <div class="cc-note">
+        <i class="fas fa-circle-info"></i>
+        <span>
+          <strong>About Creative Commons:</strong> CC licenses let creators share their work
+          legally while keeping some rights. Always check the specific license (BY, BY-SA, BY-NC, CC0)
+          before reusing content — especially for commercial use. Learn more at
+          <a href="https://creativecommons.org/licenses/" target="_blank" rel="noopener">creativecommons.org/licenses</a>.
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="cta-inner">
+      <div>
+        <h3>Have notes to share?</h3>
+        <p>Upload them in seconds — help the next student out.</p>
+      </div>
+      <a href="/upload/" class="btn-nav join" style="padding:12px 24px;">Upload Now <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="/" class="logo">
+            <img src="/logo.png" alt="Student Hub" class="logo-full-img" style="height:40px; background: rgba(255,255,255,0.95); padding: 4px 8px; border-radius: 8px;">
+          </a>
+          <p>A free, student-built platform for sharing notes and past papers. Built in Tanzania.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Pages</h4>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/browse/">Browse</a></li>
+            <li><a href="/upload/">Upload</a></li>
+            <li><a href="/free_course/">Free Courses</a></li>
+            <li><a href="/hackerthon/">Hackathon</a></li>
+            <li><a href="/about/">About</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Tools</h4>
+          <ul>
+            <li><a href="/calculator/">Calculator</a></li>
+            <li><a href="/scanner/">Scanner</a></li>
+            <li><a href="/upload/">PDF Maker</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 Student Hub. All rights reserved.</p>
+        <div class="footer-socials">
+          <a href="https://www.instagram.com/twarvice?stkn=NGw0NGR5NjZnNTdy&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
+          <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
 </div>
 
 <!-- BACK TO TOP BUTTON -->
 <button class="to-top" id="toTop" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
 
 <script>
-// 1. THEME PERSISTENCE (Default to Light)
-(function() {
+  // 1. THEME PERSISTENCE
+  (function() {
     const savedTheme = localStorage.getItem('sh-theme');
     const initialTheme = savedTheme ? savedTheme : 'light';
-    
     document.documentElement.setAttribute('data-theme', initialTheme);
     updateThemeMeta(initialTheme);
 
     document.addEventListener('DOMContentLoaded', function() {
-        const toggle = document.getElementById('themeToggle');
-        const icon = document.getElementById('themeIcon');
+      const toggle = document.getElementById('themeToggle');
+      const icon = document.getElementById('themeIcon');
 
-        function syncIcon() {
-            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-            if (icon) icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-        }
-        syncIcon();
+      function syncIcon() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (icon) icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+      }
+      syncIcon();
 
-        if (toggle) {
-            toggle.addEventListener('click', function() {
-                const current = document.documentElement.getAttribute('data-theme');
-                const next = current === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', next);
-                localStorage.setItem('sh-theme', next);
-                updateThemeMeta(next);
-                syncIcon();
-            });
-        }
+      if (toggle) {
+        toggle.addEventListener('click', function() {
+          const current = document.documentElement.getAttribute('data-theme');
+          const next = current === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', next);
+          localStorage.setItem('sh-theme', next);
+          updateThemeMeta(next);
+          syncIcon();
+        });
+      }
     });
 
     function updateThemeMeta(theme) {
-        const meta = document.getElementById('themeColorMeta');
-        if (meta) meta.content = theme === 'dark' ? '#120b08' : '#f8f9fa';
+      const meta = document.getElementById('themeColorMeta');
+      if (meta) meta.content = theme === 'dark' ? '#120b08' : '#f8f9fa';
     }
-})();
+  })();
 
-// 2. SIDEBAR LOGIC
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('sidebarOverlay');
-const toggle = document.getElementById('menuToggle');
-const closeBtn = document.getElementById('closeSidebar');
+  // 2. SIDEBAR LOGIC
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const toggleBtn = document.getElementById('menuToggle');
+  const closeBtn = document.getElementById('closeSidebar');
 
-function openSidebar() {
+  function openSidebar() {
     sidebar.classList.add('open');
     overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
-}
-
-function closeSidebar() {
+  }
+  function closeSidebar() {
     sidebar.classList.remove('open');
     overlay.classList.remove('active');
     document.body.style.overflow = '';
-}
+  }
+  if(toggleBtn) toggleBtn.addEventListener('click', openSidebar);
+  if(closeBtn) closeBtn.addEventListener('click', closeSidebar);
+  if(overlay) overlay.addEventListener('click', closeSidebar);
 
-if(toggle) toggle.addEventListener('click', openSidebar);
-if(closeBtn) closeBtn.addEventListener('click', closeSidebar);
-if(overlay) overlay.addEventListener('click', closeSidebar);
-
-document.addEventListener('keydown', (e) => {
+  document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && sidebar.classList.contains('open')) {
-        closeSidebar();
+      closeSidebar();
     }
-});
+  });
 
-// 3. PROJECT CARD IMAGE ROTATION
-document.querySelectorAll('.project-image').forEach(function(img){
+  // 3. PROJECT CARD IMAGE ROTATION
+  document.querySelectorAll('.project-image').forEach(function(img){
     var bgs = img.querySelectorAll('.project-image-bg');
     if(!bgs.length) return;
     var i = 0;
     var delay = 4500 + Math.random() * 1500;
     setInterval(function(){
-        bgs.forEach(function(b){ b.classList.remove('active'); });
-        i = (i + 1) % bgs.length;
-        bgs[i].classList.add('active');
+      bgs.forEach(function(b){ b.classList.remove('active'); });
+      i = (i + 1) % bgs.length;
+      bgs[i].classList.add('active');
     }, delay);
-});
+  });
 
-// 4. RIPPLE EFFECT ON BUTTONS
-document.addEventListener('click', function(e) {
+  // 4. RIPPLE EFFECT ON BUTTONS
+  document.addEventListener('click', function(e) {
     const btn = e.target.closest('.btn-see-more');
     if (!btn) return;
     const rect = btn.getBoundingClientRect();
@@ -1429,39 +1209,130 @@ document.addEventListener('click', function(e) {
     ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
     btn.appendChild(ripple);
     setTimeout(() => ripple.remove(), 600);
-});
+  });
 
-// 5. SCROLL REVEAL & FEATURE STAGGER
-(function(){
+  // 5. SCROLL REVEAL & FEATURE STAGGER
+  (function(){
     var io = new IntersectionObserver(function(es){
-        es.forEach(function(e){ 
-            if(e.isIntersecting){ 
-                e.target.classList.add('in'); 
-                io.unobserve(e.target); 
-            } 
-        });
+      es.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
     }, {threshold: 0.1});
-    
-    // Observe all reveals
     document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
-    
-    // Add stagger delay to feature items
     document.querySelectorAll('.feature-item').forEach(function(el, i) {
-        el.style.transitionDelay = (i * 0.1) + 's';
-        io.observe(el);
+      el.style.transitionDelay = (i * 0.1) + 's';
+      io.observe(el);
     });
-})();
+  })();
 
-// 6. SCROLL PROGRESS & BACK TO TOP
-(function(){
+  // 6. SCROLL PROGRESS & BACK TO TOP
+  (function(){
     var bar = document.getElementById('scrollProgress'), top = document.getElementById('toTop');
     window.addEventListener('scroll', function(){
-        var h = document.documentElement.scrollHeight - innerHeight;
-        if(bar) bar.style.width = (h > 0 ? scrollY / h * 100 : 0) + '%';
-        if(top) top.classList.toggle('show', scrollY > 500);
+      var h = document.documentElement.scrollHeight - innerHeight;
+      if(bar) bar.style.width = (h > 0 ? scrollY / h * 100 : 0) + '%';
+      if(top) top.classList.toggle('show', scrollY > 500);
     }, {passive:true});
     if(top) top.addEventListener('click', function(){ scrollTo({top:0, behavior:'smooth'}); });
-})();
+  })();
+
+  // 7. HERO CANVAS PARTICLES (enhanced animated background)
+  (function() {
+    const canvas = document.getElementById('heroCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let width, height, particles = [], animationId;
+    const PARTICLE_COUNT = 80;
+    const MAX_DIST = 140;
+    const SPEED = 0.45;
+
+    function resize() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      width = canvas.width = rect.width;
+      height = canvas.height = rect.height;
+    }
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * SPEED * 2;
+        this.vy = (Math.random() - 0.5) * SPEED * 2;
+        this.r = Math.random() * 2.5 + 1.2;
+        this.alpha = Math.random() * 0.4 + 0.2;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0) this.x = width;
+        if (this.x > width) this.x = 0;
+        if (this.y < 0) this.y = height;
+        if (this.y > height) this.y = 0;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(46, 139, 87, ${this.alpha})`;
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function drawLines() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < MAX_DIST) {
+            const opacity = (1 - dist / MAX_DIST) * 0.25;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(46, 139, 87, ${opacity})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      drawLines();
+      animationId = requestAnimationFrame(animate);
+    }
+
+    function start() {
+      resize();
+      initParticles();
+      if (animationId) cancelAnimationFrame(animationId);
+      animate();
+    }
+
+    window.addEventListener('resize', () => {
+      resize();
+      initParticles();
+    });
+
+    // Start only when hero is visible (fine to start immediately)
+    start();
+
+    // Cleanup on page unload (optional)
+    window.addEventListener('beforeunload', () => {
+      if (animationId) cancelAnimationFrame(animationId);
+    });
+  })();
 </script>
 </body>
 </html>
