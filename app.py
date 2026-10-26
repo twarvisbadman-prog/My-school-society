@@ -1555,6 +1555,13 @@ def about_view(request):
         return HttpResponse(f"About page error: {e}", status=500)
 
 
+def aboutcreator_view(request):
+    try:
+        return render(request, "aboutcreator.html", build_view_context(request))
+    except Exception as e:
+        return HttpResponse(f"About Creator page error: {e}", status=500)
+
+
 def calculator_view(request):
     return render(request, "calculator.html", build_view_context(request))
 
@@ -2160,6 +2167,10 @@ urlpatterns = [
     # ABOUT
     path("about.html", about_view, name="about"),
     path("about/", about_view, name="about_alt"),
+    
+    # ABOUT CREATOR (New additions)
+    path("aboutcreator.html", aboutcreator_view, name="aboutcreator"),
+    path("aboutcreator/", aboutcreator_view, name="aboutcreator_alt"),
 
     # CALCULATOR
     path("calculator.html", calculator_view),
