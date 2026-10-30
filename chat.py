@@ -1,561 +1,482 @@
-<!DOCTYPE html>
-<html lang="sw">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>General Chat | Student Hub</title>
-    <link rel="icon" type="image/png" href="/apple-touch-icon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --bg: #0a0a0f; --bg-2: #13131a; --bg-3: #1c1c26; --border: #2a2a3a;
-            --text: #e8e8f0; --text-dim: #8a8aa0;
-            --accent: #ea580c; --accent-2: #be185d;
-            --danger: #ef4444; --success: #22c55e;
-        }
-        body {
-            font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
-            height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden;
-        }
-        .header {
-            background: var(--bg-2); border-bottom: 1px solid var(--border);
-            padding: 14px 20px; display: flex; align-items: center;
-            justify-content: space-between; flex-shrink: 0;
-        }
-        .header-title { font-weight: 800; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
-        .live-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
-        .header-sub { font-size: .72rem; color: var(--text-dim); margin-top: 2px; }
-        .header-actions { display: flex; gap: 8px; align-items: center; position: relative; }
-        .btn-icon, .admin-menu-btn {
-            background: var(--bg-3); border: 1px solid var(--border); color: var(--text);
-            width: 36px; height: 36px; border-radius: 10px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-size: 1rem;
-        }
-        .btn-icon:hover, .admin-menu-btn:hover { background: var(--border); }
-        .admin-menu-wrap { position: relative; }
-        .admin-menu {
-            position: absolute; top: 44px; right: 0; background: var(--bg-2);
-            border: 1px solid var(--border); border-radius: 12px; padding: 6px; min-width: 190px;
-            display: none; box-shadow: 0 12px 32px rgba(0,0,0,.6); z-index: 200;
-        }
-        .admin-menu.show { display: block; }
-        .admin-menu button {
-            width: 100%; background: transparent; border: none; color: var(--text); text-align: left;
-            padding: 9px 12px; border-radius: 8px; cursor: pointer; font-size: .83rem;
-            display: flex; align-items: center; gap: 10px;
-        }
-        .admin-menu button:hover { background: var(--bg-3); }
-        .admin-menu button.danger { color: var(--danger); }
+# chat.py — General Chat module for Student Hub (24h auto-delete)
+# Lives next to app.py. Imports `app` lazily to avoid a circular import.
+#
+# Needs these from app.py:
+#   app.supabase, app.get_current_user, app.build_view_context, app.is_chat_admin
+#
+# Tables (see chat_schema.sql): chat_messages, chat_reactions, chat_settings, guest_chat_limits
 
-        .pinned-bar {
-            background: linear-gradient(120deg, rgba(234,88,12,.15), rgba(190,24,93,.15));
-            border-bottom: 1px solid var(--border); padding: 10px 20px; font-size: .82rem;
-            display: none; align-items: center; gap: 10px; flex-shrink: 0;
-        }
-        .pinned-bar.show { display: flex; }
-        .pin-icon { color: var(--accent); }
-        .pin-text { flex: 1; word-break: break-word; }
+import json
+import time
+import uuid
+from datetime import datetime, date, timedelta, timezone
 
-        .messages { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
-        .messages::-webkit-scrollbar { width: 8px; }
-        .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-        .empty-state { text-align: center; color: var(--text-dim); padding: 60px 20px; font-size: .9rem; }
-        .empty-state .emoji { font-size: 3rem; display: block; margin-bottom: 12px; }
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.views.decorators.csrf import ensure_csrf_cookie
 
-        .msg { display: flex; gap: 12px; max-width: 100%; animation: fadeIn .3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-        .msg-avatar {
-            width: 38px; height: 38px; border-radius: 50%;
-            background: linear-gradient(120deg, var(--accent), var(--accent-2));
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 800; color: #fff; flex-shrink: 0; font-size: .9rem; overflow: hidden;
-        }
-        .msg-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .msg-body { flex: 1; min-width: 0; }
-        .msg-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
-        .msg-name { font-weight: 700; font-size: .85rem; }
-        .msg-name.guest { color: var(--text-dim); font-style: italic; }
-        .msg-time { font-size: .68rem; color: var(--text-dim); }
-        .msg-text {
-            background: var(--bg-2); border: 1px solid var(--border); padding: 10px 14px;
-            border-radius: 12px; font-size: .9rem; line-height: 1.5; word-break: break-word;
-            white-space: pre-wrap; display: inline-block; max-width: 100%;
-        }
-        .msg.deleted .msg-text {
-            background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.25);
-            color: var(--danger); font-style: italic;
-        }
-        .msg-reply-preview {
-            background: rgba(234,88,12,.08); border-left: 3px solid var(--accent);
-            padding: 6px 10px; border-radius: 6px; font-size: .76rem; color: var(--text-dim); margin-bottom: 6px;
-        }
-        .msg-reply-preview strong { color: var(--accent); }
-        .msg-actions { display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
-        .reaction-pill {
-            background: var(--bg-3); border: 1px solid var(--border); padding: 3px 8px;
-            border-radius: 999px; font-size: .76rem; cursor: pointer;
-            display: inline-flex; align-items: center; gap: 4px; color: var(--text);
-        }
-        .reaction-pill:hover { border-color: var(--accent); }
-        .reaction-pill.mine { background: rgba(234,88,12,.15); border-color: var(--accent); }
-        .reaction-add {
-            background: transparent; border: 1px solid var(--border); width: 26px; height: 26px;
-            border-radius: 50%; cursor: pointer; color: var(--text-dim); font-size: .7rem;
-            display: inline-flex; align-items: center; justify-content: center;
-        }
-        .reaction-add:hover { border-color: var(--accent); color: var(--accent); }
-        .reply-btn {
-            background: transparent; border: none; color: var(--text-dim);
-            font-size: .72rem; cursor: pointer; padding: 3px 6px; border-radius: 6px;
-        }
-        .reply-btn:hover { color: var(--accent); }
+# ============================================================
+# CONSTANTS
+# ============================================================
+GUEST_DAILY_LIMIT = 3
+CHAT_MAX_LENGTH = 1000
+CHAT_POLL_LIMIT = 100
+CHAT_TTL_HOURS = 24
+FLOOD_SECONDS = 1.0           # min gap between messages from the same sender
+CLEANUP_EVERY_SECONDS = 60    # throttle expired-message cleanup
+GUEST_COOKIE = "chat-guest-id"
+ALLOWED_EMOJIS = ["👍", "❤️", "😂", "😮", "😢", "🔥", "🎉", "👏"]
 
-        .emoji-menu {
-            position: absolute; background: var(--bg-2); border: 1px solid var(--border);
-            border-radius: 12px; padding: 6px; display: none; gap: 4px;
-            box-shadow: 0 12px 32px rgba(0,0,0,.5); z-index: 150;
-        }
-        .emoji-menu.show { display: flex; }
-        .emoji-menu button { background: transparent; border: none; font-size: 1.2rem; cursor: pointer; padding: 6px; border-radius: 8px; }
-        .emoji-menu button:hover { background: var(--bg-3); }
+_last_cleanup = 0.0
 
-        .composer { background: var(--bg-2); border-top: 1px solid var(--border); padding: 12px 20px; flex-shrink: 0; }
-        .reply-bar {
-            display: none; align-items: center; gap: 10px; background: rgba(234,88,12,.08);
-            border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 8px;
-            margin-bottom: 8px; font-size: .8rem;
-        }
-        .reply-bar.show { display: flex; }
-        .reply-text { flex: 1; color: var(--text-dim); }
-        .reply-text strong { color: var(--accent); }
-        .reply-cancel { background: transparent; border: none; color: var(--text-dim); cursor: pointer; font-size: 1rem; }
-        .composer-row { display: flex; gap: 10px; align-items: flex-end; }
-        .composer-input {
-            flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
-            padding: 12px 14px; color: var(--text); font-family: inherit; font-size: .9rem;
-            resize: none; outline: none; max-height: 120px;
-        }
-        .composer-input:focus { border-color: var(--accent); }
-        .composer-send {
-            background: linear-gradient(120deg, var(--accent), var(--accent-2)); border: none; color: #fff;
-            width: 44px; height: 44px; border-radius: 50%; cursor: pointer; font-size: 1rem;
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-        }
-        .composer-send:disabled { opacity: .4; cursor: not-allowed; }
-        .composer-info { margin-top: 6px; font-size: .72rem; color: var(--text-dim); display: flex; justify-content: space-between; }
-        .login-cta { color: var(--accent); text-decoration: none; }
-        .login-cta:hover { text-decoration: underline; }
 
-        .toast {
-            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
-            background: var(--bg-3); border: 1px solid var(--border); color: var(--text);
-            padding: 12px 20px; border-radius: 12px; font-size: .85rem;
-            box-shadow: 0 12px 32px rgba(0,0,0,.5); opacity: 0; pointer-events: none;
-            transition: opacity .3s; z-index: 999; max-width: 90%; text-align: center;
-        }
-        .toast.show { opacity: 1; }
-        .toast.error { border-color: var(--danger); }
-        .toast.success { border-color: var(--success); }
+def _deps():
+    """Lazy import of app (avoids circular import)."""
+    import app
+    return app
 
-        @media (max-width: 600px) {
-            .header { padding: 12px 14px; }
-            .messages { padding: 12px 14px; }
-            .composer { padding: 10px 14px; }
-            .msg-avatar { width: 32px; height: 32px; font-size: .8rem; }
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <div>
-            <div class="header-title">💬 General Chat <span class="live-dot"></span></div>
-            <div class="header-sub">Ujumbe unafutwa baada ya masaa 24</div>
-        </div>
-        <div class="header-actions">
-            <button class="btn-icon" onclick="history.back()" title="Back"><i class="fas fa-arrow-left"></i></button>
-            <div class="admin-menu-wrap" id="adminMenuWrap" style="display:none;">
-                <button class="admin-menu-btn" id="adminMenuBtn" title="Admin menu">⋮</button>
-                <div class="admin-menu" id="adminMenu">
-                    <button onclick="editPin()"><i class="fas fa-thumbtack"></i> Pin / Edit pinned</button>
-                    <button onclick="adminClearPin()"><i class="fas fa-times"></i> Clear pinned</button>
-                    <button class="danger" onclick="adminRefreshAll()"><i class="fas fa-rotate"></i> Refresh</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="pinned-bar" id="pinnedBar">
-        <i class="fas fa-thumbtack pin-icon"></i>
-        <span class="pin-text" id="pinnedText"></span>
-    </div>
+# ============================================================
+# HELPERS
+# ============================================================
+def _now_utc():
+    return datetime.now(timezone.utc)
 
-    <div class="messages" id="messages">
-        <div class="empty-state" id="emptyState">
-            <span class="emoji">💬</span>
-            Hakuna ujumbe bado. Anza mazungumzo!
-        </div>
-    </div>
 
-    <div class="composer">
-        <div class="reply-bar" id="replyBar">
-            <div class="reply-text" id="replyText"></div>
-            <button class="reply-cancel" onclick="cancelReply()">✕</button>
-        </div>
-        <div class="composer-row">
-            <textarea class="composer-input" id="composerInput" rows="1" placeholder="Andika ujumbe..." maxlength="1000"></textarea>
-            <button class="composer-send" id="sendBtn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
-        </div>
-        <div class="composer-info">
-            <span id="guestInfo"></span>
-            <span id="charCount">0 / 1000</span>
-        </div>
-    </div>
+def _json_body(request):
+    try:
+        data = json.loads(request.body or "{}")
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        return None
 
-    <div class="emoji-menu" id="emojiMenu"></div>
-    <div class="toast" id="toast"></div>
 
-    <script>
-        // ==== Server-rendered constants ====
-        const GUEST_LIMIT = {{ guest_limit|default:3 }};
-        const ALLOWED_EMOJIS = {{ allowed_emojis|safe }};
-        const IS_ADMIN = {{ is_admin|default:"false"|lower }};
-        const POLL_MS = 5000;
+def _get_guest_id(request):
+    gid = request.COOKIES.get(GUEST_COOKIE, "").strip()
+    # only accept well-formed UUIDs so the cookie can't be abused
+    try:
+        return str(uuid.UUID(gid)) if gid else None
+    except Exception:
+        return None
 
-        // ==== State ====
-        let lastMessageId = null;
-        let replyToId = null;
-        let isLoggedIn = false;
-        let activeEmojiMenuId = null;
-        let polling = false;
 
-        // ==== DOM ====
-        const messagesEl = document.getElementById('messages');
-        const emptyState = document.getElementById('emptyState');
-        const composerInput = document.getElementById('composerInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const charCount = document.getElementById('charCount');
-        const replyBar = document.getElementById('replyBar');
-        const replyText = document.getElementById('replyText');
-        const guestInfo = document.getElementById('guestInfo');
-        const pinnedBar = document.getElementById('pinnedBar');
-        const pinnedText = document.getElementById('pinnedText');
-        const emojiMenu = document.getElementById('emojiMenu');
-        const toast = document.getElementById('toast');
-        const adminMenuWrap = document.getElementById('adminMenuWrap');
-        const adminMenuBtn = document.getElementById('adminMenuBtn');
-        const adminMenu = document.getElementById('adminMenu');
-        if (IS_ADMIN) adminMenuWrap.style.display = 'block';
+def _set_guest_cookie(response, guest_id):
+    response.set_cookie(GUEST_COOKIE, guest_id, max_age=60 * 60 * 24 * 365,
+                        samesite="Lax", httponly=True)
 
-        // ==== Utils ====
-        function getCookie(name) {
-            const m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-            return m ? m.pop() : '';
-        }
-        const CSRF = getCookie('csrftoken');
 
-        function showToast(msg, type) {
-            toast.textContent = msg;
-            toast.className = 'toast show ' + (type || '');
-            clearTimeout(showToast._t);
-            showToast._t = setTimeout(() => { toast.className = 'toast'; }, 3000);
-        }
-        function escapeHtml(s) {
-            const d = document.createElement('div');
-            d.textContent = s == null ? '' : String(s);
-            return d.innerHTML;
-        }
-        function timeAgo(iso) {
-            if (!iso) return '';
-            const diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
-            if (diff < 60) return 'sasa hivi';
-            if (diff < 3600) return Math.floor(diff / 60) + 'd';
-            if (diff < 86400) return Math.floor(diff / 3600) + 'h';
-            return Math.floor(diff / 86400) + 'siku';
-        }
-        function initials(name) { return name ? name.trim().charAt(0).toUpperCase() : '?'; }
+def _cleanup_expired_messages():
+    """Delete messages older than 24h. Throttled to once per minute per process."""
+    global _last_cleanup
+    now = time.time()
+    if now - _last_cleanup < CLEANUP_EVERY_SECONDS:
+        return
+    _last_cleanup = now
+    try:
+        app = _deps()
+        expired = app.supabase.table("chat_messages").select("id") \
+            .lt("expires_at", _now_utc().isoformat()).execute().data or []
+        ids = [r["id"] for r in expired]
+        if ids:
+            # remove reactions first (in case there is no ON DELETE CASCADE)
+            app.supabase.table("chat_reactions").delete().in_("message_id", ids).execute()
+            app.supabase.table("chat_messages").delete().in_("id", ids).execute()
+    except Exception as e:
+        print(f"[chat cleanup] {e}")
 
-        // ==== Render ====
-        function renderAvatar(msg) {
-            if (msg.avatar) return `<div class="msg-avatar"><img src="${escapeHtml(msg.avatar)}" alt=""></div>`;
-            return `<div class="msg-avatar">${escapeHtml(initials(msg.username))}</div>`;
-        }
-        function renderReactions(msg) {
-            const reactions = msg.reactions || {};
-            let html = '';
-            Object.keys(reactions).forEach(emoji => {
-                const r = reactions[emoji];
-                html += `<button class="reaction-pill${r.mine ? ' mine' : ''}" data-msg="${escapeHtml(msg.id)}" data-emoji="${escapeHtml(emoji)}">${escapeHtml(emoji)} ${r.count}</button>`;
-            });
-            html += `<button class="reaction-add" data-msg="${escapeHtml(msg.id)}" title="React">+</button>`;
-            return html;
-        }
-        function renderMessage(msg) {
-            const isGuest = !msg.user_id;
-            const deleted = msg.is_deleted || msg.deleted_by_admin;
-            const reply = msg.reply_to ? `
-                <div class="msg-reply-preview">
-                    <strong>${escapeHtml(msg.reply_to.username)}</strong>: ${escapeHtml(msg.reply_to.message)}
-                </div>` : '';
-            let actions = '';
-            if (!deleted) {
-                actions = `
-                    <button class="reply-btn" data-reply="${escapeHtml(msg.id)}" data-name="${escapeHtml(msg.username)}"><i class="fas fa-reply"></i> Jibu</button>
-                    ${renderReactions(msg)}
-                    ${IS_ADMIN ? `<button class="reply-btn" data-del="${escapeHtml(msg.id)}" title="Delete"><i class="fas fa-trash"></i></button>` : ''}`;
-            }
-            return `
-                <div class="msg ${deleted ? 'deleted' : ''}" data-id="${escapeHtml(msg.id)}">
-                    ${renderAvatar(msg)}
-                    <div class="msg-body">
-                        <div class="msg-head">
-                            <span class="msg-name ${isGuest ? 'guest' : ''}">${escapeHtml(msg.username)}</span>
-                            <span class="msg-time">${timeAgo(msg.created_at)}</span>
-                        </div>
-                        ${reply}
-                        <div class="msg-text">${escapeHtml(msg.message)}</div>
-                        <div class="msg-actions">${actions}</div>
-                    </div>
-                </div>`;
-        }
-        function appendMessages(messages) {
-            if (!messages.length) return;
-            if (emptyState) emptyState.style.display = 'none';
-            const atBottom = messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 80;
-            const frag = document.createElement('div');
-            frag.innerHTML = messages.map(renderMessage).join('');
-            while (frag.firstChild) messagesEl.appendChild(frag.firstChild);
-            if (atBottom) messagesEl.scrollTop = messagesEl.scrollHeight;
-        }
-        function renderPinned(pinned) {
-            if (pinned && pinned.message) {
-                pinnedText.textContent = pinned.message;
-                pinnedBar.classList.add('show');
-            } else {
-                pinnedBar.classList.remove('show');
-                pinnedText.textContent = '';
-            }
-        }
 
-        // ==== Polling ====
-        async function pollMessages() {
-            if (polling) return;
-            polling = true;
-            try {
-                const url = lastMessageId
-                    ? `/api/chat/messages/?after=${encodeURIComponent(lastMessageId)}`
-                    : '/api/chat/messages/';
-                const res = await fetch(url, { credentials: 'same-origin' });
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || 'fetch failed');
-                if (data.messages && data.messages.length) {
-                    appendMessages(data.messages);
-                    lastMessageId = data.messages[data.messages.length - 1].id;
-                }
-                renderPinned(data.pinned);
-            } catch (e) {
-                console.error('[chat poll]', e);
-            } finally {
-                polling = false;
-            }
-        }
+def _get_pinned():
+    try:
+        app = _deps()
+        r = app.supabase.table("chat_settings").select("*").eq("id", 1).execute()
+        row = r.data[0] if r.data else None
+        if row and row.get("pinned_message"):
+            return {"message": row["pinned_message"], "pinned_at": row.get("pinned_at")}
+    except Exception as e:
+        print(f"[chat pinned] {e}")
+    return None
 
-        // ==== Send ====
-        async function sendMessage() {
-            const raw = composerInput.value.trim();
-            if (!raw) return;
-            sendBtn.disabled = true;
-            try {
-                const res = await fetch('/api/chat/send/', {
-                    method: 'POST', credentials: 'same-origin',
-                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
-                    body: JSON.stringify({ message: raw, reply_to_id: replyToId }),
-                });
-                const data = await res.json();
-                if (!res.ok) {
-                    showToast(data.message || data.error || 'Imeshindikana', 'error');
-                    return;
-                }
-                composerInput.value = '';
-                composerInput.style.height = 'auto';
-                charCount.textContent = '0 / 1000';
-                cancelReply();
-                await pollMessages();
-                messagesEl.scrollTop = messagesEl.scrollHeight;
-            } catch (e) {
-                console.error('[chat send]', e);
-                showToast('Hitilafu ya mtandao', 'error');
-            } finally {
-                await updateGuestStatus();
-            }
-        }
 
-        // ==== Reply ====
-        function startReply(id, username) {
-            replyToId = id;
-            replyText.innerHTML = `Unamjibu <strong>${escapeHtml(username)}</strong>`;
-            replyBar.classList.add('show');
-            composerInput.focus();
-        }
-        function cancelReply() {
-            replyToId = null;
-            replyBar.classList.remove('show');
-        }
+def _build_reactions_map(message_ids, my_user_id=None, my_guest_id=None):
+    """{message_id: {emoji: {count, mine}}}"""
+    if not message_ids:
+        return {}
+    try:
+        app = _deps()
+        rows = app.supabase.table("chat_reactions").select("*") \
+            .in_("message_id", message_ids).execute().data or []
+    except Exception as e:
+        print(f"[chat reactions] {e}")
+        return {}
 
-        // ==== Reactions ====
-        function openEmojiMenu(anchor, messageId) {
-            if (activeEmojiMenuId === messageId && emojiMenu.classList.contains('show')) {
-                emojiMenu.classList.remove('show');
-                activeEmojiMenuId = null;
-                return;
-            }
-            activeEmojiMenuId = messageId;
-            emojiMenu.innerHTML = ALLOWED_EMOJIS
-                .map(e => `<button data-msg="${escapeHtml(messageId)}" data-emoji="${escapeHtml(e)}">${escapeHtml(e)}</button>`)
-                .join('');
-            const rect = anchor.getBoundingClientRect();
-            emojiMenu.style.top = (rect.bottom + window.scrollY + 6) + 'px';
-            emojiMenu.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - 300)) + 'px';
-            emojiMenu.classList.add('show');
-        }
-        async function toggleReaction(messageId, emoji) {
-            emojiMenu.classList.remove('show');
-            activeEmojiMenuId = null;
-            try {
-                const res = await fetch(`/api/chat/react/${messageId}/`, {
-                    method: 'POST', credentials: 'same-origin',
-                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
-                    body: JSON.stringify({ emoji }),
-                });
-                const data = await res.json();
-                if (!res.ok) { showToast(data.error || 'Imeshindikana', 'error'); return; }
-                await reloadAll();
-            } catch (e) {
-                console.error('[chat react]', e);
-            }
-        }
+    result = {}
+    for row in rows:
+        mid = str(row["message_id"])
+        emoji = row.get("emoji", "")
+        slot = result.setdefault(mid, {}).setdefault(emoji, {"count": 0, "mine": False})
+        slot["count"] += 1
+        if my_user_id and row.get("user_id") and str(row["user_id"]) == my_user_id:
+            slot["mine"] = True
+        elif my_guest_id and row.get("guest_id") and row["guest_id"] == my_guest_id:
+            slot["mine"] = True
+    return result
 
-        // ==== Admin ====
-        async function adminDelete(messageId) {
-            if (!confirm('Futa ujumbe huu?')) return;
-            try {
-                const res = await fetch(`/api/chat/admin/delete/${messageId}/`, {
-                    method: 'POST', credentials: 'same-origin', headers: { 'X-CSRFToken': CSRF },
-                });
-                if (!res.ok) throw new Error('delete failed');
-                await reloadAll();
-            } catch (e) {
-                console.error('[chat delete]', e);
-                showToast('Imeshindikana kufuta', 'error');
-            }
-        }
-        async function postPin(text) {
-            const res = await fetch('/api/chat/admin/pin/', {
-                method: 'POST', credentials: 'same-origin',
-                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
-                body: JSON.stringify({ pinned_message: text }),
-            });
-            if (!res.ok) throw new Error('pin failed');
-            await pollMessages();
-        }
-        async function editPin() {
-            adminMenu.classList.remove('show');
-            const next = prompt('Pinned message (acha tupu kuondoa):', pinnedText.textContent || '');
-            if (next === null) return;
-            try { await postPin(next.trim()); }
-            catch (e) { console.error('[chat pin]', e); showToast('Imeshindikana', 'error'); }
-        }
-        async function adminClearPin() {
-            adminMenu.classList.remove('show');
-            try { await postPin(''); }
-            catch (e) { console.error('[chat clear pin]', e); showToast('Imeshindikana', 'error'); }
-        }
-        async function adminRefreshAll() {
-            adminMenu.classList.remove('show');
-            await reloadAll();
-            showToast('Refreshed', 'success');
-        }
 
-        // ==== Guest status ====
-        async function updateGuestStatus() {
-            try {
-                const res = await fetch('/api/chat/guest-status/', { credentials: 'same-origin' });
-                const data = await res.json();
-                isLoggedIn = !!data.logged_in;
-                if (isLoggedIn) {
-                    guestInfo.textContent = '';
-                    composerInput.disabled = false;
-                    sendBtn.disabled = false;
-                } else if (data.remaining <= 0) {
-                    guestInfo.innerHTML = `Umetumia ujumbe wote leo. <a class="login-cta" href="/login/?next=/chat/">Ingia</a> kuchat bila kikomo.`;
-                    composerInput.disabled = true;
-                    sendBtn.disabled = true;
-                } else {
-                    guestInfo.textContent = `Ujumbe ${data.remaining} umebaki leo (guest).`;
-                    composerInput.disabled = false;
-                    sendBtn.disabled = false;
-                }
-            } catch (e) {
-                console.error('[guest status]', e);
-                sendBtn.disabled = false;
-            }
+def _build_reply_map(rows):
+    """Batch-fetch the messages being replied to: {id: preview}"""
+    reply_ids = list({str(r["reply_to_id"]) for r in rows if r.get("reply_to_id")})
+    if not reply_ids:
+        return {}
+    try:
+        app = _deps()
+        data = app.supabase.table("chat_messages").select(
+            "id, username_snapshot, message, is_deleted, deleted_by_admin"
+        ).in_("id", reply_ids).execute().data or []
+    except Exception as e:
+        print(f"[chat replies] {e}")
+        return {}
+    out = {}
+    for rm in data:
+        gone = rm.get("is_deleted") or rm.get("deleted_by_admin")
+        out[str(rm["id"])] = {
+            "id": str(rm["id"]),
+            "username": rm.get("username_snapshot", ""),
+            "message": "🚫 Deleted" if gone else (rm.get("message", "") or "")[:80],
         }
+    return out
 
-        // ==== Full reload ====
-        async function reloadAll() {
-            messagesEl.querySelectorAll('.msg').forEach(el => el.remove());
-            if (emptyState) emptyState.style.display = '';
-            lastMessageId = null;
-            await pollMessages();
-        }
 
-        // ==== Event delegation ====
-        messagesEl.addEventListener('click', (e) => {
-            const reactBtn = e.target.closest('.reaction-pill');
-            if (reactBtn) { toggleReaction(reactBtn.dataset.msg, reactBtn.dataset.emoji); return; }
-            const addBtn = e.target.closest('.reaction-add');
-            if (addBtn) { e.stopPropagation(); openEmojiMenu(addBtn, addBtn.dataset.msg); return; }
-            const replyBtn = e.target.closest('[data-reply]');
-            if (replyBtn) { startReply(replyBtn.dataset.reply, replyBtn.dataset.name); return; }
-            const delBtn = e.target.closest('[data-del]');
-            if (delBtn) { adminDelete(delBtn.dataset.del); return; }
-        });
-        emojiMenu.addEventListener('click', (e) => {
-            const btn = e.target.closest('button[data-emoji]');
-            if (btn) toggleReaction(btn.dataset.msg, btn.dataset.emoji);
-        });
+def _serialize(msg, reactions_map, reply_map):
+    deleted_by_admin = bool(msg.get("deleted_by_admin"))
+    is_deleted = bool(msg.get("is_deleted")) or deleted_by_admin
+    if deleted_by_admin:
+        text = "🚫 Deleted by admin"
+    elif is_deleted:
+        text = "[deleted]"
+    else:
+        text = msg.get("message", "")
+    rid = str(msg["reply_to_id"]) if msg.get("reply_to_id") else None
+    return {
+        "id": str(msg["id"]),
+        "username": msg.get("username_snapshot") or "Unknown",
+        "avatar": msg.get("avatar_snapshot") or "",
+        "message": text,
+        "is_deleted": is_deleted,
+        "deleted_by_admin": deleted_by_admin,
+        "reply_to": reply_map.get(rid) if rid else None,
+        "reactions": reactions_map.get(str(msg["id"]), {}),
+        "created_at": msg.get("created_at"),
+        "user_id": str(msg["user_id"]) if msg.get("user_id") else None,
+    }
 
-        composerInput.addEventListener('input', () => {
-            charCount.textContent = `${composerInput.value.length} / 1000`;
-            composerInput.style.height = 'auto';
-            composerInput.style.height = Math.min(composerInput.scrollHeight, 120) + 'px';
-        });
-        composerInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-        });
 
-        document.addEventListener('click', (e) => {
-            if (!emojiMenu.contains(e.target)) {
-                emojiMenu.classList.remove('show');
-                activeEmojiMenuId = null;
-            }
-            if (!adminMenu.contains(e.target) && e.target !== adminMenuBtn) {
-                adminMenu.classList.remove('show');
-            }
-        });
-        adminMenuBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            adminMenu.classList.toggle('show');
-        });
+# ============================================================
+# VIEW — chat page
+# ============================================================
+@ensure_csrf_cookie
+def chat_view(request):
+    app = _deps()
+    ctx = app.build_view_context(request)
+    ctx["guest_limit"] = GUEST_DAILY_LIMIT
+    ctx["allowed_emojis"] = ALLOWED_EMOJIS
+    ctx["is_admin"] = bool(app.is_chat_admin(request))
+    response = render(request, "chat.html", ctx)
+    if not app.get_current_user(request) and not _get_guest_id(request):
+        _set_guest_cookie(response, str(uuid.uuid4()))
+    return response
 
-        // ==== Init ====
-        (function init() {
-            updateGuestStatus();
-            pollMessages().then(() => { messagesEl.scrollTop = messagesEl.scrollHeight; });
-            setInterval(pollMessages, POLL_MS);
-        })();
-    </script>
-</body>
-</html>
+
+# ============================================================
+# API — messages (polling)
+# ============================================================
+def api_chat_messages(request):
+    if request.method != "GET":
+        return JsonResponse({"error": "GET only"}, status=405)
+
+    app = _deps()
+    _cleanup_expired_messages()
+
+    me = app.get_current_user(request)
+    my_uid = str(me["id"]) if me else None
+    my_gid = None if me else _get_guest_id(request)
+    after_id = request.GET.get("after", "").strip()
+    now_iso = _now_utc().isoformat()
+
+    try:
+        after_ts = None
+        if after_id:
+            try:
+                r = app.supabase.table("chat_messages").select("created_at") \
+                    .eq("id", after_id).execute()
+                if r.data:
+                    after_ts = r.data[0]["created_at"]
+            except Exception:
+                after_ts = None
+
+        q = app.supabase.table("chat_messages").select("*").gte("expires_at", now_iso)
+        if after_ts:
+            # new messages since the cursor, oldest first
+            rows = q.gt("created_at", after_ts).order("created_at", desc=False) \
+                .limit(CHAT_POLL_LIMIT).execute().data or []
+        else:
+            # first load: the LATEST N messages, returned oldest-first
+            rows = q.order("created_at", desc=True).limit(CHAT_POLL_LIMIT).execute().data or []
+            rows.reverse()
+    except Exception as e:
+        print(f"[chat messages] {e}")
+        return JsonResponse({"error": "fetch_failed", "message": str(e)}, status=500)
+
+    reactions_map = _build_reactions_map([str(r["id"]) for r in rows], my_uid, my_gid)
+    reply_map = _build_reply_map(rows)
+    messages = [_serialize(r, reactions_map, reply_map) for r in rows]
+
+    return JsonResponse({
+        "messages": messages,
+        "pinned": _get_pinned(),
+        "is_admin": bool(app.is_chat_admin(request)),
+    })
+
+
+# ============================================================
+# API — send
+# ============================================================
+def api_chat_send(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST only"}, status=405)
+
+    app = _deps()
+    body = _json_body(request)
+    if body is None:
+        return JsonResponse({"error": "invalid_json"}, status=400)
+
+    # Stored RAW: chat.html escapes on render, so escaping here would double-escape.
+    text = str(body.get("message") or "").strip()
+    reply_to_id = body.get("reply_to_id") or None
+
+    if not text:
+        return JsonResponse({"error": "empty_message", "message": "Ujumbe hauwezi kuwa tupu."}, status=400)
+    if len(text) > CHAT_MAX_LENGTH:
+        return JsonResponse({"error": "too_long",
+                             "message": f"Ujumbe usizidi {CHAT_MAX_LENGTH} herufi."}, status=400)
+
+    if reply_to_id:
+        try:
+            reply_to_id = str(uuid.UUID(str(reply_to_id)))
+        except Exception:
+            reply_to_id = None
+
+    me = app.get_current_user(request)
+    new_guest_cookie = None
+    now = _now_utc()
+
+    if me:
+        profile = me.get("profile") or {}
+        username = profile.get("username") or profile.get("full_name") or me["email"].split("@")[0]
+        avatar = profile.get("avatar_url") or ""
+        user_id = str(me["id"])
+        guest_id = None
+        sender_filter = ("user_id", user_id)
+    else:
+        guest_id = _get_guest_id(request)
+        if not guest_id:
+            guest_id = str(uuid.uuid4())
+            new_guest_cookie = guest_id
+        user_id = None
+        avatar = ""
+        username = f"Guest-{guest_id[:4]}"
+        sender_filter = ("guest_id", guest_id)
+
+    # --- flood control ---
+    try:
+        last = app.supabase.table("chat_messages").select("created_at") \
+            .eq(*sender_filter).order("created_at", desc=True).limit(1).execute().data
+        if last:
+            last_ts = datetime.fromisoformat(last[0]["created_at"].replace("Z", "+00:00"))
+            if (now - last_ts).total_seconds() < FLOOD_SECONDS:
+                return JsonResponse({"error": "too_fast",
+                                     "message": "Polepole kidogo, subiri sekunde moja."}, status=429)
+    except Exception as e:
+        print(f"[chat flood] {e}")
+
+    # --- guest daily limit ---
+    if not me:
+        today = date.today().isoformat()
+        try:
+            r = app.supabase.table("guest_chat_limits").select("*") \
+                .eq("guest_id", guest_id).eq("day", today).execute()
+            if r.data:
+                count = r.data[0].get("message_count", 0) or 0
+                if count >= GUEST_DAILY_LIMIT:
+                    resp = JsonResponse({
+                        "error": "guest_limit_reached",
+                        "message": f"Umetumia ujumbe {GUEST_DAILY_LIMIT} leo. Tafadhali ingia kuchat bila kikomo.",
+                        "login_required": True,
+                    }, status=429)
+                    if new_guest_cookie:
+                        _set_guest_cookie(resp, new_guest_cookie)
+                    return resp
+                app.supabase.table("guest_chat_limits").update({"message_count": count + 1}) \
+                    .eq("id", r.data[0]["id"]).execute()
+            else:
+                app.supabase.table("guest_chat_limits").insert({
+                    "guest_id": guest_id, "day": today, "message_count": 1,
+                }).execute()
+        except Exception as e:
+            print(f"[chat guest limit] {e}")
+            return JsonResponse({"error": "limit_check_failed",
+                                 "message": "Imeshindikana kuthibitisha kikomo, jaribu tena."}, status=500)
+
+    payload = {
+        "user_id": user_id,
+        "guest_id": guest_id,
+        "username_snapshot": username,
+        "avatar_snapshot": avatar,
+        "message": text,
+        "reply_to_id": reply_to_id,
+        "created_at": now.isoformat(),
+        "expires_at": (now + timedelta(hours=CHAT_TTL_HOURS)).isoformat(),
+    }
+
+    try:
+        ins = app.supabase.table("chat_messages").insert(payload).execute()
+        new_id = ins.data[0]["id"] if ins.data else None
+    except Exception as e:
+        print(f"[chat send] {e}")
+        return JsonResponse({"error": "insert_failed", "message": "Imeshindikana kutuma ujumbe."}, status=500)
+
+    resp = JsonResponse({"success": True, "id": str(new_id) if new_id else None})
+    if new_guest_cookie:
+        _set_guest_cookie(resp, new_guest_cookie)
+    return resp
+
+
+# ============================================================
+# API — react (toggle)
+# ============================================================
+def api_chat_react(request, message_id):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST only"}, status=405)
+
+    app = _deps()
+    body = _json_body(request)
+    if body is None:
+        return JsonResponse({"error": "invalid_json"}, status=400)
+
+    emoji = str(body.get("emoji") or "").strip()
+    if emoji not in ALLOWED_EMOJIS:
+        return JsonResponse({"error": "invalid_emoji"}, status=400)
+
+    try:
+        message_id = str(uuid.UUID(str(message_id)))
+    except Exception:
+        return JsonResponse({"error": "invalid_message_id"}, status=400)
+
+    me = app.get_current_user(request)
+    user_id = str(me["id"]) if me else None
+    guest_id = None if me else _get_guest_id(request)
+    if not user_id and not guest_id:
+        return JsonResponse({"error": "identify_required"}, status=400)
+
+    try:
+        exists = app.supabase.table("chat_messages").select("id, is_deleted") \
+            .eq("id", message_id).execute().data
+        if not exists or exists[0].get("is_deleted"):
+            return JsonResponse({"error": "message_not_found"}, status=404)
+
+        q = app.supabase.table("chat_reactions").select("id") \
+            .eq("message_id", message_id).eq("emoji", emoji)
+        q = q.eq("user_id", user_id) if user_id else q.eq("guest_id", guest_id)
+        existing = q.execute().data
+
+        if existing:
+            app.supabase.table("chat_reactions").delete().eq("id", existing[0]["id"]).execute()
+            action = "removed"
+        else:
+            app.supabase.table("chat_reactions").insert({
+                "message_id": message_id, "user_id": user_id,
+                "guest_id": guest_id, "emoji": emoji,
+            }).execute()
+            action = "added"
+        return JsonResponse({"success": True, "action": action})
+    except Exception as e:
+        print(f"[chat react] {e}")
+        return JsonResponse({"error": "react_failed"}, status=500)
+
+
+# ============================================================
+# API — admin: delete message
+# ============================================================
+def api_chat_admin_delete(request, message_id):
+    app = _deps()
+    if not app.is_chat_admin(request):
+        return JsonResponse({"error": "not_authorized"}, status=403)
+    if request.method != "POST":
+        return JsonResponse({"error": "POST only"}, status=405)
+    try:
+        message_id = str(uuid.UUID(str(message_id)))
+    except Exception:
+        return JsonResponse({"error": "invalid_message_id"}, status=400)
+    try:
+        app.supabase.table("chat_messages").update({
+            "is_deleted": True,
+            "deleted_by_admin": True,
+            "message": "🚫 Deleted by admin",
+        }).eq("id", message_id).execute()
+        return JsonResponse({"success": True})
+    except Exception as e:
+        print(f"[chat admin delete] {e}")
+        return JsonResponse({"error": "delete_failed"}, status=500)
+
+
+# ============================================================
+# API — admin: pin / unpin
+# ============================================================
+def api_chat_admin_pin(request):
+    app = _deps()
+    if not app.is_chat_admin(request):
+        return JsonResponse({"error": "not_authorized"}, status=403)
+    if request.method != "POST":
+        return JsonResponse({"error": "POST only"}, status=405)
+
+    body = _json_body(request)
+    if body is None:
+        return JsonResponse({"error": "invalid_json"}, status=400)
+
+    new_pin = str(body.get("pinned_message") or "").strip()[:500]
+    me = app.get_current_user(request)
+
+    if new_pin:
+        values = {"id": 1, "pinned_message": new_pin,
+                  "pinned_by": str(me["id"]) if me else None,
+                  "pinned_at": _now_utc().isoformat()}
+    else:
+        values = {"id": 1, "pinned_message": None, "pinned_by": None, "pinned_at": None}
+
+    try:
+        app.supabase.table("chat_settings").upsert(values).execute()  # creates row 1 if missing
+        return JsonResponse({"success": True})
+    except Exception as e:
+        print(f"[chat admin pin] {e}")
+        return JsonResponse({"error": "pin_failed"}, status=500)
+
+
+# ============================================================
+# API — guest status
+# ============================================================
+def api_chat_guest_status(request):
+    app = _deps()
+    if app.get_current_user(request):
+        return JsonResponse({"logged_in": True, "remaining": None})
+
+    guest_id = _get_guest_id(request)
+    if not guest_id:
+        return JsonResponse({"logged_in": False, "remaining": GUEST_DAILY_LIMIT})
+
+    try:
+        r = app.supabase.table("guest_chat_limits").select("message_count") \
+            .eq("guest_id", guest_id).eq("day", date.today().isoformat()).execute()
+        used = (r.data[0].get("message_count", 0) or 0) if r.data else 0
+        return JsonResponse({"logged_in": False, "remaining": max(0, GUEST_DAILY_LIMIT - used)})
+    except Exception as e:
+        print(f"[chat guest status] {e}")
+        return JsonResponse({"logged_in": False, "remaining": GUEST_DAILY_LIMIT})
