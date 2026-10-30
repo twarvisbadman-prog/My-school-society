@@ -62,10 +62,7 @@
             color: var(--text-dim);
             margin-top: 2px;
         }
-        .header-actions {
-            display: flex;
-            gap: 8px;
-        }
+        .header-actions { display: flex; gap: 8px; align-items: center; position: relative; }
         .btn-icon {
             background: var(--bg-3);
             border: 1px solid var(--border);
@@ -79,6 +76,53 @@
             justify-content: center;
         }
         .btn-icon:hover { background: var(--border); }
+
+        /* Admin menu (⋮) */
+        .admin-menu-wrap { position: relative; }
+        .admin-menu-btn {
+            background: var(--bg-3);
+            border: 1px solid var(--border);
+            color: var(--text);
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        .admin-menu-btn:hover { background: var(--border); }
+        .admin-menu {
+            position: absolute;
+            top: 44px;
+            right: 0;
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 6px;
+            min-width: 190px;
+            display: none;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.6);
+            z-index: 200;
+        }
+        .admin-menu.show { display: block; }
+        .admin-menu button {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            text-align: left;
+            padding: 9px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.83rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .admin-menu button:hover { background: var(--bg-3); }
+        .admin-menu button.danger { color: var(--danger); }
 
         .pinned-bar {
             background: linear-gradient(120deg, rgba(234,88,12,0.15), rgba(190,24,93,0.15));
@@ -94,15 +138,6 @@
         .pinned-bar.show { display: flex; }
         .pinned-bar .pin-icon { color: var(--accent); }
         .pinned-bar .pin-text { flex: 1; }
-        .pinned-bar .pin-edit {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 5px 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.72rem;
-        }
 
         .messages {
             flex: 1;
@@ -247,7 +282,7 @@
             display: none;
             gap: 4px;
             box-shadow: 0 12px 32px rgba(0,0,0,0.5);
-            z-index: 100;
+            z-index: 150;
         }
         .emoji-menu.show { display: flex; }
         .emoji-menu button {
@@ -373,13 +408,20 @@
             <button class="btn-icon" onclick="history.back()" title="Back">
                 <i class="fas fa-arrow-left"></i>
             </button>
+            <div class="admin-menu-wrap" id="adminMenuWrap" style="display:none;">
+                <button class="admin-menu-btn" id="adminMenuBtn" title="Admin menu">⋮</button>
+                <div class="admin-menu" id="adminMenu">
+                    <button onclick="editPin()"><i class="fas fa-thumbtack"></i> Pin / Edit pinned</button>
+                    <button onclick="adminClearPin()"><i class="fas fa-times"></i> Clear pinned</button>
+                    <button class="danger" onclick="adminRefreshAll()"><i class="fas fa-trash"></i> Refresh / cleanup</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="pinned-bar" id="pinnedBar">
         <i class="fas fa-thumbtack pin-icon"></i>
         <span class="pin-text" id="pinnedText"></span>
-        <button class="pin-edit" id="pinEditBtn" style="display:none;" onclick="editPin()">Edit</button>
     </div>
 
     <div class="messages" id="messages">
@@ -411,17 +453,20 @@
     <div class="toast" id="toast"></div>
 
     <script>
+        // ==== Server-rendered constants ====
         const GUEST_LIMIT = {{ guest_limit|default:3 }};
         const ALLOWED_EMOJIS = {{ allowed_emojis|safe }};
         const IS_ADMIN = {{ is_admin|default:"false"|lower }};
+        const POLL_MS = 5000; // 5s
 
+        // ==== State ====
         let lastMessageId = null;
         let replyToId = null;
         let pollTimer = null;
-        let guestRemaining = null;
         let isLoggedIn = false;
         let activeEmojiMenuId = null;
 
+        // ==== DOM ====
         const messagesEl = document.getElementById('messages');
         const emptyState = document.getElementById('emptyState');
         const composerInput = document.getElementById('composerInput');
@@ -432,12 +477,16 @@
         const guestInfo = document.getElementById('guestInfo');
         const pinnedBar = document.getElementById('pinnedBar');
         const pinnedText = document.getElementById('pinnedText');
-        const pinEditBtn = document.getElementById('pinEditBtn');
         const emojiMenu = document.getElementById('emojiMenu');
         const toast = document.getElementById('toast');
 
-        if (IS_ADMIN) pinEditBtn.style.display = 'inline-block';
+        // Admin menu
+        const adminMenuWrap = document.getElementById('adminMenuWrap');
+        const adminMenuBtn = document.getElementById('adminMenuBtn');
+        const adminMenu = document.getElementById('adminMenu');
+        if (IS_ADMIN) adminMenuWrap.style.display = 'block';
 
+        // ==== Utils ====
         function getCookie(name) {
             const m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
             return m ? m.pop() : '';
@@ -448,9 +497,7 @@
             toast.textContent = msg;
             toast.className = 'toast show ' + (type || '');
             clearTimeout(showToast._t);
-            showToast._t = setTimeout(() => {
-                toast.className = 'toast';
-            }, 3000);
+            showToast._t = setTimeout(() => { toast.className = 'toast'; }, 3000);
         }
 
         function escapeHtml(s) {
@@ -474,6 +521,7 @@
             return name.trim().charAt(0).toUpperCase();
         }
 
+        // ==== Render ====
         function renderAvatar(msg) {
             if (msg.avatar) {
                 return `<div class="msg-avatar"><img src="${escapeHtml(msg.avatar)}" alt=""></div>`;
@@ -548,6 +596,7 @@
             }
         }
 
+        // ==== Polling (5s) ====
         async function pollMessages() {
             try {
                 const url = lastMessageId
@@ -567,6 +616,7 @@
             }
         }
 
+        // ==== Send ====
         async function sendMessage() {
             const raw = composerInput.value.trim();
             if (!raw) return;
@@ -600,18 +650,19 @@
             }
         }
 
+        // ==== Inline quote (reply) ====
         function startReply(id, username) {
             replyToId = id;
             replyText.innerHTML = `<strong>${escapeHtml(username)}</strong>`;
             replyBar.classList.add('show');
             composerInput.focus();
         }
-
         function cancelReply() {
             replyToId = null;
             replyBar.classList.remove('show');
         }
 
+        // ==== Reactions ====
         function openEmojiMenu(anchor, messageId) {
             if (activeEmojiMenuId === messageId && emojiMenu.classList.contains('show')) {
                 emojiMenu.classList.remove('show');
@@ -652,6 +703,7 @@
             }
         }
 
+        // ==== Admin ====
         async function adminDelete(messageId) {
             if (!confirm('Futa ujumbe huu?')) return;
             try {
@@ -690,6 +742,31 @@
             }
         }
 
+        async function adminClearPin() {
+            try {
+                const res = await fetch('/api/chat/admin/pin/', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': CSRF,
+                    },
+                    body: JSON.stringify({ pinned_message: '' }),
+                });
+                if (!res.ok) throw new Error('clear failed');
+                await pollMessages();
+            } catch (e) {
+                console.error('[chat clear pin]', e);
+                showToast('Imeshindikana', 'error');
+            }
+        }
+
+        async function adminRefreshAll() {
+            await reloadAll();
+            showToast('Refreshed', 'success');
+        }
+
+        // ==== Guest status ====
         async function updateGuestStatus() {
             try {
                 const res = await fetch('/api/chat/guest-status/', { credentials: 'same-origin' });
@@ -700,13 +777,13 @@
                     composerInput.disabled = false;
                     sendBtn.disabled = false;
                 } else {
-                    guestRemaining = data.remaining;
-                    if (guestRemaining <= 0) {
-                        guestInfo.innerHTML = `Umetumia ujumbe wote leo. <a class="login-cta" href="/login">Ingia</a> kuchat bila kikomo.`;
+                    const remaining = data.remaining;
+                    if (remaining <= 0) {
+                        guestInfo.innerHTML = `Umetumia ujumbe wote leo. <a class="login-cta" href="/login/?next=/chat/">Ingia</a> kuchat bila kikomo.`;
                         composerInput.disabled = true;
                         sendBtn.disabled = true;
                     } else {
-                        guestInfo.textContent = `Ujumbe ${guestRemaining} umebaki leo (guest).`;
+                        guestInfo.textContent = `Ujumbe ${remaining} umebaki leo (guest).`;
                         composerInput.disabled = false;
                         sendBtn.disabled = false;
                     }
@@ -716,6 +793,7 @@
             }
         }
 
+        // ==== Full reload (used after reactions / deletes) ====
         async function reloadAll() {
             messagesEl.querySelectorAll('.msg').forEach(el => el.remove());
             if (emptyState) emptyState.style.display = '';
@@ -723,7 +801,7 @@
             await pollMessages();
         }
 
-        // ---- Event delegation (keeps HTML free of inline handlers) ----
+        // ==== Event delegation on messages ====
         messagesEl.addEventListener('click', (e) => {
             const reactBtn = e.target.closest('.reaction-pill');
             if (reactBtn) {
@@ -752,6 +830,7 @@
             if (btn) toggleReaction(btn.dataset.msg, btn.dataset.emoji);
         });
 
+        // ==== Composer events ====
         composerInput.addEventListener('input', () => {
             charCount.textContent = `${composerInput.value.length} / 1000`;
             composerInput.style.height = 'auto';
@@ -765,19 +844,30 @@
             }
         });
 
+        // Close floating menus on outside click
         document.addEventListener('click', (e) => {
             if (!emojiMenu.contains(e.target)) {
                 emojiMenu.classList.remove('show');
                 activeEmojiMenuId = null;
             }
+            if (adminMenu && !adminMenu.contains(e.target) && e.target !== adminMenuBtn) {
+                adminMenu.classList.remove('show');
+            }
         });
 
+        // Admin ⋮ toggle
+        adminMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            adminMenu.classList.toggle('show');
+        });
+
+        // ==== Init ====
         (function init() {
             updateGuestStatus();
             pollMessages().then(() => {
                 messagesEl.scrollTop = messagesEl.scrollHeight;
             });
-            pollTimer = setInterval(pollMessages, 4000);
+            pollTimer = setInterval(pollMessages, POLL_MS);
         })();
     </script>
 </body>
