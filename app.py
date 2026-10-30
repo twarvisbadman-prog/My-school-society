@@ -1,5 +1,5 @@
-# app.py — Student Hub · Full build (v2)
-# R2 + Supabase Auth + Gamification + Community + Leaderboard + Notifications + Quiz + Upload Streak + Admin User Mgmt
+# app.py — Student Hub · Full build (v2) + Chat module
+# R2 + Supabase Auth + Gamification + Community + Leaderboard + Notifications + Quiz + Upload Streak + Admin User Mgmt + Chat
 import os
 import uuid
 import json
@@ -60,6 +60,9 @@ R2_PUBLIC_URL = env("R2_PUBLIC_URL", "https://pub-062ab58e23db4e31a628e6f6273a01
 SECRET_ADMIN_PATH = env("SECRET_ADMIN_PATH", "admin-portal-twarvis-9x7k2m4p8q3z5w6v")
 ADMIN = True
 
+# Chat admins: comma-separated emails in env CHAT_ADMIN_EMAILS (e.g. "you@gmail.com,other@gmail.com")
+CHAT_ADMIN_EMAILS = [e.strip().lower() for e in env("CHAT_ADMIN_EMAILS", "").split(",") if e.strip()]
+
 _allowed = env("ALLOWED_HOSTS", "*")
 ALLOWED_HOSTS = [h.strip() for h in _allowed.split(",") if h.strip()]
 
@@ -70,13 +73,14 @@ CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf.split(",") if o.strip()]
 # SANITY CHECK
 # ============================================================
 print("=" * 60)
-print("🚀 STUDENT HUB — Full Build v2")
+print("🚀 STUDENT HUB — Full Build v2 + Chat")
 print("=" * 60)
 print(f"📡 Supabase URL:  {SUPABASE_URL[:50]}")
 print(f"🔑 Supabase Key:  {'✅ VALID JWT' if SUPABASE_KEY.startswith('eyJ') else '❌ INVALID'}")
 print(f"☁️  R2 Bucket:    {R2_BUCKET_NAME}")
 print(f"🔐 Admin URL:     /{SECRET_ADMIN_PATH}/")
 print(f"🧠 Quiz bank:     {quiz_engine.total_questions()} questions loaded")
+print(f"💬 Chat:          /chat/  (24h auto-delete)")
 print(f"🐛 Debug:         {DEBUG}")
 print("=" * 60)
 
@@ -347,6 +351,14 @@ UNIVERSITIES = [
 # ============================================================
 def get_current_user(request):
     return getattr(request, "current_user", None)
+
+
+def is_chat_admin(request):
+    """True only for logged-in users whose email is in CHAT_ADMIN_EMAILS."""
+    me = get_current_user(request)
+    if not me or not me.get("email"):
+        return False
+    return me["email"].strip().lower() in CHAT_ADMIN_EMAILS
 
 
 def build_view_context(request):
@@ -1677,7 +1689,7 @@ def api_like_note(request, note_id):
     """
     LIKE API:
       +1 point to LIKER (like_given)
-      +2 points to OWNER (like_received)  ← UPDATED
+      +2 points to OWNER (like_received)
       +1 likes_received counter for OWNER
       + Notification to owner
     Unlike: -1 likes_received counter (points stay).
@@ -1749,7 +1761,7 @@ def api_like_note(request, note_id):
                         cur_likes = o.data[0].get("likes_received", 0) or 0
                         cur_points = o.data[0].get("points", 0) or 0
                         new_likes = cur_likes + 1
-                        new_points = cur_points + 2   # 👈 +2 per like
+                        new_points = cur_points + 2   # +2 per like
 
                         supabase.table("users").update({
                             "likes_received": new_likes,
@@ -2139,6 +2151,11 @@ def _api_follow_list(request, username, mode="followers"):
 
 
 # ============================================================
+# CHAT MODULE  (chat.py lives next to app.py; it imports `app` lazily)
+# ============================================================
+import chat
+
+# ============================================================
 # URLS
 # ============================================================
 urlpatterns = [
@@ -2176,6 +2193,15 @@ urlpatterns = [
     path("api/notifications/read/", api_mark_notifications_read, name="api_mark_notifications_read"),
     path("api/followers/<str:username>/", api_list_followers, name="api_list_followers"),
     path("api/following/<str:username>/", api_list_following, name="api_list_following"),
+
+    # CHAT
+    path("chat/", chat.chat_view, name="chat"),
+    path("api/chat/messages/", chat.api_chat_messages, name="api_chat_messages"),
+    path("api/chat/send/", chat.api_chat_send, name="api_chat_send"),
+    path("api/chat/react/<str:message_id>/", chat.api_chat_react, name="api_chat_react"),
+    path("api/chat/admin/delete/<str:message_id>/", chat.api_chat_admin_delete, name="api_chat_admin_delete"),
+    path("api/chat/admin/pin/", chat.api_chat_admin_pin, name="api_chat_admin_pin"),
+    path("api/chat/guest-status/", chat.api_chat_guest_status, name="api_chat_guest_status"),
 
     # ADMIN
     path(f"{SECRET_ADMIN_PATH}/", admin_dashboard, name="admin_dashboard"),
@@ -2232,10 +2258,6 @@ urlpatterns = [
     path("scanner/", scanner_view, name="scanner_alt"),
 
     # ABOUT CREATOR — all paths resolve to the root-level aboutcreator.html
-    #   /aboutcreator.html
-    #   /aboutcreator/
-    #   /about/aboutcreator.html
-    #   /about/aboutcreator/
     path("aboutcreator.html", aboutcreator_view, name="aboutcreator"),
     path("aboutcreator/", aboutcreator_view, name="aboutcreator_alt"),
     path("about/aboutcreator.html", aboutcreator_view, name="aboutcreator_nested"),
