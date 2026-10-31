@@ -233,19 +233,83 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .sidebar.open .sidebar-nav a { opacity: 1; transform: translateX(0); }
 
-.sidebar.open .sidebar-nav a:nth-child(1) { transition-delay: 0.1s; }
-.sidebar.open .sidebar-nav a:nth-child(2) { transition-delay: 0.15s; }
-.sidebar.open .sidebar-nav a:nth-child(3) { transition-delay: 0.2s; }
-.sidebar.open .sidebar-nav a:nth-child(4) { transition-delay: 0.25s; }
-.sidebar.open .sidebar-nav a:nth-child(5) { transition-delay: 0.3s; }
-.sidebar.open .sidebar-nav a:nth-child(6) { transition-delay: 0.35s; }
-.sidebar.open .sidebar-nav a:nth-child(7) { transition-delay: 0.4s; }
-.sidebar.open .sidebar-nav a:nth-child(8) { transition-delay: 0.45s; }
-.sidebar.open .sidebar-nav a:nth-child(9) { transition-delay: 0.5s; }
-
 .sidebar-nav a:hover, .sidebar-nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
 .sidebar-nav a i { font-size: 1.1rem; color: var(--text-muted); transition: color 0.3s; }
 .sidebar-nav a:hover i, .sidebar-nav a.active i { color: var(--accent); }
+
+/* ============ SIDEBAR MENU v2 + MOTION ============ */
+:root{--sb-a1:rgba(46,139,87,.22);--sb-a2:rgba(59,130,246,.18);--sb-a3:rgba(139,92,246,.18)}
+.sidebar{overflow:hidden}
+.sidebar::before{content:"";position:absolute;inset:-20%;z-index:0;pointer-events:none;opacity:.6;
+  background:radial-gradient(40% 30% at 20% 15%,var(--sb-a1),transparent 70%),
+             radial-gradient(35% 28% at 85% 40%,var(--sb-a2),transparent 70%),
+             radial-gradient(40% 30% at 30% 90%,var(--sb-a3),transparent 70%);
+  animation:auroraDrift 16s ease-in-out infinite alternate}
+@keyframes auroraDrift{0%{transform:translate3d(-4%,-3%,0) rotate(0) scale(1)}100%{transform:translate3d(5%,4%,0) rotate(8deg) scale(1.12)}}
+.sidebar::after{content:"";position:absolute;top:0;left:0;right:0;height:3px;z-index:2;pointer-events:none;
+  background:linear-gradient(90deg,var(--accent),#3b82f6,#8b5cf6,var(--accent));background-size:300% 100%;animation:flowLine 5s linear infinite}
+@keyframes flowLine{to{background-position:300% 0}}
+.sidebar > *{position:relative;z-index:1}
+.sidebar-nav{scrollbar-width:thin}
+.sidebar-nav::-webkit-scrollbar{width:4px}
+.sidebar-nav::-webkit-scrollbar-thumb{background:rgba(120,120,120,.35);border-radius:4px}
+.sidebar-nav a{position:relative;padding-top:11px;padding-bottom:11px;font-size:15.5px}
+.sidebar-nav a::before{content:"";position:absolute;left:-14px;top:22%;height:56%;width:3px;border-radius:3px;
+  background:linear-gradient(180deg,var(--accent),#3b82f6);transform:scaleY(0);transition:transform .35s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 12px var(--accent)}
+.sidebar-nav a:hover::before,.sidebar-nav a.active::before{transform:scaleY(1)}
+
+/* staggered entrance */
+.sidebar.open .sidebar-nav a:nth-child(1){transition-delay:0.095s}
+.sidebar.open .sidebar-nav a:nth-child(2){transition-delay:0.130s}
+.sidebar.open .sidebar-nav a:nth-child(3){transition-delay:0.165s}
+.sidebar.open .sidebar-nav a:nth-child(4){transition-delay:0.200s}
+.sidebar.open .sidebar-nav a:nth-child(5){transition-delay:0.235s}
+.sidebar.open .sidebar-nav a:nth-child(6){transition-delay:0.270s}
+.sidebar.open .sidebar-nav a:nth-child(7){transition-delay:0.305s}
+.sidebar.open .sidebar-nav a:nth-child(8){transition-delay:0.340s}
+.sidebar.open .sidebar-nav a:nth-child(9){transition-delay:0.375s}
+.sidebar.open .sidebar-nav a:nth-child(10){transition-delay:0.410s}
+.sidebar.open .sidebar-nav a:nth-child(11){transition-delay:0.445s}
+.sidebar.open .sidebar-nav a:nth-child(12){transition-delay:0.480s}
+.sidebar.open .sidebar-nav a:nth-child(13){transition-delay:0.515s}
+.sidebar.open .sidebar-nav a:nth-child(14){transition-delay:0.550s}
+.sidebar.open .sidebar-nav a:nth-child(15){transition-delay:0.585s}
+.sidebar.open .sidebar-nav a:nth-child(16){transition-delay:0.620s}
+.sidebar.open .sidebar-nav a:hover{transition-delay:0s}
+
+.sb-left{display:inline-flex;align-items:center;gap:12px;min-width:0}
+.sidebar-nav .sb-left i{width:22px;text-align:center;font-size:1rem;color:var(--text-muted);transition:transform .35s cubic-bezier(.34,1.56,.64,1),color .3s}
+.sidebar-nav a:hover .sb-left i,.sidebar-nav a.active .sb-left i{color:var(--accent);transform:scale(1.2) rotate(-8deg)}
+.sb-ico{width:22px;height:22px;flex-shrink:0;fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.sb-new{background:linear-gradient(100deg,transparent 0%,rgba(46,139,87,.08) 50%,transparent 100%);background-size:250% 100%;animation:sbShimmer 4s ease-in-out infinite}
+@keyframes sbShimmer{0%{background-position:150% 0}100%{background-position:-150% 0}}
+.sb-badge{font-size:.62rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;color:#fff;
+  background:linear-gradient(120deg,var(--accent),#3b82f6);box-shadow:0 4px 12px -4px var(--accent);display:inline-flex;align-items:center;gap:5px;flex-shrink:0}
+.sb-badge.ai{background:linear-gradient(120deg,#8b5cf6,#ec4899)}
+.sb-badge.live{background:linear-gradient(120deg,#ef4444,#f97316)}
+.sb-badge.live::before{content:"";width:6px;height:6px;border-radius:50%;background:#fff;animation:livePulse 1.2s ease-in-out infinite}
+@keyframes livePulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.8);opacity:.4}}
+
+/* animated scanner icon */
+.scan-ico .scan-line{stroke:#ef4444;stroke-width:2;transform-box:fill-box;transform-origin:center;animation:scanMove 1.9s ease-in-out infinite alternate;filter:drop-shadow(0 0 3px #ef4444)}
+@keyframes scanMove{from{transform:translateY(-6px)}to{transform:translateY(6px)}}
+.scan-ico .corners{animation:cornerBlink 2.4s ease-in-out infinite}
+@keyframes cornerBlink{50%{opacity:.55}}
+.sb-scan:hover .scan-ico .scan-line{animation-duration:.8s}
+
+/* animated chat icon */
+.chat-ico{animation:chatFloat 3s ease-in-out infinite}
+@keyframes chatFloat{50%{transform:translateY(-2px) rotate(-3deg)}}
+.chat-ico .dot{fill:var(--accent);stroke:none;transform-box:fill-box;transform-origin:center;animation:dotBounce 1.2s ease-in-out infinite}
+.chat-ico .dot:nth-of-type(2){animation-delay:.15s}.chat-ico .dot:nth-of-type(3){animation-delay:.3s}
+@keyframes dotBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-3.5px)}}
+.sb-chat:hover .chat-ico .dot{animation-duration:.6s}
+
+/* red "new" dot on the hamburger until the menu has been opened */
+.menu-toggle{position:relative}
+.menu-toggle::after{content:"";position:absolute;top:3px;right:3px;width:10px;height:10px;border-radius:50%;background:#ef4444;border:2px solid var(--surface);animation:dotPing 1.8s ease-out infinite}
+.menu-toggle.seen::after{display:none}
+@keyframes dotPing{0%{box-shadow:0 0 0 0 rgba(239,68,68,.6)}70%,100%{box-shadow:0 0 0 9px rgba(239,68,68,0)}}
 
 /* ----- MAIN CONTENT ----- */
 .main-content {
@@ -862,7 +926,7 @@ footer {
 <!-- SIDEBAR OVERLAY -->
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-<!-- POLISHED SIDEBAR -->
+<!-- POLISHED SIDEBAR (v2) -->
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <button class="icon-btn" aria-label="Search">
@@ -890,21 +954,27 @@ footer {
     </a>
     {% endif %}
 
-    <nav class="sidebar-nav">
-        <a href="/">Home</a>
-        <a href="/browse/">Browse Notes</a>
-        <a href="/upload/">Upload</a>
-        <a href="/quiz/">Daily Quiz</a>
-        <a href="/leaderboard/">Leaderboard</a>
-        <a href="/community/">Community</a>
-        <a href="/free_course/">Free Courses</a>
-        <a href="/about/" class="active">About</a>
-        
-        {% if not is_authenticated %}
-        <a href="/login/" style="color: var(--accent); margin-top: 20px;">Log In</a>
-        <a href="/signup/" style="color: var(--accent);">Join Free</a>
-        {% endif %}
-    </nav>
+  <nav class="sidebar-nav">
+    <a href="/"><span class="sb-left"><i class="fas fa-house"></i>Home</span></a>
+    <a href="/browse/"><span class="sb-left"><i class="fas fa-folder-open"></i>Browse Notes</span></a>
+    <a href="/upload/"><span class="sb-left"><i class="fas fa-cloud-arrow-up"></i>Upload</span></a>
+    {% if is_authenticated %}
+    <a href="/dashboard/"><span class="sb-left"><i class="fas fa-gauge-high"></i>Dashboard</span></a>
+    {% endif %}
+    <a href="/quiz/"><span class="sb-left"><i class="fas fa-bolt"></i>Daily Quiz</span></a>
+    <a href="/autoquiz/" class="sb-new"><span class="sb-left"><i class="fas fa-robot"></i>AutoQuiz AI</span><span class="sb-badge ai">AI</span></a>
+    <a href="/leaderboard/"><span class="sb-left"><i class="fas fa-trophy"></i>Leaderboard</span></a>
+    <a href="/community/"><span class="sb-left"><i class="fas fa-users"></i>Community</span></a>
+    <a href="/scanner/" class="sb-new sb-scan"><span class="sb-left"><svg class="sb-ico scan-ico" viewBox="0 0 24 24" aria-hidden="true"><g class="corners"><path d="M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3"/></g><line class="scan-line" x1="6" y1="12" x2="18" y2="12"/></svg>Scanner</span><span class="sb-badge ">New</span></a>
+    <a href="/chat/" class="sb-new sb-chat"><span class="sb-left"><svg class="sb-ico chat-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.4A8 8 0 1121 12z"/><circle class="dot" cx="9" cy="12" r="1.2"/><circle class="dot" cx="12.5" cy="12" r="1.2"/><circle class="dot" cx="16" cy="12" r="1.2"/></svg>Chat with Friends</span><span class="sb-badge live">Live</span></a>
+    <a href="/calculator/"><span class="sb-left"><i class="fas fa-calculator"></i>Calculator</span></a>
+    <a href="/about/" class="active"><span class="sb-left"><i class="fas fa-circle-info"></i>About</span></a>
+    <a href="/aboutcreator/"><span class="sb-left"><i class="fas fa-user-astronaut"></i>About Creator</span></a>
+    {% if not is_authenticated %}
+    <a href="/login/" style="color:var(--accent);margin-top:20px;"><span class="sb-left"><i class="fas fa-right-to-bracket"></i>Log In</span></a>
+    <a href="/signup/" style="color:var(--accent);"><span class="sb-left"><i class="fas fa-user-plus"></i>Join Free</span></a>
+    {% endif %}
+  </nav>
 </aside>
 
 <!-- MAIN CONTENT -->
@@ -1132,7 +1202,7 @@ footer {
     <!-- SEE MORE ABOUT CREATOR CARD -->
     <section class="section-transparent">
         <div class="container">
-            <a href="aboutcreator.html" target="_self" rel="noopener" class="about-creator-card" style="text-decoration:none; color:inherit;">
+            <a href="/aboutcreator/" target="_self" rel="noopener" class="about-creator-card" style="text-decoration:none; color:inherit;">
                 <div class="pulse-icon"><i class="fas fa-user-astronaut"></i></div>
                 <h2>See more about the Creator</h2>
                 <p>Discover the full story behind Student Hub, my coding journey, the skills I've built, and the vision that drives this platform. Tap below to read my complete portfolio.</p>
@@ -1210,7 +1280,7 @@ footer {
             <div class="cc-grid">
                 <div class="cc-card">
                     <div class="cc-head">
-                        <div class="cc-icon"><i class="fas fa-wikipedia-w"></i></div>
+                        <div class="cc-icon"><i class="fab fa-wikipedia-w"></i></div>
                         <div class="cc-head-text"><h4>Wikipedia</h4><span>wikipedia.org</span></div>
                     </div>
                     <div class="cc-desc">The world's largest free encyclopedia — every article is CC BY-SA licensed and editable by anyone.</div>
@@ -1348,9 +1418,9 @@ footer {
             <div class="footer-bottom">
                 <p>© 2026 Student Hub. All rights reserved.</p>
                 <div class="footer-socials">
-                    <a href="https://www.instagram.com/twarvice?stkn=NGw0NGR5NjZnNTdy&utm_source=qr" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://wa.me/255740706007" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.instagram.com/twarvice?stkn=NGw0NGR5NjZnNTdy&utm_source=qr" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@twarvis" target="_blank" rel="noopener" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://wa.me/255740706007" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
                 </div>
             </div>
         </div>
@@ -1424,6 +1494,16 @@ document.addEventListener('keydown', (e) => {
         closeSidebar();
     }
 });
+
+// 2b. Hide the red "new" dot on the menu button once the menu has been opened
+(function(){
+    var btn = document.getElementById('menuToggle'); if(!btn) return;
+    try{ if(localStorage.getItem('sh-menu-seen')==='1') btn.classList.add('seen'); }catch(e){}
+    btn.addEventListener('click', function(){
+        btn.classList.add('seen');
+        try{ localStorage.setItem('sh-menu-seen','1'); }catch(e){}
+    });
+})();
 
 // 3. PROJECT CARD IMAGE ROTATION
 document.querySelectorAll('.project-image').forEach(function(img){
