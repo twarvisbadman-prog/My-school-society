@@ -1,5 +1,5 @@
-# app.py — Student Hub · Full build (v3) — PERFORMANCE EDITION
-# R2 + Supabase Auth + Gamification + Community + Leaderboard + Notifications + Quiz + Upload Streak + Admin User Mgmt + Chat
+# app.py — Student Hub · Full build (v4) — PERFORMANCE + SHARE EDITION
+# R2 + Supabase Auth + Gamification + Community + Leaderboard + Notifications + Quiz + Upload Streak + Admin User Mgmt + Chat + Share
 import os
 import uuid
 import json
@@ -7,6 +7,7 @@ import re
 import time
 import threading
 import requests
+from urllib.parse import quote as url_quote
 from datetime import datetime, date, timedelta
 from django.conf import settings
 from django.core.wsgi import get_wsgi_application
@@ -74,7 +75,7 @@ CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf.split(",") if o.strip()]
 # SANITY CHECK
 # ============================================================
 print("=" * 60)
-print("🚀 STUDENT HUB — v3 PERFORMANCE EDITION")
+print("🚀 STUDENT HUB — v4 PERFORMANCE + SHARE EDITION")
 print("=" * 60)
 print(f"📡 Supabase URL:  {SUPABASE_URL[:50]}")
 print(f"🔑 Supabase Key:  {'✅ VALID JWT' if SUPABASE_KEY.startswith('eyJ') else '❌ INVALID'}")
@@ -82,6 +83,7 @@ print(f"☁️  R2 Bucket:    {R2_BUCKET_NAME}")
 print(f"🔐 Admin URL:     /{SECRET_ADMIN_PATH}/")
 print(f"🧠 Quiz bank:     {quiz_engine.total_questions()} questions loaded")
 print(f"💬 Chat:          /chat/  (24h auto-delete)")
+print(f"📤 Share API:     /api/share/<id>/")
 print(f"🐛 Debug:         {DEBUG}")
 print("=" * 60)
 
@@ -162,15 +164,15 @@ except Exception as e:
     r2_client = None
 
 # ============================================================
-# IN-PROCESS CACHES (thread-safe enough for gthread workers)
+# IN-PROCESS CACHES
 # ============================================================
-_user_cache = {}          # token_tail -> (user_dict, expires_at)
+_user_cache = {}
 _user_cache_lock = threading.Lock()
-_USER_CACHE_TTL = 60      # seconds
+_USER_CACHE_TTL = 60
 
-_streak_recent = {}       # user_id -> last_checked_ts
+_streak_recent = {}
 _streak_lock = threading.Lock()
-_STREAK_CHECK_TTL = 3600  # 1 hour
+_STREAK_CHECK_TTL = 3600
 
 _leaderboard_cache = {"data": None, "ts": 0}
 _LEADERBOARD_TTL = 10
@@ -192,7 +194,6 @@ def _cache_get(cache, key):
 def _cache_set(cache, key, value, ttl):
     with _user_cache_lock:
         cache[key] = (value, time.time() + ttl)
-        # crude eviction to prevent unbounded growth
         if len(cache) > 5000:
             now = time.time()
             for k in [k for k, v in cache.items() if v[1] < now]:
@@ -200,7 +201,6 @@ def _cache_set(cache, key, value, ttl):
 
 
 def invalidate_user_cache(user_id=None, token=None):
-    """Call this after any write that changes users row."""
     with _user_cache_lock:
         if token:
             _user_cache.pop(token[-24:], None)
@@ -211,9 +211,8 @@ def invalidate_user_cache(user_id=None, token=None):
                 if u and str(u.get("id")) == uid:
                     _user_cache.pop(k, None)
 
-
 # ============================================================
-# SESSION MIDDLEWARE (cached, fast)
+# SESSION MIDDLEWARE
 # ============================================================
 class SessionMiddleware(MiddlewareMixin):
     def process_request(self, request):
@@ -285,7 +284,6 @@ class SessionMiddleware(MiddlewareMixin):
                     except Exception:
                         pass
             else:
-                # Username fixup — only if genuinely missing
                 if not profile_data.get("username"):
                     new_username = SessionMiddleware._generate_unique_username(user.email, user.id)
                     try:
@@ -503,10 +501,6 @@ def award_points(user_id, action, points, reference_id=None):
 
 
 def update_streak(user_id, force=False):
-    """
-    Fire streak update, but no-op if we already checked this user recently.
-    This eliminates 2 extra queries on every action.
-    """
     uid = str(user_id)
     now = time.time()
     if not force:
@@ -674,18 +668,14 @@ def can_view_inline(filename):
     return ext in ['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg', '.txt', '.md', '.csv']
 
 
-# ════════════════════════════════════════════════════════════
-# THE FIX: BATCHED NOTES FETCH — 2 queries instead of N*2
-# ════════════════════════════════════════════════════════════
+# ─── BATCHED NOTES FETCH ───
 def _enrich_notes_batch(notes, current_user_id=None):
-    """Attach like_count / user_liked to a list of notes using 1 query."""
     if not notes:
         return notes
     note_ids = [n["id"] for n in notes]
     counts = {}
     user_liked = set()
     try:
-        # Single query for all likes across all listed notes
         likes = supabase.table("note_likes").select("note_id, user_id") \
             .in_("note_id", note_ids).execute().data or []
         for l in likes:
@@ -1138,7 +1128,7 @@ def leaderboard_view(request):
 def community_view(request):
     now = time.time()
     if _community_cache["data"] is not None and now - _community_cache["ts"] < _COMMUNITY_TTL:
-        users = [dict(u) for u in _community_cache["data"]]   # copy for mutating is_following
+        users = [dict(u) for u in _community_cache["data"]]
     else:
         try:
             rows = supabase.table("users").select(
@@ -1256,7 +1246,6 @@ def upload_view(request):
                                     pass
                                 update_streak(uploader_id, force=True)
 
-                                # ─── 3-NOTE UPLOAD STREAK BONUS ───
                                 try:
                                     count_resp = supabase.table("notes").select("id", count="exact") \
                                         .eq("uploader_id", uploader_id).execute()
@@ -1377,7 +1366,6 @@ def view_file(request, id):
         note["is_pdf"] = os.path.splitext(note.get("filename", ""))[1].lower() == '.pdf'
         note["is_image"] = os.path.splitext(note.get("filename", ""))[1].lower() in ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg']
         note["is_text"] = os.path.splitext(note.get("filename", ""))[1].lower() in ['.txt', '.md', '.csv', '.json', '.xml']
-        # REMOVED blocking requests.get() — text fetched lazily by /api/text/<id>/
         note["text_content"] = ""
         ctx = {"note": note, "pdf_url": file_url, "admin": ADMIN}
         ctx.update(build_view_context(request))
@@ -1386,9 +1374,6 @@ def view_file(request, id):
         return HttpResponse(f"Error: {str(e)}", status=500)
 
 
-# ════════════════════════════════════════════════════════════
-# NEW: lazy text-file endpoint (avoids 10s block in view_file)
-# ════════════════════════════════════════════════════════════
 def api_text_preview(request, id):
     try:
         result = supabase.table("notes").select("*").eq("id", id).execute()
@@ -1405,7 +1390,6 @@ def api_text_preview(request, id):
         try:
             r = requests.get(file_url, timeout=5)
             if r.status_code == 200:
-                # Cap to avoid huge responses
                 return JsonResponse({"content": r.text[:200000]})
         except Exception as e:
             print(f"[api_text_preview] fetch failed: {e}")
@@ -1428,10 +1412,8 @@ def download_file(request, id):
             if get_passcode != correct_passcode:
                 return HttpResponse("Access Denied. Incorrect passcode.", status=403)
         r2_key = f"notes/{note['filename']}"
-        # Redirect to R2 public URL — MUCH faster than proxying bytes
         if note.get("privacy", "public") == "public":
             return redirect(get_r2_public_url(r2_key))
-        # Private: still proxy so we can enforce passcode
         file_data = get_r2_file_bytes(r2_key)
         if file_data is None:
             return HttpResponse("File not found in storage", status=404)
@@ -1578,7 +1560,7 @@ def admin_settings(request):
     return render(request, "admin_settings.html", {"secret_admin_path": SECRET_ADMIN_PATH})
 
 # ============================================================
-# ADMIN — USER MANAGEMENT (BATCHED)
+# ADMIN — USER MANAGEMENT
 # ============================================================
 def admin_users(request):
     if not ADMIN:
@@ -1593,7 +1575,6 @@ def admin_users(request):
         print(f"[admin_users] {e}")
         users = []
 
-    # Batched: 1 query for all note counts
     if users:
         try:
             uid_strs = [str(u["id"]) for u in users]
@@ -1663,7 +1644,6 @@ def admin_notes_by_owner(request):
         print(f"[admin_notes_by_owner] {e}")
         notes = []
 
-    # Batched owner lookup
     owner_ids = list({str(n["uploader_id"]) for n in notes if n.get("uploader_id")})
     owners = {}
     if owner_ids:
@@ -1961,7 +1941,6 @@ def api_follow_user(request, user_id):
             update_streak(my_id)
         except Exception:
             pass
-        # Bust leaderboard/community caches on follow
         _leaderboard_cache["ts"] = 0
         _community_cache["ts"] = 0
         return JsonResponse({"following": bool(following)})
@@ -1970,9 +1949,6 @@ def api_follow_user(request, user_id):
         return JsonResponse({"error": str(e)}, status=500)
 
 
-# ============================================================
-# UPDATE PROFILE
-# ============================================================
 @csrf_exempt
 def api_update_profile(request):
     me = get_current_user(request)
@@ -2041,7 +2017,6 @@ def api_update_profile(request):
             "error": "update_failed",
             "message": f"Database error: {str(e)}"
         }, status=500)
-
 
 # ============================================================
 # DAILY QUIZ API
@@ -2121,9 +2096,8 @@ def api_daily_quiz(request):
         print(f"[api_daily_quiz] {e}")
         return JsonResponse({"error": str(e)}, status=500)
 
-
 # ============================================================
-# NOTIFICATIONS + FOLLOW LISTS API (BATCHED)
+# NOTIFICATIONS + FOLLOW LISTS API
 # ============================================================
 @csrf_exempt
 def api_notifications(request):
@@ -2139,7 +2113,6 @@ def api_notifications(request):
         print(f"[api_notifications] {e}")
         return JsonResponse({"notifications": [], "unread_count": 0})
 
-    # BATCHED: 1 query for all actors
     actor_ids = list({str(n["actor_id"]) for n in rows if n.get("actor_id")})
     actors = {}
     if actor_ids:
@@ -2169,7 +2142,6 @@ def api_notifications(request):
     unread = sum(1 for n in notifications if not n["is_read"])
 
     response = JsonResponse({"notifications": notifications, "unread_count": unread})
-    # Short cache helps heavily-polled endpoint
     response["Cache-Control"] = "private, max-age=5"
     return response
 
@@ -2258,6 +2230,81 @@ def _api_follow_list(request, username, mode="followers"):
         })
     return JsonResponse({"users": users_out})
 
+# ============================================================
+# ⭐ SHARE API (NEW)
+# ============================================================
+@csrf_exempt
+def api_share_info(request, id):
+    """
+    Returns everything the share modal needs:
+    public URLs, WhatsApp links, social links, and copy-paste text.
+    Requires passcode for private notes.
+    """
+    try:
+        result = supabase.table("notes").select("*").eq("id", id).execute()
+        if not result.data:
+            return JsonResponse({"error": "not_found"}, status=404)
+        note = result.data[0]
+
+        passcode = request.GET.get("passcode", "")
+        if note.get("privacy") == "private":
+            if passcode != note.get("passcode", ""):
+                return JsonResponse({"error": "passcode_required"}, status=403)
+
+        scheme = "https" if (request.is_secure() or request.META.get("HTTP_X_FORWARDED_PROTO") == "https") else request.scheme
+        host = request.get_host()
+
+        qs = f"?passcode={url_quote(passcode)}" if passcode else ""
+        view_url = f"{scheme}://{host}/view/{id}/{qs}"
+        download_url = f"{scheme}://{host}/download/{id}/{qs}"
+
+        title = note.get("module") or note.get("original_filename") or note.get("filename") or "Study document"
+        description = note.get("description") or ""
+        course = note.get("course") or ""
+        university = note.get("university") or ""
+        filename = note.get("original_filename") or note.get("filename") or "document"
+
+        message_lines = [f"📚 {title}"]
+        if course and course != "N/A":
+            message_lines.append(f"📖 {course}")
+        if university and university != "Not specified":
+            message_lines.append(f"🏫 {university}")
+        if description:
+            message_lines.append("")
+            message_lines.append(description[:180])
+        message_lines.append("")
+        message_lines.append(f"Open here 👉 {view_url}")
+        share_text = "\n".join(message_lines)
+
+        whatsapp_link = f"https://wa.me/?text={url_quote(share_text)}"
+        whatsapp_doc_link = f"https://wa.me/?text={url_quote(title + ' — ' + download_url)}"
+
+        twitter_text = url_quote(f"{title} — shared via Student Hub")
+        twitter_link = f"https://twitter.com/intent/tweet?text={twitter_text}&url={url_quote(view_url)}"
+        facebook_link = f"https://www.facebook.com/sharer/sharer.php?u={url_quote(view_url)}"
+        email_subject = url_quote(f"Study doc: {title}")
+        email_body = url_quote(share_text)
+        email_link = f"mailto:?subject={email_subject}&body={email_body}"
+
+        return JsonResponse({
+            "view_url": view_url,
+            "download_url": download_url,
+            "title": title,
+            "description": description,
+            "course": course,
+            "university": university,
+            "filename": filename,
+            "is_pdf": filename.lower().endswith(".pdf"),
+            "share_text": share_text,
+            "whatsapp_link": whatsapp_link,
+            "whatsapp_doc_link": whatsapp_doc_link,
+            "twitter_link": twitter_link,
+            "facebook_link": facebook_link,
+            "email_link": email_link,
+        })
+    except Exception as e:
+        print(f"[api_share_info] {e}")
+        return JsonResponse({"error": str(e)}, status=500)
 
 # ============================================================
 # CHAT MODULE
@@ -2297,6 +2344,7 @@ urlpatterns = [
     path("api/follow/<str:user_id>/", api_follow_user, name="api_follow_user"),
     path("api/profile/update/", api_update_profile, name="api_update_profile"),
     path("api/text/<int:id>/", api_text_preview, name="api_text_preview"),
+    path("api/share/<int:id>/", api_share_info, name="api_share_info"),   # ⭐ NEW
 
     # NOTIFICATIONS + FOLLOW LISTS
     path("api/notifications/", api_notifications, name="api_notifications"),
