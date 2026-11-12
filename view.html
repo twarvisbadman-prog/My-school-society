@@ -12,30 +12,15 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 <style>
 :root{
-    /* Theme 1 · Warm SaaS */
-    --bg:#fafaf9;
-    --surface:#ffffff;
-    --alt:#f5f5f4;
-    --border:#e7e5e4;
-    --border-strong:#d6d3d1;
-    --ink:#1c1917;
-    --text-2:#44403c;
-    --text-3:#57534e;
-    --accent:#c2410c;
-    --accent-bright:#ea580c;
-    --accent-pink:#db2777;
-    --accent-dim:#fff1e8;
+    --bg:#fafaf9;--surface:#ffffff;--alt:#f5f5f4;--border:#e7e5e4;--border-strong:#d6d3d1;
+    --ink:#1c1917;--text-2:#44403c;--text-3:#57534e;
+    --accent:#c2410c;--accent-bright:#ea580c;--accent-pink:#db2777;--accent-dim:#fff1e8;
     --grad:linear-gradient(120deg,#ea580c,#db2777);
     --grad-cta:linear-gradient(120deg,#c2410c,#be185d);
     --grad-cta-hover:linear-gradient(120deg,#9a3412,#9d174d);
-    --success:#15803d;
-    --gold:#b45309;
-    --gold-dim:#fef3c7;
-    --gold-border:#fde68a;
-    --radius-sm:10px;
-    --radius-md:14px;
-    --radius-lg:20px;
-    --radius-xl:28px;
+    --success:#15803d;--gold:#b45309;--gold-dim:#fef3c7;
+    --wa:#25D366;--wa-dark:#128C7E;
+    --radius-sm:10px;--radius-md:14px;--radius-lg:20px;--radius-xl:28px;
     --shadow-sm:0 1px 2px rgba(28,25,23,.06);
     --shadow-md:0 10px 28px -12px rgba(28,25,23,.18);
     --shadow-lg:0 28px 64px -20px rgba(28,25,23,.22);
@@ -43,14 +28,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{
-    font-family:'Inter',sans-serif;
-    background:var(--bg);color:var(--ink);
-    min-height:100vh;
-    overflow-x:hidden;
-    width:100%;
-    -webkit-font-smoothing:antialiased;
-}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden;width:100%;-webkit-font-smoothing:antialiased}
 a,button,input{font:inherit}
 a{color:inherit;text-decoration:none}
 img,embed,iframe,textarea{display:block;max-width:100%}
@@ -79,265 +57,197 @@ img,embed,iframe,textarea{display:block;max-width:100%}
 .btn-quote:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
 
 /* VIEWER */
-.viewer-container{max-width:1100px;margin:36px auto 60px;padding:0 20px;position:relative;z-index:3}
-
-.view-card{
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:var(--radius-xl);
-    padding:28px;
-    box-shadow:var(--shadow-sm);
-}
-
+.viewer-container{max-width:1100px;margin:36px auto 120px;padding:0 20px;position:relative;z-index:3}
+.view-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;box-shadow:var(--shadow-sm)}
 .pdf-header{margin-bottom:20px;display:flex;flex-direction:column;gap:12px}
 .pdf-title-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-
-.pdf-header h2{
-    display:flex;align-items:center;gap:12px;
-    color:var(--ink);
-    font-size:clamp(1.1rem,2vw,1.5rem);
-    font-weight:800;line-height:1.3;
-    word-break:break-word;
-    letter-spacing:-.02em;
-}
+.pdf-header h2{display:flex;align-items:center;gap:12px;color:var(--ink);font-size:clamp(1.1rem,2vw,1.5rem);font-weight:800;line-height:1.3;word-break:break-word;letter-spacing:-.02em}
 .pdf-header h2 i{color:var(--accent);font-size:1.1em}
-
-.doc-badge{
-    display:inline-flex;align-items:center;gap:8px;
-    padding:8px 14px;border-radius:999px;
-    background:var(--alt);
-    border:1px solid var(--border);
-    color:var(--text-2);
-    font-size:.76rem;font-weight:700;
-    letter-spacing:.04em;text-transform:uppercase;
-}
+.doc-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:var(--alt);border:1px solid var(--border);color:var(--text-2);font-size:.76rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
 .doc-badge i{color:var(--success)}
 .doc-badge i.fa-lock{color:var(--gold)}
-
 .pdf-meta{display:flex;flex-wrap:wrap;gap:10px 14px;font-size:.85rem;color:var(--text-2)}
-.pdf-meta span{
-    display:inline-flex;align-items:center;gap:7px;
-    padding:7px 12px;
-    background:var(--alt);
-    border:1px solid var(--border);
-    border-radius:999px;
-}
+.pdf-meta span{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;background:var(--alt);border:1px solid var(--border);border-radius:999px}
 .pdf-meta i{color:var(--accent)}
 .pdf-meta .lock-icon{color:var(--gold)}
 .pdf-meta .public-icon{color:var(--success)}
 
-.pdf-viewer{
-    position:relative;
-    background:var(--alt);
-    border-radius:var(--radius-lg);
-    overflow:hidden;
-    border:1px solid var(--border);
-    min-height:560px;
-}
-.pdf-viewer iframe,
-.pdf-viewer embed,
-.pdf-viewer img,
-.pdf-viewer textarea{
-    width:100%;
-    min-height:560px;
-    height:75vh;
-    background:var(--surface);
-    border:none;
-}
+.pdf-viewer{position:relative;background:var(--alt);border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);min-height:560px}
+.pdf-viewer iframe,.pdf-viewer embed,.pdf-viewer img,.pdf-viewer textarea{width:100%;min-height:560px;height:75vh;background:var(--surface);border:none}
 .pdf-viewer img{object-fit:contain;background:var(--alt)}
-.pdf-viewer textarea{
-    color:var(--ink);
-    background:var(--surface);
-    padding:24px;
-    resize:vertical;
-    font-family:'JetBrains Mono',monospace;
-    font-size:.9rem;
-    line-height:1.6;
-    white-space:pre-wrap;
-    outline:none;
-}
+.pdf-viewer textarea{color:var(--ink);background:var(--surface);padding:24px;resize:vertical;font-family:'JetBrains Mono',monospace;font-size:.9rem;line-height:1.6;white-space:pre-wrap;outline:none}
 
-.error-box{
-    display:flex;flex-direction:column;
-    justify-content:center;align-items:center;
-    min-height:520px;text-align:center;
-    padding:32px;
-    color:var(--text-2);
-    background:var(--alt);
-}
+.error-box{display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:520px;text-align:center;padding:32px;color:var(--text-2);background:var(--alt)}
 .error-box i{font-size:4rem;color:var(--accent);opacity:.8;margin-bottom:18px}
 .error-box h3{font-size:clamp(1.1rem,2vw,1.5rem);margin-bottom:8px;color:var(--ink);font-weight:800}
 .error-box p{color:var(--text-2);max-width:420px;line-height:1.6}
 
 .action-bar{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
-.action-bar a,
-.action-bar button{
-    display:inline-flex;align-items:center;justify-content:center;gap:10px;
-    min-height:48px;padding:12px 24px;
-    border-radius:999px;
-    font-weight:700;font-size:.9rem;
-    border:1px solid transparent;
-    transition:all .2s ease;
-    cursor:pointer;
-    text-decoration:none;
-}
-.action-bar a:hover,
-.action-bar button:hover,
-.action-bar a:focus-visible,
-.action-bar button:focus-visible{
-    transform:translateY(-1px);
-    outline:none;
-}
+.action-bar a,.action-bar button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:12px 24px;border-radius:999px;font-weight:700;font-size:.9rem;border:1px solid transparent;transition:all .2s ease;cursor:pointer;text-decoration:none}
+.action-bar a:hover,.action-bar button:hover{transform:translateY(-1px);outline:none}
+.btn-back{background:var(--surface);border-color:var(--border);color:var(--ink)}
+.btn-back:hover{background:var(--alt);border-color:var(--border-strong)}
+.btn-download{background:var(--grad-cta);color:#fff;box-shadow:var(--shadow-cta)}
+.btn-download:hover{background:var(--grad-cta-hover);box-shadow:0 12px 30px -8px rgba(219,39,119,.6)}
+.btn-open{background:var(--accent-dim);border-color:#fed7c3;color:var(--accent)}
+.btn-open:hover{background:#ffd9c2}
 
-.btn-back{
-    background:var(--surface);
-    border-color:var(--border);
-    color:var(--ink);
+/* ═══ FLOATING ACTION BUTTONS ═══ */
+.fab-stack{
+    position:fixed;
+    right:calc(20px + env(safe-area-inset-right, 0px));
+    bottom:calc(20px + env(safe-area-inset-bottom, 0px));
+    display:flex;flex-direction:column;gap:14px;
+    z-index:900;
 }
-.btn-back:hover,
-.btn-back:focus-visible{
-    background:var(--alt);
-    border-color:var(--border-strong);
-}
-
-.btn-download{
-    background:var(--grad-cta);
+.fab{
+    width:58px;height:58px;border-radius:50%;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:1.35rem;
+    border:none;cursor:pointer;
+    box-shadow:0 12px 28px -10px rgba(28,25,23,.35), 0 4px 10px -4px rgba(28,25,23,.2);
+    transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
     color:#fff;
-    box-shadow:var(--shadow-cta);
+    position:relative;
 }
-.btn-download:hover,
-.btn-download:focus-visible{
-    background:var(--grad-cta-hover);
-    box-shadow:0 12px 30px -8px rgba(219,39,119,.6);
-}
-.btn-download i{color:#fff}
+.fab:hover,.fab:focus-visible{transform:translateY(-3px) scale(1.05);outline:none;box-shadow:0 18px 34px -10px rgba(28,25,23,.4)}
+.fab:active{transform:scale(.96)}
+.fab[disabled]{opacity:.5;cursor:not-allowed;transform:none}
 
-.btn-open{
-    background:var(--accent-dim);
-    border-color:#fed7c3;
-    color:var(--accent);
+.fab-wa{background:var(--wa)}
+.fab-wa:hover{background:#1ebe5b}
+
+.fab-share{background:var(--grad-cta)}
+.fab-share:hover{background:var(--grad-cta-hover)}
+
+.fab-download{background:var(--ink)}
+.fab-download:hover{background:#0c0a09}
+
+.fab-full{background:var(--surface);color:var(--ink);border:1px solid var(--border)}
+.fab-full:hover{background:var(--alt)}
+
+/* Tooltip labels */
+.fab::after{
+    content:attr(data-label);
+    position:absolute;right:calc(100% + 12px);
+    top:50%;transform:translateY(-50%);
+    background:var(--ink);color:#fff;
+    padding:6px 12px;border-radius:8px;
+    font-size:.78rem;font-weight:600;
+    white-space:nowrap;
+    opacity:0;pointer-events:none;
+    transition:opacity .18s ease, transform .18s ease;
 }
-.btn-open:hover,
-.btn-open:focus-visible{
-    background:#ffd9c2;
+.fab:hover::after,.fab:focus-visible::after{opacity:1;transform:translateY(-50%) translateX(-3px)}
+
+/* ═══ SHARE MODAL ═══ */
+.share-modal{
+    position:fixed;inset:0;
+    display:none;align-items:flex-end;justify-content:center;
+    background:rgba(28,25,23,.55);
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    z-index:2000;padding:0;
 }
+.share-modal.active{display:flex;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.share-sheet{
+    width:100%;max-width:520px;
+    background:var(--surface);
+    border-radius:24px 24px 0 0;
+    padding:20px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+    box-shadow:0 -12px 40px -8px rgba(28,25,23,.3);
+    animation:slideUp .3s cubic-bezier(.16,1,.3,1);
+    max-height:90vh;overflow-y:auto;
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+
+.share-grabber{width:40px;height:4px;background:var(--border-strong);border-radius:2px;margin:0 auto 16px}
+.share-title{font-size:1.05rem;font-weight:800;color:var(--ink);margin-bottom:4px;text-align:center}
+.share-subtitle{font-size:.82rem;color:var(--text-3);text-align:center;margin-bottom:20px;line-height:1.5}
+
+.share-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+@media (min-width:640px){.share-grid{grid-template-columns:repeat(5,1fr)}}
+
+.share-item{
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    background:none;border:none;cursor:pointer;
+    padding:6px;text-decoration:none;color:inherit;
+    transition:transform .18s ease;
+}
+.share-item:hover,.share-item:focus-visible{transform:translateY(-2px);outline:none}
+.share-item:active{transform:scale(.95)}
+.share-icon{
+    width:54px;height:54px;border-radius:50%;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:1.4rem;color:#fff;
+    box-shadow:0 4px 12px -4px rgba(28,25,23,.25);
+    transition:transform .18s ease;
+}
+.share-item:hover .share-icon{transform:scale(1.08)}
+
+.share-icon.wa{background:var(--wa)}
+.share-icon.wa-doc{background:var(--wa-dark);position:relative}
+.share-icon.wa-doc::before{content:"📄";position:absolute;bottom:2px;right:2px;font-size:.75rem}
+.share-icon.fb{background:#1877F2}
+.share-icon.tw{background:#000}
+.share-icon.mail{background:#EA4335}
+.share-icon.copy{background:var(--ink)}
+.share-icon.native{background:var(--grad-cta)}
+
+.share-label{font-size:.72rem;font-weight:600;color:var(--text-2);text-align:center;line-height:1.2}
+
+.share-link-row{display:flex;gap:8px;margin-top:8px;padding:14px;background:var(--alt);border-radius:14px;border:1px solid var(--border)}
+.share-link-row input{flex:1;padding:11px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font-size:.82rem;font-family:'JetBrains Mono',monospace;outline:none;min-width:0}
+.share-link-row button{flex-shrink:0;padding:11px 18px;border-radius:10px;background:var(--grad-cta);color:#fff;border:none;font-weight:700;font-size:.82rem;cursor:pointer;white-space:nowrap}
+.share-link-row button:hover{background:var(--grad-cta-hover)}
+
+.toast{
+    position:fixed;bottom:calc(100px + env(safe-area-inset-bottom, 0px));
+    left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#fff;
+    padding:12px 22px;border-radius:999px;
+    font-size:.85rem;font-weight:600;
+    z-index:3000;opacity:0;pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease;
+    box-shadow:0 12px 28px -8px rgba(0,0,0,.4);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* PASSCODE OVERLAY */
-.passcode-overlay{
-    position:fixed;inset:0;
-    display:none;
-    align-items:center;justify-content:center;
-    background:rgba(28,25,23,.72);
-    backdrop-filter:blur(12px);
-    -webkit-backdrop-filter:blur(12px);
-    z-index:2000;
-    padding:18px;
-}
+.passcode-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(28,25,23,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:2100;padding:18px}
 .passcode-overlay.active{display:flex}
-
-.passcode-box{
-    width:min(100%,420px);
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:var(--radius-xl);
-    padding:34px 28px 24px;
-    box-shadow:var(--shadow-lg);
-    text-align:center;
-}
-.passcode-box .lock-icon{
-    display:inline-flex;align-items:center;justify-content:center;
-    width:82px;height:82px;
-    margin-bottom:18px;
-    border-radius:50%;
-    background:var(--gold-dim);
-    color:var(--gold);
-    font-size:2rem;
-}
+.passcode-box{width:min(100%,420px);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:34px 28px 24px;box-shadow:var(--shadow-lg);text-align:center}
+.passcode-box .lock-icon{display:inline-flex;align-items:center;justify-content:center;width:82px;height:82px;margin-bottom:18px;border-radius:50%;background:var(--gold-dim);color:var(--gold);font-size:2rem}
 .passcode-box h3{font-size:clamp(1.2rem,2vw,1.5rem);margin-bottom:10px;color:var(--ink);font-weight:800}
 .passcode-box p{color:var(--text-2);margin-bottom:20px;line-height:1.5}
-
-.passcode-box input{
-    width:100%;
-    padding:16px 18px;
-    border-radius:999px;
-    border:1px solid var(--border);
-    background:var(--bg);
-    color:var(--ink);
-    font-size:clamp(1.3rem,2vw,1.7rem);
-    font-family:'JetBrains Mono',monospace;
-    letter-spacing:.45em;
-    text-align:center;
-    outline:none;
-    transition:all .2s ease;
-}
-.passcode-box input::placeholder{
-    letter-spacing:.12em;
-    color:var(--text-3);
-    font-size:1rem;
-}
-.passcode-box input:focus{
-    border-color:var(--accent-bright);
-    background:var(--surface);
-    box-shadow:0 0 0 4px rgba(234,88,12,.12);
-}
-
-.error-msg{
-    min-height:18px;
-    margin-top:12px;
-    color:#b91c1c;
-    font-size:.83rem;
-    opacity:0;
-    transition:opacity .2s ease;
-}
+.passcode-box input{width:100%;padding:16px 18px;border-radius:999px;border:1px solid var(--border);background:var(--bg);color:var(--ink);font-size:clamp(1.3rem,2vw,1.7rem);font-family:'JetBrains Mono',monospace;letter-spacing:.45em;text-align:center;outline:none;transition:all .2s ease}
+.passcode-box input:focus{border-color:var(--accent-bright);background:var(--surface);box-shadow:0 0 0 4px rgba(234,88,12,.12)}
+.error-msg{min-height:18px;margin-top:12px;color:#b91c1c;font-size:.83rem;opacity:0;transition:opacity .2s ease}
 .error-msg.show{opacity:1}
+.unlock-btn{width:100%;margin-top:18px;background:var(--grad-cta);color:#fff;border:none;border-radius:999px;padding:15px 18px;font-weight:800;font-size:.95rem;cursor:pointer;box-shadow:var(--shadow-cta);transition:all .2s ease}
+.unlock-btn:hover:not(:disabled){background:var(--grad-cta-hover);transform:translateY(-1px)}
+.unlock-btn:disabled{opacity:.5;cursor:not-allowed}
+.back-btn{background:transparent;color:var(--text-3);border:none;margin-top:16px;font-size:.88rem;cursor:pointer}
+.back-btn:hover{color:var(--ink)}
 
-.unlock-btn{
-    width:100%;
-    margin-top:18px;
-    background:var(--grad-cta);
-    color:#fff;
-    border:none;
-    border-radius:999px;
-    padding:15px 18px;
-    font-weight:800;
-    font-size:.95rem;
-    cursor:pointer;
-    box-shadow:var(--shadow-cta);
-    transition:all .2s ease;
+/* FULLSCREEN MODE — hide nav/bars, expand viewer */
+body.is-fullscreen .topbar,
+body.is-fullscreen .mainnav,
+body.is-fullscreen .pdf-header,
+body.is-fullscreen .action-bar{display:none !important}
+body.is-fullscreen .viewer-container{max-width:100%;margin:0;padding:0;min-height:100vh}
+body.is-fullscreen .view-card{border-radius:0;border:none;padding:0;box-shadow:none;min-height:100vh}
+body.is-fullscreen .pdf-viewer{border-radius:0;border:none;height:100vh;min-height:100vh}
+body.is-fullscreen .pdf-viewer iframe,
+body.is-fullscreen .pdf-viewer embed,
+body.is-fullscreen .pdf-viewer img,
+body.is-fullscreen .pdf-viewer textarea{
+    height:100vh;min-height:100vh;
 }
-.unlock-btn:hover,
-.unlock-btn:focus-visible{
-    background:var(--grad-cta-hover);
-    transform:translateY(-1px);
-    box-shadow:0 20px 35px -8px rgba(219,39,119,.6);
-    outline:none;
-}
-.unlock-btn:disabled{
-    opacity:.5;
-    cursor:not-allowed;
-    transform:none;
-    box-shadow:none;
-}
-
-.back-btn{
-    background:transparent;
-    color:var(--text-3);
-    border:none;
-    margin-top:16px;
-    font-size:.88rem;
-    cursor:pointer;
-    transition:color .2s ease;
-}
-.back-btn:hover,
-.back-btn:focus-visible{
-    color:var(--ink);
-    outline:none;
-}
-
-:focus-visible{
-    outline:3px solid rgba(234,88,12,.5);
-    outline-offset:3px;
-}
+body.is-fullscreen .fab-stack{bottom:calc(24px + env(safe-area-inset-bottom, 0px))}
+body.is-fullscreen .fab-full{background:var(--grad-cta);color:#fff}
+body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
 
 /* RESPONSIVE */
 @media (max-width:720px){
@@ -347,26 +257,24 @@ img,embed,iframe,textarea{display:block;max-width:100%}
     .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0;margin:0 -16px;padding-left:16px;padding-right:16px}
     .menu::-webkit-scrollbar{display:none}
     .menu a{padding:8px 12px;font-size:.8rem;flex-shrink:0}
-    .viewer-container{margin:24px auto 40px;padding:0 16px}
+    .viewer-container{margin:24px auto 140px;padding:0 16px}
     .view-card{padding:20px}
-    .pdf-viewer,
-    .pdf-viewer iframe,
-    .pdf-viewer embed,
-    .pdf-viewer textarea{
-        min-height:420px;
-        height:60vh;
-    }
+    .pdf-viewer,.pdf-viewer iframe,.pdf-viewer embed,.pdf-viewer textarea{min-height:420px;height:60vh}
+    .fab{width:52px;height:52px;font-size:1.2rem}
+    .fab-stack{gap:11px}
 }
 @media (max-width:640px){
     .topbar-inner{gap:12px;font-size:.72rem}
     .topbar-inner span:nth-child(3){display:none}
     .view-card{padding:18px;border-radius:20px}
     .action-bar{flex-direction:column}
-    .action-bar a,
-    .action-bar button{width:100%}
+    .action-bar a,.action-bar button{width:100%}
     .passcode-box{padding:28px 20px 20px}
     .passcode-box input{letter-spacing:.22em}
     .btn-quote span{display:none}
+    .share-grid{grid-template-columns:repeat(4,1fr);gap:10px}
+    .share-icon{width:48px;height:48px;font-size:1.25rem}
+    .share-label{font-size:.66rem}
 }
 @media (max-width:400px){
     .logo-text{font-size:.95rem}
@@ -396,7 +304,6 @@ img,embed,iframe,textarea{display:block;max-width:100%}
             <img src="/apple-touch-icon.png" alt="Student Hub" class="logo-img">
             <span class="logo-text">Student<span>Hub</span></span>
         </a>
-
         <div class="menu">
             <a href="/">Home</a>
             <a href="/browse/" class="active">Browse</a>
@@ -407,7 +314,6 @@ img,embed,iframe,textarea{display:block;max-width:100%}
             <a href="/hackerthon/" class="hack-link"><i class="fas fa-code"></i>Hackathon</a>
             <a href="/about/">About</a>
         </div>
-
         <div class="nav-right">
             <a href="/upload/" class="btn-quote">
                 <span>Upload File</span> <i class="fas fa-arrow-right"></i>
@@ -431,7 +337,6 @@ img,embed,iframe,textarea{display:block;max-width:100%}
                     <span class="doc-badge"><i class="fas fa-globe"></i> Public</span>
                 {% endif %}
             </div>
-
             <div class="pdf-meta">
                 <span><i class="fas fa-tag"></i> {{ note.module|default:"N/A" }}</span>
                 <span><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
@@ -450,13 +355,13 @@ img,embed,iframe,textarea{display:block;max-width:100%}
         <div class="pdf-viewer" id="pdfViewer">
             {% if note.can_view_inline %}
                 {% if note.is_pdf %}
-                    <embed src="{{ pdf_url }}" type="application/pdf" title="PDF preview">
+                    <embed id="docEmbed" src="{{ pdf_url }}" type="application/pdf" title="PDF preview">
                 {% elif note.is_image %}
-                    <img src="{{ pdf_url }}" alt="{{ note.original_filename|default:note.filename|escape }}" />
+                    <img id="docImage" src="{{ pdf_url }}" alt="{{ note.original_filename|default:note.filename|escape }}" />
                 {% elif note.is_text %}
-                    <textarea readonly aria-label="Text document preview">{{ note.text_content|default:"Loading..." }}</textarea>
+                    <textarea id="docText" readonly aria-label="Text document preview">{{ note.text_content|default:"Loading..." }}</textarea>
                 {% else %}
-                    <iframe src="{{ pdf_url }}" title="Document Viewer"></iframe>
+                    <iframe id="docFrame" src="{{ pdf_url }}" title="Document Viewer"></iframe>
                 {% endif %}
             {% else %}
                 <div class="error-box">
@@ -472,13 +377,103 @@ img,embed,iframe,textarea{display:block;max-width:100%}
             {% if note.can_view_inline and note.is_pdf %}
                 <a href="{{ pdf_url }}" target="_blank" rel="noopener noreferrer" class="btn-open"><i class="fas fa-external-link-alt"></i> Open in new tab</a>
             {% endif %}
-            <a href="/download/{{ note.id }}/" class="btn-download" download>
+            <a href="/download/{{ note.id }}/{% if note.privacy == 'private' %}?passcode={{ note.passcode }}{% endif %}" class="btn-download" download>
                 <i class="fas fa-download"></i> Download
             </a>
         </div>
     </section>
 </main>
 
+<!-- ═══════════════════════════════════════════════
+     FLOATING ACTION BUTTONS
+     ═══════════════════════════════════════════════ -->
+<div class="fab-stack" aria-label="Quick actions">
+    <a class="fab fab-wa"
+       id="fabWhatsApp"
+       href="#"
+       data-label="Share on WhatsApp"
+       title="Share on WhatsApp"
+       aria-label="Share on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+    <button class="fab fab-share"
+            id="fabShare"
+            type="button"
+            data-label="Share"
+            title="Share"
+            aria-label="Share">
+        <i class="fas fa-share-alt"></i>
+    </button>
+    <a class="fab fab-download"
+       id="fabDownload"
+       href="/download/{{ note.id }}/{% if note.privacy == 'private' %}?passcode={{ note.passcode }}{% endif %}"
+       download
+       data-label="Download"
+       title="Download"
+       aria-label="Download">
+        <i class="fas fa-download"></i>
+    </a>
+    <button class="fab fab-full"
+            id="fabFullscreen"
+            type="button"
+            data-label="Full screen"
+            title="Full screen"
+            aria-label="Toggle full screen">
+        <i class="fas fa-expand" id="fabFullscreenIcon"></i>
+    </button>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SHARE MODAL
+     ═══════════════════════════════════════════════ -->
+<div class="share-modal" id="shareModal" role="dialog" aria-modal="true" aria-labelledby="shareTitle">
+    <div class="share-sheet" role="document">
+        <div class="share-grabber" aria-hidden="true"></div>
+        <h3 class="share-title" id="shareTitle">Share this document</h3>
+        <p class="share-subtitle" id="shareSubtitle">Send it to a friend via WhatsApp or copy the link.</p>
+
+        <div class="share-grid">
+            <a class="share-item" id="shareWaLink" href="#" target="_blank" rel="noopener">
+                <span class="share-icon wa"><i class="fab fa-whatsapp"></i></span>
+                <span class="share-label">WhatsApp</span>
+            </a>
+            <button class="share-item" id="shareWaDoc" type="button">
+                <span class="share-icon wa-doc"><i class="fas fa-file-arrow-up"></i></span>
+                <span class="share-label">WA + Doc</span>
+            </button>
+            <a class="share-item" id="shareFacebook" href="#" target="_blank" rel="noopener">
+                <span class="share-icon fb"><i class="fab fa-facebook-f"></i></span>
+                <span class="share-label">Facebook</span>
+            </a>
+            <a class="share-item" id="shareTwitter" href="#" target="_blank" rel="noopener">
+                <span class="share-icon tw"><i class="fab fa-x-twitter"></i></span>
+                <span class="share-label">X</span>
+            </a>
+            <a class="share-item" id="shareEmail" href="#">
+                <span class="share-icon mail"><i class="fas fa-envelope"></i></span>
+                <span class="share-label">Email</span>
+            </a>
+            <button class="share-item" id="shareNative" type="button">
+                <span class="share-icon native"><i class="fas fa-ellipsis-h"></i></span>
+                <span class="share-label">More</span>
+            </button>
+            <button class="share-item" id="shareCopy" type="button">
+                <span class="share-icon copy"><i class="fas fa-link"></i></span>
+                <span class="share-label">Copy link</span>
+            </button>
+        </div>
+
+        <div class="share-link-row">
+            <input type="text" id="shareLinkInput" readonly aria-label="Shareable link" />
+            <button type="button" id="shareLinkCopy">Copy</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- PASSCODE OVERLAY -->
 {% if note.privacy == 'private' %}
 <div class="passcode-overlay active" id="passcodeOverlay" role="dialog" aria-labelledby="passcodeTitle">
     <div class="passcode-box">
@@ -496,63 +491,340 @@ img,embed,iframe,textarea{display:block;max-width:100%}
 {% endif %}
 
 <script>
-{% if note.privacy == 'private' %}
-document.addEventListener('DOMContentLoaded', function() {
+(function() {
+    'use strict';
+
+    /* ======================================================
+       PASSCODE GATE (unchanged behavior)
+       ====================================================== */
+    {% if note.privacy == 'private' %}
     var overlay = document.getElementById('passcodeOverlay');
     var input = document.getElementById('passcodeInput');
-    var btn = document.getElementById('unlockBtn');
-    var error = document.getElementById('passcodeError');
+    var unlockBtn = document.getElementById('unlockBtn');
+    var errorEl = document.getElementById('passcodeError');
     var backBtn = document.getElementById('backBtn');
-    var viewer = document.getElementById('pdfViewer');
-    var correct = "{{ note.passcode|default:''|escapejs }}".trim();
+    var viewerEl = document.getElementById('pdfViewer');
+    var correctPass = "{{ note.passcode|default:''|escapejs }}".trim();
 
-    if (viewer) viewer.style.display = 'none';
+    if (viewerEl) viewerEl.style.display = 'none';
 
     function showViewer() {
         if (overlay) overlay.classList.remove('active');
-        if (viewer) viewer.style.display = 'block';
+        if (viewerEl) viewerEl.style.display = 'block';
+        document.dispatchEvent(new CustomEvent('doc:unlocked'));
     }
+    function validatePass() {
+        var v = input.value.replace(/\D/g, '').slice(0, 4);
+        input.value = v;
+        unlockBtn.disabled = v.length !== 4;
+        errorEl.classList.remove('show');
+    }
+    input.addEventListener('input', validatePass);
+    unlockBtn.addEventListener('click', function() {
+        if (input.value.trim() === correctPass) return showViewer();
+        errorEl.classList.add('show');
+        input.value = ''; unlockBtn.disabled = true; input.focus();
+    });
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !unlockBtn.disabled) unlockBtn.click();
+        if (e.key === 'Escape') window.location.href = '/browse/';
+    });
+    backBtn.addEventListener('click', function() { window.location.href = '/browse/'; });
 
     var urlParams = new URLSearchParams(window.location.search);
-    var urlPasscode = urlParams.get('passcode');
+    if (urlParams.get('passcode') === correctPass) showViewer();
+    {% endif %}
 
-    if (urlPasscode && urlPasscode === correct) {
-        showViewer();
+    /* ======================================================
+       SHARE STATE
+       ====================================================== */
+    var noteId = {{ note.id }};
+    var passcode = "{% if note.privacy == 'private' %}{{ note.passcode|escapejs }}{% endif %}";
+    var shareData = null;   // filled by /api/share/<id>/
+
+    function qsPass() { return passcode ? ('?passcode=' + encodeURIComponent(passcode)) : ''; }
+
+    // Fallback links in case the API call fails
+    var fallbackViewUrl = window.location.origin + '/view/' + noteId + '/' + qsPass();
+    var fallbackDownloadUrl = window.location.origin + '/download/' + noteId + '/' + qsPass();
+    var fallbackTitle = document.getElementById('document-title')?.textContent.trim() || 'Study document';
+    var fallbackShareText = fallbackTitle + '\n\nOpen here 👉 ' + fallbackViewUrl;
+
+    /* Toast helper */
+    var toastEl = document.getElementById('toast');
+    var toastTimer = null;
+    function showToast(msg, ms) {
+        if (!toastEl) return;
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function() { toastEl.classList.remove('show'); }, ms || 2200);
     }
 
-    function validateInput() {
-        var value = input.value.replace(/\D/g, '').slice(0, 4);
-        input.value = value;
-        btn.disabled = value.length !== 4;
-        error.classList.remove('show');
+    /* ======================================================
+       LOAD SHARE INFO
+       ====================================================== */
+    function loadShareInfo() {
+        var url = '/api/share/' + noteId + '/' + (passcode ? ('?passcode=' + encodeURIComponent(passcode)) : '');
+        return fetch(url, { credentials: 'same-origin' })
+            .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
+            .then(function(data) {
+                shareData = data;
+                // Wire up modal links
+                document.getElementById('shareWaLink').href = data.whatsapp_link;
+                document.getElementById('shareFacebook').href = data.facebook_link;
+                document.getElementById('shareTwitter').href = data.twitter_link;
+                document.getElementById('shareEmail').href = data.email_link;
+                document.getElementById('shareLinkInput').value = data.view_url;
+                // Pre-wire the floating WhatsApp button
+                document.getElementById('fabWhatsApp').href = data.whatsapp_link;
+
+                // Enable WA + Doc button only if the browser supports file sharing
+                var waDocBtn = document.getElementById('shareWaDoc');
+                if (!canNativeShareFiles()) {
+                    waDocBtn.disabled = true;
+                    waDocBtn.style.opacity = '0.45';
+                    waDocBtn.title = 'Not supported in this browser. Use WhatsApp + link instead.';
+                }
+                return data;
+            })
+            .catch(function(err) {
+                console.warn('[share] info fetch failed, using fallback', err);
+                // Wire up fallback links
+                var waFallback = 'https://wa.me/?text=' + encodeURIComponent(fallbackShareText);
+                document.getElementById('shareWaLink').href = waFallback;
+                document.getElementById('fabWhatsApp').href = waFallback;
+                document.getElementById('shareFacebook').href =
+                    'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(fallbackViewUrl);
+                document.getElementById('shareTwitter').href =
+                    'https://twitter.com/intent/tweet?text=' + encodeURIComponent(fallbackTitle) +
+                    '&url=' + encodeURIComponent(fallbackViewUrl);
+                document.getElementById('shareEmail').href =
+                    'mailto:?subject=' + encodeURIComponent('Study doc: ' + fallbackTitle) +
+                    '&body=' + encodeURIComponent(fallbackShareText);
+                document.getElementById('shareLinkInput').value = fallbackViewUrl;
+                return null;
+            });
     }
 
-    input.addEventListener('input', validateInput);
+    /* ======================================================
+       CAN WE SHARE FILES NATIVELY? (iOS/Android only)
+       ====================================================== */
+    function canNativeShareFiles() {
+        if (!navigator.share || !navigator.canShare) return false;
+        try {
+            var f = new File(['x'], 'x.pdf', { type: 'application/pdf' });
+            return navigator.canShare({ files: [f] });
+        } catch (e) { return false; }
+    }
 
-    btn.addEventListener('click', function() {
-        var entered = input.value.trim();
-        if (entered === correct) {
-            showViewer();
+    /* ======================================================
+       WHATSAPP + DOCUMENT
+       Uses native share sheet (Files → WhatsApp).
+       Falls back to WhatsApp with direct download link.
+       ====================================================== */
+    function shareWhatsAppWithDoc() {
+        var dlUrl = (shareData && shareData.download_url) || fallbackDownloadUrl;
+        var title = (shareData && shareData.title) || fallbackTitle;
+
+        // 1) If browser can share files natively, download then share the file
+        if (canNativeShareFiles()) {
+            fetch(dlUrl, { credentials: 'same-origin' })
+                .then(function(r) {
+                    if (!r.ok) throw new Error('Download failed');
+                    return r.blob();
+                })
+                .then(function(blob) {
+                    var ext = (shareData && shareData.filename || 'document.pdf').split('.').pop() || 'pdf';
+                    var fname = (shareData && shareData.filename) || ('document.' + ext);
+                    var file = new File([blob], fname, { type: blob.type || 'application/octet-stream' });
+                    return navigator.share({
+                        files: [file],
+                        title: title,
+                        text: '📚 ' + title + '\n\nvia Student Hub'
+                    });
+                })
+                .catch(function(err) {
+                    if (err && err.name === 'AbortError') return; // user cancelled — fine
+                    console.warn('[share-doc] fallback to link', err);
+                    shareWhatsAppWithLink();
+                });
             return;
         }
-        error.classList.add('show');
-        input.value = '';
-        btn.disabled = true;
-        input.focus();
+
+        // 2) Otherwise open WhatsApp with a link to the download
+        var msg = '📚 ' + title + '\n\n📥 Download: ' + dlUrl + '\n👀 View online: ' +
+                  ((shareData && shareData.view_url) || fallbackViewUrl);
+        window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+        showToast('Opening WhatsApp…');
+    }
+
+    function shareWhatsAppWithLink() {
+        var waUrl = (shareData && shareData.whatsapp_link) ||
+                    ('https://wa.me/?text=' + encodeURIComponent(fallbackShareText));
+        window.open(waUrl, '_blank', 'noopener');
+    }
+
+    /* ======================================================
+       NATIVE SHARE (fallback for "More")
+       ====================================================== */
+    function shareNative() {
+        if (!navigator.share) {
+            copyLink();
+            showToast('Link copied — paste anywhere to share');
+            return;
+        }
+        var payload = {
+            title: (shareData && shareData.title) || fallbackTitle,
+            text: (shareData && shareData.share_text) || fallbackShareText,
+            url: (shareData && shareData.view_url) || fallbackViewUrl
+        };
+        navigator.share(payload).catch(function(err) {
+            if (err && err.name !== 'AbortError') console.warn('[native-share]', err);
+        });
+    }
+
+    /* ======================================================
+       COPY LINK
+       ====================================================== */
+    function copyLink() {
+        var url = (shareData && shareData.view_url) || fallbackViewUrl;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(function() {
+                showToast('✅ Link copied!');
+            }).catch(function() { legacyCopy(url); });
+        } else {
+            legacyCopy(url);
+        }
+    }
+    function legacyCopy(text) {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); showToast('✅ Link copied!'); }
+        catch (e) { showToast('Copy failed — please copy manually'); }
+        document.body.removeChild(ta);
+    }
+
+    /* ======================================================
+       FULLSCREEN
+       ====================================================== */
+    var fullBtn = document.getElementById('fabFullscreen');
+    var fullIcon = document.getElementById('fabFullscreenIcon');
+
+    function isFullscreen() {
+        return document.fullscreenElement ||
+               document.webkitFullscreenElement ||
+               document.msFullscreenElement ||
+               document.body.classList.contains('is-fullscreen');
+    }
+
+    function toggleFullscreen() {
+        var target = document.documentElement;
+        if (!isFullscreen()) {
+            // Try native fullscreen first
+            var req = target.requestFullscreen ||
+                      target.webkitRequestFullscreen ||
+                      target.msRequestFullscreen;
+            if (req) {
+                req.call(target).then(function() {
+                    document.body.classList.add('is-fullscreen');
+                    if (fullIcon) fullIcon.className = 'fas fa-compress';
+                }).catch(function() {
+                    // Browser refused — use CSS fallback
+                    document.body.classList.add('is-fullscreen');
+                    if (fullIcon) fullIcon.className = 'fas fa-compress';
+                    showToast('Full screen mode');
+                });
+            } else {
+                document.body.classList.add('is-fullscreen');
+                if (fullIcon) fullIcon.className = 'fas fa-compress';
+                showToast('Full screen mode');
+            }
+        } else {
+            var exit = document.exitFullscreen ||
+                       document.webkitExitFullscreen ||
+                       document.msExitFullscreen;
+            if (exit) { try { exit.call(document); } catch (e) {} }
+            document.body.classList.remove('is-fullscreen');
+            if (fullIcon) fullIcon.className = 'fas fa-expand';
+        }
+    }
+    if (fullBtn) fullBtn.addEventListener('click', toggleFullscreen);
+    document.addEventListener('fullscreenchange', function() {
+        if (!document.fullscreenElement) {
+            document.body.classList.remove('is-fullscreen');
+            if (fullIcon) fullIcon.className = 'fas fa-expand';
+        }
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.body.classList.contains('is-fullscreen')) {
+            document.body.classList.remove('is-fullscreen');
+            if (fullIcon) fullIcon.className = 'fas fa-expand';
+        }
+        // "F" shortcut
+        if ((e.key === 'f' || e.key === 'F') && !e.ctrlKey && !e.metaKey) {
+            var tag = (e.target.tagName || '').toLowerCase();
+            if (tag !== 'input' && tag !== 'textarea') {
+                toggleFullscreen();
+            }
+        }
     });
 
-    input.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter' && !btn.disabled) btn.click();
-        if (event.key === 'Escape' && overlay) window.location.href = '/browse/';
+    /* ======================================================
+       SHARE MODAL OPEN / CLOSE
+       ====================================================== */
+    var modal = document.getElementById('shareModal');
+    var fabShare = document.getElementById('fabShare');
+
+    function openShare() {
+        if (!modal) return;
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        // Load share info the first time it's opened
+        if (!shareData) loadShareInfo();
+    }
+    function closeShare() {
+        if (!modal) return;
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    if (fabShare) fabShare.addEventListener('click', openShare);
+    if (modal) modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeShare();
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal && modal.classList.contains('active')) closeShare();
     });
 
-    backBtn.addEventListener('click', function() {
-        window.location.href = '/browse/';
+    /* ======================================================
+       WIRE ALL SHARE BUTTONS
+       ====================================================== */
+    document.getElementById('shareWaDoc').addEventListener('click', shareWhatsAppWithDoc);
+    document.getElementById('shareNative').addEventListener('click', shareNative);
+    document.getElementById('shareCopy').addEventListener('click', copyLink);
+    document.getElementById('shareLinkCopy').addEventListener('click', copyLink);
+
+    /* Floating WA button — since it's an <a>, let it follow href set by loadShareInfo().
+       If user clicks before info loaded, use fallback. */
+    document.getElementById('fabWhatsApp').addEventListener('click', function(e) {
+        if (!shareData) {
+            e.preventDefault();
+            shareWhatsAppWithLink();
+        }
     });
 
-    input.focus();
-});
-{% endif %}
+    /* Preload share info quietly after the page is idle — so the FAB WA href
+       is correct before the user clicks it. */
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadShareInfo, { timeout: 3000 });
+    } else {
+        setTimeout(loadShareInfo, 1500);
+    }
+})();
 </script>
 </body>
 </html>
