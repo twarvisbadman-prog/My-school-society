@@ -19,7 +19,7 @@
     --grad-cta:linear-gradient(120deg,#c2410c,#be185d);
     --grad-cta-hover:linear-gradient(120deg,#9a3412,#9d174d);
     --success:#15803d;--gold:#b45309;--gold-dim:#fef3c7;
-    --wa:#25D366;--wa-dark:#128C7E;
+    --wa:#25D366;--wa-dark:#128C7E;--danger:#b91c1c;
     --radius-sm:10px;--radius-md:14px;--radius-lg:20px;--radius-xl:28px;
     --shadow-sm:0 1px 2px rgba(28,25,23,.06);
     --shadow-md:0 10px 28px -12px rgba(28,25,23,.18);
@@ -27,11 +27,33 @@
     --shadow-cta:0 8px 22px -8px rgba(219,39,119,.5);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden;width:100%;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;height:100%}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden;width:100%;-webkit-font-smoothing:antialiased;transition:padding-top .25s ease}
 a,button,input{font:inherit}
 a{color:inherit;text-decoration:none}
 img,embed,iframe,textarea{display:block;max-width:100%}
+
+/* ═════════════════════════════════════════════
+   FULL-SCREEN DEFAULT — nav hidden on load
+   ═════════════════════════════════════════════ */
+body.theatre{padding-top:0}
+body.theatre .topbar,
+body.theatre .mainnav,
+body.theatre .pdf-header,
+body.theatre .action-bar{display:none !important}
+body.theatre .viewer-container{max-width:100%;margin:0;padding:0}
+body.theatre .view-card{border-radius:0;border:none;padding:0;box-shadow:none;background:var(--ink)}
+body.theatre .pdf-viewer{border-radius:0;border:none;height:100vh;min-height:100vh}
+
+/* When user taps "Show header", nav comes back */
+body.show-nav .topbar,
+body.show-nav .mainnav,
+body.show-nav .pdf-header,
+body.show-nav .action-bar{display:revert}
+body.show-nav{padding-top:0}
+body.show-nav .viewer-container{max-width:1100px;margin:36px auto 120px;padding:0 20px}
+body.show-nav .view-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;box-shadow:var(--shadow-sm)}
+body.show-nav .pdf-viewer{border-radius:var(--radius-lg);border:1px solid var(--border);height:auto;min-height:560px}
 
 /* TOP BAR */
 .topbar{background:var(--ink);color:#f5f5f4;font-size:.82rem;padding:9px 0}
@@ -72,10 +94,24 @@ img,embed,iframe,textarea{display:block;max-width:100%}
 .pdf-meta .lock-icon{color:var(--gold)}
 .pdf-meta .public-icon{color:var(--success)}
 
-.pdf-viewer{position:relative;background:var(--alt);border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);min-height:560px}
+.pdf-viewer{position:relative;background:var(--alt);border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);min-height:560px;transition:filter .3s ease, background .3s ease}
 .pdf-viewer iframe,.pdf-viewer embed,.pdf-viewer img,.pdf-viewer textarea{width:100%;min-height:560px;height:75vh;background:var(--surface);border:none}
 .pdf-viewer img{object-fit:contain;background:var(--alt)}
 .pdf-viewer textarea{color:var(--ink);background:var(--surface);padding:24px;resize:vertical;font-family:'JetBrains Mono',monospace;font-size:.9rem;line-height:1.6;white-space:pre-wrap;outline:none}
+
+/* Blur / hide overlay */
+.pdf-viewer.is-blurred{filter:blur(28px);pointer-events:none;user-select:none}
+.pdf-viewer.is-blurred::after{
+    content:"\f023  Hidden — tap the eye to reveal";
+    font-family:"Font Awesome 6 Free","Inter",sans-serif;
+    font-weight:900;
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(28,25,23,.85);
+    color:#fff;font-size:1rem;font-weight:700;letter-spacing:.03em;
+    pointer-events:auto;user-select:none;
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
 
 .error-box{display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:520px;text-align:center;padding:32px;color:var(--text-2);background:var(--alt)}
 .error-box i{font-size:4rem;color:var(--accent);opacity:.8;margin-bottom:18px}
@@ -88,27 +124,30 @@ img,embed,iframe,textarea{display:block;max-width:100%}
 .btn-back{background:var(--surface);border-color:var(--border);color:var(--ink)}
 .btn-back:hover{background:var(--alt);border-color:var(--border-strong)}
 .btn-download{background:var(--grad-cta);color:#fff;box-shadow:var(--shadow-cta)}
-.btn-download:hover{background:var(--grad-cta-hover);box-shadow:0 12px 30px -8px rgba(219,39,119,.6)}
+.btn-download:hover{background:var(--grad-cta-hover)}
 .btn-open{background:var(--accent-dim);border-color:#fed7c3;color:var(--accent)}
 .btn-open:hover{background:#ffd9c2}
+.btn-danger{background:#fef2f2;border-color:#fecaca;color:var(--danger)}
+.btn-danger:hover{background:#fee2e2}
 
-/* ═══ FLOATING ACTION BUTTONS ═══ */
+/* ═════════════════════════════════════════════
+   FLOATING ACTION BUTTONS (right column)
+   ═════════════════════════════════════════════ */
 .fab-stack{
     position:fixed;
-    right:calc(20px + env(safe-area-inset-right, 0px));
-    bottom:calc(20px + env(safe-area-inset-bottom, 0px));
-    display:flex;flex-direction:column;gap:14px;
+    right:calc(16px + env(safe-area-inset-right, 0px));
+    bottom:calc(16px + env(safe-area-inset-bottom, 0px));
+    display:flex;flex-direction:column;gap:12px;
     z-index:900;
+    transition:bottom .25s ease;
 }
 .fab{
-    width:58px;height:58px;border-radius:50%;
+    width:54px;height:54px;border-radius:50%;
     display:inline-flex;align-items:center;justify-content:center;
-    font-size:1.35rem;
-    border:none;cursor:pointer;
+    font-size:1.25rem;border:none;cursor:pointer;
     box-shadow:0 12px 28px -10px rgba(28,25,23,.35), 0 4px 10px -4px rgba(28,25,23,.2);
     transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
-    color:#fff;
-    position:relative;
+    color:#fff;position:relative;
 }
 .fab:hover,.fab:focus-visible{transform:translateY(-3px) scale(1.05);outline:none;box-shadow:0 18px 34px -10px rgba(28,25,23,.4)}
 .fab:active{transform:scale(.96)}
@@ -116,76 +155,69 @@ img,embed,iframe,textarea{display:block;max-width:100%}
 
 .fab-wa{background:var(--wa)}
 .fab-wa:hover{background:#1ebe5b}
-
 .fab-share{background:var(--grad-cta)}
 .fab-share:hover{background:var(--grad-cta-hover)}
-
 .fab-download{background:var(--ink)}
 .fab-download:hover{background:#0c0a09}
+.fab-toggle{background:var(--surface);color:var(--ink);border:1px solid var(--border)}
+.fab-toggle:hover{background:var(--alt)}
+.fab-eye{background:#6b21a8}
+.fab-eye:hover{background:#581c87}
+.fab-eye.is-hidden{background:var(--danger)}
+.fab-eye.is-hidden:hover{background:#991b1b}
 
-.fab-full{background:var(--surface);color:var(--ink);border:1px solid var(--border)}
-.fab-full:hover{background:var(--alt)}
-
-/* Tooltip labels */
 .fab::after{
     content:attr(data-label);
-    position:absolute;right:calc(100% + 12px);
-    top:50%;transform:translateY(-50%);
+    position:absolute;right:calc(100% + 12px);top:50%;transform:translateY(-50%);
     background:var(--ink);color:#fff;
     padding:6px 12px;border-radius:8px;
-    font-size:.78rem;font-weight:600;
-    white-space:nowrap;
+    font-size:.78rem;font-weight:600;white-space:nowrap;
     opacity:0;pointer-events:none;
     transition:opacity .18s ease, transform .18s ease;
+    z-index:1;
 }
 .fab:hover::after,.fab:focus-visible::after{opacity:1;transform:translateY(-50%) translateX(-3px)}
 
-/* ═══ SHARE MODAL ═══ */
-.share-modal{
-    position:fixed;inset:0;
-    display:none;align-items:flex-end;justify-content:center;
-    background:rgba(28,25,23,.55);
-    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-    z-index:2000;padding:0;
+/* Small top-left toggle for nav (visible in theatre mode) */
+.theatre-nav-toggle{
+    position:fixed;
+    top:calc(14px + env(safe-area-inset-top, 0px));
+    left:calc(14px + env(safe-area-inset-left, 0px));
+    z-index:901;
+    display:none;
+    align-items:center;gap:8px;
+    padding:10px 16px;
+    border-radius:999px;
+    background:rgba(28,25,23,.82);
+    color:#fff;
+    border:none;cursor:pointer;
+    font-size:.82rem;font-weight:700;
+    box-shadow:0 8px 22px -8px rgba(0,0,0,.45);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    transition:background .2s ease, transform .2s ease;
 }
+.theatre-nav-toggle:hover{background:rgba(28,25,23,.95);transform:translateY(-1px)}
+body.theatre .theatre-nav-toggle{display:inline-flex}
+.theatre-nav-toggle i{font-size:.88rem}
+
+/* ═════════════════════════════════════════════
+   SHARE MODAL
+   ═════════════════════════════════════════════ */
+.share-modal{position:fixed;inset:0;display:none;align-items:flex-end;justify-content:center;background:rgba(28,25,23,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:2000;padding:0}
 .share-modal.active{display:flex;animation:fadeIn .2s ease}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-
-.share-sheet{
-    width:100%;max-width:520px;
-    background:var(--surface);
-    border-radius:24px 24px 0 0;
-    padding:20px 20px calc(20px + env(safe-area-inset-bottom, 0px));
-    box-shadow:0 -12px 40px -8px rgba(28,25,23,.3);
-    animation:slideUp .3s cubic-bezier(.16,1,.3,1);
-    max-height:90vh;overflow-y:auto;
-}
+.share-sheet{width:100%;max-width:520px;background:var(--surface);border-radius:24px 24px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom, 0px));box-shadow:0 -12px 40px -8px rgba(28,25,23,.3);animation:slideUp .3s cubic-bezier(.16,1,.3,1);max-height:90vh;overflow-y:auto}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-
 .share-grabber{width:40px;height:4px;background:var(--border-strong);border-radius:2px;margin:0 auto 16px}
 .share-title{font-size:1.05rem;font-weight:800;color:var(--ink);margin-bottom:4px;text-align:center}
 .share-subtitle{font-size:.82rem;color:var(--text-3);text-align:center;margin-bottom:20px;line-height:1.5}
-
 .share-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
 @media (min-width:640px){.share-grid{grid-template-columns:repeat(5,1fr)}}
-
-.share-item{
-    display:flex;flex-direction:column;align-items:center;gap:8px;
-    background:none;border:none;cursor:pointer;
-    padding:6px;text-decoration:none;color:inherit;
-    transition:transform .18s ease;
-}
+.share-item{display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:none;cursor:pointer;padding:6px;text-decoration:none;color:inherit;transition:transform .18s ease}
 .share-item:hover,.share-item:focus-visible{transform:translateY(-2px);outline:none}
 .share-item:active{transform:scale(.95)}
-.share-icon{
-    width:54px;height:54px;border-radius:50%;
-    display:inline-flex;align-items:center;justify-content:center;
-    font-size:1.4rem;color:#fff;
-    box-shadow:0 4px 12px -4px rgba(28,25,23,.25);
-    transition:transform .18s ease;
-}
+.share-icon{width:54px;height:54px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:1.4rem;color:#fff;box-shadow:0 4px 12px -4px rgba(28,25,23,.25);transition:transform .18s ease}
 .share-item:hover .share-icon{transform:scale(1.08)}
-
 .share-icon.wa{background:var(--wa)}
 .share-icon.wa-doc{background:var(--wa-dark);position:relative}
 .share-icon.wa-doc::before{content:"📄";position:absolute;bottom:2px;right:2px;font-size:.75rem}
@@ -194,27 +226,40 @@ img,embed,iframe,textarea{display:block;max-width:100%}
 .share-icon.mail{background:#EA4335}
 .share-icon.copy{background:var(--ink)}
 .share-icon.native{background:var(--grad-cta)}
-
 .share-label{font-size:.72rem;font-weight:600;color:var(--text-2);text-align:center;line-height:1.2}
-
 .share-link-row{display:flex;gap:8px;margin-top:8px;padding:14px;background:var(--alt);border-radius:14px;border:1px solid var(--border)}
 .share-link-row input{flex:1;padding:11px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font-size:.82rem;font-family:'JetBrains Mono',monospace;outline:none;min-width:0}
 .share-link-row button{flex-shrink:0;padding:11px 18px;border-radius:10px;background:var(--grad-cta);color:#fff;border:none;font-weight:700;font-size:.82rem;cursor:pointer;white-space:nowrap}
 .share-link-row button:hover{background:var(--grad-cta-hover)}
 
-.toast{
-    position:fixed;bottom:calc(100px + env(safe-area-inset-bottom, 0px));
-    left:50%;transform:translateX(-50%) translateY(20px);
-    background:var(--ink);color:#fff;
-    padding:12px 22px;border-radius:999px;
-    font-size:.85rem;font-weight:600;
-    z-index:3000;opacity:0;pointer-events:none;
-    transition:opacity .25s ease, transform .25s ease;
-    box-shadow:0 12px 28px -8px rgba(0,0,0,.4);
-}
+/* Visibility modal */
+.vis-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(28,25,23,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:2050;padding:18px}
+.vis-modal.active{display:flex}
+.vis-sheet{width:min(100%,440px);background:var(--surface);border-radius:22px;padding:26px 22px;box-shadow:var(--shadow-lg);animation:fadeIn .2s ease}
+.vis-sheet h3{font-size:1.1rem;font-weight:800;color:var(--ink);margin-bottom:6px;text-align:center}
+.vis-sheet p{font-size:.85rem;color:var(--text-3);text-align:center;margin-bottom:20px;line-height:1.5}
+.vis-option{display:flex;align-items:center;gap:14px;padding:14px;border-radius:14px;border:2px solid var(--border);background:var(--surface);cursor:pointer;margin-bottom:10px;transition:all .18s ease}
+.vis-option:hover{border-color:var(--border-strong);background:var(--alt)}
+.vis-option.selected{border-color:var(--accent);background:var(--accent-dim)}
+.vis-icon{width:44px;height:44px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0}
+.vis-icon.pub{background:#dcfce7;color:#15803d}
+.vis-icon.priv{background:#fef3c7;color:#b45309}
+.vis-title{font-weight:700;font-size:.9rem;color:var(--ink);margin-bottom:2px}
+.vis-desc{font-size:.74rem;color:var(--text-3);line-height:1.35}
+.vis-actions{display:flex;gap:10px;margin-top:16px}
+.vis-actions button{flex:1;padding:13px;border-radius:999px;font-weight:700;font-size:.85rem;cursor:pointer;border:none;transition:all .18s ease}
+.vis-cancel{background:var(--alt);color:var(--text-2);border:1px solid var(--border)}
+.vis-cancel:hover{background:var(--border)}
+.vis-save{background:var(--grad-cta);color:#fff;box-shadow:var(--shadow-cta)}
+.vis-save:hover{background:var(--grad-cta-hover)}
+.vis-passcode-display{margin-top:12px;padding:12px;background:var(--gold-dim);border:1px solid var(--gold);border-radius:12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;color:var(--gold);display:none}
+.vis-passcode-display.show{display:block}
+
+/* Toast */
+.toast{position:fixed;bottom:calc(100px + env(safe-area-inset-bottom, 0px));left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 22px;border-radius:999px;font-size:.85rem;font-weight:600;z-index:3000;opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s ease;box-shadow:0 12px 28px -8px rgba(0,0,0,.4);max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* PASSCODE OVERLAY */
+/* Passcode overlay */
 .passcode-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(28,25,23,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:2100;padding:18px}
 .passcode-overlay.active{display:flex}
 .passcode-box{width:min(100%,420px);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:34px 28px 24px;box-shadow:var(--shadow-lg);text-align:center}
@@ -223,31 +268,13 @@ img,embed,iframe,textarea{display:block;max-width:100%}
 .passcode-box p{color:var(--text-2);margin-bottom:20px;line-height:1.5}
 .passcode-box input{width:100%;padding:16px 18px;border-radius:999px;border:1px solid var(--border);background:var(--bg);color:var(--ink);font-size:clamp(1.3rem,2vw,1.7rem);font-family:'JetBrains Mono',monospace;letter-spacing:.45em;text-align:center;outline:none;transition:all .2s ease}
 .passcode-box input:focus{border-color:var(--accent-bright);background:var(--surface);box-shadow:0 0 0 4px rgba(234,88,12,.12)}
-.error-msg{min-height:18px;margin-top:12px;color:#b91c1c;font-size:.83rem;opacity:0;transition:opacity .2s ease}
+.error-msg{min-height:18px;margin-top:12px;color:var(--danger);font-size:.83rem;opacity:0;transition:opacity .2s ease}
 .error-msg.show{opacity:1}
 .unlock-btn{width:100%;margin-top:18px;background:var(--grad-cta);color:#fff;border:none;border-radius:999px;padding:15px 18px;font-weight:800;font-size:.95rem;cursor:pointer;box-shadow:var(--shadow-cta);transition:all .2s ease}
 .unlock-btn:hover:not(:disabled){background:var(--grad-cta-hover);transform:translateY(-1px)}
 .unlock-btn:disabled{opacity:.5;cursor:not-allowed}
 .back-btn{background:transparent;color:var(--text-3);border:none;margin-top:16px;font-size:.88rem;cursor:pointer}
 .back-btn:hover{color:var(--ink)}
-
-/* FULLSCREEN MODE — hide nav/bars, expand viewer */
-body.is-fullscreen .topbar,
-body.is-fullscreen .mainnav,
-body.is-fullscreen .pdf-header,
-body.is-fullscreen .action-bar{display:none !important}
-body.is-fullscreen .viewer-container{max-width:100%;margin:0;padding:0;min-height:100vh}
-body.is-fullscreen .view-card{border-radius:0;border:none;padding:0;box-shadow:none;min-height:100vh}
-body.is-fullscreen .pdf-viewer{border-radius:0;border:none;height:100vh;min-height:100vh}
-body.is-fullscreen .pdf-viewer iframe,
-body.is-fullscreen .pdf-viewer embed,
-body.is-fullscreen .pdf-viewer img,
-body.is-fullscreen .pdf-viewer textarea{
-    height:100vh;min-height:100vh;
-}
-body.is-fullscreen .fab-stack{bottom:calc(24px + env(safe-area-inset-bottom, 0px))}
-body.is-fullscreen .fab-full{background:var(--grad-cta);color:#fff}
-body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
 
 /* RESPONSIVE */
 @media (max-width:720px){
@@ -257,16 +284,12 @@ body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
     .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0;margin:0 -16px;padding-left:16px;padding-right:16px}
     .menu::-webkit-scrollbar{display:none}
     .menu a{padding:8px 12px;font-size:.8rem;flex-shrink:0}
-    .viewer-container{margin:24px auto 140px;padding:0 16px}
-    .view-card{padding:20px}
-    .pdf-viewer,.pdf-viewer iframe,.pdf-viewer embed,.pdf-viewer textarea{min-height:420px;height:60vh}
-    .fab{width:52px;height:52px;font-size:1.2rem}
-    .fab-stack{gap:11px}
+    .fab{width:50px;height:50px;font-size:1.15rem}
+    .fab-stack{gap:10px}
 }
 @media (max-width:640px){
     .topbar-inner{gap:12px;font-size:.72rem}
     .topbar-inner span:nth-child(3){display:none}
-    .view-card{padding:18px;border-radius:20px}
     .action-bar{flex-direction:column}
     .action-bar a,.action-bar button{width:100%}
     .passcode-box{padding:28px 20px 20px}
@@ -280,15 +303,21 @@ body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
     .logo-text{font-size:.95rem}
     .logo-img{width:36px;height:36px;border-radius:10px}
     .topbar-inner span:nth-child(2){display:none}
+    .fab{width:46px;height:46px;font-size:1.05rem}
 }
 @media (prefers-reduced-motion:reduce){
     *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
 }
 </style>
 </head>
-<body>
+<body class="theatre">
 
-<!-- TOP BAR -->
+<!-- Top-left toggle shown while in theatre mode -->
+<button class="theatre-nav-toggle" id="theatreNavToggle" type="button" aria-label="Show header and menu">
+    <i class="fas fa-bars"></i> Menu
+</button>
+
+<!-- TOP BAR (hidden in theatre) -->
 <div class="topbar">
     <div class="topbar-inner">
         <span><i class="fas fa-phone"></i> +255 740 706 007</span>
@@ -297,7 +326,7 @@ body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
     </div>
 </div>
 
-<!-- NAV -->
+<!-- NAV (hidden in theatre) -->
 <nav class="mainnav">
     <div class="mainnav-inner">
         <a href="/" class="logo">
@@ -332,9 +361,9 @@ body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
                     {{ note.original_filename|default:note.filename|escape }}
                 </h2>
                 {% if note.privacy == 'private' %}
-                    <span class="doc-badge"><i class="fas fa-lock"></i> Private</span>
+                    <span class="doc-badge" id="privacyBadge"><i class="fas fa-lock"></i> Private</span>
                 {% else %}
-                    <span class="doc-badge"><i class="fas fa-globe"></i> Public</span>
+                    <span class="doc-badge" id="privacyBadge"><i class="fas fa-globe"></i> Public</span>
                 {% endif %}
             </div>
             <div class="pdf-meta">
@@ -388,6 +417,14 @@ body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
      FLOATING ACTION BUTTONS
      ═══════════════════════════════════════════════ -->
 <div class="fab-stack" aria-label="Quick actions">
+    <button class="fab fab-eye" id="fabEye"
+            type="button"
+            data-label="Hide document"
+            title="Hide document"
+            aria-label="Hide document"
+            aria-pressed="false">
+        <i class="fas fa-eye" id="fabEyeIcon"></i>
+    </button>
     <a class="fab fab-wa"
        id="fabWhatsApp"
        href="#"
@@ -413,13 +450,13 @@ body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
        aria-label="Download">
         <i class="fas fa-download"></i>
     </a>
-    <button class="fab fab-full"
-            id="fabFullscreen"
+    <button class="fab fab-toggle"
+            id="fabNavToggle"
             type="button"
-            data-label="Full screen"
-            title="Full screen"
-            aria-label="Toggle full screen">
-        <i class="fas fa-expand" id="fabFullscreenIcon"></i>
+            data-label="Show header"
+            title="Show header"
+            aria-label="Show header">
+        <i class="fas fa-bars" id="fabNavIcon"></i>
     </button>
 </div>
 
@@ -470,6 +507,41 @@ body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
     </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════
+     VISIBILITY MODAL (owner only)
+     ═══════════════════════════════════════════════ -->
+{% if is_authenticated and current_student.id|stringformat:"s" == note.uploader_id|stringformat:"s" %}
+<div class="vis-modal" id="visModal" role="dialog" aria-modal="true" aria-labelledby="visTitle">
+    <div class="vis-sheet">
+        <h3 id="visTitle">Change note visibility</h3>
+        <p>Control who can open this document.</p>
+
+        <div class="vis-option" id="visOptPublic" data-value="public" role="button" tabindex="0">
+            <div class="vis-icon pub"><i class="fas fa-globe"></i></div>
+            <div>
+                <div class="vis-title">Public</div>
+                <div class="vis-desc">Anyone with the link can view & download.</div>
+            </div>
+        </div>
+
+        <div class="vis-option" id="visOptPrivate" data-value="private" role="button" tabindex="0">
+            <div class="vis-icon priv"><i class="fas fa-lock"></i></div>
+            <div>
+                <div class="vis-title">Private</div>
+                <div class="vis-desc">Only people with the 4-digit passcode can open it.</div>
+            </div>
+        </div>
+
+        <div class="vis-passcode-display" id="visPasscodeDisplay"></div>
+
+        <div class="vis-actions">
+            <button type="button" class="vis-cancel" id="visCancel">Cancel</button>
+            <button type="button" class="vis-save" id="visSave">Save</button>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <!-- Toast -->
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -495,7 +567,7 @@ body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
     'use strict';
 
     /* ======================================================
-       PASSCODE GATE (unchanged behavior)
+       PASSCODE GATE
        ====================================================== */
     {% if note.privacy == 'private' %}
     var overlay = document.getElementById('passcodeOverlay');
@@ -507,10 +579,12 @@ body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
     var correctPass = "{{ note.passcode|default:''|escapejs }}".trim();
 
     if (viewerEl) viewerEl.style.display = 'none';
+    document.body.classList.add('is-locked');
 
     function showViewer() {
         if (overlay) overlay.classList.remove('active');
         if (viewerEl) viewerEl.style.display = 'block';
+        document.body.classList.remove('is-locked');
         document.dispatchEvent(new CustomEvent('doc:unlocked'));
     }
     function validatePass() {
@@ -531,26 +605,25 @@ body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
     });
     backBtn.addEventListener('click', function() { window.location.href = '/browse/'; });
 
-    var urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('passcode') === correctPass) showViewer();
+    var urlParams0 = new URLSearchParams(window.location.search);
+    if (urlParams0.get('passcode') === correctPass) showViewer();
     {% endif %}
 
     /* ======================================================
-       SHARE STATE
+       STATE
        ====================================================== */
     var noteId = {{ note.id }};
     var passcode = "{% if note.privacy == 'private' %}{{ note.passcode|escapejs }}{% endif %}";
-    var shareData = null;   // filled by /api/share/<id>/
+    var shareData = null;
 
-    function qsPass() { return passcode ? ('?passcode=' + encodeURIComponent(passcode)) : ''; }
-
-    // Fallback links in case the API call fails
-    var fallbackViewUrl = window.location.origin + '/view/' + noteId + '/' + qsPass();
-    var fallbackDownloadUrl = window.location.origin + '/download/' + noteId + '/' + qsPass();
+    var fallbackViewUrl = window.location.origin + '/view/' + noteId + '/' + (passcode ? '?passcode=' + encodeURIComponent(passcode) : '');
+    var fallbackDownloadUrl = window.location.origin + '/download/' + noteId + '/' + (passcode ? '?passcode=' + encodeURIComponent(passcode) : '');
     var fallbackTitle = document.getElementById('document-title')?.textContent.trim() || 'Study document';
     var fallbackShareText = fallbackTitle + '\n\nOpen here 👉 ' + fallbackViewUrl;
 
-    /* Toast helper */
+    /* ======================================================
+       TOAST
+       ====================================================== */
     var toastEl = document.getElementById('toast');
     var toastTimer = null;
     function showToast(msg, ms) {
@@ -562,24 +635,93 @@ body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
     }
 
     /* ======================================================
+       FULL-SCREEN (THEATRE) TOGGLE
+       ====================================================== */
+    var body = document.body;
+    var navToggleFab = document.getElementById('fabNavToggle');
+    var navToggleIcon = document.getElementById('fabNavIcon');
+    var navToggleTop = document.getElementById('theatreNavToggle');
+
+    function setTheatre(on) {
+        if (on) {
+            body.classList.add('theatre');
+            body.classList.remove('show-nav');
+            if (navToggleIcon) navToggleIcon.className = 'fas fa-bars';
+            if (navToggleFab) {
+                navToggleFab.setAttribute('data-label', 'Show header');
+                navToggleFab.setAttribute('title', 'Show header');
+            }
+        } else {
+            body.classList.remove('theatre');
+            body.classList.add('show-nav');
+            if (navToggleIcon) navToggleIcon.className = 'fas fa-eye-slash';
+            if (navToggleFab) {
+                navToggleFab.setAttribute('data-label', 'Full screen');
+                navToggleFab.setAttribute('title', 'Full screen');
+            }
+        }
+    }
+    function toggleTheatre() {
+        setTheatre(!body.classList.contains('theatre'));
+    }
+    if (navToggleFab) navToggleFab.addEventListener('click', toggleTheatre);
+    if (navToggleTop) navToggleTop.addEventListener('click', function() { setTheatre(false); });
+
+    // Start in theatre mode (nav hidden) by default
+    setTheatre(true);
+
+    /* ======================================================
+       HIDE / REVEAL DOCUMENT (blur + overlay)
+       ====================================================== */
+    var eyeFab = document.getElementById('fabEye');
+    var eyeIcon = document.getElementById('fabEyeIcon');
+    var pdfViewer = document.getElementById('pdfViewer');
+    var isHidden = false;
+
+    function toggleHidden() {
+        if (!pdfViewer) return;
+        isHidden = !isHidden;
+        pdfViewer.classList.toggle('is-blurred', isHidden);
+        if (eyeIcon) eyeIcon.className = isHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+        if (eyeFab) {
+            eyeFab.classList.toggle('is-hidden', isHidden);
+            eyeFab.setAttribute('data-label', isHidden ? 'Reveal document' : 'Hide document');
+            eyeFab.setAttribute('title', isHidden ? 'Reveal document' : 'Hide document');
+            eyeFab.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
+        }
+        if (isHidden) showToast('🙈 Document hidden — tap eye to reveal');
+    }
+    if (eyeFab) eyeFab.addEventListener('click', toggleHidden);
+
+    // Also reveal when user clicks on the blurred overlay
+    if (pdfViewer) pdfViewer.addEventListener('click', function(e) {
+        if (isHidden) { toggleHidden(); }
+    });
+
+    // "H" keyboard shortcut
+    document.addEventListener('keydown', function(e) {
+        var tag = (e.target.tagName || '').toLowerCase();
+        if (tag === 'input' || tag === 'textarea') return;
+        if (e.key === 'h' || e.key === 'H') toggleHidden();
+        if (e.key === 'Escape' && isHidden) toggleHidden();
+    });
+
+    /* ======================================================
        LOAD SHARE INFO
        ====================================================== */
     function loadShareInfo() {
-        var url = '/api/share/' + noteId + '/' + (passcode ? ('?passcode=' + encodeURIComponent(passcode)) : '');
+        var url = '/api/share/' + noteId + '/' + (passcode ? '?passcode=' + encodeURIComponent(passcode) : '');
         return fetch(url, { credentials: 'same-origin' })
             .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
             .then(function(data) {
                 shareData = data;
-                // Wire up modal links
                 document.getElementById('shareWaLink').href = data.whatsapp_link;
                 document.getElementById('shareFacebook').href = data.facebook_link;
                 document.getElementById('shareTwitter').href = data.twitter_link;
                 document.getElementById('shareEmail').href = data.email_link;
                 document.getElementById('shareLinkInput').value = data.view_url;
-                // Pre-wire the floating WhatsApp button
                 document.getElementById('fabWhatsApp').href = data.whatsapp_link;
 
-                // Enable WA + Doc button only if the browser supports file sharing
                 var waDocBtn = document.getElementById('shareWaDoc');
                 if (!canNativeShareFiles()) {
                     waDocBtn.disabled = true;
@@ -590,7 +732,6 @@ body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
             })
             .catch(function(err) {
                 console.warn('[share] info fetch failed, using fallback', err);
-                // Wire up fallback links
                 var waFallback = 'https://wa.me/?text=' + encodeURIComponent(fallbackShareText);
                 document.getElementById('shareWaLink').href = waFallback;
                 document.getElementById('fabWhatsApp').href = waFallback;
@@ -608,7 +749,7 @@ body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
     }
 
     /* ======================================================
-       CAN WE SHARE FILES NATIVELY? (iOS/Android only)
+       NATIVE FILE SHARE
        ====================================================== */
     function canNativeShareFiles() {
         if (!navigator.share || !navigator.canShare) return false;
@@ -618,16 +759,10 @@ body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
         } catch (e) { return false; }
     }
 
-    /* ======================================================
-       WHATSAPP + DOCUMENT
-       Uses native share sheet (Files → WhatsApp).
-       Falls back to WhatsApp with direct download link.
-       ====================================================== */
     function shareWhatsAppWithDoc() {
         var dlUrl = (shareData && shareData.download_url) || fallbackDownloadUrl;
         var title = (shareData && shareData.title) || fallbackTitle;
 
-        // 1) If browser can share files natively, download then share the file
         if (canNativeShareFiles()) {
             fetch(dlUrl, { credentials: 'same-origin' })
                 .then(function(r) {
@@ -635,7 +770,7 @@ body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
                     return r.blob();
                 })
                 .then(function(blob) {
-                    var ext = (shareData && shareData.filename || 'document.pdf').split('.').pop() || 'pdf';
+                    var ext = ((shareData && shareData.filename) || 'document.pdf').split('.').pop() || 'pdf';
                     var fname = (shareData && shareData.filename) || ('document.' + ext);
                     var file = new File([blob], fname, { type: blob.type || 'application/octet-stream' });
                     return navigator.share({
@@ -645,48 +780,36 @@ body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
                     });
                 })
                 .catch(function(err) {
-                    if (err && err.name === 'AbortError') return; // user cancelled — fine
+                    if (err && err.name === 'AbortError') return;
                     console.warn('[share-doc] fallback to link', err);
                     shareWhatsAppWithLink();
                 });
             return;
         }
-
-        // 2) Otherwise open WhatsApp with a link to the download
         var msg = '📚 ' + title + '\n\n📥 Download: ' + dlUrl + '\n👀 View online: ' +
                   ((shareData && shareData.view_url) || fallbackViewUrl);
         window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank', 'noopener');
         showToast('Opening WhatsApp…');
     }
-
     function shareWhatsAppWithLink() {
         var waUrl = (shareData && shareData.whatsapp_link) ||
                     ('https://wa.me/?text=' + encodeURIComponent(fallbackShareText));
         window.open(waUrl, '_blank', 'noopener');
     }
-
-    /* ======================================================
-       NATIVE SHARE (fallback for "More")
-       ====================================================== */
     function shareNative() {
         if (!navigator.share) {
             copyLink();
             showToast('Link copied — paste anywhere to share');
             return;
         }
-        var payload = {
+        navigator.share({
             title: (shareData && shareData.title) || fallbackTitle,
             text: (shareData && shareData.share_text) || fallbackShareText,
             url: (shareData && shareData.view_url) || fallbackViewUrl
-        };
-        navigator.share(payload).catch(function(err) {
+        }).catch(function(err) {
             if (err && err.name !== 'AbortError') console.warn('[native-share]', err);
         });
     }
-
-    /* ======================================================
-       COPY LINK
-       ====================================================== */
     function copyLink() {
         var url = (shareData && shareData.view_url) || fallbackViewUrl;
         if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -710,87 +833,18 @@ body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
     }
 
     /* ======================================================
-       FULLSCREEN
-       ====================================================== */
-    var fullBtn = document.getElementById('fabFullscreen');
-    var fullIcon = document.getElementById('fabFullscreenIcon');
-
-    function isFullscreen() {
-        return document.fullscreenElement ||
-               document.webkitFullscreenElement ||
-               document.msFullscreenElement ||
-               document.body.classList.contains('is-fullscreen');
-    }
-
-    function toggleFullscreen() {
-        var target = document.documentElement;
-        if (!isFullscreen()) {
-            // Try native fullscreen first
-            var req = target.requestFullscreen ||
-                      target.webkitRequestFullscreen ||
-                      target.msRequestFullscreen;
-            if (req) {
-                req.call(target).then(function() {
-                    document.body.classList.add('is-fullscreen');
-                    if (fullIcon) fullIcon.className = 'fas fa-compress';
-                }).catch(function() {
-                    // Browser refused — use CSS fallback
-                    document.body.classList.add('is-fullscreen');
-                    if (fullIcon) fullIcon.className = 'fas fa-compress';
-                    showToast('Full screen mode');
-                });
-            } else {
-                document.body.classList.add('is-fullscreen');
-                if (fullIcon) fullIcon.className = 'fas fa-compress';
-                showToast('Full screen mode');
-            }
-        } else {
-            var exit = document.exitFullscreen ||
-                       document.webkitExitFullscreen ||
-                       document.msExitFullscreen;
-            if (exit) { try { exit.call(document); } catch (e) {} }
-            document.body.classList.remove('is-fullscreen');
-            if (fullIcon) fullIcon.className = 'fas fa-expand';
-        }
-    }
-    if (fullBtn) fullBtn.addEventListener('click', toggleFullscreen);
-    document.addEventListener('fullscreenchange', function() {
-        if (!document.fullscreenElement) {
-            document.body.classList.remove('is-fullscreen');
-            if (fullIcon) fullIcon.className = 'fas fa-expand';
-        }
-    });
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && document.body.classList.contains('is-fullscreen')) {
-            document.body.classList.remove('is-fullscreen');
-            if (fullIcon) fullIcon.className = 'fas fa-expand';
-        }
-        // "F" shortcut
-        if ((e.key === 'f' || e.key === 'F') && !e.ctrlKey && !e.metaKey) {
-            var tag = (e.target.tagName || '').toLowerCase();
-            if (tag !== 'input' && tag !== 'textarea') {
-                toggleFullscreen();
-            }
-        }
-    });
-
-    /* ======================================================
-       SHARE MODAL OPEN / CLOSE
+       SHARE MODAL
        ====================================================== */
     var modal = document.getElementById('shareModal');
     var fabShare = document.getElementById('fabShare');
-
     function openShare() {
         if (!modal) return;
         modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        // Load share info the first time it's opened
         if (!shareData) loadShareInfo();
     }
     function closeShare() {
         if (!modal) return;
         modal.classList.remove('active');
-        document.body.style.overflow = '';
     }
     if (fabShare) fabShare.addEventListener('click', openShare);
     if (modal) modal.addEventListener('click', function(e) {
@@ -800,16 +854,11 @@ body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
         if (e.key === 'Escape' && modal && modal.classList.contains('active')) closeShare();
     });
 
-    /* ======================================================
-       WIRE ALL SHARE BUTTONS
-       ====================================================== */
     document.getElementById('shareWaDoc').addEventListener('click', shareWhatsAppWithDoc);
     document.getElementById('shareNative').addEventListener('click', shareNative);
     document.getElementById('shareCopy').addEventListener('click', copyLink);
     document.getElementById('shareLinkCopy').addEventListener('click', copyLink);
 
-    /* Floating WA button — since it's an <a>, let it follow href set by loadShareInfo().
-       If user clicks before info loaded, use fallback. */
     document.getElementById('fabWhatsApp').addEventListener('click', function(e) {
         if (!shareData) {
             e.preventDefault();
@@ -817,8 +866,94 @@ body.is-fullscreen .fab-full::after{content:"Exit fullscreen"}
         }
     });
 
-    /* Preload share info quietly after the page is idle — so the FAB WA href
-       is correct before the user clicks it. */
+    /* ======================================================
+       VISIBILITY MODAL (owner only)
+       ====================================================== */
+    var visModal = document.getElementById('visModal');
+    if (visModal) {
+        var currentPrivacy = "{{ note.privacy|default:'public' }}";
+        var optPublic = document.getElementById('visOptPublic');
+        var optPrivate = document.getElementById('visOptPrivate');
+        var passcodeDisplay = document.getElementById('visPasscodeDisplay');
+        var visCancel = document.getElementById('visCancel');
+        var visSave = document.getElementById('visSave');
+        var pendingPrivacy = currentPrivacy;
+        var returnedPasscode = "";
+
+        function markSelection(val) {
+            pendingPrivacy = val;
+            optPublic.classList.toggle('selected', val === 'public');
+            optPrivate.classList.toggle('selected', val === 'private');
+        }
+        function openVis() {
+            markSelection(currentPrivacy);
+            passcodeDisplay.classList.remove('show');
+            visModal.classList.add('active');
+        }
+        function closeVis() { visModal.classList.remove('active'); }
+
+        [optPublic, optPrivate].forEach(function(el) {
+            el.addEventListener('click', function() { markSelection(el.dataset.value); });
+            el.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); markSelection(el.dataset.value); }
+            });
+        });
+        visCancel.addEventListener('click', closeVis);
+        visModal.addEventListener('click', function(e) { if (e.target === visModal) closeVis(); });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && visModal.classList.contains('active')) closeVis();
+        });
+
+        visSave.addEventListener('click', function() {
+            if (pendingPrivacy === currentPrivacy) { closeVis(); return; }
+            visSave.disabled = true;
+            fetch('/api/visibility/' + noteId + '/', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ privacy: pendingPrivacy })
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                visSave.disabled = false;
+                if (data && data.success) {
+                    currentPrivacy = data.privacy;
+                    returnedPasscode = data.passcode || '';
+                    showToast('✅ Visibility updated: ' + data.privacy);
+                    if (data.privacy === 'private' && returnedPasscode) {
+                        passcodeDisplay.textContent = '🔐 Passcode: ' + returnedPasscode;
+                        passcodeDisplay.classList.add('show');
+                        passcode = returnedPasscode;
+                        setTimeout(function() { window.location.reload(); }, 1500);
+                    } else {
+                        setTimeout(function() { window.location.reload(); }, 700);
+                    }
+                } else {
+                    showToast('❌ Could not update visibility');
+                }
+            })
+            .catch(function(err) {
+                visSave.disabled = false;
+                console.error('[visibility]', err);
+                showToast('❌ Network error');
+            });
+        });
+
+        // Expose openVis so we can wire to a button if desired
+        window.__openVisibility = openVis;
+    }
+
+    function getCookie(name) {
+        var v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+        return v ? v.pop() : '';
+    }
+
+    /* ======================================================
+       PRELOAD SHARE INFO
+       ====================================================== */
     if ('requestIdleCallback' in window) {
         requestIdleCallback(loadShareInfo, { timeout: 3000 });
     } else {
