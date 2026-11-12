@@ -1,9 +1,11 @@
-# app.py — Student Hub · Full build (v2) + Chat module
+# app.py — Student Hub · Full build (v3) — PERFORMANCE EDITION
 # R2 + Supabase Auth + Gamification + Community + Leaderboard + Notifications + Quiz + Upload Streak + Admin User Mgmt + Chat
 import os
 import uuid
 import json
 import re
+import time
+import threading
 import requests
 from datetime import datetime, date, timedelta
 from django.conf import settings
@@ -60,7 +62,6 @@ R2_PUBLIC_URL = env("R2_PUBLIC_URL", "https://pub-062ab58e23db4e31a628e6f6273a01
 SECRET_ADMIN_PATH = env("SECRET_ADMIN_PATH", "admin-portal-twarvis-9x7k2m4p8q3z5w6v")
 ADMIN = True
 
-# Chat admins: comma-separated emails in env CHAT_ADMIN_EMAILS (e.g. "you@gmail.com,other@gmail.com")
 CHAT_ADMIN_EMAILS = [e.strip().lower() for e in env("CHAT_ADMIN_EMAILS", "").split(",") if e.strip()]
 
 _allowed = env("ALLOWED_HOSTS", "*")
@@ -73,7 +74,7 @@ CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf.split(",") if o.strip()]
 # SANITY CHECK
 # ============================================================
 print("=" * 60)
-print("🚀 STUDENT HUB — Full Build v2 + Chat")
+print("🚀 STUDENT HUB — v3 PERFORMANCE EDITION")
 print("=" * 60)
 print(f"📡 Supabase URL:  {SUPABASE_URL[:50]}")
 print(f"🔑 Supabase Key:  {'✅ VALID JWT' if SUPABASE_KEY.startswith('eyJ') else '❌ INVALID'}")
@@ -129,7 +130,7 @@ if not settings.configured:
     )
 
 # ============================================================
-# SUPABASE
+# SUPABASE CLIENT
 # ============================================================
 try:
     supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -149,7 +150,8 @@ try:
             endpoint_url=R2_ENDPOINT_URL,
             aws_access_key_id=R2_ACCESS_KEY_ID,
             aws_secret_access_key=R2_SECRET_ACCESS_KEY,
-            config=Config(signature_version="s3v4"),
+            config=Config(signature_version="s3v4", max_pool_connections=25,
+                          retries={"max_attempts": 2, "mode": "standard"}),
             region_name="auto",
         )
         print("✅ Cloudflare R2 client initialized!")
@@ -160,7 +162,58 @@ except Exception as e:
     r2_client = None
 
 # ============================================================
-# SESSION MIDDLEWARE
+# IN-PROCESS CACHES (thread-safe enough for gthread workers)
+# ============================================================
+_user_cache = {}          # token_tail -> (user_dict, expires_at)
+_user_cache_lock = threading.Lock()
+_USER_CACHE_TTL = 60      # seconds
+
+_streak_recent = {}       # user_id -> last_checked_ts
+_streak_lock = threading.Lock()
+_STREAK_CHECK_TTL = 3600  # 1 hour
+
+_leaderboard_cache = {"data": None, "ts": 0}
+_LEADERBOARD_TTL = 10
+
+_community_cache = {"data": None, "ts": 0}
+_COMMUNITY_TTL = 10
+
+
+def _cache_get(cache, key):
+    with _user_cache_lock:
+        hit = cache.get(key)
+        if hit and hit[1] > time.time():
+            return hit[0]
+        if hit:
+            cache.pop(key, None)
+    return None
+
+
+def _cache_set(cache, key, value, ttl):
+    with _user_cache_lock:
+        cache[key] = (value, time.time() + ttl)
+        # crude eviction to prevent unbounded growth
+        if len(cache) > 5000:
+            now = time.time()
+            for k in [k for k, v in cache.items() if v[1] < now]:
+                cache.pop(k, None)
+
+
+def invalidate_user_cache(user_id=None, token=None):
+    """Call this after any write that changes users row."""
+    with _user_cache_lock:
+        if token:
+            _user_cache.pop(token[-24:], None)
+        if user_id:
+            uid = str(user_id)
+            for k in list(_user_cache.keys()):
+                u = _user_cache[k][0]
+                if u and str(u.get("id")) == uid:
+                    _user_cache.pop(k, None)
+
+
+# ============================================================
+# SESSION MIDDLEWARE (cached, fast)
 # ============================================================
 class SessionMiddleware(MiddlewareMixin):
     def process_request(self, request):
@@ -172,10 +225,19 @@ class SessionMiddleware(MiddlewareMixin):
         refresh = request.COOKIES.get("sb-refresh-token")
 
         if token:
+            cache_key = token[-24:]
+            cached = _cache_get(_user_cache, cache_key)
+            if cached:
+                request.current_user = cached
+                return
+
             try:
                 resp = supabase.auth.get_user(token)
                 if resp and resp.user:
-                    request.current_user = self._build_user(resp.user, token)
+                    user = self._build_user(resp.user, token)
+                    request.current_user = user
+                    if user:
+                        _cache_set(_user_cache, cache_key, user, _USER_CACHE_TTL)
                     return
             except Exception as e:
                 print(f"[session] access token invalid: {e}")
@@ -189,6 +251,9 @@ class SessionMiddleware(MiddlewareMixin):
                         "access_token": sess.session.access_token,
                         "refresh_token": sess.session.refresh_token,
                     }
+                    if request.current_user:
+                        _cache_set(_user_cache, sess.session.access_token[-24:],
+                                   request.current_user, _USER_CACHE_TTL)
             except Exception as e:
                 print(f"[session] refresh failed: {e}")
 
@@ -217,11 +282,10 @@ class SessionMiddleware(MiddlewareMixin):
                     print(f"[session] ✅ Created profile for {user.email}")
                     try:
                         update_streak(user.id)
-                        p2 = supabase.table("users").select("*").eq("id", user.id).execute()
-                        profile_data = p2.data[0] if p2.data else profile_data
                     except Exception:
                         pass
             else:
+                # Username fixup — only if genuinely missing
                 if not profile_data.get("username"):
                     new_username = SessionMiddleware._generate_unique_username(user.email, user.id)
                     try:
@@ -354,7 +418,6 @@ def get_current_user(request):
 
 
 def is_chat_admin(request):
-    """True only for logged-in users whose email is in CHAT_ADMIN_EMAILS."""
     me = get_current_user(request)
     if not me or not me.get("email"):
         return False
@@ -434,16 +497,29 @@ def award_points(user_id, action, points, reference_id=None):
             }).execute()
         except Exception as log_err:
             print(f"[award_points] log failed: {log_err}")
+        invalidate_user_cache(user_id=user_id)
     except Exception as e:
         print(f"[award_points] {e}")
 
 
-def update_streak(user_id):
+def update_streak(user_id, force=False):
+    """
+    Fire streak update, but no-op if we already checked this user recently.
+    This eliminates 2 extra queries on every action.
+    """
+    uid = str(user_id)
+    now = time.time()
+    if not force:
+        with _streak_lock:
+            last = _streak_recent.get(uid, 0)
+            if now - last < _STREAK_CHECK_TTL:
+                return
+            _streak_recent[uid] = now
+
     try:
-        user_id = str(user_id)
         row = supabase.table("users").select(
             "current_streak, longest_streak, last_active_date, points"
-        ).eq("id", user_id).execute()
+        ).eq("id", uid).execute()
         if not row.data:
             return
         u = row.data[0]
@@ -477,12 +553,13 @@ def update_streak(user_id):
             "current_streak": current, "longest_streak": longest,
             "last_active_date": today.isoformat(),
             "points": (u.get("points", 0) or 0) + points_awarded,
-        }).eq("id", user_id).execute()
+        }).eq("id", uid).execute()
+        invalidate_user_cache(user_id=uid)
 
         if points_awarded > 0:
             try:
                 supabase.table("activity_log").insert({
-                    "user_id": user_id, "action": "streak_day",
+                    "user_id": uid, "action": "streak_day",
                     "points": points_awarded, "reference_id": today.isoformat(),
                 }).execute()
             except Exception:
@@ -597,32 +674,45 @@ def can_view_inline(filename):
     return ext in ['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg', '.txt', '.md', '.csv']
 
 
+# ════════════════════════════════════════════════════════════
+# THE FIX: BATCHED NOTES FETCH — 2 queries instead of N*2
+# ════════════════════════════════════════════════════════════
+def _enrich_notes_batch(notes, current_user_id=None):
+    """Attach like_count / user_liked to a list of notes using 1 query."""
+    if not notes:
+        return notes
+    note_ids = [n["id"] for n in notes]
+    counts = {}
+    user_liked = set()
+    try:
+        # Single query for all likes across all listed notes
+        likes = supabase.table("note_likes").select("note_id, user_id") \
+            .in_("note_id", note_ids).execute().data or []
+        for l in likes:
+            nid = l["note_id"]
+            counts[nid] = counts.get(nid, 0) + 1
+            if current_user_id and str(l.get("user_id")) == str(current_user_id):
+                user_liked.add(nid)
+    except Exception as e:
+        print(f"[_enrich_notes_batch] {e}")
+
+    for note in notes:
+        note["original_filename"] = note.get("original_filename", note.get("filename", ""))
+        note["file_size"] = note.get("file_size", 0)
+        note["privacy"] = note.get("privacy", "public")
+        note["file_type"] = note.get("file_type", "notes")
+        note["university"] = note.get("university", "Not specified")
+        note["passcode"] = note.get("passcode", "")
+        note["can_view_inline"] = can_view_inline(note.get("filename", ""))
+        note["like_count"] = counts.get(note["id"], 0)
+        note["user_liked"] = note["id"] in user_liked
+    return notes
+
+
 def get_all_notes(current_user_id=None):
     try:
         response = supabase.table("notes").select("*").order("uploaded_at", desc=True).execute()
-        notes = response.data if response.data else []
-        for note in notes:
-            note["original_filename"] = note.get("original_filename", note.get("filename", ""))
-            note["file_size"] = note.get("file_size", 0)
-            note["privacy"] = note.get("privacy", "public")
-            note["file_type"] = note.get("file_type", "notes")
-            note["university"] = note.get("university", "Not specified")
-            note["passcode"] = note.get("passcode", "")
-            note["can_view_inline"] = can_view_inline(note.get("filename", ""))
-            try:
-                lk = supabase.table("note_likes").select("*", count="exact").eq("note_id", note["id"]).execute()
-                note["like_count"] = lk.count if hasattr(lk, "count") and lk.count is not None else len(lk.data or [])
-            except Exception:
-                note["like_count"] = 0
-            note["user_liked"] = False
-            if current_user_id:
-                try:
-                    ul = supabase.table("note_likes").select("id") \
-                        .eq("user_id", str(current_user_id)).eq("note_id", note["id"]).execute()
-                    note["user_liked"] = bool(ul.data)
-                except Exception:
-                    pass
-        return notes
+        return _enrich_notes_batch(response.data or [], current_user_id)
     except Exception as e:
         print(f"[get_all_notes] {e}")
         return []
@@ -633,22 +723,7 @@ def search_notes(query, current_user_id=None):
         response = supabase.table("notes").select("*").or_(
             f"module.ilike.%{query}%,course.ilike.%{query}%,description.ilike.%{query}%"
         ).order("uploaded_at", desc=True).execute()
-        notes = response.data if response.data else []
-        for note in notes:
-            try:
-                lk = supabase.table("note_likes").select("*", count="exact").eq("note_id", note["id"]).execute()
-                note["like_count"] = lk.count if hasattr(lk, "count") and lk.count is not None else len(lk.data or [])
-            except Exception:
-                note["like_count"] = 0
-            note["user_liked"] = False
-            if current_user_id:
-                try:
-                    ul = supabase.table("note_likes").select("id") \
-                        .eq("user_id", str(current_user_id)).eq("note_id", note["id"]).execute()
-                    note["user_liked"] = bool(ul.data)
-                except Exception:
-                    pass
-        return notes
+        return _enrich_notes_batch(response.data or [], current_user_id)
     except Exception as e:
         print(f"[search_notes] {e}")
         return get_all_notes(current_user_id)
@@ -735,24 +810,12 @@ def serve_root_file(request, filename):
         return HttpResponse("Not found", status=404)
     ext = os.path.splitext(safe_name)[1].lower()
     content_types = {
-        ".png": "image/png",
-        ".jpg": "image/jpeg",
-        ".jpeg": "image/jpeg",
-        ".gif": "image/gif",
-        ".svg": "image/svg+xml",
-        ".webp": "image/webp",
-        ".ico": "image/x-icon",
-        ".css": "text/css",
-        ".js": "application/javascript",
-        ".json": "application/json",
-        ".txt": "text/plain",
-        ".xml": "application/xml",
-        ".pdf": "application/pdf",
-        ".woff": "font/woff",
-        ".woff2": "font/woff2",
-        ".mp4": "video/mp4",
-        ".html": "text/html; charset=utf-8",
-        ".htm": "text/html; charset=utf-8",
+        ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+        ".gif": "image/gif", ".svg": "image/svg+xml", ".webp": "image/webp",
+        ".ico": "image/x-icon", ".css": "text/css", ".js": "application/javascript",
+        ".json": "application/json", ".txt": "text/plain", ".xml": "application/xml",
+        ".pdf": "application/pdf", ".woff": "font/woff", ".woff2": "font/woff2",
+        ".mp4": "video/mp4", ".html": "text/html; charset=utf-8", ".htm": "text/html; charset=utf-8",
     }
     content_type = content_types.get(ext, "application/octet-stream")
     try:
@@ -760,7 +823,6 @@ def serve_root_file(request, filename):
             data = f.read()
         response = HttpResponse(data, content_type=content_type)
         if ext in (".html", ".htm"):
-            # Always open HTML inline — never trigger a download
             response["Content-Disposition"] = "inline"
             response["Cache-Control"] = "public, max-age=300"
         else:
@@ -840,7 +902,7 @@ def login_view(request):
                 if not prof.get("username"):
                     auto_username = auto_username_from_email(user.email, user.id)
                     supabase.table("users").update({"username": auto_username}).eq("id", user.id).execute()
-            update_streak(user.id)
+            update_streak(user.id, force=True)
             next_url = request.GET.get("next", "/dashboard/")
             response = redirect(next_url)
             response.set_cookie("sb-access-token", session.access_token,
@@ -1010,71 +1072,85 @@ def profile_view(request, username):
 
 
 def leaderboard_view(request):
-    leaders = []
-    try:
-        rows = supabase.table("leaderboard").select("*").limit(100).execute()
-        leaders = rows.data or []
-        for i, l in enumerate(leaders, start=1):
-            l["rank"] = i
-        if leaders and ("followers_count" not in leaders[0] or leaders[0].get("followers_count") is None):
-            try:
-                followers_resp = supabase.table("follows").select("following_id").execute()
-                counts = {}
-                for f in (followers_resp.data or []):
-                    fid = str(f.get("following_id"))
-                    counts[fid] = counts.get(fid, 0) + 1
-                for l in leaders:
-                    l["followers_count"] = counts.get(str(l["id"]), 0)
-            except Exception as fe:
-                print(f"[leaderboard] followers fallback failed: {fe}")
-                for l in leaders:
-                    l.setdefault("followers_count", 0)
-        for l in leaders:
-            l.setdefault("likes_received", 0)
-            l.setdefault("uploads_count", 0)
-            l.setdefault("current_streak", 0)
-            l.setdefault("followers_count", 0)
-            l.setdefault("points", 0)
-    except Exception as e:
-        print(f"[leaderboard] view failed: {e}")
+    now = time.time()
+    if _leaderboard_cache["data"] is not None and now - _leaderboard_cache["ts"] < _LEADERBOARD_TTL:
+        leaders = _leaderboard_cache["data"]
+    else:
+        leaders = []
         try:
-            rows = supabase.table("users").select(
-                "id, username, full_name, avatar_url, university, points, current_streak, "
-                "longest_streak, uploads_count, likes_received"
-            ).not_.is_("username", "null").order("points", desc=True).limit(100).execute()
-            raw = rows.data or []
+            rows = supabase.table("leaderboard").select("*").limit(100).execute()
+            leaders = rows.data or []
+            for i, l in enumerate(leaders, start=1):
+                l["rank"] = i
+            if leaders and ("followers_count" not in leaders[0] or leaders[0].get("followers_count") is None):
+                try:
+                    followers_resp = supabase.table("follows").select("following_id").execute()
+                    counts = {}
+                    for f in (followers_resp.data or []):
+                        fid = str(f.get("following_id"))
+                        counts[fid] = counts.get(fid, 0) + 1
+                    for l in leaders:
+                        l["followers_count"] = counts.get(str(l["id"]), 0)
+                except Exception as fe:
+                    print(f"[leaderboard] followers fallback failed: {fe}")
+                    for l in leaders:
+                        l.setdefault("followers_count", 0)
+            for l in leaders:
+                l.setdefault("likes_received", 0)
+                l.setdefault("uploads_count", 0)
+                l.setdefault("current_streak", 0)
+                l.setdefault("followers_count", 0)
+                l.setdefault("points", 0)
+        except Exception as e:
+            print(f"[leaderboard] view failed: {e}")
             try:
-                fr = supabase.table("follows").select("following_id").execute()
-                counts = {}
-                for f in (fr.data or []):
-                    fid = str(f.get("following_id"))
-                    counts[fid] = counts.get(fid, 0) + 1
-            except Exception:
-                counts = {}
-            for i, u in enumerate(raw):
-                u["rank"] = i + 1
-                u["followers_count"] = counts.get(str(u["id"]), 0)
-                u.setdefault("likes_received", 0)
-                u.setdefault("uploads_count", 0)
-                u.setdefault("current_streak", 0)
-                leaders.append(u)
-        except Exception as e2:
-            print(f"[leaderboard] fallback failed: {e2}")
-            leaders = []
+                rows = supabase.table("users").select(
+                    "id, username, full_name, avatar_url, university, points, current_streak, "
+                    "longest_streak, uploads_count, likes_received"
+                ).not_.is_("username", "null").order("points", desc=True).limit(100).execute()
+                raw = rows.data or []
+                try:
+                    fr = supabase.table("follows").select("following_id").execute()
+                    counts = {}
+                    for f in (fr.data or []):
+                        fid = str(f.get("following_id"))
+                        counts[fid] = counts.get(fid, 0) + 1
+                except Exception:
+                    counts = {}
+                for i, u in enumerate(raw):
+                    u["rank"] = i + 1
+                    u["followers_count"] = counts.get(str(u["id"]), 0)
+                    u.setdefault("likes_received", 0)
+                    u.setdefault("uploads_count", 0)
+                    u.setdefault("current_streak", 0)
+                    leaders.append(u)
+            except Exception as e2:
+                print(f"[leaderboard] fallback failed: {e2}")
+                leaders = []
+        _leaderboard_cache["data"] = leaders
+        _leaderboard_cache["ts"] = now
+
     ctx = build_view_context(request)
     ctx["leaders"] = leaders
     return render(request, "leaderboard.html", ctx)
 
 
 def community_view(request):
-    try:
-        rows = supabase.table("users").select(
-            "id, username, full_name, avatar_url, university, points, current_streak, uploads_count"
-        ).not_.is_("username", "null").order("points", desc=True).limit(200).execute()
-        users = rows.data or []
-    except Exception as e:
-        print(f"[community] {e}")
-        users = []
+    now = time.time()
+    if _community_cache["data"] is not None and now - _community_cache["ts"] < _COMMUNITY_TTL:
+        users = [dict(u) for u in _community_cache["data"]]   # copy for mutating is_following
+    else:
+        try:
+            rows = supabase.table("users").select(
+                "id, username, full_name, avatar_url, university, points, current_streak, uploads_count"
+            ).not_.is_("username", "null").order("points", desc=True).limit(200).execute()
+            users = rows.data or []
+        except Exception as e:
+            print(f"[community] {e}")
+            users = []
+        _community_cache["data"] = [dict(u) for u in users]
+        _community_cache["ts"] = now
+
     me = get_current_user(request)
     if me:
         try:
@@ -1131,8 +1207,7 @@ def upload_view(request):
                     unique_id = str(uuid.uuid4())[:8]
                     safe_filename = f"{timestamp}_{unique_id}_{file.name.replace(' ', '_')}"
 
-                    file_content = file.read()
-                    file_size = len(file_content)
+                    file_size = file.size
 
                     r2_key = f"notes/{safe_filename}"
                     content_type = file.content_type or get_content_type(file.name)
@@ -1176,13 +1251,12 @@ def upload_view(request):
                                         supabase.table("users").update({
                                             "uploads_count": (u.data[0].get("uploads_count", 0) or 0) + 1
                                         }).eq("id", uploader_id).execute()
+                                        invalidate_user_cache(user_id=uploader_id)
                                 except Exception:
                                     pass
-                                update_streak(uploader_id)
+                                update_streak(uploader_id, force=True)
 
-                                # ═══════════════════════════════════════════
-                                # 🎁 3-NOTE UPLOAD STREAK BONUS
-                                # ═══════════════════════════════════════════
+                                # ─── 3-NOTE UPLOAD STREAK BONUS ───
                                 try:
                                     count_resp = supabase.table("notes").select("id", count="exact") \
                                         .eq("uploader_id", uploader_id).execute()
@@ -1303,19 +1377,41 @@ def view_file(request, id):
         note["is_pdf"] = os.path.splitext(note.get("filename", ""))[1].lower() == '.pdf'
         note["is_image"] = os.path.splitext(note.get("filename", ""))[1].lower() in ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg']
         note["is_text"] = os.path.splitext(note.get("filename", ""))[1].lower() in ['.txt', '.md', '.csv', '.json', '.xml']
+        # REMOVED blocking requests.get() — text fetched lazily by /api/text/<id>/
         note["text_content"] = ""
-        if note["is_text"] and file_url:
-            try:
-                response = requests.get(file_url, timeout=10)
-                if response.status_code == 200:
-                    note["text_content"] = response.text
-            except:
-                pass
         ctx = {"note": note, "pdf_url": file_url, "admin": ADMIN}
         ctx.update(build_view_context(request))
         return render(request, "view.html", ctx)
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}", status=500)
+
+
+# ════════════════════════════════════════════════════════════
+# NEW: lazy text-file endpoint (avoids 10s block in view_file)
+# ════════════════════════════════════════════════════════════
+def api_text_preview(request, id):
+    try:
+        result = supabase.table("notes").select("*").eq("id", id).execute()
+        if not result.data:
+            return JsonResponse({"error": "not_found"}, status=404)
+        note = result.data[0]
+        if note.get("privacy") == "private":
+            if request.GET.get("passcode", "") != note.get("passcode", ""):
+                return JsonResponse({"error": "passcode_required"}, status=403)
+        ext = os.path.splitext(note.get("filename", ""))[1].lower()
+        if ext not in ['.txt', '.md', '.csv', '.json', '.xml']:
+            return JsonResponse({"error": "not_text"}, status=400)
+        file_url = get_r2_public_url(f"notes/{note['filename']}")
+        try:
+            r = requests.get(file_url, timeout=5)
+            if r.status_code == 200:
+                # Cap to avoid huge responses
+                return JsonResponse({"content": r.text[:200000]})
+        except Exception as e:
+            print(f"[api_text_preview] fetch failed: {e}")
+        return JsonResponse({"error": "fetch_failed"}, status=500)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
 
 
 def download_file(request, id):
@@ -1332,6 +1428,10 @@ def download_file(request, id):
             if get_passcode != correct_passcode:
                 return HttpResponse("Access Denied. Incorrect passcode.", status=403)
         r2_key = f"notes/{note['filename']}"
+        # Redirect to R2 public URL — MUCH faster than proxying bytes
+        if note.get("privacy", "public") == "public":
+            return redirect(get_r2_public_url(r2_key))
+        # Private: still proxy so we can enforce passcode
         file_data = get_r2_file_bytes(r2_key)
         if file_data is None:
             return HttpResponse("File not found in storage", status=404)
@@ -1478,7 +1578,7 @@ def admin_settings(request):
     return render(request, "admin_settings.html", {"secret_admin_path": SECRET_ADMIN_PATH})
 
 # ============================================================
-# ADMIN — USER MANAGEMENT ✨
+# ADMIN — USER MANAGEMENT (BATCHED)
 # ============================================================
 def admin_users(request):
     if not ADMIN:
@@ -1492,12 +1592,24 @@ def admin_users(request):
     except Exception as e:
         print(f"[admin_users] {e}")
         users = []
-    for u in users:
+
+    # Batched: 1 query for all note counts
+    if users:
         try:
-            c = supabase.table("notes").select("id", count="exact").eq("uploader_id", str(u["id"])).execute()
-            u["note_count"] = c.count if hasattr(c, "count") and c.count is not None else len(c.data or [])
-        except Exception:
-            u["note_count"] = 0
+            uid_strs = [str(u["id"]) for u in users]
+            all_notes = supabase.table("notes").select("uploader_id") \
+                .in_("uploader_id", uid_strs).execute().data or []
+            counts = {}
+            for n in all_notes:
+                oid = str(n.get("uploader_id"))
+                counts[oid] = counts.get(oid, 0) + 1
+            for u in users:
+                u["note_count"] = counts.get(str(u["id"]), 0)
+        except Exception as e:
+            print(f"[admin_users] counts failed: {e}")
+            for u in users:
+                u["note_count"] = 0
+
     return render(request, "admin_users.html", {
         "users": users, "admin": ADMIN, "secret_admin_path": SECRET_ADMIN_PATH,
     })
@@ -1531,6 +1643,7 @@ def admin_user_delete(request, user_id):
             except Exception as e:
                 print(f"[admin_user_delete] cleanup {table} failed: {e}")
         supabase.table("users").delete().eq("id", uid).execute()
+        invalidate_user_cache(user_id=uid)
         print(f"[admin_user_delete] ✅ Deleted user {uid}")
         return JsonResponse({"success": True})
     except Exception as e:
@@ -1549,20 +1662,26 @@ def admin_notes_by_owner(request):
     except Exception as e:
         print(f"[admin_notes_by_owner] {e}")
         notes = []
+
+    # Batched owner lookup
+    owner_ids = list({str(n["uploader_id"]) for n in notes if n.get("uploader_id")})
+    owners = {}
+    if owner_ids:
+        try:
+            r = supabase.table("users").select(
+                "id, username, full_name, email, avatar_url"
+            ).in_("id", owner_ids).execute()
+            for o in (r.data or []):
+                owners[str(o["id"])] = o
+        except Exception as e:
+            print(f"[admin_notes_by_owner] owner batch failed: {e}")
+
     for n in notes:
-        n["owner"] = None
         oid = n.get("uploader_id")
-        if oid:
-            try:
-                r = supabase.table("users").select(
-                    "id, username, full_name, email, avatar_url"
-                ).eq("id", str(oid)).execute()
-                if r.data:
-                    n["owner"] = r.data[0]
-            except Exception:
-                pass
+        n["owner"] = owners.get(str(oid)) if oid else None
         n.setdefault("original_filename", n.get("filename", ""))
         n.setdefault("privacy", "public")
+
     return render(request, "admin_notes.html", {
         "notes": notes, "admin": ADMIN, "secret_admin_path": SECRET_ADMIN_PATH,
     })
@@ -1578,21 +1697,6 @@ def about_view(request):
 
 
 def aboutcreator_view(request):
-    """
-    Serves the About Creator page directly from the root-level file.
-    aboutcreator.html is STATIC HTML (no Django template tags inside),
-    so we read it as a plain file and send it with `Content-Disposition: inline`.
-    This guarantees:
-      - The page opens as a normal webpage (never triggers a download).
-      - Images (img1.png … img6.png) load from the SAME folder (BASE_DIR)
-        through the root-file server.
-
-    Accessible at:
-      /aboutcreator.html
-      /aboutcreator/
-      /about/aboutcreator.html
-      /about/aboutcreator/
-    """
     path = os.path.join(BASE_DIR, "aboutcreator.html")
     if not os.path.exists(path):
         return HttpResponse("About Creator page not found.", status=404)
@@ -1686,14 +1790,6 @@ def api_me(request):
 
 @csrf_exempt
 def api_like_note(request, note_id):
-    """
-    LIKE API:
-      +1 point to LIKER (like_given)
-      +2 points to OWNER (like_received)
-      +1 likes_received counter for OWNER
-      + Notification to owner
-    Unlike: -1 likes_received counter (points stay).
-    """
     user = get_current_user(request)
     if not user:
         return JsonResponse({"error": "login_required", "login_required": True}, status=401)
@@ -1733,7 +1829,6 @@ def api_like_note(request, note_id):
             .eq("user_id", my_id).eq("note_id", note_id_str).execute()
 
         if existing.data:
-            # UNLIKE
             supabase.table("note_likes").delete() \
                 .eq("user_id", my_id).eq("note_id", note_id_str).execute()
             liked = False
@@ -1745,10 +1840,10 @@ def api_like_note(request, note_id):
                         supabase.table("users").update({
                             "likes_received": max(0, cur - 1)
                         }).eq("id", owner_id).execute()
+                        invalidate_user_cache(user_id=owner_id)
                 except Exception as e:
                     print(f"[like] decrement failed: {e}")
         else:
-            # LIKE
             supabase.table("note_likes").insert({
                 "user_id": my_id, "note_id": note_id_str,
             }).execute()
@@ -1761,12 +1856,13 @@ def api_like_note(request, note_id):
                         cur_likes = o.data[0].get("likes_received", 0) or 0
                         cur_points = o.data[0].get("points", 0) or 0
                         new_likes = cur_likes + 1
-                        new_points = cur_points + 2   # +2 per like
+                        new_points = cur_points + 2
 
                         supabase.table("users").update({
                             "likes_received": new_likes,
                             "points": new_points,
                         }).eq("id", owner_id).execute()
+                        invalidate_user_cache(user_id=owner_id)
 
                         try:
                             supabase.table("activity_log").insert({
@@ -1776,7 +1872,6 @@ def api_like_note(request, note_id):
                         except Exception:
                             pass
 
-                        # Notification
                         try:
                             liker_name = user.get("profile", {}).get("full_name") or \
                                          user.get("profile", {}).get("username") or \
@@ -1806,6 +1901,7 @@ def api_like_note(request, note_id):
         update_streak(my_id)
         updated = supabase.table("users").select("points").eq("id", my_id).execute()
         points = updated.data[0]["points"] if updated.data else 0
+        invalidate_user_cache(user_id=my_id)
 
         return JsonResponse({
             "liked": bool(liked),
@@ -1865,6 +1961,9 @@ def api_follow_user(request, user_id):
             update_streak(my_id)
         except Exception:
             pass
+        # Bust leaderboard/community caches on follow
+        _leaderboard_cache["ts"] = 0
+        _community_cache["ts"] = 0
         return JsonResponse({"following": bool(following)})
     except Exception as e:
         print(f"[api_follow_user] FATAL: {e}")
@@ -1872,7 +1971,7 @@ def api_follow_user(request, user_id):
 
 
 # ============================================================
-# UPDATE PROFILE — username / full_name / university ✨
+# UPDATE PROFILE
 # ============================================================
 @csrf_exempt
 def api_update_profile(request):
@@ -1933,6 +2032,7 @@ def api_update_profile(request):
 
     try:
         supabase.table("users").update(updates).eq("id", my_id).execute()
+        invalidate_user_cache(user_id=my_id)
         print(f"[api_update_profile] ✅ Updated {my_id}: {updates}")
         return JsonResponse({"success": True, "updated": updates})
     except Exception as e:
@@ -2009,7 +2109,8 @@ def api_daily_quiz(request):
 
         if points:
             award_points(my_id, "quiz_correct", points, today.isoformat())
-        update_streak(my_id)
+        update_streak(my_id, force=True)
+        invalidate_user_cache(user_id=my_id)
 
         return JsonResponse({
             "correct": is_correct, "correct_answer": today_q["a"],
@@ -2022,7 +2123,7 @@ def api_daily_quiz(request):
 
 
 # ============================================================
-# NOTIFICATIONS + FOLLOW LISTS API
+# NOTIFICATIONS + FOLLOW LISTS API (BATCHED)
 # ============================================================
 @csrf_exempt
 def api_notifications(request):
@@ -2038,17 +2139,21 @@ def api_notifications(request):
         print(f"[api_notifications] {e}")
         return JsonResponse({"notifications": [], "unread_count": 0})
 
+    # BATCHED: 1 query for all actors
+    actor_ids = list({str(n["actor_id"]) for n in rows if n.get("actor_id")})
+    actors = {}
+    if actor_ids:
+        try:
+            ar = supabase.table("users").select("id, username, full_name, avatar_url") \
+                .in_("id", actor_ids).execute()
+            for a in (ar.data or []):
+                actors[str(a["id"])] = a
+        except Exception as e:
+            print(f"[api_notifications] actor batch failed: {e}")
+
     notifications = []
     for n in rows:
-        actor_id = n.get("actor_id")
-        actor = None
-        try:
-            if actor_id:
-                a = supabase.table("users").select("id, username, full_name, avatar_url") \
-                    .eq("id", str(actor_id)).execute()
-                actor = a.data[0] if a.data else None
-        except Exception:
-            pass
+        actor = actors.get(str(n.get("actor_id"))) if n.get("actor_id") else None
         notifications.append({
             "id": n.get("id"), "type": n.get("type"),
             "message": n.get("message"), "is_read": bool(n.get("is_read")),
@@ -2062,7 +2167,11 @@ def api_notifications(request):
             "reference_id": str(n.get("reference_id")) if n.get("reference_id") else "",
         })
     unread = sum(1 for n in notifications if not n["is_read"])
-    return JsonResponse({"notifications": notifications, "unread_count": unread})
+
+    response = JsonResponse({"notifications": notifications, "unread_count": unread})
+    # Short cache helps heavily-polled endpoint
+    response["Cache-Control"] = "private, max-age=5"
+    return response
 
 
 @csrf_exempt
@@ -2151,7 +2260,7 @@ def _api_follow_list(request, username, mode="followers"):
 
 
 # ============================================================
-# CHAT MODULE  (chat.py lives next to app.py; it imports `app` lazily)
+# CHAT MODULE
 # ============================================================
 import chat
 
@@ -2187,6 +2296,7 @@ urlpatterns = [
     path("api/like/<int:note_id>/", api_like_note, name="api_like_note"),
     path("api/follow/<str:user_id>/", api_follow_user, name="api_follow_user"),
     path("api/profile/update/", api_update_profile, name="api_update_profile"),
+    path("api/text/<int:id>/", api_text_preview, name="api_text_preview"),
 
     # NOTIFICATIONS + FOLLOW LISTS
     path("api/notifications/", api_notifications, name="api_notifications"),
@@ -2257,7 +2367,7 @@ urlpatterns = [
     path("scanner.html", scanner_view, name="scanner"),
     path("scanner/", scanner_view, name="scanner_alt"),
 
-    # ABOUT CREATOR — all paths resolve to the root-level aboutcreator.html
+    # ABOUT CREATOR
     path("aboutcreator.html", aboutcreator_view, name="aboutcreator"),
     path("aboutcreator/", aboutcreator_view, name="aboutcreator_alt"),
     path("about/aboutcreator.html", aboutcreator_view, name="aboutcreator_nested"),
@@ -2268,4 +2378,3 @@ urlpatterns = [
 ]
 
 application = get_wsgi_application()
-app = application
