@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+<meta name="theme-color" content="#0c0a09" />
 <title>View Document | Student Hub</title>
 <link rel="icon" type="image/png" href="/apple-touch-icon.png" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -12,201 +13,189 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 <style>
 :root{
-    --bg:#fafaf9;--surface:#ffffff;--alt:#f5f5f4;--border:#e7e5e4;--border-strong:#d6d3d1;
+    --surface:#ffffff;--alt:#f5f5f4;--border:#e7e5e4;--border-strong:#d6d3d1;
     --ink:#1c1917;--text-2:#44403c;--text-3:#57534e;
     --accent:#c2410c;--accent-bright:#ea580c;--accent-pink:#db2777;--accent-dim:#fff1e8;
     --grad:linear-gradient(120deg,#ea580c,#db2777);
     --grad-cta:linear-gradient(120deg,#c2410c,#be185d);
     --grad-cta-hover:linear-gradient(120deg,#9a3412,#9d174d);
-    --success:#15803d;--gold:#b45309;--gold-dim:#fef3c7;
-    --wa:#25D366;--wa-dark:#128C7E;--danger:#b91c1c;
-    --radius-sm:10px;--radius-md:14px;--radius-lg:20px;--radius-xl:28px;
-    --shadow-sm:0 1px 2px rgba(28,25,23,.06);
-    --shadow-md:0 10px 28px -12px rgba(28,25,23,.18);
+    --success:#15803d;--gold:#b45309;--gold-dim:#fef3c7;--danger:#b91c1c;
+    --wa:#25D366;--wa-dark:#128C7E;
     --shadow-lg:0 28px 64px -20px rgba(28,25,23,.22);
     --shadow-cta:0 8px 22px -8px rgba(219,39,119,.5);
+    --shadow-fab:0 12px 28px -10px rgba(0,0,0,.5), 0 4px 10px -4px rgba(0,0,0,.3);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;height:100%}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden;width:100%;-webkit-font-smoothing:antialiased;transition:padding-top .25s ease}
+html,body{height:100%;-webkit-text-size-adjust:100%;overscroll-behavior:none}
+body{
+    font-family:'Inter',sans-serif;
+    background:#0c0a09;
+    color:#f5f5f4;
+    overflow:hidden;
+    width:100vw;
+    height:100vh;
+    height:100dvh;
+    -webkit-font-smoothing:antialiased;
+    position:fixed;
+    inset:0;
+    touch-action:manipulation;
+}
 a,button,input{font:inherit}
 a{color:inherit;text-decoration:none}
 img,embed,iframe,textarea{display:block;max-width:100%}
 
 /* ═════════════════════════════════════════════
-   FULL-SCREEN DEFAULT — nav hidden on load
+   FULL-SCREEN VIEWER — fills the entire viewport
    ═════════════════════════════════════════════ */
-body.theatre{padding-top:0}
-body.theatre .topbar,
-body.theatre .mainnav,
-body.theatre .pdf-header,
-body.theatre .action-bar{display:none !important}
-body.theatre .viewer-container{max-width:100%;margin:0;padding:0}
-body.theatre .view-card{border-radius:0;border:none;padding:0;box-shadow:none;background:var(--ink)}
-body.theatre .pdf-viewer{border-radius:0;border:none;height:100vh;min-height:100vh}
+.viewer-shell{
+    position:fixed;
+    inset:0;
+    width:100vw;
+    height:100vh;
+    height:100dvh;
+    background:#0c0a09;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+}
 
-/* When user taps "Show header", nav comes back */
-body.show-nav .topbar,
-body.show-nav .mainnav,
-body.show-nav .pdf-header,
-body.show-nav .action-bar{display:revert}
-body.show-nav{padding-top:0}
-body.show-nav .viewer-container{max-width:1100px;margin:36px auto 120px;padding:0 20px}
-body.show-nav .view-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;box-shadow:var(--shadow-sm)}
-body.show-nav .pdf-viewer{border-radius:var(--radius-lg);border:1px solid var(--border);height:auto;min-height:560px}
+.doc-stage{
+    flex:1;
+    position:relative;
+    overflow:hidden;
+    background:#0c0a09;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:0;
+}
 
-/* TOP BAR */
-.topbar{background:var(--ink);color:#f5f5f4;font-size:.82rem;padding:9px 0}
-.topbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;text-align:center}
-.topbar-inner span{display:inline-flex;align-items:center;gap:8px;color:#a8a29e;white-space:nowrap}
-.topbar-inner span i{color:var(--accent-bright);font-size:.78rem}
+.pdf-viewer{
+    position:relative;
+    width:100%;
+    height:100%;
+    background:#0c0a09;
+    overflow:hidden;
+    transition:filter .3s ease;
+}
+.pdf-viewer iframe,
+.pdf-viewer embed{
+    width:100%;
+    height:100%;
+    background:#fff;
+    border:none;
+    display:block;
+}
+.pdf-viewer img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    background:#0c0a09;
+}
+.pdf-viewer textarea{
+    width:100%;
+    height:100%;
+    background:#fff;
+    color:var(--ink);
+    padding:24px;
+    border:none;
+    resize:none;
+    font-family:'JetBrains Mono',monospace;
+    font-size:.9rem;
+    line-height:1.6;
+    white-space:pre-wrap;
+    outline:none;
+    display:block;
+}
 
-/* NAV */
-.mainnav{background:rgba(250,250,249,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;width:100%}
-.mainnav-inner{max-width:1200px;margin:0 auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:20px}
-.logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.3rem;color:var(--ink);letter-spacing:-.02em;flex-shrink:0}
-.logo-img{width:46px;height:46px;border-radius:12px;object-fit:cover;flex-shrink:0;box-shadow:0 6px 16px -6px rgba(219,39,119,.4);display:block;background:#fff}
-.logo-text span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.menu{display:flex;align-items:center;gap:2px;flex-wrap:wrap;justify-content:center;flex:1;min-width:0}
-.menu a{padding:8px 11px;font-size:.84rem;font-weight:600;color:var(--text-2);border-radius:8px;white-space:nowrap;transition:all .25s ease}
-.menu a:hover{color:var(--ink);background:var(--alt)}
-.menu a.active{color:var(--accent);background:var(--accent-dim);font-weight:700}
-.menu a.course-link{color:var(--accent)}
-.menu a.hack-link{color:var(--accent-pink)}
-.menu a.course-link i,.menu a.hack-link i{font-size:.75rem;margin-right:5px}
-.nav-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
-.btn-quote{background:var(--grad-cta);color:#fff;padding:11px 22px;border-radius:999px;font-weight:700;font-size:.85rem;display:inline-flex;align-items:center;gap:8px;transition:all .25s ease;white-space:nowrap;box-shadow:var(--shadow-cta)}
-.btn-quote:hover{background:var(--grad-cta-hover);transform:translateY(-2px);box-shadow:0 12px 28px -8px rgba(219,39,119,.6)}
-
-/* VIEWER */
-.viewer-container{max-width:1100px;margin:36px auto 120px;padding:0 20px;position:relative;z-index:3}
-.view-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px;box-shadow:var(--shadow-sm)}
-.pdf-header{margin-bottom:20px;display:flex;flex-direction:column;gap:12px}
-.pdf-title-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.pdf-header h2{display:flex;align-items:center;gap:12px;color:var(--ink);font-size:clamp(1.1rem,2vw,1.5rem);font-weight:800;line-height:1.3;word-break:break-word;letter-spacing:-.02em}
-.pdf-header h2 i{color:var(--accent);font-size:1.1em}
-.doc-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:var(--alt);border:1px solid var(--border);color:var(--text-2);font-size:.76rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
-.doc-badge i{color:var(--success)}
-.doc-badge i.fa-lock{color:var(--gold)}
-.pdf-meta{display:flex;flex-wrap:wrap;gap:10px 14px;font-size:.85rem;color:var(--text-2)}
-.pdf-meta span{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;background:var(--alt);border:1px solid var(--border);border-radius:999px}
-.pdf-meta i{color:var(--accent)}
-.pdf-meta .lock-icon{color:var(--gold)}
-.pdf-meta .public-icon{color:var(--success)}
-
-.pdf-viewer{position:relative;background:var(--alt);border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);min-height:560px;transition:filter .3s ease, background .3s ease}
-.pdf-viewer iframe,.pdf-viewer embed,.pdf-viewer img,.pdf-viewer textarea{width:100%;min-height:560px;height:75vh;background:var(--surface);border:none}
-.pdf-viewer img{object-fit:contain;background:var(--alt)}
-.pdf-viewer textarea{color:var(--ink);background:var(--surface);padding:24px;resize:vertical;font-family:'JetBrains Mono',monospace;font-size:.9rem;line-height:1.6;white-space:pre-wrap;outline:none}
-
-/* Blur / hide overlay */
-.pdf-viewer.is-blurred{filter:blur(28px);pointer-events:none;user-select:none}
+/* Hide / blur with overlay */
+.pdf-viewer.is-blurred{filter:blur(40px) brightness(.5);pointer-events:none;user-select:none}
 .pdf-viewer.is-blurred::after{
-    content:"\f023  Hidden — tap the eye to reveal";
+    content:"\f070  Document hidden — tap the eye to reveal";
     font-family:"Font Awesome 6 Free","Inter",sans-serif;
     font-weight:900;
     position:absolute;inset:0;
-    display:flex;align-items:center;justify-content:center;
-    background:rgba(28,25,23,.85);
-    color:#fff;font-size:1rem;font-weight:700;letter-spacing:.03em;
+    display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;
+    background:rgba(12,10,9,.9);
+    color:#f5f5f4;font-size:1rem;font-weight:700;letter-spacing:.03em;
     pointer-events:auto;user-select:none;
-    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
 }
 
-.error-box{display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:520px;text-align:center;padding:32px;color:var(--text-2);background:var(--alt)}
-.error-box i{font-size:4rem;color:var(--accent);opacity:.8;margin-bottom:18px}
-.error-box h3{font-size:clamp(1.1rem,2vw,1.5rem);margin-bottom:8px;color:var(--ink);font-weight:800}
-.error-box p{color:var(--text-2);max-width:420px;line-height:1.6}
-
-.action-bar{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
-.action-bar a,.action-bar button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:12px 24px;border-radius:999px;font-weight:700;font-size:.9rem;border:1px solid transparent;transition:all .2s ease;cursor:pointer;text-decoration:none}
-.action-bar a:hover,.action-bar button:hover{transform:translateY(-1px);outline:none}
-.btn-back{background:var(--surface);border-color:var(--border);color:var(--ink)}
-.btn-back:hover{background:var(--alt);border-color:var(--border-strong)}
-.btn-download{background:var(--grad-cta);color:#fff;box-shadow:var(--shadow-cta)}
-.btn-download:hover{background:var(--grad-cta-hover)}
-.btn-open{background:var(--accent-dim);border-color:#fed7c3;color:var(--accent)}
-.btn-open:hover{background:#ffd9c2}
-.btn-danger{background:#fef2f2;border-color:#fecaca;color:var(--danger)}
-.btn-danger:hover{background:#fee2e2}
+.error-box{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;
+    justify-content:center;align-items:center;
+    text-align:center;padding:32px;
+    color:#a8a29e;
+    background:#0c0a09;
+}
+.error-box i{font-size:4rem;color:var(--accent-bright);opacity:.8;margin-bottom:18px}
+.error-box h3{font-size:clamp(1.1rem,2vw,1.5rem);margin-bottom:8px;color:#f5f5f4;font-weight:800}
+.error-box p{color:#a8a29e;max-width:420px;line-height:1.6}
 
 /* ═════════════════════════════════════════════
-   FLOATING ACTION BUTTONS (right column)
+   FLOATING ACTION BUTTONS (right side)
    ═════════════════════════════════════════════ */
 .fab-stack{
     position:fixed;
-    right:calc(16px + env(safe-area-inset-right, 0px));
-    bottom:calc(16px + env(safe-area-inset-bottom, 0px));
-    display:flex;flex-direction:column;gap:12px;
+    right:calc(14px + env(safe-area-inset-right, 0px));
+    bottom:calc(14px + env(safe-area-inset-bottom, 0px));
+    display:flex;
+    flex-direction:column;
+    gap:12px;
     z-index:900;
-    transition:bottom .25s ease;
+    transition:opacity .25s ease, transform .25s ease;
 }
+.fab-stack.fade-out{opacity:0;pointer-events:none;transform:translateY(8px)}
 .fab{
     width:54px;height:54px;border-radius:50%;
     display:inline-flex;align-items:center;justify-content:center;
     font-size:1.25rem;border:none;cursor:pointer;
-    box-shadow:0 12px 28px -10px rgba(28,25,23,.35), 0 4px 10px -4px rgba(28,25,23,.2);
+    box-shadow:var(--shadow-fab);
     transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
     color:#fff;position:relative;
+    -webkit-tap-highlight-color:transparent;
 }
-.fab:hover,.fab:focus-visible{transform:translateY(-3px) scale(1.05);outline:none;box-shadow:0 18px 34px -10px rgba(28,25,23,.4)}
-.fab:active{transform:scale(.96)}
+.fab:hover,.fab:focus-visible{transform:translateY(-3px) scale(1.06);outline:none;box-shadow:0 18px 34px -10px rgba(0,0,0,.55)}
+.fab:active{transform:scale(.95)}
 .fab[disabled]{opacity:.5;cursor:not-allowed;transform:none}
 
-.fab-wa{background:var(--wa)}
-.fab-wa:hover{background:#1ebe5b}
-.fab-share{background:var(--grad-cta)}
-.fab-share:hover{background:var(--grad-cta-hover)}
-.fab-download{background:var(--ink)}
-.fab-download:hover{background:#0c0a09}
-.fab-toggle{background:var(--surface);color:var(--ink);border:1px solid var(--border)}
-.fab-toggle:hover{background:var(--alt)}
 .fab-eye{background:#6b21a8}
 .fab-eye:hover{background:#581c87}
 .fab-eye.is-hidden{background:var(--danger)}
 .fab-eye.is-hidden:hover{background:#991b1b}
 
+.fab-wa{background:var(--wa)}
+.fab-wa:hover{background:#1ebe5b}
+
+.fab-share{background:var(--grad-cta)}
+.fab-share:hover{background:var(--grad-cta-hover)}
+
+.fab-download{background:#1c1917;border:1px solid #292524}
+.fab-download:hover{background:#0c0a09}
+
+/* Tooltip on hover (desktop only) */
 .fab::after{
     content:attr(data-label);
     position:absolute;right:calc(100% + 12px);top:50%;transform:translateY(-50%);
-    background:var(--ink);color:#fff;
+    background:#1c1917;color:#fff;
     padding:6px 12px;border-radius:8px;
-    font-size:.78rem;font-weight:600;white-space:nowrap;
+    font-size:.76rem;font-weight:600;white-space:nowrap;
     opacity:0;pointer-events:none;
     transition:opacity .18s ease, transform .18s ease;
     z-index:1;
+    box-shadow:0 4px 12px -4px rgba(0,0,0,.4);
 }
-.fab:hover::after,.fab:focus-visible::after{opacity:1;transform:translateY(-50%) translateX(-3px)}
-
-/* Small top-left toggle for nav (visible in theatre mode) */
-.theatre-nav-toggle{
-    position:fixed;
-    top:calc(14px + env(safe-area-inset-top, 0px));
-    left:calc(14px + env(safe-area-inset-left, 0px));
-    z-index:901;
-    display:none;
-    align-items:center;gap:8px;
-    padding:10px 16px;
-    border-radius:999px;
-    background:rgba(28,25,23,.82);
-    color:#fff;
-    border:none;cursor:pointer;
-    font-size:.82rem;font-weight:700;
-    box-shadow:0 8px 22px -8px rgba(0,0,0,.45);
-    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-    transition:background .2s ease, transform .2s ease;
-}
-.theatre-nav-toggle:hover{background:rgba(28,25,23,.95);transform:translateY(-1px)}
-body.theatre .theatre-nav-toggle{display:inline-flex}
-.theatre-nav-toggle i{font-size:.88rem}
+@media (hover:hover){.fab:hover::after,.fab:focus-visible::after{opacity:1;transform:translateY(-50%) translateX(-3px)}}
 
 /* ═════════════════════════════════════════════
    SHARE MODAL
    ═════════════════════════════════════════════ */
-.share-modal{position:fixed;inset:0;display:none;align-items:flex-end;justify-content:center;background:rgba(28,25,23,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:2000;padding:0}
+.share-modal{position:fixed;inset:0;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:2000;padding:0}
 .share-modal.active{display:flex;animation:fadeIn .2s ease}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.share-sheet{width:100%;max-width:520px;background:var(--surface);border-radius:24px 24px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom, 0px));box-shadow:0 -12px 40px -8px rgba(28,25,23,.3);animation:slideUp .3s cubic-bezier(.16,1,.3,1);max-height:90vh;overflow-y:auto}
+.share-sheet{width:100%;max-width:520px;background:var(--surface);color:var(--ink);border-radius:24px 24px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom, 0px));box-shadow:0 -12px 40px -8px rgba(0,0,0,.5);animation:slideUp .3s cubic-bezier(.16,1,.3,1);max-height:92vh;overflow-y:auto}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .share-grabber{width:40px;height:4px;background:var(--border-strong);border-radius:2px;margin:0 auto 16px}
 .share-title{font-size:1.05rem;font-weight:800;color:var(--ink);margin-bottom:4px;text-align:center}
@@ -232,77 +221,34 @@ body.theatre .theatre-nav-toggle{display:inline-flex}
 .share-link-row button{flex-shrink:0;padding:11px 18px;border-radius:10px;background:var(--grad-cta);color:#fff;border:none;font-weight:700;font-size:.82rem;cursor:pointer;white-space:nowrap}
 .share-link-row button:hover{background:var(--grad-cta-hover)}
 
-/* Visibility modal */
-.vis-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(28,25,23,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:2050;padding:18px}
-.vis-modal.active{display:flex}
-.vis-sheet{width:min(100%,440px);background:var(--surface);border-radius:22px;padding:26px 22px;box-shadow:var(--shadow-lg);animation:fadeIn .2s ease}
-.vis-sheet h3{font-size:1.1rem;font-weight:800;color:var(--ink);margin-bottom:6px;text-align:center}
-.vis-sheet p{font-size:.85rem;color:var(--text-3);text-align:center;margin-bottom:20px;line-height:1.5}
-.vis-option{display:flex;align-items:center;gap:14px;padding:14px;border-radius:14px;border:2px solid var(--border);background:var(--surface);cursor:pointer;margin-bottom:10px;transition:all .18s ease}
-.vis-option:hover{border-color:var(--border-strong);background:var(--alt)}
-.vis-option.selected{border-color:var(--accent);background:var(--accent-dim)}
-.vis-icon{width:44px;height:44px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0}
-.vis-icon.pub{background:#dcfce7;color:#15803d}
-.vis-icon.priv{background:#fef3c7;color:#b45309}
-.vis-title{font-weight:700;font-size:.9rem;color:var(--ink);margin-bottom:2px}
-.vis-desc{font-size:.74rem;color:var(--text-3);line-height:1.35}
-.vis-actions{display:flex;gap:10px;margin-top:16px}
-.vis-actions button{flex:1;padding:13px;border-radius:999px;font-weight:700;font-size:.85rem;cursor:pointer;border:none;transition:all .18s ease}
-.vis-cancel{background:var(--alt);color:var(--text-2);border:1px solid var(--border)}
-.vis-cancel:hover{background:var(--border)}
-.vis-save{background:var(--grad-cta);color:#fff;box-shadow:var(--shadow-cta)}
-.vis-save:hover{background:var(--grad-cta-hover)}
-.vis-passcode-display{margin-top:12px;padding:12px;background:var(--gold-dim);border:1px solid var(--gold);border-radius:12px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;color:var(--gold);display:none}
-.vis-passcode-display.show{display:block}
-
 /* Toast */
-.toast{position:fixed;bottom:calc(100px + env(safe-area-inset-bottom, 0px));left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 22px;border-radius:999px;font-size:.85rem;font-weight:600;z-index:3000;opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s ease;box-shadow:0 12px 28px -8px rgba(0,0,0,.4);max-width:90vw;text-align:center}
+.toast{position:fixed;bottom:calc(96px + env(safe-area-inset-bottom, 0px));left:50%;transform:translateX(-50%) translateY(20px);background:#fff;color:#1c1917;padding:12px 22px;border-radius:999px;font-size:.85rem;font-weight:600;z-index:3000;opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s ease;box-shadow:0 12px 28px -8px rgba(0,0,0,.6);max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* Passcode overlay */
-.passcode-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(28,25,23,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:2100;padding:18px}
+.passcode-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(12,10,9,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:2100;padding:18px}
 .passcode-overlay.active{display:flex}
-.passcode-box{width:min(100%,420px);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:34px 28px 24px;box-shadow:var(--shadow-lg);text-align:center}
+.passcode-box{width:min(100%,420px);background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:24px;padding:34px 28px 24px;box-shadow:var(--shadow-lg);text-align:center}
 .passcode-box .lock-icon{display:inline-flex;align-items:center;justify-content:center;width:82px;height:82px;margin-bottom:18px;border-radius:50%;background:var(--gold-dim);color:var(--gold);font-size:2rem}
 .passcode-box h3{font-size:clamp(1.2rem,2vw,1.5rem);margin-bottom:10px;color:var(--ink);font-weight:800}
 .passcode-box p{color:var(--text-2);margin-bottom:20px;line-height:1.5}
-.passcode-box input{width:100%;padding:16px 18px;border-radius:999px;border:1px solid var(--border);background:var(--bg);color:var(--ink);font-size:clamp(1.3rem,2vw,1.7rem);font-family:'JetBrains Mono',monospace;letter-spacing:.45em;text-align:center;outline:none;transition:all .2s ease}
+.passcode-box input{width:100%;padding:16px 18px;border-radius:999px;border:1px solid var(--border);background:var(--alt);color:var(--ink);font-size:clamp(1.3rem,2vw,1.7rem);font-family:'JetBrains Mono',monospace;letter-spacing:.45em;text-align:center;outline:none;transition:all .2s ease}
 .passcode-box input:focus{border-color:var(--accent-bright);background:var(--surface);box-shadow:0 0 0 4px rgba(234,88,12,.12)}
 .error-msg{min-height:18px;margin-top:12px;color:var(--danger);font-size:.83rem;opacity:0;transition:opacity .2s ease}
 .error-msg.show{opacity:1}
 .unlock-btn{width:100%;margin-top:18px;background:var(--grad-cta);color:#fff;border:none;border-radius:999px;padding:15px 18px;font-weight:800;font-size:.95rem;cursor:pointer;box-shadow:var(--shadow-cta);transition:all .2s ease}
 .unlock-btn:hover:not(:disabled){background:var(--grad-cta-hover);transform:translateY(-1px)}
 .unlock-btn:disabled{opacity:.5;cursor:not-allowed}
-.back-btn{background:transparent;color:var(--text-3);border:none;margin-top:16px;font-size:.88rem;cursor:pointer}
-.back-btn:hover{color:var(--ink)}
 
 /* RESPONSIVE */
-@media (max-width:720px){
-    .mainnav-inner{flex-wrap:wrap;padding:12px 16px;gap:12px}
-    .logo{font-size:1.05rem;gap:10px}
-    .logo-img{width:40px;height:40px;border-radius:11px}
-    .menu{order:3;flex-basis:100%;justify-content:flex-start;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;gap:0;margin:0 -16px;padding-left:16px;padding-right:16px}
-    .menu::-webkit-scrollbar{display:none}
-    .menu a{padding:8px 12px;font-size:.8rem;flex-shrink:0}
+@media (max-width:640px){
     .fab{width:50px;height:50px;font-size:1.15rem}
     .fab-stack{gap:10px}
-}
-@media (max-width:640px){
-    .topbar-inner{gap:12px;font-size:.72rem}
-    .topbar-inner span:nth-child(3){display:none}
-    .action-bar{flex-direction:column}
-    .action-bar a,.action-bar button{width:100%}
-    .passcode-box{padding:28px 20px 20px}
-    .passcode-box input{letter-spacing:.22em}
-    .btn-quote span{display:none}
     .share-grid{grid-template-columns:repeat(4,1fr);gap:10px}
     .share-icon{width:48px;height:48px;font-size:1.25rem}
     .share-label{font-size:.66rem}
 }
 @media (max-width:400px){
-    .logo-text{font-size:.95rem}
-    .logo-img{width:36px;height:36px;border-radius:10px}
-    .topbar-inner span:nth-child(2){display:none}
     .fab{width:46px;height:46px;font-size:1.05rem}
 }
 @media (prefers-reduced-motion:reduce){
@@ -310,77 +256,13 @@ body.theatre .theatre-nav-toggle{display:inline-flex}
 }
 </style>
 </head>
-<body class="theatre">
+<body>
 
-<!-- Top-left toggle shown while in theatre mode -->
-<button class="theatre-nav-toggle" id="theatreNavToggle" type="button" aria-label="Show header and menu">
-    <i class="fas fa-bars"></i> Menu
-</button>
-
-<!-- TOP BAR (hidden in theatre) -->
-<div class="topbar">
-    <div class="topbar-inner">
-        <span><i class="fas fa-phone"></i> +255 740 706 007</span>
-        <span><i class="fas fa-envelope"></i> Twarvisteh@gmail.com</span>
-        <span><i class="fas fa-map-marker-alt"></i> Dar es Salaam, Tanzania</span>
-    </div>
-</div>
-
-<!-- NAV (hidden in theatre) -->
-<nav class="mainnav">
-    <div class="mainnav-inner">
-        <a href="/" class="logo">
-            <img src="/apple-touch-icon.png" alt="Student Hub" class="logo-img">
-            <span class="logo-text">Student<span>Hub</span></span>
-        </a>
-        <div class="menu">
-            <a href="/">Home</a>
-            <a href="/browse/" class="active">Browse</a>
-            <a href="/upload/">Upload</a>
-            <a href="/calculator/">Calculator</a>
-            <a href="/scanner/">Scanner</a>
-            <a href="/free_course/" class="course-link"><i class="fas fa-book-open"></i>Free Courses</a>
-            <a href="/hackerthon/" class="hack-link"><i class="fas fa-code"></i>Hackathon</a>
-            <a href="/about/">About</a>
-        </div>
-        <div class="nav-right">
-            <a href="/upload/" class="btn-quote">
-                <span>Upload File</span> <i class="fas fa-arrow-right"></i>
-            </a>
-        </div>
-    </div>
-</nav>
-
-<!-- VIEWER -->
-<main class="viewer-container">
-    <section class="view-card">
-        <div class="pdf-header">
-            <div class="pdf-title-row">
-                <h2 id="document-title">
-                    <i class="fas fa-file-pdf" aria-hidden="true"></i>
-                    {{ note.original_filename|default:note.filename|escape }}
-                </h2>
-                {% if note.privacy == 'private' %}
-                    <span class="doc-badge" id="privacyBadge"><i class="fas fa-lock"></i> Private</span>
-                {% else %}
-                    <span class="doc-badge" id="privacyBadge"><i class="fas fa-globe"></i> Public</span>
-                {% endif %}
-            </div>
-            <div class="pdf-meta">
-                <span><i class="fas fa-tag"></i> {{ note.module|default:"N/A" }}</span>
-                <span><i class="fas fa-book"></i> {{ note.course|default:"N/A" }}</span>
-                <span><i class="fas fa-calendar"></i> {{ note.uploaded_at|slice:":10" }}</span>
-                <span><i class="fas fa-university"></i> {{ note.university|default:"Not specified" }}</span>
-                <span>
-                    {% if note.privacy == 'private' %}
-                        <i class="fas fa-lock lock-icon"></i> Locked
-                    {% else %}
-                        <i class="fas fa-globe public-icon"></i> Open access
-                    {% endif %}
-                </span>
-            </div>
-        </div>
-
+<!-- ═══════════════════════════════════════════════
+     FULL-SCREEN VIEWER (no exit button)
+     ═══════════════════════════════════════════════ -->
+<div class="viewer-shell">
+    <div class="doc-stage">
         <div class="pdf-viewer" id="pdfViewer">
             {% if note.can_view_inline %}
                 {% if note.is_pdf %}
@@ -400,27 +282,16 @@ body.theatre .theatre-nav-toggle{display:inline-flex}
                 </div>
             {% endif %}
         </div>
-
-        <div class="action-bar">
-            <a href="/browse/" class="btn-back"><i class="fas fa-arrow-left"></i> Back</a>
-            {% if note.can_view_inline and note.is_pdf %}
-                <a href="{{ pdf_url }}" target="_blank" rel="noopener noreferrer" class="btn-open"><i class="fas fa-external-link-alt"></i> Open in new tab</a>
-            {% endif %}
-            <a href="/download/{{ note.id }}/{% if note.privacy == 'private' %}?passcode={{ note.passcode }}{% endif %}" class="btn-download" download>
-                <i class="fas fa-download"></i> Download
-            </a>
-        </div>
-    </section>
-</main>
+    </div>
+</div>
 
 <!-- ═══════════════════════════════════════════════
-     FLOATING ACTION BUTTONS
+     FLOATING ACTION BUTTONS — essentials only
      ═══════════════════════════════════════════════ -->
-<div class="fab-stack" aria-label="Quick actions">
+<div class="fab-stack" id="fabStack" aria-label="Quick actions">
     <button class="fab fab-eye" id="fabEye"
             type="button"
             data-label="Hide document"
-            title="Hide document"
             aria-label="Hide document"
             aria-pressed="false">
         <i class="fas fa-eye" id="fabEyeIcon"></i>
@@ -429,7 +300,6 @@ body.theatre .theatre-nav-toggle{display:inline-flex}
        id="fabWhatsApp"
        href="#"
        data-label="Share on WhatsApp"
-       title="Share on WhatsApp"
        aria-label="Share on WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
@@ -437,7 +307,6 @@ body.theatre .theatre-nav-toggle{display:inline-flex}
             id="fabShare"
             type="button"
             data-label="Share"
-            title="Share"
             aria-label="Share">
         <i class="fas fa-share-alt"></i>
     </button>
@@ -446,18 +315,9 @@ body.theatre .theatre-nav-toggle{display:inline-flex}
        href="/download/{{ note.id }}/{% if note.privacy == 'private' %}?passcode={{ note.passcode }}{% endif %}"
        download
        data-label="Download"
-       title="Download"
        aria-label="Download">
         <i class="fas fa-download"></i>
     </a>
-    <button class="fab fab-toggle"
-            id="fabNavToggle"
-            type="button"
-            data-label="Show header"
-            title="Show header"
-            aria-label="Show header">
-        <i class="fas fa-bars" id="fabNavIcon"></i>
-    </button>
 </div>
 
 <!-- ═══════════════════════════════════════════════
@@ -507,41 +367,6 @@ body.theatre .theatre-nav-toggle{display:inline-flex}
     </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     VISIBILITY MODAL (owner only)
-     ═══════════════════════════════════════════════ -->
-{% if is_authenticated and current_student.id|stringformat:"s" == note.uploader_id|stringformat:"s" %}
-<div class="vis-modal" id="visModal" role="dialog" aria-modal="true" aria-labelledby="visTitle">
-    <div class="vis-sheet">
-        <h3 id="visTitle">Change note visibility</h3>
-        <p>Control who can open this document.</p>
-
-        <div class="vis-option" id="visOptPublic" data-value="public" role="button" tabindex="0">
-            <div class="vis-icon pub"><i class="fas fa-globe"></i></div>
-            <div>
-                <div class="vis-title">Public</div>
-                <div class="vis-desc">Anyone with the link can view & download.</div>
-            </div>
-        </div>
-
-        <div class="vis-option" id="visOptPrivate" data-value="private" role="button" tabindex="0">
-            <div class="vis-icon priv"><i class="fas fa-lock"></i></div>
-            <div>
-                <div class="vis-title">Private</div>
-                <div class="vis-desc">Only people with the 4-digit passcode can open it.</div>
-            </div>
-        </div>
-
-        <div class="vis-passcode-display" id="visPasscodeDisplay"></div>
-
-        <div class="vis-actions">
-            <button type="button" class="vis-cancel" id="visCancel">Cancel</button>
-            <button type="button" class="vis-save" id="visSave">Save</button>
-        </div>
-    </div>
-</div>
-{% endif %}
-
 <!-- Toast -->
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -557,7 +382,6 @@ body.theatre .theatre-nav-toggle{display:inline-flex}
         <button class="unlock-btn" id="unlockBtn" type="button" disabled>
             <i class="fas fa-unlock"></i> Unlock
         </button>
-        <button class="back-btn" id="backBtn" type="button">Go back</button>
     </div>
 </div>
 {% endif %}
@@ -567,6 +391,19 @@ body.theatre .theatre-nav-toggle{display:inline-flex}
     'use strict';
 
     /* ======================================================
+       LOCK SCROLL & ATTEMPT REAL BROWSER FULLSCREEN
+       (does nothing if the browser refuses — CSS already
+        makes the page fill the viewport)
+       ====================================================== */
+    document.addEventListener('DOMContentLoaded', function() {
+        var el = document.documentElement;
+        // Silent attempt; most browsers need a gesture so this may fail —
+        // we don't care, CSS already covers the screen.
+        var req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+        if (req) { try { req.call(el).catch(function(){}); } catch(e){} }
+    });
+
+    /* ======================================================
        PASSCODE GATE
        ====================================================== */
     {% if note.privacy == 'private' %}
@@ -574,18 +411,16 @@ body.theatre .theatre-nav-toggle{display:inline-flex}
     var input = document.getElementById('passcodeInput');
     var unlockBtn = document.getElementById('unlockBtn');
     var errorEl = document.getElementById('passcodeError');
-    var backBtn = document.getElementById('backBtn');
     var viewerEl = document.getElementById('pdfViewer');
     var correctPass = "{{ note.passcode|default:''|escapejs }}".trim();
 
-    if (viewerEl) viewerEl.style.display = 'none';
-    document.body.classList.add('is-locked');
+    if (viewerEl) viewerEl.style.visibility = 'hidden';
 
     function showViewer() {
         if (overlay) overlay.classList.remove('active');
-        if (viewerEl) viewerEl.style.display = 'block';
-        document.body.classList.remove('is-locked');
-        document.dispatchEvent(new CustomEvent('doc:unlocked'));
+        if (viewerEl) viewerEl.style.visibility = 'visible';
+        var fabStack = document.getElementById('fabStack');
+        if (fabStack) fabStack.style.display = '';
     }
     function validatePass() {
         var v = input.value.replace(/\D/g, '').slice(0, 4);
@@ -601,12 +436,14 @@ body.theatre .theatre-nav-toggle{display:inline-flex}
     });
     input.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !unlockBtn.disabled) unlockBtn.click();
-        if (e.key === 'Escape') window.location.href = '/browse/';
     });
-    backBtn.addEventListener('click', function() { window.location.href = '/browse/'; });
 
     var urlParams0 = new URLSearchParams(window.location.search);
     if (urlParams0.get('passcode') === correctPass) showViewer();
+    else {
+        var fabStackLock = document.getElementById('fabStack');
+        if (fabStackLock) fabStackLock.style.display = 'none';
+    }
     {% endif %}
 
     /* ======================================================
@@ -618,8 +455,8 @@ body.theatre .theatre-nav-toggle{display:inline-flex}
 
     var fallbackViewUrl = window.location.origin + '/view/' + noteId + '/' + (passcode ? '?passcode=' + encodeURIComponent(passcode) : '');
     var fallbackDownloadUrl = window.location.origin + '/download/' + noteId + '/' + (passcode ? '?passcode=' + encodeURIComponent(passcode) : '');
-    var fallbackTitle = document.getElementById('document-title')?.textContent.trim() || 'Study document';
-    var fallbackShareText = fallbackTitle + '\n\nOpen here 👉 ' + fallbackViewUrl;
+    var fallbackTitle = "{{ note.module|default:note.original_filename|default:note.filename|escapejs }}";
+    var fallbackShareText = '📚 ' + fallbackTitle + '\n\nOpen here 👉 ' + fallbackViewUrl;
 
     /* ======================================================
        TOAST
@@ -635,43 +472,7 @@ body.theatre .theatre-nav-toggle{display:inline-flex}
     }
 
     /* ======================================================
-       FULL-SCREEN (THEATRE) TOGGLE
-       ====================================================== */
-    var body = document.body;
-    var navToggleFab = document.getElementById('fabNavToggle');
-    var navToggleIcon = document.getElementById('fabNavIcon');
-    var navToggleTop = document.getElementById('theatreNavToggle');
-
-    function setTheatre(on) {
-        if (on) {
-            body.classList.add('theatre');
-            body.classList.remove('show-nav');
-            if (navToggleIcon) navToggleIcon.className = 'fas fa-bars';
-            if (navToggleFab) {
-                navToggleFab.setAttribute('data-label', 'Show header');
-                navToggleFab.setAttribute('title', 'Show header');
-            }
-        } else {
-            body.classList.remove('theatre');
-            body.classList.add('show-nav');
-            if (navToggleIcon) navToggleIcon.className = 'fas fa-eye-slash';
-            if (navToggleFab) {
-                navToggleFab.setAttribute('data-label', 'Full screen');
-                navToggleFab.setAttribute('title', 'Full screen');
-            }
-        }
-    }
-    function toggleTheatre() {
-        setTheatre(!body.classList.contains('theatre'));
-    }
-    if (navToggleFab) navToggleFab.addEventListener('click', toggleTheatre);
-    if (navToggleTop) navToggleTop.addEventListener('click', function() { setTheatre(false); });
-
-    // Start in theatre mode (nav hidden) by default
-    setTheatre(true);
-
-    /* ======================================================
-       HIDE / REVEAL DOCUMENT (blur + overlay)
+       HIDE / REVEAL DOCUMENT
        ====================================================== */
     var eyeFab = document.getElementById('fabEye');
     var eyeIcon = document.getElementById('fabEyeIcon');
@@ -686,19 +487,14 @@ body.theatre .theatre-nav-toggle{display:inline-flex}
         if (eyeFab) {
             eyeFab.classList.toggle('is-hidden', isHidden);
             eyeFab.setAttribute('data-label', isHidden ? 'Reveal document' : 'Hide document');
-            eyeFab.setAttribute('title', isHidden ? 'Reveal document' : 'Hide document');
             eyeFab.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
         }
         if (isHidden) showToast('🙈 Document hidden — tap eye to reveal');
     }
     if (eyeFab) eyeFab.addEventListener('click', toggleHidden);
-
-    // Also reveal when user clicks on the blurred overlay
-    if (pdfViewer) pdfViewer.addEventListener('click', function(e) {
-        if (isHidden) { toggleHidden(); }
+    if (pdfViewer) pdfViewer.addEventListener('click', function() {
+        if (isHidden) toggleHidden();
     });
-
-    // "H" keyboard shortcut
     document.addEventListener('keydown', function(e) {
         var tag = (e.target.tagName || '').toLowerCase();
         if (tag === 'input' || tag === 'textarea') return;
@@ -828,7 +624,7 @@ body.theatre .theatre-nav-toggle{display:inline-flex}
         document.body.appendChild(ta);
         ta.select();
         try { document.execCommand('copy'); showToast('✅ Link copied!'); }
-        catch (e) { showToast('Copy failed — please copy manually'); }
+        catch (e) { showToast('Copy failed'); }
         document.body.removeChild(ta);
     }
 
@@ -865,91 +661,6 @@ body.theatre .theatre-nav-toggle{display:inline-flex}
             shareWhatsAppWithLink();
         }
     });
-
-    /* ======================================================
-       VISIBILITY MODAL (owner only)
-       ====================================================== */
-    var visModal = document.getElementById('visModal');
-    if (visModal) {
-        var currentPrivacy = "{{ note.privacy|default:'public' }}";
-        var optPublic = document.getElementById('visOptPublic');
-        var optPrivate = document.getElementById('visOptPrivate');
-        var passcodeDisplay = document.getElementById('visPasscodeDisplay');
-        var visCancel = document.getElementById('visCancel');
-        var visSave = document.getElementById('visSave');
-        var pendingPrivacy = currentPrivacy;
-        var returnedPasscode = "";
-
-        function markSelection(val) {
-            pendingPrivacy = val;
-            optPublic.classList.toggle('selected', val === 'public');
-            optPrivate.classList.toggle('selected', val === 'private');
-        }
-        function openVis() {
-            markSelection(currentPrivacy);
-            passcodeDisplay.classList.remove('show');
-            visModal.classList.add('active');
-        }
-        function closeVis() { visModal.classList.remove('active'); }
-
-        [optPublic, optPrivate].forEach(function(el) {
-            el.addEventListener('click', function() { markSelection(el.dataset.value); });
-            el.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); markSelection(el.dataset.value); }
-            });
-        });
-        visCancel.addEventListener('click', closeVis);
-        visModal.addEventListener('click', function(e) { if (e.target === visModal) closeVis(); });
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && visModal.classList.contains('active')) closeVis();
-        });
-
-        visSave.addEventListener('click', function() {
-            if (pendingPrivacy === currentPrivacy) { closeVis(); return; }
-            visSave.disabled = true;
-            fetch('/api/visibility/' + noteId + '/', {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ privacy: pendingPrivacy })
-            })
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-                visSave.disabled = false;
-                if (data && data.success) {
-                    currentPrivacy = data.privacy;
-                    returnedPasscode = data.passcode || '';
-                    showToast('✅ Visibility updated: ' + data.privacy);
-                    if (data.privacy === 'private' && returnedPasscode) {
-                        passcodeDisplay.textContent = '🔐 Passcode: ' + returnedPasscode;
-                        passcodeDisplay.classList.add('show');
-                        passcode = returnedPasscode;
-                        setTimeout(function() { window.location.reload(); }, 1500);
-                    } else {
-                        setTimeout(function() { window.location.reload(); }, 700);
-                    }
-                } else {
-                    showToast('❌ Could not update visibility');
-                }
-            })
-            .catch(function(err) {
-                visSave.disabled = false;
-                console.error('[visibility]', err);
-                showToast('❌ Network error');
-            });
-        });
-
-        // Expose openVis so we can wire to a button if desired
-        window.__openVisibility = openVis;
-    }
-
-    function getCookie(name) {
-        var v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-        return v ? v.pop() : '';
-    }
 
     /* ======================================================
        PRELOAD SHARE INFO
