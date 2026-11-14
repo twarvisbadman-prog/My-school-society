@@ -281,25 +281,19 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
 @keyframes rip{to{transform:scale(3);opacity:0}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.rv{opacity:1;transform:none}}
 
-/* ═══════════════ CHRISTMAS CELEBRATION OVERLAY ═══════════════ */
-
-/* Full-screen celebration container — sits ABOVE the popup so animation is seen all over the screen; clicks pass through */
+/* ═══════════════ CHRISTMAS CELEBRATION ═══════════════ */
 #xmasCelebration{position:fixed;inset:0;z-index:9999;pointer-events:none;overflow:hidden;display:none}
 #xmasCelebration.active{display:block}
 
-/* Falling snowflakes */
 .snowflake{position:absolute;top:-10px;color:#fff;text-shadow:0 0 6px rgba(255,255,255,.9),0 0 14px rgba(220,38,38,.5);animation:fall linear infinite;user-select:none;pointer-events:none;font-weight:900}
 @keyframes fall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:.15}}
 
-/* Floating emoji decorations */
 .xmas-deco{position:absolute;font-size:1.6rem;animation:floatDeco var(--t,8s) ease-in-out infinite;animation-delay:var(--d,0s);pointer-events:none;opacity:.85;filter:drop-shadow(0 2px 6px rgba(0,0,0,.15))}
 @keyframes floatDeco{0%,100%{transform:translate(0,0) rotate(-8deg) scale(1)}50%{transform:translate(var(--x,10px),var(--y,-20px)) rotate(8deg) scale(1.15)}}
 
-/* Twinkling stars */
 .twinkle-star{position:absolute;color:#fbbf24;font-size:.9rem;animation:twinkleStar var(--t,2.5s) ease-in-out infinite;animation-delay:var(--d,0s);pointer-events:none;filter:drop-shadow(0 0 4px #fbbf24)}
 @keyframes twinkleStar{0%,100%{opacity:.3;transform:scale(.7)}50%{opacity:1;transform:scale(1.2)}}
 
-/* Confetti falling */
 .confetti{position:absolute;width:8px;height:14px;top:-20px;animation:confettiFall linear infinite;pointer-events:none;border-radius:2px}
 @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:.3}}
 
@@ -324,7 +318,6 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
 }
 @keyframes popBounce{0%{transform:scale(.5) rotate(-8deg);opacity:0}60%{transform:scale(1.05) rotate(2deg)}100%{transform:scale(1) rotate(0);opacity:1}}
 
-/* Decorative corner elements */
 .xmas-popup-content::before{content:"🎄";position:absolute;top:8px;left:12px;font-size:2rem;opacity:.15;transform:rotate(-20deg);pointer-events:none;animation:twinkleStar 3s ease-in-out infinite}
 .xmas-popup-content::after{content:"🎅";position:absolute;bottom:8px;right:12px;font-size:2rem;opacity:.15;transform:rotate(15deg);pointer-events:none;animation:twinkleStar 3.5s ease-in-out infinite}
 
@@ -353,7 +346,6 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
   line-height:1.6;
 }
 
-/* Sound toggle button */
 #soundToggle{
   background:transparent;
   border:2px solid #dc2626;
@@ -372,14 +364,8 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
   font-family:'Inter',sans-serif;
   width:100%;
 }
-#soundToggle:hover{
-  background:rgba(220,38,38,.08);
-  transform:translateY(-1px);
-}
-#soundToggle.playing{
-  background:#dc2626;
-  color:#fff;
-}
+#soundToggle:hover{background:rgba(220,38,38,.08);transform:translateY(-1px)}
+#soundToggle.playing{background:#dc2626;color:#fff}
 
 .xmas-popup-close{
   padding:14px 32px;
@@ -402,7 +388,6 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
 .xmas-popup-close::after{content:"";position:absolute;top:0;left:-70%;width:40%;height:100%;background:rgba(255,255,255,.35);transform:skewX(-20deg);animation:shine 2.5s ease-in-out infinite}
 @keyframes shine{0%,100%{left:-70%}50%{left:130%}}
 
-/* Mobile adjustments */
 @media(max-width:480px){
   .xmas-popup-content{padding:28px 20px 24px;border-radius:24px}
   .xmas-popup-emoji{font-size:2.8rem}
@@ -418,26 +403,13 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
 </head>
 <body>
 
-<!-- ═══ Christmas celebration layer (animations all over screen) ═══ -->
+<!-- ═══ Christmas celebration layer ═══ -->
 <div id="xmasCelebration" aria-hidden="true"></div>
 
-<!-- ═══ Christmas pop-up (shown on entry) ═══ -->
-<div class="xmas-popup-overlay" id="xmasPopup">
-  <div class="xmas-popup-content">
-    <span class="xmas-popup-emoji">🎄</span>
-    <span class="xmas-popup-badge">✨ Season's Greetings ✨</span>
-    <h2>Merry Christmas!</h2>
-    <p class="xmas-greeting">
-      From <strong>Twarvis</strong> and the <strong>Study Hub &amp; Student Hub Team</strong> 🎁<br><br>
-      We want to sincerely <strong>appreciate each and every one of you</strong> for your incredible contribution to this community. Your dedication, notes, and support make Student Hub what it is today.
-    </p>
-    <p class="xmas-wish">
-      🎅 Wishing you and your families a very, very cool Christmas — filled with joy, love, laughter, and countless blessings. May this festive season bring you peace and happiness! ❄️
-    </p>
-    <p style="font-size:.8rem;color:#9ca3af;">Have a magical holiday and a wonderful New Year ahead! ⭐</p>
-    <p class="xmas-signature">— Twarvis &amp; The Student Hub Family</p>
-    <button id="soundToggle" type="button">🔊 Play Christmas Voice</button>
-    <button class="xmas-popup-close" id="xmasPopupClose">🎉 Thank You &amp; Merry Christmas!</button>
+<!-- ═══ Christmas pop-up (injected by JS from API) ═══ -->
+<div class="xmas-popup-overlay" id="xmasPopup" style="display:none;">
+  <div class="xmas-popup-content" id="xmasPopupContent">
+    <!-- Content populated dynamically by JS -->
   </div>
 </div>
 
@@ -688,20 +660,14 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
   type();
 })();
 
-// 4. CHRISTMAS CELEBRATION + POP-UP + SOUND
+// 4. ⭐ CHRISTMAS — FETCH FROM API
 (function(){
   var celebration = document.getElementById('xmasCelebration');
   var popup = document.getElementById('xmasPopup');
-  var closeBtn = document.getElementById('xmasPopupClose');
-  var soundToggle = document.getElementById('soundToggle');
+  var popupContent = document.getElementById('xmasPopupContent');
   var animationTimer = null;
-
-  // ═══ SAUTI YAKO: chrismax.mp3 ═══
-  // Kama uko Django, badilisha na: new Audio("{% static 'sounds/chrismax.mp3' %}")
-  var christmasVoice = new Audio('chrismax.mp3');
-  christmasVoice.volume = 0.5;
-  christmasVoice.loop = false;
-  christmasVoice.preload = 'auto';
+  var christmasVoice = null;
+  var soundPlayed = false;
 
   // --- Create snowflakes ---
   function createSnowflakes(count) {
@@ -719,7 +685,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
     }
   }
 
-  // --- Create floating emoji decorations ---
   function createDecorations(count) {
     var emojis = ['🎄','🎅','🎁','⛄','🦌','🔔','⭐','❄️','🎉','🥂'];
     for (var i = 0; i < count; i++) {
@@ -736,7 +701,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
     }
   }
 
-  // --- Create twinkling stars ---
   function createStars(count) {
     for (var i = 0; i < count; i++) {
       var star = document.createElement('span');
@@ -751,7 +715,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
     }
   }
 
-  // --- Create confetti ---
   function createConfetti(count) {
     var colors = ['#dc2626','#fbbf24','#16a34a','#3b82f6','#ec4899','#f97316'];
     for (var i = 0; i < count; i++) {
@@ -766,7 +729,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
     }
   }
 
-  // --- Start all animations ---
   function startCelebration() {
     celebration.innerHTML = '';
     var isMobile = window.innerWidth < 600;
@@ -782,8 +744,97 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
     celebration.innerHTML = '';
   }
 
-  // --- Popup control ---
-  function showPopup() {
+  // --- Build popup from API data ---
+  function buildPopup(data) {
+    var msg = data.message || {};
+    popupContent.innerHTML = '';
+    
+    var emoji = document.createElement('span');
+    emoji.className = 'xmas-popup-emoji';
+    emoji.textContent = '🎄';
+    popupContent.appendChild(emoji);
+
+    var badge = document.createElement('span');
+    badge.className = 'xmas-popup-badge';
+    badge.textContent = '✨ Season\'s Greetings ✨';
+    popupContent.appendChild(badge);
+
+    var h2 = document.createElement('h2');
+    h2.textContent = msg.title || 'Merry Christmas!';
+    popupContent.appendChild(h2);
+
+    var greeting = document.createElement('p');
+    greeting.className = 'xmas-greeting';
+    greeting.innerHTML = msg.greeting || '';
+    popupContent.appendChild(greeting);
+
+    var wish = document.createElement('p');
+    wish.className = 'xmas-wish';
+    wish.innerHTML = '🎅 ' + (msg.wish || '');
+    popupContent.appendChild(wish);
+
+    var note = document.createElement('p');
+    note.style.cssText = 'font-size:.8rem;color:#9ca3af;';
+    note.textContent = 'Have a magical holiday and a wonderful New Year ahead! ⭐';
+    popupContent.appendChild(note);
+
+    var sig = document.createElement('p');
+    sig.className = 'xmas-signature';
+    sig.textContent = msg.signature || '— Twarvis & The Student Hub Family';
+    popupContent.appendChild(sig);
+
+    // Sound toggle
+    var soundBtn = document.createElement('button');
+    soundBtn.id = 'soundToggle';
+    soundBtn.type = 'button';
+    soundBtn.textContent = '🔊 Play Christmas Voice';
+    popupContent.appendChild(soundBtn);
+
+    // Close button
+    var closeBtn = document.createElement('button');
+    closeBtn.className = 'xmas-popup-close';
+    closeBtn.id = 'xmasPopupClose';
+    closeBtn.textContent = '🎉 Thank You & Merry Christmas!';
+    popupContent.appendChild(closeBtn);
+
+    // Attach sound handlers
+    if (data.audio_url) {
+      christmasVoice = new Audio(data.audio_url);
+      christmasVoice.volume = 0.5;
+      christmasVoice.loop = false;
+      christmasVoice.preload = 'auto';
+
+      soundBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (christmasVoice.paused) {
+          christmasVoice.play().then(function(){
+            soundPlayed = true;
+            soundBtn.innerHTML = '🔇 Stop Voice';
+            soundBtn.classList.add('playing');
+          }).catch(function(err){ console.log('⚠️ Sound blocked:', err); });
+        } else {
+          christmasVoice.pause();
+          christmasVoice.currentTime = 0;
+          soundBtn.innerHTML = '🔊 Play Christmas Voice';
+          soundBtn.classList.remove('playing');
+        }
+      });
+    } else {
+      soundBtn.style.display = 'none';
+    }
+
+    closeBtn.addEventListener('click', function(){
+      if (christmasVoice && christmasVoice.paused && !soundPlayed) {
+        christmasVoice.play().catch(function(){});
+        soundPlayed = true;
+      }
+      closePopup();
+    });
+  }
+
+  function showPopup(data) {
+    buildPopup(data);
+    popup.style.display = 'flex';
     popup.classList.add('active');
     document.body.style.overflow = 'hidden';
     startCelebration();
@@ -791,96 +842,51 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
 
   function closePopup() {
     popup.classList.remove('active');
+    popup.style.display = 'none';
     document.body.style.overflow = '';
-    // Celebration keeps going over the site for a while, then stops
     if (animationTimer) clearTimeout(animationTimer);
-    animationTimer = setTimeout(function(){
-      stopCelebration();
-    }, 15000);
+    animationTimer = setTimeout(stopCelebration, 15000);
   }
 
-  // --- Sound control ---
-  function playSound() {
-    if (!christmasVoice.paused) return; // Tayari inacheza
-    christmasVoice.play().then(function(){
-      if (soundToggle) {
-        soundToggle.innerHTML = '🔇 Stop Voice';
-        soundToggle.classList.add('playing');
+  // --- Fetch Christmas status from API ---
+  fetch('/api/christmas/status/', { credentials: 'same-origin' })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (!data.active) {
+        console.log('🎄 Christmas Mode is OFF');
+        return;
       }
-      console.log('✅ Sauti ya Krismasi imeanza!');
-    }).catch(function(err){
-      console.log('⚠️ Sauti imezuiwa:', err);
-    });
-  }
-
-  function stopSound() {
-    christmasVoice.pause();
-    christmasVoice.currentTime = 0;
-    if (soundToggle) {
-      soundToggle.innerHTML = '🔊 Play Christmas Voice';
-      soundToggle.classList.remove('playing');
-    }
-    console.log('🔇 Sauti imezimwa');
-  }
-
-  // Kitufe cha kudhibiti sauti
-  if (soundToggle) {
-    soundToggle.addEventListener('click', function(e) {
-      e.stopPropagation();
-      if (christmasVoice.paused) {
-        playSound();
-      } else {
-        stopSound();
+      console.log('🎄 Christmas Mode is ON');
+      // Show popup once per day
+      var lastShown = localStorage.getItem('xmasPopupLastShown');
+      var today = new Date().toDateString();
+      if (lastShown === today) {
+        // Already seen today — just show light celebration
+        startCelebration();
+        setTimeout(stopCelebration, 8000);
+        return;
       }
+      showPopup(data);
+      localStorage.setItem('xmasPopupLastShown', today);
+    })
+    .catch(function(err){
+      console.error('❌ Christmas fetch failed:', err);
     });
-  }
 
-  // Kitufe cha popup kuanzisha sauti (kama bado haijaanza)
-  if (closeBtn) {
-    closeBtn.addEventListener('click', function() {
-      // Kama sauti haijaanza, ianze
-      if (christmasVoice.paused && christmasVoice.currentTime === 0) {
-        playSound();
-      }
-      closePopup();
-    });
-  }
-
-  // Click kwenye popup overlay kufunga (na kuanzisha sauti)
-  if (popup) {
-    popup.addEventListener('click', function(e) {
-      if (e.target === popup) {
-        if (christmasVoice.paused && christmasVoice.currentTime === 0) {
-          playSound();
-        }
-        closePopup();
-      }
-    });
-  }
-
-  // Escape key kufunga popup na kuzima sauti
-  document.addEventListener('keydown', function(e) {
+  // Escape key
+  document.addEventListener('keydown', function(e){
     if (e.key === 'Escape') {
       if (popup.classList.contains('active')) closePopup();
-      if (!christmasVoice.paused) stopSound();
+      if (christmasVoice && !christmasVoice.paused) {
+        christmasVoice.pause();
+        christmasVoice.currentTime = 0;
+      }
     }
   });
 
   // Zima sauti mtumiaji akiondoka
-  window.addEventListener('beforeunload', function() {
-    christmasVoice.pause();
-  });
-
-  // Show popup immediately on page load
-  showPopup();
-
-  // On resize, keep things reasonable
-  var resizeTimer;
-  window.addEventListener('resize', function(){
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function(){
-      if (popup.classList.contains('active')) startCelebration();
-    }, 400);
+  window.addEventListener('beforeunload', function(){
+    if (christmasVoice) christmasVoice.pause();
   });
 })();
 
@@ -889,8 +895,8 @@ document.addEventListener('DOMContentLoaded',function(){
   const tncOverlay=document.getElementById('tncOverlay'), tncAgree=document.getElementById('tncAgree'), tncDecline=document.getElementById('tncDecline');
   const cookieBanner=document.getElementById('cookieBanner'), cookieAccept=document.getElementById('cookieAccept'), cookieDecline=document.getElementById('cookieDecline');
   const tncAccepted=localStorage.getItem('studenthub_tnc_accepted');
-  // Delay TNC so it doesn't overlap Christmas popup immediately
-  if(tncAccepted!=='true') setTimeout(()=>{tncOverlay.classList.add('active');document.body.style.overflow='hidden';},3000);
+  // Delay TNC so it doesn't overlap Christmas popup
+  if(tncAccepted!=='true') setTimeout(()=>{tncOverlay.classList.add('active');document.body.style.overflow='hidden';},5000);
   tncAgree.addEventListener('click',()=>{localStorage.setItem('studenthub_tnc_accepted','true');tncOverlay.classList.remove('active');document.body.style.overflow='';checkCookies();});
   tncDecline.addEventListener('click',()=>{alert('You must accept the Terms & Conditions to use Student Hub.');});
   function checkCookies(){const c=localStorage.getItem('studenthub_cookies_accepted'); if(c!=='true'&&c!=='false') setTimeout(()=>cookieBanner.classList.add('active'),1000);}
