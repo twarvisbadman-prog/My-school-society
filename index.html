@@ -283,8 +283,8 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
 
 /* ═══════════════ CHRISTMAS CELEBRATION OVERLAY ═══════════════ */
 
-/* Full-screen celebration container */
-#xmasCelebration{position:fixed;inset:0;z-index:9997;pointer-events:none;overflow:hidden;display:none}
+/* Full-screen celebration container — sits ABOVE the popup so animation is seen all over the screen; clicks pass through */
+#xmasCelebration{position:fixed;inset:0;z-index:9999;pointer-events:none;overflow:hidden;display:none}
 #xmasCelebration.active{display:block}
 
 /* Falling snowflakes */
@@ -304,7 +304,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
 @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:.3}}
 
 /* ═══════════════ CHRISTMAS POP-UP ═══════════════ */
-.xmas-popup-overlay{position:fixed;inset:0;z-index:9998;background:rgba(15,15,25,.7);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px;animation:fadeIn .5s ease}
+.xmas-popup-overlay{position:fixed;inset:0;z-index:9998;background:rgba(15,15,25,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px;animation:fadeIn .5s ease}
 .xmas-popup-overlay.active{display:flex}
 
 .xmas-popup-content{
@@ -314,12 +314,12 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
   max-width:460px;
   width:100%;
   max-height:90vh;
+  overflow-x:hidden;
   overflow-y:auto;
   text-align:center;
   box-shadow:0 30px 80px rgba(0,0,0,.35),0 0 0 3px #dc2626,0 0 60px rgba(220,38,38,.3);
   animation:popBounce .7s cubic-bezier(.34,1.56,.64,1);
   position:relative;
-  overflow:hidden;
   border:1px solid rgba(220,38,38,.2);
 }
 @keyframes popBounce{0%{transform:scale(.5) rotate(-8deg);opacity:0}60%{transform:scale(1.05) rotate(2deg)}100%{transform:scale(1) rotate(0);opacity:1}}
@@ -339,7 +339,8 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
 .xmas-popup-content .xmas-greeting{font-size:.95rem;color:#374151;line-height:1.7;margin:14px 0;font-weight:500}
 .xmas-popup-content .xmas-signature{font-size:.85rem;color:#dc2626;font-weight:800;margin-top:14px;font-style:italic}
 
-.xmas-popup-wish{
+/* FIXED: class name now matches the HTML (.xmas-wish) so the wish box is styled */
+.xmas-popup-content .xmas-wish{
   font-size:.9rem;
   font-weight:700;
   color:#991b1b;
@@ -754,11 +755,11 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
   function closePopup() {
     popup.classList.remove('active');
     document.body.style.overflow = '';
-    // Let snow/decorations keep going but lighter, then stop after a while
+    // Celebration keeps going over the site for a while, then stops
     if (animationTimer) clearTimeout(animationTimer);
     animationTimer = setTimeout(function(){
       stopCelebration();
-    }, 4000);
+    }, 15000);
   }
 
   // Show popup immediately on page load
