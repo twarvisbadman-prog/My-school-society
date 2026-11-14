@@ -397,8 +397,238 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
 .sbx-rv{opacity:0;transform:translateY(26px)}
 .sbx-rv.in{opacity:1;transform:none;transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1);transition-delay:calc(var(--i,0)*70ms)}
 </style>
+
+<!-- ═══════════════ CHRISTMAS MODE STYLES (NEW) ═══════════════ -->
+<style id="christmas-mode">
+/* Christmas Mode Toggle Button */
+#xmasToggle {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: var(--surface);
+  color: var(--accent);
+  font-size: 1.3rem;
+  cursor: pointer;
+  z-index: 3500;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s var(--bounce-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#xmasToggle:hover {
+  transform: scale(1.15) rotate(-10deg);
+  background: var(--accent);
+  color: #fff;
+}
+#xmasToggle.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* Snowfall container */
+#snowfall {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+  display: none;
+}
+body.xmas-mode #snowfall {
+  display: block;
+}
+
+/* Snowflake */
+.snowflake {
+  position: absolute;
+  top: -10px;
+  color: #fff;
+  font-size: 1.2em;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+  animation: fall linear infinite;
+  user-select: none;
+  pointer-events: none;
+}
+@keyframes fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(105vh) rotate(720deg);
+    opacity: 0.3;
+  }
+}
+
+/* Christmas card decoration */
+body.xmas-mode .clean-card,
+body.xmas-mode .compact-card,
+body.xmas-mode .stat-box,
+body.xmas-mode .tool-item,
+body.xmas-mode .about-card,
+body.xmas-mode .creator-card {
+  border: 2px solid rgba(220, 38, 38, 0.25);
+  position: relative;
+}
+body.xmas-mode .clean-card::before,
+body.xmas-mode .compact-card::before {
+  content: "🎄";
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  font-size: 1.1rem;
+  z-index: 2;
+  animation: twinkle 2s ease-in-out infinite;
+}
+body.xmas-mode .stat-box::before {
+  content: "🎁";
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 0.9rem;
+  animation: twinkle 2.5s ease-in-out infinite;
+}
+body.xmas-mode .tool-item::before {
+  content: "❄️";
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  font-size: 0.8rem;
+  animation: twinkle 3s ease-in-out infinite;
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+/* Christmas banner on topbar */
+body.xmas-mode .topbar {
+  background: linear-gradient(90deg, #1a472a, #b91c1c, #1a472a) !important;
+  animation: bannerGlow 3s ease-in-out infinite;
+}
+@keyframes bannerGlow {
+  0%, 100% { box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.1); }
+  50% { box-shadow: inset 0 0 40px rgba(255, 0, 0, 0.25); }
+}
+
+/* Christmas nav border */
+body.xmas-mode .mainnav {
+  border-bottom: 2px solid rgba(220, 38, 38, 0.3);
+}
+
+/* Christmas pop-up overlay */
+.xmas-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 5500;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.4s ease;
+}
+.xmas-popup-content {
+  background: linear-gradient(145deg, #fff 0%, #fef2f2 100%);
+  border-radius: 24px;
+  padding: 40px 30px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4), 0 0 0 3px #dc2626;
+  animation: popIn 0.5s var(--bounce-soft);
+  position: relative;
+  overflow: hidden;
+}
+[data-theme="dark"] .xmas-popup-content {
+  background: linear-gradient(145deg, #1f1613 0%, #2a1a17 100%);
+}
+.xmas-popup-content::before {
+  content: "🎄";
+  position: absolute;
+  top: -20px;
+  left: -10px;
+  font-size: 5rem;
+  opacity: 0.1;
+  transform: rotate(-30deg);
+}
+.xmas-popup-content::after {
+  content: "🎅";
+  position: absolute;
+  bottom: -20px;
+  right: -10px;
+  font-size: 5rem;
+  opacity: 0.1;
+  transform: rotate(20deg);
+}
+.xmas-popup-emoji {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 12px;
+  animation: bounceEmoji 1.5s ease-in-out infinite;
+}
+@keyframes bounceEmoji {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.xmas-popup-content h2 {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #dc2626;
+  margin-bottom: 12px;
+}
+[data-theme="dark"] .xmas-popup-content h2 {
+  color: #f87171;
+}
+.xmas-popup-content p {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+.xmas-popup-content .xmas-wish {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 16px 0;
+  font-style: italic;
+}
+.xmas-popup-close {
+  padding: 12px 32px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.4);
+  transition: all 0.25s ease;
+  margin-top: 8px;
+}
+.xmas-popup-close:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.5);
+}
+</style>
 </head>
 <body>
+
+<!-- Christmas Mode Toggle Button -->
+<button id="xmasToggle" title="Toggle Christmas Mode" aria-label="Toggle Christmas Mode">🎄</button>
+
+<!-- Snowfall container -->
+<div id="snowfall" aria-hidden="true"></div>
 
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
@@ -615,6 +845,18 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
   <div class="cookie-actions"><button class="cookie-btn decline" id="cookieDecline">Decline</button><button class="cookie-btn accept" id="cookieAccept">Accept Cookies</button></div>
 </div>
 
+<!-- CHRISTMAS POPUP (hidden by default) -->
+<div class="xmas-popup-overlay" id="xmasPopup" style="display:none;">
+  <div class="xmas-popup-content">
+    <span class="xmas-popup-emoji">🎄</span>
+    <h2>Merry Christmas!</h2>
+    <p>Wishing you a season filled with joy, peace, and wonderful moments with your loved ones.</p>
+    <p class="xmas-wish">"May your days be merry and bright, and may all your Christmas wishes come true!"</p>
+    <p style="font-size:.85rem;color:var(--text-muted);">Keep studying, keep shining — and have a magical holiday! ❄️</p>
+    <button class="xmas-popup-close" id="xmasPopupClose">🎅 Thank You &amp; Happy Holidays!</button>
+  </div>
+</div>
+
 <script>
 // 1. THEME (default light)
 (function(){
@@ -743,5 +985,121 @@ document.addEventListener('DOMContentLoaded',function(){
 ></script>
 <!-- Only needed for the End of content style: right after your article or product text -->
 <div data-aon-slot="end-of-content"></div>
+
+<!-- ═══════════════ CHRISTMAS MODE SCRIPTS (NEW) ═══════════════ -->
+<script>
+(function() {
+  'use strict';
+
+  var xmasToggle = document.getElementById('xmasToggle');
+  var snowfall = document.getElementById('snowfall');
+  var xmasPopup = document.getElementById('xmasPopup');
+  var xmasPopupClose = document.getElementById('xmasPopupClose');
+  var isXmasMode = false;
+
+  // --- Snowfall generator ---
+  function createSnowflakes(count) {
+    snowfall.innerHTML = '';
+    var flakes = ['❄','❅','❆','✻','✦'];
+    for (var i = 0; i < count; i++) {
+      var flake = document.createElement('span');
+      flake.className = 'snowflake';
+      flake.textContent = flakes[Math.floor(Math.random() * flakes.length)];
+      flake.style.left = Math.random() * 100 + '%';
+      flake.style.fontSize = (Math.random() * 1.2 + 0.5) + 'em';
+      flake.style.animationDuration = (Math.random() * 6 + 4) + 's';
+      flake.style.animationDelay = (Math.random() * 5) + 's';
+      flake.style.opacity = Math.random() * 0.6 + 0.3;
+      snowfall.appendChild(flake);
+    }
+  }
+
+  // --- Enable Christmas Mode ---
+  function enableXmasMode() {
+    document.body.classList.add('xmas-mode');
+    xmasToggle.classList.add('active');
+    isXmasMode = true;
+    createSnowflakes(40);
+    localStorage.setItem('xmas-mode', 'on');
+    showXmasPopup();
+  }
+
+  // --- Disable Christmas Mode ---
+  function disableXmasMode() {
+    document.body.classList.remove('xmas-mode');
+    xmasToggle.classList.remove('active');
+    isXmasMode = false;
+    snowfall.innerHTML = '';
+    localStorage.setItem('xmas-mode', 'off');
+  }
+
+  // --- Show the Christmas pop-up ---
+  function showXmasPopup() {
+    if (!xmasPopup) return;
+    // Check if user has already seen the popup this session
+    var seen = sessionStorage.getItem('xmas-popup-seen');
+    if (seen) return; // Don't show again in the same session
+
+    xmasPopup.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    sessionStorage.setItem('xmas-popup-seen', 'true');
+  }
+
+  // --- Close popup ---
+  function closePopup() {
+    if (!xmasPopup) return;
+    xmasPopup.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  // --- Initialise ---
+  function init() {
+    // Check saved preference
+    var saved = localStorage.getItem('xmas-mode');
+    if (saved === 'on') {
+      enableXmasMode();
+    }
+    // If saved is null or 'off', don't enable
+
+    // Toggle button click
+    xmasToggle.addEventListener('click', function() {
+      if (isXmasMode) {
+        disableXmasMode();
+      } else {
+        enableXmasMode();
+      }
+    });
+
+    // Popup close
+    if (xmasPopupClose) {
+      xmasPopupClose.addEventListener('click', closePopup);
+    }
+
+    // Popup overlay click to close
+    if (xmasPopup) {
+      xmasPopup.addEventListener('click', function(e) {
+        if (e.target === xmasPopup) {
+          closePopup();
+        }
+      });
+    }
+
+    // Escape key closes popup
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && xmasPopup && xmasPopup.style.display === 'flex') {
+        closePopup();
+      }
+    });
+  }
+
+  // Run on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})();
+</script>
 </body>
 </html>
