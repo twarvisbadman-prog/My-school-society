@@ -1,5 +1,5 @@
-# app.py — Student Hub · Full build (v4) — PERFORMANCE + SHARE EDITION
-# R2 + Supabase Auth + Gamification + Community + Leaderboard + Notifications + Quiz + Upload Streak + Admin User Mgmt + Chat + Share
+# app.py — Student Hub · Full build (v5) — CHRISTMAS EDITION
+# R2 + Supabase Auth + Gamification + Community + Leaderboard + Notifications + Quiz + Upload Streak + Admin User Mgmt + Chat + Share + Christmas Mode
 import os
 import uuid
 import json
@@ -65,6 +65,10 @@ ADMIN = True
 
 CHAT_ADMIN_EMAILS = [e.strip().lower() for e in env("CHAT_ADMIN_EMAILS", "").split(",") if e.strip()]
 
+# ⭐ CHRISTMAS MODE (NEW)
+CHRISTMAS_MODE = env("CHRISTMAS_MODE", "true").lower() == "true"
+CHRISTMAS_AUDIO_FILE = env("CHRISTMAS_AUDIO_FILE", "chrismax.mp3")
+
 _allowed = env("ALLOWED_HOSTS", "*")
 ALLOWED_HOSTS = [h.strip() for h in _allowed.split(",") if h.strip()]
 
@@ -75,7 +79,7 @@ CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf.split(",") if o.strip()]
 # SANITY CHECK
 # ============================================================
 print("=" * 60)
-print("🚀 STUDENT HUB — v4 PERFORMANCE + SHARE EDITION")
+print("🚀 STUDENT HUB — v5 CHRISTMAS EDITION")
 print("=" * 60)
 print(f"📡 Supabase URL:  {SUPABASE_URL[:50]}")
 print(f"🔑 Supabase Key:  {'✅ VALID JWT' if SUPABASE_KEY.startswith('eyJ') else '❌ INVALID'}")
@@ -84,6 +88,7 @@ print(f"🔐 Admin URL:     /{SECRET_ADMIN_PATH}/")
 print(f"🧠 Quiz bank:     {quiz_engine.total_questions()} questions loaded")
 print(f"💬 Chat:          /chat/  (24h auto-delete)")
 print(f"📤 Share API:     /api/share/<id>/")
+print(f"🎄 Christmas:     {'✅ ON' if CHRISTMAS_MODE else '❌ OFF'} (audio: {CHRISTMAS_AUDIO_FILE})")
 print(f"🐛 Debug:         {DEBUG}")
 print("=" * 60)
 
@@ -179,6 +184,10 @@ _LEADERBOARD_TTL = 10
 
 _community_cache = {"data": None, "ts": 0}
 _COMMUNITY_TTL = 10
+
+# ⭐ Christmas cache
+_christmas_cache = {"data": None, "ts": 0}
+_CHRISTMAS_TTL = 300  # 5 dakika
 
 
 def _cache_get(cache, key):
@@ -650,6 +659,7 @@ def get_content_type(filename):
         '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         '.csv': 'text/csv', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
         '.png': 'image/png', '.gif': 'image/gif',
+        '.mp3': 'audio/mpeg', '.wav': 'audio/wav',
     }
     return types.get(ext, 'application/octet-stream')
 
@@ -805,7 +815,8 @@ def serve_root_file(request, filename):
         ".ico": "image/x-icon", ".css": "text/css", ".js": "application/javascript",
         ".json": "application/json", ".txt": "text/plain", ".xml": "application/xml",
         ".pdf": "application/pdf", ".woff": "font/woff", ".woff2": "font/woff2",
-        ".mp4": "video/mp4", ".html": "text/html; charset=utf-8", ".htm": "text/html; charset=utf-8",
+        ".mp4": "video/mp4", ".mp3": "audio/mpeg", ".wav": "audio/wav",
+        ".html": "text/html; charset=utf-8", ".htm": "text/html; charset=utf-8",
     }
     content_type = content_types.get(ext, "application/octet-stream")
     try:
@@ -815,6 +826,9 @@ def serve_root_file(request, filename):
         if ext in (".html", ".htm"):
             response["Content-Disposition"] = "inline"
             response["Cache-Control"] = "public, max-age=300"
+        elif ext in (".mp3", ".wav"):
+            response["Cache-Control"] = "public, max-age=2592000"
+            response["Accept-Ranges"] = "bytes"
         else:
             response["Cache-Control"] = "public, max-age=2592000"
         return response
@@ -1163,7 +1177,11 @@ def community_view(request):
 # MAIN VIEWS
 # ============================================================
 def index(request):
-    return render(request, "index.html", build_view_context(request))
+    ctx = build_view_context(request)
+    # ⭐ Ongeza Christmas context
+    ctx["christmas_mode"] = CHRISTMAS_MODE
+    ctx["christmas_audio"] = CHRISTMAS_AUDIO_FILE
+    return render(request, "index.html", ctx)
 
 
 def upload_view(request):
@@ -2231,7 +2249,7 @@ def _api_follow_list(request, username, mode="followers"):
     return JsonResponse({"users": users_out})
 
 # ============================================================
-# ⭐ SHARE API (NEW)
+# ⭐ SHARE API
 # ============================================================
 @csrf_exempt
 def api_share_info(request, id):
@@ -2307,6 +2325,105 @@ def api_share_info(request, id):
         return JsonResponse({"error": str(e)}, status=500)
 
 # ============================================================
+# ⭐ CHRISTMAS API (NEW)
+# ============================================================
+@csrf_exempt
+def api_christmas_status(request):
+    """
+    Returns Christmas Mode status + audio file path.
+    Cache for 5 minutes to avoid DB queries.
+    """
+    now = time.time()
+    if _christmas_cache["data"] is not None and now - _christmas_cache["ts"] < _CHRISTMAS_TTL:
+        data = _christmas_cache["data"]
+    else:
+        data = {
+            "active": CHRISTMAS_MODE,
+            "audio_file": CHRISTMAS_AUDIO_FILE,
+            "audio_url": f"/{CHRISTMAS_AUDIO_FILE}",
+            "message": {
+                "title": "Merry Christmas!",
+                "from": "Twarvis & The Student Hub Family",
+                "greeting": (
+                    "From Twarvis and the Study Hub & Student Hub Team — "
+                    "we want to sincerely appreciate each and every one of you "
+                    "for your incredible contribution to this community."
+                ),
+                "wish": (
+                    "Wishing you and your families a very, very cool Christmas — "
+                    "filled with joy, love, laughter, and countless blessings."
+                ),
+                "signature": "— Twarvis & The Student Hub Family",
+            },
+        }
+        _christmas_cache["data"] = data
+        _christmas_cache["ts"] = now
+    return JsonResponse(data)
+
+
+@csrf_exempt
+def api_christmas_toggle(request):
+    """
+    Admin-only: toggle Christmas Mode on/off.
+    POST body: {"active": true/false}
+    """
+    if not ADMIN:
+        return JsonResponse({"success": False, "error": "Not authorized"}, status=403)
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "POST only"}, status=405)
+    try:
+        global CHRISTMAS_MODE
+        body = json.loads(request.body or "{}")
+        new_state = bool(body.get("active", True))
+        CHRISTMAS_MODE = new_state
+        # Invalidate cache
+        _christmas_cache["data"] = None
+        _christmas_cache["ts"] = 0
+        # Persist in .env file (best effort)
+        try:
+            env_path = os.path.join(BASE_DIR, ".env")
+            if os.path.exists(env_path):
+                with open(env_path, "r", encoding="utf-8") as f:
+                    lines = f.readlines()
+                found = False
+                for i, line in enumerate(lines):
+                    if line.startswith("CHRISTMAS_MODE="):
+                        lines[i] = f"CHRISTMAS_MODE={'true' if new_state else 'false'}\n"
+                        found = True
+                        break
+                if not found:
+                    lines.append(f"\nCHRISTMAS_MODE={'true' if new_state else 'false'}\n")
+                with open(env_path, "w", encoding="utf-8") as f:
+                    f.writelines(lines)
+        except Exception as e:
+            print(f"[christmas_toggle] .env save failed: {e}")
+        print(f"[christmas_toggle] ✅ Christmas Mode → {'ON' if new_state else 'OFF'}")
+        return JsonResponse({"success": True, "active": new_state})
+    except Exception as e:
+        print(f"[christmas_toggle] {e}")
+        return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+
+def api_christmas_audio(request):
+    """
+    Serve the Christmas audio file directly from BASE_DIR.
+    Falls back to 404 if file is missing.
+    """
+    audio_path = os.path.join(BASE_DIR, CHRISTMAS_AUDIO_FILE)
+    if not os.path.exists(audio_path):
+        return HttpResponse("Audio not found", status=404)
+    try:
+        with open(audio_path, "rb") as f:
+            data = f.read()
+        response = HttpResponse(data, content_type="audio/mpeg")
+        response["Cache-Control"] = "public, max-age=2592000"
+        response["Accept-Ranges"] = "bytes"
+        return response
+    except Exception as e:
+        print(f"[christmas_audio] {e}")
+        return HttpResponse("Error", status=500)
+
+# ============================================================
 # CHAT MODULE
 # ============================================================
 import chat
@@ -2344,7 +2461,12 @@ urlpatterns = [
     path("api/follow/<str:user_id>/", api_follow_user, name="api_follow_user"),
     path("api/profile/update/", api_update_profile, name="api_update_profile"),
     path("api/text/<int:id>/", api_text_preview, name="api_text_preview"),
-    path("api/share/<int:id>/", api_share_info, name="api_share_info"),   # ⭐ NEW
+    path("api/share/<int:id>/", api_share_info, name="api_share_info"),
+
+    # ⭐ CHRISTMAS APIs (NEW)
+    path("api/christmas/status/", api_christmas_status, name="api_christmas_status"),
+    path("api/christmas/toggle/", api_christmas_toggle, name="api_christmas_toggle"),
+    path("api/christmas/audio/", api_christmas_audio, name="api_christmas_audio"),
 
     # NOTIFICATIONS + FOLLOW LISTS
     path("api/notifications/", api_notifications, name="api_notifications"),
