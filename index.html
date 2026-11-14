@@ -339,7 +339,6 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
 .xmas-popup-content .xmas-greeting{font-size:.95rem;color:#374151;line-height:1.7;margin:14px 0;font-weight:500}
 .xmas-popup-content .xmas-signature{font-size:.85rem;color:#dc2626;font-weight:800;margin-top:14px;font-style:italic}
 
-/* FIXED: class name now matches the HTML (.xmas-wish) so the wish box is styled */
 .xmas-popup-content .xmas-wish{
   font-size:.9rem;
   font-weight:700;
@@ -354,6 +353,34 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
   line-height:1.6;
 }
 
+/* Sound toggle button */
+#soundToggle{
+  background:transparent;
+  border:2px solid #dc2626;
+  color:#dc2626;
+  padding:10px 20px;
+  border-radius:999px;
+  font-size:.8rem;
+  font-weight:700;
+  cursor:pointer;
+  margin:10px 0 0;
+  transition:all .2s;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  font-family:'Inter',sans-serif;
+  width:100%;
+}
+#soundToggle:hover{
+  background:rgba(220,38,38,.08);
+  transform:translateY(-1px);
+}
+#soundToggle.playing{
+  background:#dc2626;
+  color:#fff;
+}
+
 .xmas-popup-close{
   padding:14px 32px;
   border-radius:999px;
@@ -365,7 +392,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
   cursor:pointer;
   box-shadow:0 6px 20px rgba(220,38,38,.5);
   transition:all .25s cubic-bezier(.34,1.56,.64,1);
-  margin-top:16px;
+  margin-top:10px;
   width:100%;
   letter-spacing:.01em;
   position:relative;
@@ -383,6 +410,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
   .xmas-popup-content p,.xmas-popup-content .xmas-greeting{font-size:.82rem}
   .xmas-popup-content .xmas-wish{font-size:.82rem;padding:12px}
   .xmas-popup-close{padding:12px 24px;font-size:.85rem}
+  #soundToggle{padding:9px 16px;font-size:.75rem}
   .snowflake{font-size:1em !important}
   .xmas-deco{font-size:1.2rem}
 }
@@ -408,6 +436,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
     </p>
     <p style="font-size:.8rem;color:#9ca3af;">Have a magical holiday and a wonderful New Year ahead! ⭐</p>
     <p class="xmas-signature">— Twarvis &amp; The Student Hub Family</p>
+    <button id="soundToggle" type="button">🔊 Play Christmas Voice</button>
     <button class="xmas-popup-close" id="xmasPopupClose">🎉 Thank You &amp; Merry Christmas!</button>
   </div>
 </div>
@@ -659,12 +688,20 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
   type();
 })();
 
-// 4. CHRISTMAS CELEBRATION + POP-UP
+// 4. CHRISTMAS CELEBRATION + POP-UP + SOUND
 (function(){
   var celebration = document.getElementById('xmasCelebration');
   var popup = document.getElementById('xmasPopup');
   var closeBtn = document.getElementById('xmasPopupClose');
+  var soundToggle = document.getElementById('soundToggle');
   var animationTimer = null;
+
+  // ═══ SAUTI YAKO: chrismax.mp3 ═══
+  // Kama uko Django, badilisha na: new Audio("{% static 'sounds/chrismax.mp3' %}")
+  var christmasVoice = new Audio('chrismax.mp3');
+  christmasVoice.volume = 0.5;
+  christmasVoice.loop = false;
+  christmasVoice.preload = 'auto';
 
   // --- Create snowflakes ---
   function createSnowflakes(count) {
@@ -762,17 +799,80 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
     }, 15000);
   }
 
+  // --- Sound control ---
+  function playSound() {
+    if (!christmasVoice.paused) return; // Tayari inacheza
+    christmasVoice.play().then(function(){
+      if (soundToggle) {
+        soundToggle.innerHTML = '🔇 Stop Voice';
+        soundToggle.classList.add('playing');
+      }
+      console.log('✅ Sauti ya Krismasi imeanza!');
+    }).catch(function(err){
+      console.log('⚠️ Sauti imezuiwa:', err);
+    });
+  }
+
+  function stopSound() {
+    christmasVoice.pause();
+    christmasVoice.currentTime = 0;
+    if (soundToggle) {
+      soundToggle.innerHTML = '🔊 Play Christmas Voice';
+      soundToggle.classList.remove('playing');
+    }
+    console.log('🔇 Sauti imezimwa');
+  }
+
+  // Kitufe cha kudhibiti sauti
+  if (soundToggle) {
+    soundToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (christmasVoice.paused) {
+        playSound();
+      } else {
+        stopSound();
+      }
+    });
+  }
+
+  // Kitufe cha popup kuanzisha sauti (kama bado haijaanza)
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function() {
+      // Kama sauti haijaanza, ianze
+      if (christmasVoice.paused && christmasVoice.currentTime === 0) {
+        playSound();
+      }
+      closePopup();
+    });
+  }
+
+  // Click kwenye popup overlay kufunga (na kuanzisha sauti)
+  if (popup) {
+    popup.addEventListener('click', function(e) {
+      if (e.target === popup) {
+        if (christmasVoice.paused && christmasVoice.currentTime === 0) {
+          playSound();
+        }
+        closePopup();
+      }
+    });
+  }
+
+  // Escape key kufunga popup na kuzima sauti
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      if (popup.classList.contains('active')) closePopup();
+      if (!christmasVoice.paused) stopSound();
+    }
+  });
+
+  // Zima sauti mtumiaji akiondoka
+  window.addEventListener('beforeunload', function() {
+    christmasVoice.pause();
+  });
+
   // Show popup immediately on page load
   showPopup();
-
-  // Close handlers
-  if (closeBtn) closeBtn.addEventListener('click', closePopup);
-  if (popup) popup.addEventListener('click', function(e) {
-    if (e.target === popup) closePopup();
-  });
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && popup.classList.contains('active')) closePopup();
-  });
 
   // On resize, keep things reasonable
   var resizeTimer;
