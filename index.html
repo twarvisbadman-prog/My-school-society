@@ -350,9 +350,9 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
   background:transparent;
   border:2px solid #dc2626;
   color:#dc2626;
-  padding:10px 20px;
+  padding:12px 20px;
   border-radius:999px;
-  font-size:.8rem;
+  font-size:.85rem;
   font-weight:700;
   cursor:pointer;
   margin:10px 0 0;
@@ -363,6 +363,8 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
   gap:6px;
   font-family:'Inter',sans-serif;
   width:100%;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
 }
 #soundToggle:hover{background:rgba(220,38,38,.08);transform:translateY(-1px)}
 #soundToggle.playing{background:#dc2626;color:#fff}
@@ -395,7 +397,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
   .xmas-popup-content p,.xmas-popup-content .xmas-greeting{font-size:.82rem}
   .xmas-popup-content .xmas-wish{font-size:.82rem;padding:12px}
   .xmas-popup-close{padding:12px 24px;font-size:.85rem}
-  #soundToggle{padding:9px 16px;font-size:.75rem}
+  #soundToggle{padding:11px 16px;font-size:.8rem}
   .snowflake{font-size:1em !important}
   .xmas-deco{font-size:1.2rem}
 }
@@ -481,7 +483,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:40px
 
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-bg"><img src="pic5.png" alt=""></div>
+    <div class="hero-bg"><img src="/pic5.png" alt=""></div>
     <div class="hero-orbs" aria-hidden="true"><i></i><i></i><i></i></div>
     <div class="hero-art" aria-hidden="true">
       <div class="fx" style="left:7%;top:16%;width:54px;height:54px;--t:8s"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2V5z"/><path d="M4 21V5M9 7h6"/></svg></div>
@@ -660,20 +662,22 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
   type();
 })();
 
-// 4. ⭐ CHRISTMAS — FETCH FROM API (with built-in fallback message)
+// 4. ⭐ CHRISTMAS — popup + celebration + SONG (chrismax.mp3)
 (function(){
   var celebration = document.getElementById('xmasCelebration');
   var popup = document.getElementById('xmasPopup');
   var popupContent = document.getElementById('xmasPopupContent');
   var animationTimer = null;
-  var christmasVoice = null;
-  var soundPlayed = false;
+  var christmasSong = null;   // Audio object, created when the user taps Play
 
-  // Fallback used when the API is unreachable or returns an incomplete message,
-  // so visitors ALWAYS get the greeting from Twarvis & the team.
+  // The song lives in the root folder next to app.py: chrismax.mp3
+  // 1st choice: the Range-capable API endpoint. 2nd choice: the file directly.
+  var SONG_URLS = ['/api/christmas/audio/', '/chrismax.mp3'];
+
+  // Fallback greeting if the status API is unreachable
   var FALLBACK = {
     active: true,
-    audio_url: null,
+    audio_url: SONG_URLS[0],
     message: {
       title: 'Merry Christmas!',
       greeting: 'From <strong>Twarvis</strong> and the <strong>Study Hub &amp; Student Hub Team</strong> 🎁<br><br>We want to sincerely <strong>appreciate each and every one of you</strong> for your incredible contribution to this community. Your dedication, notes, and support make Student Hub what it is today.',
@@ -682,7 +686,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
     }
   };
 
-  // --- Create snowflakes ---
+  // --- Celebration effects ---
   function createSnowflakes(count) {
     var flakes = ['❄','❅','❆','✻','✦','❉','✼'];
     for (var i = 0; i < count; i++) {
@@ -697,7 +701,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
       celebration.appendChild(flake);
     }
   }
-
   function createDecorations(count) {
     var emojis = ['🎄','🎅','🎁','⛄','🦌','🔔','⭐','❄️','🎉','🥂'];
     for (var i = 0; i < count; i++) {
@@ -713,7 +716,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
       celebration.appendChild(deco);
     }
   }
-
   function createStars(count) {
     for (var i = 0; i < count; i++) {
       var star = document.createElement('span');
@@ -727,7 +729,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
       celebration.appendChild(star);
     }
   }
-
   function createConfetti(count) {
     var colors = ['#dc2626','#fbbf24','#16a34a','#3b82f6','#ec4899','#f97316'];
     for (var i = 0; i < count; i++) {
@@ -741,7 +742,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
       celebration.appendChild(c);
     }
   }
-
   function startCelebration() {
     celebration.innerHTML = '';
     var isMobile = window.innerWidth < 600;
@@ -751,18 +751,25 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
     createConfetti(isMobile ? 15 : 30);
     celebration.classList.add('active');
   }
-
   function stopCelebration() {
     celebration.classList.remove('active');
     celebration.innerHTML = '';
   }
 
-  // --- Build popup from API data (every field falls back to the default text) ---
+  // --- Song control ---
+  function stopSong() {
+    if (christmasSong) {
+      christmasSong.pause();
+      try { christmasSong.currentTime = 0; } catch (e) {}
+    }
+  }
+
+  // --- Build popup ---
   function buildPopup(data) {
     var msg = data.message || {};
     var dm = FALLBACK.message;
     popupContent.innerHTML = '';
-    
+
     var emoji = document.createElement('span');
     emoji.className = 'xmas-popup-emoji';
     emoji.textContent = '🎄';
@@ -797,58 +804,74 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
     sig.textContent = msg.signature || dm.signature;
     popupContent.appendChild(sig);
 
-    // Sound toggle
+    // ▶ PLAY BUTTON — always visible, plays chrismax.mp3 when tapped
     var soundBtn = document.createElement('button');
     soundBtn.id = 'soundToggle';
     soundBtn.type = 'button';
-    soundBtn.textContent = '🔊 Play Christmas Voice';
+    soundBtn.innerHTML = '🎵 Cheza Wimbo wa Christmas';
     popupContent.appendChild(soundBtn);
 
-    // Close button
     var xmasCloseBtn = document.createElement('button');
     xmasCloseBtn.className = 'xmas-popup-close';
     xmasCloseBtn.id = 'xmasPopupClose';
+    xmasCloseBtn.type = 'button';
     xmasCloseBtn.textContent = '🎉 Thank You & Merry Christmas!';
     popupContent.appendChild(xmasCloseBtn);
 
-    // Attach sound handlers
-    if (data.audio_url) {
-      christmasVoice = new Audio(data.audio_url);
-      christmasVoice.volume = 0.5;
-      christmasVoice.loop = false;
-      christmasVoice.preload = 'auto';
+    var urls = [];
+    if (data.audio_url) urls.push(data.audio_url);
+    SONG_URLS.forEach(function(u){ if (urls.indexOf(u) === -1) urls.push(u); });
+    var urlIndex = 0;
 
-      // Reset the button when the voice finishes on its own
-      christmasVoice.addEventListener('ended', function(){
-        soundBtn.innerHTML = '🔊 Play Christmas Voice';
-        soundBtn.classList.remove('playing');
-      });
-
-      soundBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (christmasVoice.paused) {
-          christmasVoice.play().then(function(){
-            soundPlayed = true;
-            soundBtn.innerHTML = '🔇 Stop Voice';
-            soundBtn.classList.add('playing');
-          }).catch(function(err){ console.log('⚠️ Sound blocked:', err); });
-        } else {
-          christmasVoice.pause();
-          christmasVoice.currentTime = 0;
-          soundBtn.innerHTML = '🔊 Play Christmas Voice';
-          soundBtn.classList.remove('playing');
-        }
-      });
-    } else {
-      soundBtn.style.display = 'none';
+    function setIdle() {
+      soundBtn.innerHTML = '🎵 Cheza Wimbo wa Christmas';
+      soundBtn.classList.remove('playing');
+    }
+    function setPlaying() {
+      soundBtn.innerHTML = '⏹ Zima Wimbo';
+      soundBtn.classList.add('playing');
+    }
+    function createSong() {
+      var a = new Audio();
+      a.preload = 'auto';
+      a.volume = 0.8;
+      a.src = urls[urlIndex];
+      a.addEventListener('ended', setIdle);
+      a.addEventListener('pause', function(){ if (a.ended || a.currentTime === 0) setIdle(); });
+      return a;
+    }
+    function tryPlay() {
+      soundBtn.innerHTML = '⏳ Inapakia...';
+      var p = christmasSong.play();
+      if (p && p.then) {
+        p.then(setPlaying).catch(function(err){
+          console.warn('Song play failed (' + urls[urlIndex] + '):', err);
+          // Try the next URL once if this one failed to load
+          if (urlIndex < urls.length - 1) {
+            urlIndex++;
+            christmasSong = createSong();
+            tryPlay();
+          } else {
+            soundBtn.innerHTML = '⚠️ Wimbo haujapatikana — jaribu tena';
+            christmasSong = null; urlIndex = 0;
+          }
+        });
+      } else { setPlaying(); }
     }
 
-    xmasCloseBtn.addEventListener('click', function(){
-      if (christmasVoice && christmasVoice.paused && !soundPlayed) {
-        christmasVoice.play().catch(function(){});
-        soundPlayed = true;
+    soundBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      // Tapped while playing → stop
+      if (christmasSong && !christmasSong.paused) {
+        stopSong(); setIdle(); return;
       }
-      closePopup();
+      // Create the Audio inside the tap (required by iPhone/Safari & Chrome)
+      if (!christmasSong) christmasSong = createSong();
+      tryPlay();
+    });
+
+    xmasCloseBtn.addEventListener('click', function(){
+      closePopup();   // song keeps playing so visitors can enjoy it; press Esc or the button to stop
     });
   }
 
@@ -868,17 +891,12 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
     animationTimer = setTimeout(stopCelebration, 15000);
   }
 
-  // --- Decide what to show once we have data (from API or fallback) ---
   function handleStatus(data) {
-    if (!data || !data.active) {
-      console.log('🎄 Christmas Mode is OFF');
-      return;
-    }
+    if (!data || !data.active) { console.log('🎄 Christmas Mode is OFF'); return; }
     console.log('🎄 Christmas Mode is ON');
     var lastShown = null, today = new Date().toDateString();
     try { lastShown = localStorage.getItem('xmasPopupLastShown'); } catch(e){}
     if (lastShown === today) {
-      // Already seen today — just show a light celebration
       startCelebration();
       setTimeout(stopCelebration, 8000);
       return;
@@ -887,33 +905,23 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
     try { localStorage.setItem('xmasPopupLastShown', today); } catch(e){}
   }
 
-  // --- Fetch Christmas status from API; if it fails, use the fallback greeting ---
   fetch('/api/christmas/status/', { credentials: 'same-origin' })
-    .then(function(r){
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
-    })
+    .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(handleStatus)
     .catch(function(err){
       console.error('❌ Christmas fetch failed, using fallback:', err);
       handleStatus(FALLBACK);
     });
 
-  // Escape key
+  // Escape closes popup and stops the song
   document.addEventListener('keydown', function(e){
     if (e.key === 'Escape') {
       if (popup.classList.contains('active')) closePopup();
-      if (christmasVoice && !christmasVoice.paused) {
-        christmasVoice.pause();
-        christmasVoice.currentTime = 0;
-      }
+      stopSong();
     }
   });
 
-  // Zima sauti mtumiaji akiondoka
-  window.addEventListener('beforeunload', function(){
-    if (christmasVoice) christmasVoice.pause();
-  });
+  window.addEventListener('beforeunload', stopSong);
 })();
 
 // 5. TERMS & COOKIES (delayed after Christmas popup)
@@ -921,7 +929,6 @@ document.addEventListener('DOMContentLoaded',function(){
   const tncOverlay=document.getElementById('tncOverlay'), tncAgree=document.getElementById('tncAgree'), tncDecline=document.getElementById('tncDecline');
   const cookieBanner=document.getElementById('cookieBanner'), cookieAccept=document.getElementById('cookieAccept'), cookieDecline=document.getElementById('cookieDecline');
   const tncAccepted=localStorage.getItem('studenthub_tnc_accepted');
-  // Delay TNC so it doesn't overlap Christmas popup
   if(tncAccepted!=='true') setTimeout(()=>{tncOverlay.classList.add('active');document.body.style.overflow='hidden';},5000);
   tncAgree.addEventListener('click',()=>{localStorage.setItem('studenthub_tnc_accepted','true');tncOverlay.classList.remove('active');document.body.style.overflow='';checkCookies();});
   tncDecline.addEventListener('click',()=>{alert('You must accept the Terms & Conditions to use Student Hub.');});
