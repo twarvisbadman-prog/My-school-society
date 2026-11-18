@@ -70,6 +70,9 @@ CHAT_ADMIN_EMAILS = [e.strip().lower() for e in env("CHAT_ADMIN_EMAILS", "").spl
 # ⭐ CHRISTMAS MODE
 CHRISTMAS_MODE = env("CHRISTMAS_MODE", "true").lower() == "true"
 CHRISTMAS_AUDIO_FILE = env("CHRISTMAS_AUDIO_FILE", "chrismax.mp3")
+# Optional: full URL of the song hosted on a CDN (e.g. your R2 bucket).
+# Recommended on Vercel, where function responses are limited to ~4.5 MB.
+CHRISTMAS_AUDIO_URL = env("CHRISTMAS_AUDIO_URL")
 
 _allowed = env("ALLOWED_HOSTS", "*")
 ALLOWED_HOSTS = [h.strip() for h in _allowed.split(",") if h.strip()]
@@ -818,6 +821,9 @@ def _serve_with_range(request, file_path, content_type, cache="public, max-age=2
                 start = max(size - int(m.group(2)), 0)
                 end = size - 1
             end = min(end, size - 1)
+            # Vercel functions cap responses at ~4.5 MB: send audio in <=3 MB chunks
+            # (browsers simply request the next range as the song plays).
+            end = min(end, start + 3_000_000 - 1)
             if start > end or start >= size:
                 resp = HttpResponse(status=416)
                 resp["Content-Range"] = f"bytes */{size}"
@@ -2385,7 +2391,7 @@ def api_christmas_status(request):
         data = {
             "active": CHRISTMAS_MODE,
             "audio_file": CHRISTMAS_AUDIO_FILE,
-            "audio_url": "/api/christmas/audio/",
+            "audio_url": CHRISTMAS_AUDIO_URL or "/api/christmas/audio/",
             "message": {
                 "title": "Merry Christmas!",
                 "from": "Twarvis & The Student Hub Family",
