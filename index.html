@@ -823,13 +823,16 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
     SONG_URLS.forEach(function(u){ if (urls.indexOf(u) === -1) urls.push(u); });
     var urlIndex = 0;
 
+    function curBtn() { return document.getElementById('soundToggle') || soundBtn; }
     function setIdle() {
-      soundBtn.innerHTML = '🎵 Cheza Wimbo wa Christmas';
-      soundBtn.classList.remove('playing');
+      var b = curBtn();
+      b.innerHTML = '🎵 Cheza Wimbo wa Christmas';
+      b.classList.remove('playing');
     }
     function setPlaying() {
-      soundBtn.innerHTML = '⏹ Zima Wimbo';
-      soundBtn.classList.add('playing');
+      var b = curBtn();
+      b.innerHTML = '⏹ Zima Wimbo';
+      b.classList.add('playing');
     }
     function createSong() {
       var a = new Audio();
@@ -870,6 +873,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
       tryPlay();
     });
 
+    if (christmasSong && !christmasSong.paused) setPlaying();   // reopened while song is playing
+
     xmasCloseBtn.addEventListener('click', function(){
       closePopup();   // song keeps playing so visitors can enjoy it; press Esc or the button to stop
     });
@@ -894,15 +899,23 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.c
   function handleStatus(data) {
     if (!data || !data.active) { console.log('🎄 Christmas Mode is OFF'); return; }
     console.log('🎄 Christmas Mode is ON');
-    var lastShown = null, today = new Date().toDateString();
-    try { lastShown = localStorage.getItem('xmasPopupLastShown'); } catch(e){}
-    if (lastShown === today) {
-      startCelebration();
-      setTimeout(stopCelebration, 8000);
-      return;
-    }
-    showPopup(data);
-    try { localStorage.setItem('xmasPopupLastShown', today); } catch(e){}
+    lastData = data;
+    addReopenButton();
+    showPopup(data);   // shows on EVERY page load / refresh
+  }
+
+  // Small 🎄 button so visitors can open the greeting again anytime
+  var lastData = null;
+  function addReopenButton() {
+    if (document.getElementById('xmasReopen')) return;
+    var b = document.createElement('button');
+    b.id = 'xmasReopen';
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Open Christmas greeting');
+    b.textContent = '🎄';
+    b.style.cssText = 'position:fixed;right:16px;bottom:84px;z-index:950;width:48px;height:48px;border-radius:50%;border:none;background:linear-gradient(135deg,#dc2626,#991b1b);font-size:1.5rem;cursor:pointer;box-shadow:0 6px 18px rgba(220,38,38,.5);animation:bounceEmoji 2s ease-in-out infinite';
+    b.addEventListener('click', function(){ if (lastData) showPopup(lastData); });
+    document.body.appendChild(b);
   }
 
   fetch('/api/christmas/status/', { credentials: 'same-origin' })
