@@ -804,6 +804,37 @@ def get_passcode_html(file_id, filename, error=None):
 # ============================================================
 # SERVE FILES
 # ============================================================
+def _serve_with_range(request, file_path, content_type, cache="public, max-age=2592000"):
+    """Serve a file with HTTP Range support (needed for audio on iPhone/Safari)."""
+    size = os.path.getsize(file_path)
+    rng = (request.META.get("HTTP_RANGE") or "").strip()
+    m = re.match(r"bytes=(\d*)-(\d*)$", rng) if rng else None
+    with open(file_path, "rb") as f:
+        if m and (m.group(1) or m.group(2)):
+            if m.group(1):
+                start = int(m.group(1))
+                end = int(m.group(2)) if m.group(2) else size - 1
+            else:
+                start = max(size - int(m.group(2)), 0)
+                end = size - 1
+            end = min(end, size - 1)
+            if start > end or start >= size:
+                resp = HttpResponse(status=416)
+                resp["Content-Range"] = f"bytes */{size}"
+                return resp
+            f.seek(start)
+            data = f.read(end - start + 1)
+            resp = HttpResponse(data, status=206, content_type=content_type)
+            resp["Content-Range"] = f"bytes {start}-{end}/{size}"
+        else:
+            data = f.read()
+            resp = HttpResponse(data, content_type=content_type)
+    resp["Accept-Ranges"] = "bytes"
+    resp["Content-Length"] = str(len(data))
+    resp["Cache-Control"] = cache
+    return resp
+
+
 def serve_root_file(request, filename):
     safe_name = os.path.basename(filename)
     if safe_name != filename or ".." in safe_name or safe_name.startswith("."):
@@ -822,6 +853,8 @@ def serve_root_file(request, filename):
         ".html": "text/html; charset=utf-8", ".htm": "text/html; charset=utf-8",
     }
     content_type = content_types.get(ext, "application/octet-stream")
+    if ext in (".mp3", ".wav"):
+        return _serve_with_range(request, file_path, content_type)
     try:
         with open(file_path, "rb") as f:
             data = f.read()
@@ -2352,7 +2385,7 @@ def api_christmas_status(request):
         data = {
             "active": CHRISTMAS_MODE,
             "audio_file": CHRISTMAS_AUDIO_FILE,
-            "audio_url": f"/{CHRISTMAS_AUDIO_FILE}",
+            "audio_url": "/api/christmas/audio/",
             "message": {
                 "title": "Merry Christmas!",
                 "from": "Twarvis & The Student Hub Family",
@@ -2425,12 +2458,7 @@ def api_christmas_audio(request):
     if not os.path.exists(audio_path):
         return HttpResponse("Audio not found", status=404)
     try:
-        with open(audio_path, "rb") as f:
-            data = f.read()
-        response = HttpResponse(data, content_type="audio/mpeg")
-        response["Cache-Control"] = "public, max-age=2592000"
-        response["Accept-Ranges"] = "bytes"
-        return response
+        return _serve_with_range(request, audio_path, get_content_type(CHRISTMAS_AUDIO_FILE))
     except Exception as e:
         print(f"[christmas_audio] {e}")
         return HttpResponse("Error", status=500)
