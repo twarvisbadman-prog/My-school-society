@@ -1,9 +1,7 @@
-# push.py — Web Push notifications for Student Hub
-# Sends a push + in-app notification to an uploader's followers when they upload a public note.
-#
-# Needs:  pip install pywebpush
-# Env:    VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, VAPID_SUBJECT (optional)
+# push.py - Web Push for Student Hub
+# Notifies followers (push + notification bell) when a PUBLIC note is uploaded.
 import os
+import sys
 import json
 import threading
 from concurrent.futures import ThreadPoolExecutor
@@ -13,202 +11,219 @@ from django.views.decorators.csrf import csrf_exempt
 
 try:
     from pywebpush import webpush, WebPushException
-except ImportError:  # app still runs; push just stays off
+except ImportError:  # pip install pywebpush
     webpush = None
 
     class WebPushException(Exception):
-        response = None
+        pass
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+_svc_client = None
 
 
-def _public_key():
-    return os.environ.get("VAPID_PUBLIC_KEY", "").strip()
+# ------------------------------------------------------------
+# helpers
+# ------------------------------------------------------------
+def _db():
+    """Use SUPABASE_SERVICE_KEY if set (recommended), else the app's client."""
+    global _svc_client
+    key = os.environ.get("SUPABASE_SERVICE_KEY", "").strip()
+    if key:
+        if _svc_client is None:
+            from supabase import create_client
+            url = os.environ.get("SUPABASE_URL", "").strip()
+            if not url:
+                mod = sys.modules.get("app") or sys.modules.get("__main__")
+                url = getattr(mod, "SUPABASE_URL")
+            _svc_client = create_client(url, key)
+        return _svc_client
+    mod = sys.modules.get("app") or sys.modules.get("__main__")
+    return mod.supabase
 
 
-def _private_key():
-    return os.environ.get("VAPID_PRIVATE_KEY", "").strip()
-
-
-def _subject():
-    return os.environ.get("VAPID_SUBJECT", "").strip() or "mailto:Twarvistech@gmail.com"
-
-
-def push_ready():
-    return bool(webpush and _public_key() and _private_key())
-
-
-def _sb():
-    # Lazy import avoids a circular import with app.py
-    import app
-    return app.supabase
-
-
-def _me(request):
+def _user(request):
     return getattr(request, "current_user", None)
 
 
-# ============================================================
-# API VIEWS
-# ============================================================
-@csrf_exempt
+def _vapid():
+    return (
+        os.environ.get("VAPID_PUBLIC_KEY", "").strip(),
+        os.environ.get("VAPID_PRIVATE_KEY", "").strip(),
+        os.environ.get("VAPID_SUBJECT", "mailto:admin@example.com").strip(),
+    )
+
+
+# ------------------------------------------------------------
+# views
+# ------------------------------------------------------------
+def sw_view(request):
+    """Serve the service worker from the site root with the right headers."""
+    path = os.path.join(BASE_DIR, "sw.js")
+    if not os.path.exists(path):
+        return HttpResponse("Not found", status=404)
+    with open(path, "rb") as f:
+        data = f.read()
+    resp = HttpResponse(data, content_type="application/javascript; charset=utf-8")
+    resp["Service-Worker-Allowed"] = "/"
+    resp["Cache-Control"] = "no-cache"
+    return resp
+
+
 def api_push_key(request):
-    return JsonResponse({"enabled": push_ready(), "public_key": _public_key()})
+    pub, _, _ = _vapid()
+    return JsonResponse({"key": pub})
 
 
 @csrf_exempt
 def api_push_subscribe(request):
-    me = _me(request)
+    me = _user(request)
     if not me:
         return JsonResponse({"error": "login_required"}, status=401)
     if request.method != "POST":
         return JsonResponse({"error": "POST only"}, status=405)
     try:
         body = json.loads(request.body or "{}")
-        sub = body.get("subscription") or {}
-        keys = sub.get("keys") or {}
-        endpoint = sub.get("endpoint")
-        if not endpoint or not keys.get("p256dh") or not keys.get("auth"):
+        endpoint = (body.get("endpoint") or "").strip()
+        keys = body.get("keys") or {}
+        p256dh = keys.get("p256dh")
+        auth = keys.get("auth")
+        if not endpoint.startswith("https://") or not p256dh or not auth:
             return JsonResponse({"error": "invalid_subscription"}, status=400)
-        _sb().table("push_subscriptions").upsert({
+        _db().table("push_subscriptions").upsert({
             "user_id": str(me["id"]),
             "endpoint": endpoint,
-            "p256dh": keys["p256dh"],
-            "auth": keys["auth"],
-            "user_agent": request.META.get("HTTP_USER_AGENT", "")[:300],
+            "p256dh": p256dh,
+            "auth": auth,
+            "user_agent": request.META.get("HTTP_USER_AGENT", "")[:200],
         }, on_conflict="endpoint").execute()
         return JsonResponse({"success": True})
     except Exception as e:
         print(f"[push] subscribe failed: {e}")
-        return JsonResponse({"error": str(e)}, status=500)
+        return JsonResponse({"error": "subscribe_failed"}, status=500)
 
 
 @csrf_exempt
 def api_push_unsubscribe(request):
-    me = _me(request)
+    me = _user(request)
     if not me:
         return JsonResponse({"error": "login_required"}, status=401)
     if request.method != "POST":
         return JsonResponse({"error": "POST only"}, status=405)
     try:
         body = json.loads(request.body or "{}")
-        endpoint = body.get("endpoint")
+        endpoint = (body.get("endpoint") or "").strip()
         if endpoint:
-            _sb().table("push_subscriptions").delete() \
+            _db().table("push_subscriptions").delete() \
                 .eq("endpoint", endpoint).eq("user_id", str(me["id"])).execute()
         return JsonResponse({"success": True})
     except Exception as e:
         print(f"[push] unsubscribe failed: {e}")
-        return JsonResponse({"error": str(e)}, status=500)
+        return JsonResponse({"error": "unsubscribe_failed"}, status=500)
 
 
-def sw_view(request):
-    """Serve the service worker from the site root so its scope is '/'."""
-    path = os.path.join(BASE_DIR, "sw.js")
-    if not os.path.exists(path):
-        return HttpResponse("sw.js not found", status=404)
-    with open(path, "rb") as f:
-        data = f.read()
-    resp = HttpResponse(data, content_type="application/javascript; charset=utf-8")
-    resp["Cache-Control"] = "no-cache"
-    resp["Service-Worker-Allowed"] = "/"
-    return resp
+# ------------------------------------------------------------
+# notify followers
+# ------------------------------------------------------------
+def notify_followers_async(uploader_id, uploader, title, course, note_id):
+    """Fire and forget normally. On Vercel (serverless) background threads are
+    frozen as soon as the response is sent, so run inline there instead."""
+    args = (uploader_id, uploader, title, course, note_id)
+    if os.environ.get("VERCEL"):
+        _notify(*args)
+        return
+    threading.Thread(target=_notify, args=args, daemon=True).start()
 
 
-# ============================================================
-# SENDING
-# ============================================================
-def notify_followers_async(uploader_id, uploader_user, title, course, note_id):
-    """Fire-and-forget: never blocks or breaks the upload."""
-    threading.Thread(
-        target=_notify_followers,
-        args=(uploader_id, uploader_user, title, course, note_id),
-        daemon=True,
-    ).start()
-
-
-def _notify_followers(uploader_id, uploader_user, title, course, note_id):
+def _notify(uploader_id, uploader, title, course, note_id):
     try:
-        sb = _sb()
+        db = _db()
         uploader_id = str(uploader_id)
-        prof = (uploader_user or {}).get("profile") or {}
-        name = prof.get("full_name") or prof.get("username") or "Someone"
 
-        rows = sb.table("follows").select("follower_id") \
+        rows = db.table("follows").select("follower_id") \
             .eq("following_id", uploader_id).execute().data or []
         follower_ids = list({str(r["follower_id"]) for r in rows} - {uploader_id})
         if not follower_ids:
             return
 
-        label = (title or "New notes").strip()
+        profile = (uploader or {}).get("profile") or {}
+        name = (profile.get("full_name") or profile.get("username")
+                or ((uploader or {}).get("email") or "Someone").split("@")[0])
+        title = (title or "a new note").strip()[:80]
+        msg = f"{name} uploaded a new note: {title}"
         if course and course != "N/A":
-            label = f"{label} ({course})"
+            msg += f" ({course.strip()[:30]})"
+        ref = str(note_id) if note_id else None
         url = f"/view/{note_id}/" if note_id else "/browse/"
 
-        # 1) In-app notifications (shown in the existing bell)
+        # 1) bell entries
         try:
-            sb.table("notifications").insert([{
-                "user_id": fid,
-                "actor_id": uploader_id,
-                "type": "upload",
-                "reference_id": str(note_id) if note_id else None,
-                "message": f"{name} uploaded new notes: {label}",
-                "is_read": False,
-            } for fid in follower_ids]).execute()
+            for i in range(0, len(follower_ids), 200):
+                db.table("notifications").insert([{
+                    "user_id": uid,
+                    "actor_id": uploader_id,
+                    "type": "new_note",
+                    "reference_id": ref,
+                    "message": msg,
+                    "is_read": False,
+                } for uid in follower_ids[i:i + 200]]).execute()
         except Exception as e:
-            print(f"[push] in-app notifications failed: {e}")
+            print(f"[push] bell insert failed: {e}")
 
-        # 2) Browser / phone push
-        if not push_ready():
-            print("[push] VAPID keys or pywebpush missing — skipped web push")
-            return
-
-        subs = sb.table("push_subscriptions").select("*") \
-            .in_("user_id", follower_ids).execute().data or []
-        if not subs:
-            return
-
-        payload = json.dumps({
-            "title": f"📚 New notes from {name}",
-            "body": label,
+        # 2) push
+        _send_push(db, follower_ids, {
+            "title": f"📚 New note from {name}",
+            "body": title,
             "url": url,
-            "tag": f"upload-{note_id or uploader_id}",
+            "tag": f"note-{ref or 'x'}",
         })
-        private_key = _private_key()
-        subject = _subject()
-        dead = []
-
-        def send(s):
-            try:
-                webpush(
-                    subscription_info={
-                        "endpoint": s["endpoint"],
-                        "keys": {"p256dh": s["p256dh"], "auth": s["auth"]},
-                    },
-                    data=payload,
-                    vapid_private_key=private_key,
-                    vapid_claims={"sub": subject},  # fresh dict each call (library mutates it)
-                    ttl=86400,
-                )
-            except WebPushException as e:
-                code = getattr(getattr(e, "response", None), "status_code", None)
-                if code in (404, 410):
-                    dead.append(s["endpoint"])
-                else:
-                    print(f"[push] send failed ({code}): {e}")
-            except Exception as e:
-                print(f"[push] send error: {e}")
-
-        with ThreadPoolExecutor(max_workers=8) as pool:
-            list(pool.map(send, subs))
-
-        # Clean up expired subscriptions
-        for ep in dead:
-            try:
-                sb.table("push_subscriptions").delete().eq("endpoint", ep).execute()
-            except Exception:
-                pass
-
-        print(f"[push] ✅ {len(subs) - len(dead)} pushes sent, {len(dead)} expired removed")
     except Exception as e:
         print(f"[push] notify failed: {e}")
+
+
+def _send_push(db, user_ids, payload):
+    if webpush is None:
+        print("[push] pywebpush not installed, skipping push")
+        return
+    _, private, subject = _vapid()
+    if not private:
+        print("[push] VAPID_PRIVATE_KEY missing, skipping push")
+        return
+
+    subs = []
+    for i in range(0, len(user_ids), 200):
+        r = db.table("push_subscriptions").select("endpoint, p256dh, auth") \
+            .in_("user_id", user_ids[i:i + 200]).execute()
+        subs.extend(r.data or [])
+    if not subs:
+        return
+
+    data = json.dumps(payload)
+
+    def send(s):
+        try:
+            webpush(
+                subscription_info={
+                    "endpoint": s["endpoint"],
+                    "keys": {"p256dh": s["p256dh"], "auth": s["auth"]},
+                },
+                data=data,
+                vapid_private_key=private,
+                vapid_claims={"sub": subject},
+                ttl=86400,
+            )
+        except WebPushException as e:
+            status = getattr(getattr(e, "response", None), "status_code", None)
+            if status in (404, 410):  # subscription expired, clean it up
+                try:
+                    db.table("push_subscriptions").delete() \
+                        .eq("endpoint", s["endpoint"]).execute()
+                except Exception:
+                    pass
+            else:
+                print(f"[push] send failed ({status}): {e}")
+        except Exception as e:
+            print(f"[push] send error: {e}")
+
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        list(pool.map(send, subs))
+    print(f"[push] sent to {len(subs)} device(s)")
