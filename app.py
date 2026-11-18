@@ -1,5 +1,6 @@
-# app.py — Student Hub · Full build (v5) — CHRISTMAS EDITION
-# R2 + Supabase Auth + Gamification + Community + Leaderboard + Notifications + Quiz + Upload Streak + Admin User Mgmt + Chat + Share + Christmas Mode
+# app.py — Student Hub · Full build (v6) — CHRISTMAS EDITION + PUSH
+# R2 + Supabase Auth + Gamification + Community + Leaderboard + Notifications + Quiz + Upload Streak
+# + Admin User Mgmt + Chat + Share + Christmas Mode + Web Push (followers notified on public uploads)
 import os
 import uuid
 import json
@@ -54,8 +55,9 @@ SUPABASE_KEY = env(
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhuc3psdHN3aXB4aXF1cmt3eWRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NTEyODcsImV4cCI6MjA5MzEyNzI4N30.JsSgMXE9JMqJAAZd-riwrr-D-5MURL6WCfuNTrAtoWU"
 )
 
-R2_ACCESS_KEY_ID = env("R2_ACCESS_KEY_ID", "5b7111f929b3cd22162e7a20ef69a09a")
-R2_SECRET_ACCESS_KEY = env("R2_SECRET_ACCESS_KEY", "0cebef92f4316520d5553049763e957eb7f3f778e51cd57eeaa9b797a013d6c7")
+# ⚠️ R2 secrets: NO hardcoded defaults. Set these in .env and on Render.
+R2_ACCESS_KEY_ID = env("R2_ACCESS_KEY_ID")
+R2_SECRET_ACCESS_KEY = env("R2_SECRET_ACCESS_KEY")
 R2_BUCKET_NAME = env("R2_BUCKET_NAME", "pdf")
 R2_ENDPOINT_URL = env("R2_ENDPOINT_URL", "https://29d150504a083e2cf780e2115ebc9b28.r2.cloudflarestorage.com")
 R2_PUBLIC_URL = env("R2_PUBLIC_URL", "https://pub-062ab58e23db4e31a628e6f6273a014c.r2.dev").rstrip("/")
@@ -65,7 +67,7 @@ ADMIN = True
 
 CHAT_ADMIN_EMAILS = [e.strip().lower() for e in env("CHAT_ADMIN_EMAILS", "").split(",") if e.strip()]
 
-# ⭐ CHRISTMAS MODE (NEW)
+# ⭐ CHRISTMAS MODE
 CHRISTMAS_MODE = env("CHRISTMAS_MODE", "true").lower() == "true"
 CHRISTMAS_AUDIO_FILE = env("CHRISTMAS_AUDIO_FILE", "chrismax.mp3")
 
@@ -79,7 +81,7 @@ CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf.split(",") if o.strip()]
 # SANITY CHECK
 # ============================================================
 print("=" * 60)
-print("🚀 STUDENT HUB — v5 CHRISTMAS EDITION")
+print("🚀 STUDENT HUB — v6 CHRISTMAS EDITION + PUSH")
 print("=" * 60)
 print(f"📡 Supabase URL:  {SUPABASE_URL[:50]}")
 print(f"🔑 Supabase Key:  {'✅ VALID JWT' if SUPABASE_KEY.startswith('eyJ') else '❌ INVALID'}")
@@ -89,6 +91,7 @@ print(f"🧠 Quiz bank:     {quiz_engine.total_questions()} questions loaded")
 print(f"💬 Chat:          /chat/  (24h auto-delete)")
 print(f"📤 Share API:     /api/share/<id>/")
 print(f"🎄 Christmas:     {'✅ ON' if CHRISTMAS_MODE else '❌ OFF'} (audio: {CHRISTMAS_AUDIO_FILE})")
+print(f"🔔 Push:          {'✅ VAPID keys set' if env('VAPID_PRIVATE_KEY') and env('VAPID_PUBLIC_KEY') else '⚠️  VAPID keys missing'}")
 print(f"🐛 Debug:         {DEBUG}")
 print("=" * 60)
 
@@ -163,7 +166,7 @@ try:
         )
         print("✅ Cloudflare R2 client initialized!")
     else:
-        print("⚠️  R2 credentials missing — uploads will fail")
+        print("⚠️  R2 credentials missing — set R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY (uploads will fail)")
 except Exception as e:
     print(f"⚠️  R2 client init failed: {e}")
     r2_client = None
@@ -187,7 +190,7 @@ _COMMUNITY_TTL = 10
 
 # ⭐ Christmas cache
 _christmas_cache = {"data": None, "ts": 0}
-_CHRISTMAS_TTL = 300  # 5 dakika
+_CHRISTMAS_TTL = 300  # 5 minutes
 
 
 def _cache_get(cache, key):
@@ -1178,7 +1181,6 @@ def community_view(request):
 # ============================================================
 def index(request):
     ctx = build_view_context(request)
-    # ⭐ Ongeza Christmas context
     ctx["christmas_mode"] = CHRISTMAS_MODE
     ctx["christmas_audio"] = CHRISTMAS_AUDIO_FILE
     return render(request, "index.html", ctx)
@@ -1244,8 +1246,11 @@ def upload_view(request):
                             insert_payload["uploader"] = current_user["email"]
                             print(f"[upload] 🔗 Note linked to {current_user['email']} ({uploader_id})")
 
+                        # ⭐ capture the new note's id (used by push notifications)
+                        new_note_id = None
                         try:
-                            supabase.table("notes").insert(insert_payload).execute()
+                            ins = supabase.table("notes").insert(insert_payload).execute()
+                            new_note_id = ins.data[0]["id"] if ins.data else None
                         except Exception as e:
                             print(f"[upload] ❌ Insert failed: {e}")
                             error = f"Upload failed: {str(e)}"
@@ -1263,6 +1268,12 @@ def upload_view(request):
                                 except Exception:
                                     pass
                                 update_streak(uploader_id, force=True)
+
+                                # 🔔 Followers get a push + bell entry (public notes only)
+                                if privacy == "public":
+                                    push.notify_followers_async(
+                                        uploader_id, current_user, module or file.name, course, new_note_id
+                                    )
 
                                 try:
                                     count_resp = supabase.table("notes").select("id", count="exact") \
@@ -1632,7 +1643,8 @@ def admin_user_delete(request, user_id):
             supabase.table("notes").delete().eq("uploader_id", uid).execute()
         except Exception as e:
             print(f"[admin_user_delete] notes cleanup failed: {e}")
-        for table in ["note_likes", "follows", "notifications", "activity_log", "quiz_attempts"]:
+        # 🔔 also clean push subscriptions
+        for table in ["note_likes", "follows", "notifications", "activity_log", "quiz_attempts", "push_subscriptions"]:
             try:
                 if table == "follows":
                     supabase.table(table).delete().eq("follower_id", uid).execute()
@@ -2325,7 +2337,7 @@ def api_share_info(request, id):
         return JsonResponse({"error": str(e)}, status=500)
 
 # ============================================================
-# ⭐ CHRISTMAS API (NEW)
+# ⭐ CHRISTMAS API
 # ============================================================
 @csrf_exempt
 def api_christmas_status(request):
@@ -2424,9 +2436,10 @@ def api_christmas_audio(request):
         return HttpResponse("Error", status=500)
 
 # ============================================================
-# CHAT MODULE
+# CHAT + PUSH MODULES (imported last: they use helpers defined above)
 # ============================================================
 import chat
+import push
 
 # ============================================================
 # URLS
@@ -2463,10 +2476,16 @@ urlpatterns = [
     path("api/text/<int:id>/", api_text_preview, name="api_text_preview"),
     path("api/share/<int:id>/", api_share_info, name="api_share_info"),
 
-    # ⭐ CHRISTMAS APIs (NEW)
+    # CHRISTMAS APIs
     path("api/christmas/status/", api_christmas_status, name="api_christmas_status"),
     path("api/christmas/toggle/", api_christmas_toggle, name="api_christmas_toggle"),
     path("api/christmas/audio/", api_christmas_audio, name="api_christmas_audio"),
+
+    # 🔔 PUSH NOTIFICATIONS (sw.js must be served from the site root)
+    path("sw.js", push.sw_view, name="push_sw"),
+    path("api/push/key/", push.api_push_key, name="api_push_key"),
+    path("api/push/subscribe/", push.api_push_subscribe, name="api_push_subscribe"),
+    path("api/push/unsubscribe/", push.api_push_unsubscribe, name="api_push_unsubscribe"),
 
     # NOTIFICATIONS + FOLLOW LISTS
     path("api/notifications/", api_notifications, name="api_notifications"),
